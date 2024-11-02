@@ -80,7 +80,7 @@ export interface TLeadsInterest {
   partnerInterestId: string;
   note: string;
   points?: number;
-  offerAmount: number;
+  offerAmount?: number;
 }
 
 export interface TAllLeads extends TLead {

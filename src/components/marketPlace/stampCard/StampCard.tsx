@@ -133,7 +133,7 @@ export default function StampCard({ eventId }: { eventId: string }) {
 
   return (
     <MarketPlaceLayout eventId={eventId}>
-      <div className="w-full px-4 flex flex-col sm:flex-row gap-2 items-start md:items-center justify-start md:justify-between py-3">
+      <div className="w-full flex flex-col sm:flex-row gap-2 items-start md:items-center justify-start md:justify-between py-3">
         <div className="p-2 rounded-md border w-full md:w-96 flex items-center gap-x-2">
           <LightBulb />
           <p className="text-xs text-gray-400">
@@ -181,7 +181,7 @@ export default function StampCard({ eventId }: { eventId: string }) {
         </div>
       </div>
 
-      <div className="w-full grid mt-3 px-4 sm:mt-6 grid-cols-1 sm:grid-cols-3 xl:grid-cols-4 gap-4 items-center">
+      <div className="w-full grid mt-3 sm:mt-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 min-[1300px]:grid-cols-3 gap-4 items-center">
         {loading && (
           <div className="w-full col-span-full h-[300px] flex items-center justify-center">
             <LoaderAlt size={30} className="animate-spin" />

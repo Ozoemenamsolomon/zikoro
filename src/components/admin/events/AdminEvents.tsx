@@ -260,7 +260,8 @@ function EventCard({
       {isOpen && (
         <PreviewModal
           close={onClose}
-          eventDetail={event}
+          type="Preview"
+          title={event?.eventTitle}
           url={`/preview/${event?.eventAlias}`}
         />
       )}

@@ -24,10 +24,13 @@ const ImportAttendees: React.FC<MoreOptionsProps> = ({
     Map<{ label: string; value: keyof TAttendee; isRequired: boolean }, any>
   >(
     new Map([
-      [{ label: "First name", value: "firstName", isRequired: true }, null],
-      [{ label: "Last name", value: "lastName", isRequired: true }, null],
+      [{ label: "First name", value: "firstName", isRequired: false }, null],
+      [{ label: "Last name", value: "lastName", isRequired: false }, null],
       [{ label: "Email", value: "email", isRequired: true }, null],
-      [{ label: "Phone number", value: "phoneNumber", isRequired: true }, null],
+      [
+        { label: "Phone number", value: "phoneNumber", isRequired: false },
+        null,
+      ],
       [{ label: "WhatsApp", value: "whatsappNumber", isRequired: false }, null],
       [{ label: "jobTitle", value: "jobTitle", isRequired: false }, null],
       [
@@ -48,7 +51,6 @@ const ImportAttendees: React.FC<MoreOptionsProps> = ({
     key: { label: string; value: keyof TAttendee; isRequired: boolean },
     value: string
   ) => {
-    
     setHeaders((prevHeaders) => {
       prevHeaders.set(key, value);
       return prevHeaders;
@@ -60,6 +62,7 @@ const ImportAttendees: React.FC<MoreOptionsProps> = ({
     value: keyof TAttendee;
     isRequired: boolean;
   }) => {
+    console.log(key, "key");
     setHeaders((prevHeaders) => {
       prevHeaders.delete(key);
       return prevHeaders;

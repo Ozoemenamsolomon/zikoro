@@ -9,10 +9,12 @@ export function AnswerSheet({
   poll,
   answers,
   close,
+  isAttendee
 }: {
   poll: TQuiz<TQuestion[]> | null;
   answers: TAnswer[];
   close?: () => Promise<void>;
+  isAttendee: boolean;
 }) {
 console.log(answers)
   const answerSheet = useMemo(() => {
@@ -49,6 +51,10 @@ console.log(answers)
           <ArrowBackOutline size={20} />
           <p className="text-sm">Back</p>
         </Button>}
+
+       {!isAttendee && <div className="w-full h-[300px] flex items-center justify-center">
+          <h1 className="text-[100px] transform rotate-12 font-bold">THE END</h1>
+        </div>}
 
         <div className="W-full max-w-xl mx-auto mt-8 flex gap-y-3 flex-col items-start justify-start">
           {Array.isArray(answerSheet) &&

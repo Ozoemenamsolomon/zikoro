@@ -102,7 +102,7 @@ export function PartnerCard({
               }`}</p>
             )}
             {sponsor?.boothNumber
-              ? `, Booth ${sponsor?.boothNumber?.toString()}`
+              ? ` Booth ${sponsor?.boothNumber?.toString()}`
               : ""}
           </div>
         )}
@@ -124,7 +124,7 @@ export function PartnerCard({
         </div>
 
         {!isEventDetail && (
-          <div className="flex px-4 items-center gap-x-4">
+          <div className="flex items-center gap-x-4">
             {sponsor?.jobs && (
               <button className="bg-[#20A0D8] bg-opacity-10 text-xs text-[#20A0D8] px-2 py-2 rounded-md">
                 Hiring

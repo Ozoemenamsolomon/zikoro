@@ -22,26 +22,26 @@ import { Button } from "@/components";
 import { MdClose } from "react-icons/md";
 import { nanoid } from "nanoid";
 import { IoIosCloseCircle } from "react-icons/io";
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import {
-  DndContext,
-  KeyboardSensor,
-  MouseSensor,
-  PointerSensor,
-  TouchSensor,
-  closestCorners,
-  useSensor,
-  useSensors,
-  DragEndEvent,
-} from "@dnd-kit/core";
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-  arrayMove,
-  sortableKeyboardCoordinates,
-} from "@dnd-kit/sortable";
-//
+// import { useSortable } from "@dnd-kit/sortable";
+// import { CSS } from "@dnd-kit/utilities";
+// import {
+//   DndContext,
+//   KeyboardSensor,
+//   MouseSensor,
+//   PointerSensor,
+//   TouchSensor,
+//   closestCorners,
+//   useSensor,
+//   useSensors,
+//   DragEndEvent,
+// } from "@dnd-kit/core";
+// import {
+//   SortableContext,
+//   verticalListSortingStrategy,
+//   arrayMove,
+//   sortableKeyboardCoordinates,
+// } from "@dnd-kit/sortable";
+// //
 
 type OptionItemsType = {
   id: string;
@@ -62,26 +62,22 @@ function OptionItem({
   removeImage: (id: string) => void;
   setOption: (id: string, value: string, type:string) => void;
 }) {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-  useSortable({ id: option?.id });
+  // const { attributes, listeners, setNodeRef, transform, transition } =
+  // useSortable({ id: option?.id });
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === ' ') {
-      e.stopPropagation();
-    }
-  };
+
   return (
     <div
-    ref={setNodeRef}
-    {...attributes}
-    {...listeners}
-    style={{
-      transition,
-      transform: CSS.Transform.toString(transform),
-      touchAction: "none",
-    }}
+    // ref={setNodeRef}
+    // {...attributes}
+    // {...listeners}
+    // style={{
+    //   transition,
+    //   transform: CSS.Transform.toString(transform),
+    //   touchAction: "none",
+    // }}
     role="button"
-     className="w-full rounded-lg p-4  bg-gradient-to-tr  space-y-3  from-custom-bg-gradient-start to-custom-bg-gradient-end">
+     className="w-full rounded-lg py-4  bg-gradient-to-tr  space-y-3  ">
       <div className="w-full items-center flex justify-between">
       <PiDotsSixVertical size={30} className="text-gray-400 cursor-move" />
       <div className="w-[90%] flex flex-col items-start justify-start gap-y-3">
@@ -102,10 +98,10 @@ function OptionItem({
             e.stopPropagation()
             setOption(option.id, e.target.value, "text");
           }}
-          onKeyDown={handleKeyDown} 
+        //  onKeyDown={handleKeyDown} 
           value={option?.option}
           type="text"
-          className="w-full h-12 sm:h-14 border-x-0 border-b border-gray-300 rounded-none border-t-0 px-2 placeholder:text-gray-400"
+          className="w-full h-12 sm:h-14 border-x-0 border-b bg-transparent border-gray-300 rounded-none border-t-0 px-2 placeholder:text-gray-400"
           placeholder="Enter Option"
         />
       </div>
@@ -203,7 +199,11 @@ export function CheckBoxType({
     }
   }, [watchedImage]);
 
-
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === ' ') {
+      e.stopPropagation();
+    }
+  };
 
   // form field
   useEffect(() => {
@@ -231,31 +231,35 @@ export function CheckBoxType({
       )
     );
   }
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 0.01,
-      },
-    }),
-    useSensor(TouchSensor),
-    useSensor(MouseSensor),
-    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
-  );
+  // const sensors = useSensors(
+  //   useSensor(PointerSensor, {
+  //     activationConstraint: {
+  //       distance: 0.01,
+  //     },
+  //   }),
+  //   useSensor(TouchSensor),
+  //   useSensor(MouseSensor),
+  //   useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  // );
 
-  // get position
-  const getPosition = (id: string): number | undefined =>
-    options.findIndex((item) => item?.id === id);
-  async function handleDrop(e: DragEndEvent) {
-    if (!options) return;
-    const { active, over } = e;
+  // // get position
+  // const getPosition = (id: string): number | undefined =>
+  //   options.findIndex((item) => item?.id === id);
+  // async function handleDrop(e: DragEndEvent) {
+     
+  //   if (!options) return;
+  //   const { active, over } = e;
 
-    if (active?.id === over?.id) return;
-    const originPos = getPosition(active?.id as string)!;
-    const destPos = getPosition(over?.id as string)!;
-    const updatedOption = arrayMove(options, originPos, destPos);
+  //   if (active?.id === over?.id) return;
+  //   const originPos = getPosition(active?.id as string)!;
+  //   const destPos = getPosition(over?.id as string)!;
+  //   if (active && (active.id as string).includes("child") && over && (over.id as string).includes("child")) {
+  //     const updatedOption = arrayMove(options, originPos, destPos);
 
-    setOptions(updatedOption);
-  }
+  //     setOptions(updatedOption);
+  //   }
+   
+  // }
   return (
     <div className="w-full border rounded-lg flex flex-col items-start justify-start gap-y-8 p-4 sm:p-6 bg-white">
       <PiDotsSixBold size={40} className="self-center text-gray-400" />
@@ -266,20 +270,21 @@ export function CheckBoxType({
           name={`questions.${index}.question`}
           render={({ field }) => (
             <FormItem
-              className={cn("w-full col-span-9", image && "col-span-full")}
+              className={cn("w-full col-span-full", image && "col-span-full")}
             >
               <FormLabel>Question {index+1} (CheckBox)</FormLabel>
               <FormControl>
                 <Input
                   {...form.register(`questions.${index}.question`)}
-                  className="w-full h-12 sm:h-14 border-x-0 border-t-0 border-b px-2 placeholder:text-gray-500 bg-gradient-to-tr rounded-none from-custom-bg-gradient-start to-custom-bg-gradient-end placeholder-gray-500"
+                  className="w-full h-12 sm:h-14 border-x-0 border-t-0 border-b px-2 placeholder:text-gray-500 rounded-none placeholder-gray-500"
                   placeholder="Enter question"
+                  onKeyDown={handleKeyDown} 
                 />
               </FormControl>
             </FormItem>
           )}
         />
-        {!image && (
+        {/* {!image && (
           <div className="w-full flex items-end justify-end">
             <label
               htmlFor={`questions.${index}.questionImage`}
@@ -296,12 +301,31 @@ export function CheckBoxType({
               <IoImage size={24} className="text-gray-700" />
             </label>
           </div>
-        )}
+        )} */}
         {image && <SelectedImage form={form} index={index} image={image} />}
+      </div>
+      <div id={`question-description${index}`} className="w-full hidden">
+      <FormField
+        control={form.control}
+        name={`questions.${index}.questionDescription`}
+        render={({ field }) => (
+          <FormItem className={cn("w-full")}>
+            <FormLabel>Description</FormLabel>
+            <FormControl>
+              <Input
+                {...form.register(`questions.${index}.questionDescription`)}
+                className="w-full h-12 sm:h-14 border-x-0 border-t-0 bg-transparent border-b px-2 placeholder:text-gray-500 rounded-none placeholder-gray-500"
+                placeholder="Enter Description"
+                onKeyDown={handleKeyDown} 
+              />
+            </FormControl>
+          </FormItem>
+        )}
+      />
       </div>
       {/** Options pl-4 sm:pl-6*/}
       <div className="w-full flex flex-col items-start  justify-start gap-y-3">
-        <DndContext
+        {/* <DndContext
           collisionDetection={closestCorners}
           sensors={sensors}
           onDragEnd={handleDrop}
@@ -309,7 +333,7 @@ export function CheckBoxType({
           <SortableContext
             items={options}
             strategy={verticalListSortingStrategy}
-          >
+          > */}
             {options.map((option, index) => (
               <OptionItem
                 key={option.id}
@@ -320,8 +344,8 @@ export function CheckBoxType({
                 setOption={handleChangeOption}
               />
             ))}
-          </SortableContext>
-        </DndContext>
+          {/* </SortableContext>
+        </DndContext> */}
 
         <Button
           onClick={(e) => {

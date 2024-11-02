@@ -136,7 +136,7 @@ export default function QuizQuestion({
         </div>
       ) : (
         <>
-          <div className="w-full border-b p-4 flex items-center justify-between">
+          <div className="w-full border-b  px-4 mx-auto  max-w-[1300px] text-mobile sm:text-sm sm:px-6 mt-6 sm:mt-10 flex items-center justify-between">
             <Button
               onClick={() => router.back()}
               className="px-0 w-fit h-fit gap-x-2 text-sm"

@@ -78,14 +78,14 @@ export function OfferCard({
   return (
     <>
       <div className="w-full h-fit pb-3 flex flex-col bg-white shadow border rounded-md  gap-y-2 items-start">
-        <div className="relative w-full h-40 sm:h-56 rounded-t-md overflow-hidden">
+        <div className="relative w-full h-40 sm:h-56 xl:h-60 rounded-t-md overflow-hidden">
           {offer?.productImage ? (
             <Image
               src={offer?.productImage || ""}
               alt="product"
               width={600}
               height={600}
-              className="w-full rounded-t-md h-[180px] sm:h-56"
+              className="w-full rounded-t-md h-[180px] object-cover sm:h-56 xl:h-60"
             />
           ) : (
             <div className="w-full rounded-t-md h-[180px] sm:h-56 bg-gray-200 animate-pulse"></div>
@@ -223,12 +223,12 @@ function OfferCardModal({
             </div>
           </div>
           <div className="flex px-3 items-center gap-x-3">
-            <p className="font-semibold">{`₦${Number(
+           {offer?.productPromo && <p className="font-semibold">{`₦${Number(
               offer?.productPromo
-            )?.toLocaleString()}`}</p>
-            <p className="font-semibold text-gray-400">{`₦${Number(
+            )?.toLocaleString()}`}</p>}
+           {offer?.productPrice && <p className="font-semibold text-gray-400">{`₦${Number(
               offer?.productPrice
-            )?.toLocaleString()}`}</p>
+            )?.toLocaleString()}`}</p>}
           </div>
           <p className="px-3 text-gray-600">{`Offer Valid Until ${formatShortDate(
             offer?.endDate
@@ -474,7 +474,7 @@ function ActionWidget({
         {!isShow ? (
           <div className="w-full flex gap-y-16 flex-col items-center justify-center h-full">
             <p className="text-center">
-              Do you want to apply for this offer?. Your details will be shared
+              Do you want to get this offer?. Your details will be shared
               with <span className="font-semibold">{offer?.companyName}</span>
             </p>
             <div className="w-full flex items-end justify-end gap-x-3">

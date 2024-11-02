@@ -92,8 +92,10 @@ export const useGetAffiliates = ({
 
 export const useGetMarketingEmails = ({
   userId,
+  eventAlias,
 }: {
   userId: number;
+  eventAlias: string;
 }): UseGetResult<TSentEmail[], "marketingEmails", "getMarketingEmails"> => {
   const [marketingEmails, setMarketingEmails] = useState<TSentEmail[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
@@ -104,7 +106,9 @@ export const useGetMarketingEmails = ({
 
     try {
       const { data, status } = await getRequest<TSentEmail[]>({
-        endpoint: `marketing/email${userId ? "?userId=" + userId : ""}`,
+        endpoint: `marketing/email?${userId ? "?userId" + userId : ""}${
+          eventAlias ? "&eventAlias=" + eventAlias : ""
+        }`,
       });
 
       if (status !== 200) {
@@ -120,7 +124,7 @@ export const useGetMarketingEmails = ({
 
   useEffect(() => {
     getMarketingEmails();
-  }, []);
+  }, [eventAlias]);
 
   return {
     marketingEmails,

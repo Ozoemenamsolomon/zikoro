@@ -6,11 +6,8 @@ type SearchParams = {
   showFilter: string;
   showCategories: string;
   logo: string;
-  logoLink: string;
   orgLogo: string;
-  isOrgLogo: string;
   zikoroLogo: string;
-  isZikoroLogo: string;
 };
 
 // Define props type for the Payment component

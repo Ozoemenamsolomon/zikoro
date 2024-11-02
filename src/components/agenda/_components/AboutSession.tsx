@@ -7,8 +7,7 @@ import { EventLocationType } from "@/components/composables";
 import { Link2Outline } from "styled-icons/evaicons-outline";
 import { LocationPin } from "styled-icons/entypo";
 import { CollapsibleWidget, Duplicate, Edit, Deletes } from ".";
-import { FilePdf } from "styled-icons/fa-regular";
-import Image from "next/image";
+
 import { TAgenda, Event, TReview, TFeedBack } from "@/types";
 import { Player } from "@/components/composables";
 import { useMemo, useEffect, useState } from "react";
@@ -16,7 +15,6 @@ import { useRouter } from "next/navigation";
 import { getCookie, useGetReviews, useUpdateAgenda } from "@/hooks";
 import { isEventLive, formatTime, formatLongDate } from "@/utils";
 import { BoothStaffWidget } from "@/components/partners/sponsors/_components";
-import Link from "next/link";
 import useUserStore from "@/store/globalUserStore";
 import { FaStar, FaRegStar } from "react-icons/fa";
 import { formatDistanceToNowStrict } from 'date-fns';
@@ -250,9 +248,9 @@ export function AboutSession({
   return (
     <>
       {agenda && event && (
-        <div className="w-full lg:col-span-5 border-r">
+        <div className="w-full lg:col-span-5">
           {agenda?.sessionUrl && (
-            <div className="w-full h-48 sm:h-[25rem] lg:h-[16rem]">
+            <div className="w-full h-52 bg-gray-300 sm:h-[40vh] lg:h-[50vh]">
               <Player
                 src={agenda?.sessionUrl}
                 thumbnail={event?.eventPoster}
@@ -264,7 +262,7 @@ export function AboutSession({
             </div>
           )}
 
-          <h2 className="text-base px-4 w-full my-2 text-ellipsis whitespace-nowrap overflow-hidden sm:text-xl font-medium">
+          <h2 className="text-base px-4 w-full my-3 text-ellipsis whitespace-nowrap overflow-hidden sm:text-xl font-medium">
             {agenda?.sessionTitle ?? ""}
           </h2>
           <p className="mb-2 px-4 text-gray-500 text-[13px]">
@@ -285,7 +283,7 @@ export function AboutSession({
             </button>
             {agenda?.sessionUrl && (
               <button
-                onClick={() => router.push(agenda?.sessionUrl, "_blank")}
+                onClick={() => router.push(agenda?.sessionUrl)}
                 className="flex items-center gap-x-2"
               >
                 <Link2Outline size={18} />
@@ -329,17 +327,8 @@ export function AboutSession({
             )}
           </div>
 
-          <section className="w-full flex flex-col border-b pb-2">
-            <div className="w-full px-3 py-3 border-y flex items-center justify-between">
-              <p className="font-semibold text-base sm:text-xl">
-                Session Description
-              </p>
-            </div>
-            <div className="items-start text-[13px] sm:text-sm text-gray-600 px-3 py-4 justify-start flex w-full flex-wrap">
-              {agenda?.description ?? ""}
-            </div>
-          </section>
-          <CollapsibleWidget
+          
+          {/* <CollapsibleWidget
             title="Speakers"
             session={agenda}
             isNotAttendee={isIdPresent || isOrganizer}
@@ -392,8 +381,8 @@ export function AboutSession({
                   />
                 ))}
             </div>
-          </CollapsibleWidget>
-          <CollapsibleWidget
+          </CollapsibleWidget> */}
+          {/* <CollapsibleWidget
             title="Sponsors"
             session={agenda}
             event={event}
@@ -453,7 +442,7 @@ export function AboutSession({
                   </Link>
                 ))}
             </div>
-          </CollapsibleWidget>
+          </CollapsibleWidget> */}
         </div>
       )}
 

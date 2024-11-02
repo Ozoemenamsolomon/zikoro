@@ -50,7 +50,7 @@ export function ShareModal({ link , close}: {close:() => void; link: string }) {
     },
   ];
   return (
-    <div className="w-full full inset-0 fixed bg-white/40 z-[100]">
+    <div className="w-full full inset-0 fixed bg-black/40 z-[100]">
       <div className="w-[95%] max-w-4xl rounded-lg bg-white shadow absolute inset-0 h-fit max-h-[85%] flex flex-col overflow-y-auto no-scrollbar box-animation m-auto p-4 sm:p-6">
         <Button
           onClick={close}

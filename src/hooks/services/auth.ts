@@ -432,7 +432,9 @@ export function useAttendee({
       }
 
       setLoading(false);
-    } catch (error) {}
+    } catch (error) {
+      console.log(error, "error");
+    }
   };
 
   useEffect(() => {

@@ -26,10 +26,9 @@ const ChangeAttendeeType: React.FC<MoreOptionsProps> = ({
       attendees.filter(
         ({ attendeeType }) =>
           selectedAttendeeType === "" ||
-          (attendeeType &&
-            (action === "assign"
-              ? !attendeeType?.includes(selectedAttendeeType)
-              : attendeeType?.includes(selectedAttendeeType)))
+          (action === "assign"
+            ? !attendeeType?.includes(selectedAttendeeType) || attendeeType
+            : attendeeType?.includes(selectedAttendeeType))
       )
     );
   }, [attendees, selectedAttendeeType, action]);
@@ -44,8 +43,6 @@ const ChangeAttendeeType: React.FC<MoreOptionsProps> = ({
       : value && selectedAttendees.includes(value)
       ? selectedAttendees.filter((item) => item !== value)
       : [...selectedAttendees, value];
-
-    
 
     setSelectedAttendees(updatedValue);
   };

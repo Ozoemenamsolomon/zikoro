@@ -74,7 +74,7 @@ export const AttendeeSchema = z.object({
   facebook: z.string().url().optional().nullable(),
   profilePicture: z.string().url().optional().nullable(),
   attendeeType: z.array(z.string()),
-  appointmentLink: z.string().nullable(),
+  appointmentLink: z.string().optional().nullable(),
 });
 
 export const attendeeNoteSchema = z.object({

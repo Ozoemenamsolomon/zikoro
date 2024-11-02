@@ -57,12 +57,12 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
       href: `${eventId}/content/info`,
     },
     {
-      name: "Marketing",
-      href: `${eventId}/marketing`,
-    },
-    {
       name: "Attendees",
       href: `${eventId}/people/all`,
+    },
+    {
+      name: "Marketing",
+      href: `${eventId}/marketing/email`,
     },
     {
       name: "Agenda",

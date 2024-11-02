@@ -97,9 +97,7 @@ export async function GET(req: NextRequest) {
       .eq("trackingId", trackingId);
 
     // Redirect to the response page
-    return NextResponse.redirect(
-      "https://" + process.env.NEXT_PUBLIC_HOME_URL + "/invite/response"
-    );
+    return NextResponse.redirect("https://zikoro.com/invite/response");
   } catch (error) {
     console.error(error);
     return NextResponse.json(

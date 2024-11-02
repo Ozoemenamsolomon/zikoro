@@ -65,7 +65,7 @@ export default function LinkSharing() {
   };
 
   return (
-    <div className="mt-[60px] ml-0 lg:ml-[12px] mr-0 lg:mr-[47px] pl-3 lg:pl-[24px] pr-3 lg:pr-[114px]">
+    <div className="w-full">
       <div className="">
         <p className="text-xl font-semibold"> Your workspace’s events </p>
         <p className="text-base font-normmal mt-4">

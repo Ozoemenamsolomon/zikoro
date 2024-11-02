@@ -22,12 +22,14 @@ import { sendMail, whatsapp } from "@/utils";
 import useUserStore from "@/store/globalUserStore";
 import { useGetUserOrganization } from "@/hooks/services/userOrganization";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
+import { ArrowBack } from "styled-icons/typicons";
 
 function SideBarLayoutComp({ children }: { children: React.ReactNode }) {
   const search = useSearchParams();
   const query = search.get("organization");
   const [isNav, setNav] = useState(false);
   const { eventId } = useParams();
+  const router = useRouter();
 
   const [isOpen, setOpen] = useState(false);
   const { events } = useGetEvents();
@@ -69,7 +71,7 @@ function SideBarLayoutComp({ children }: { children: React.ReactNode }) {
     <>
       <div
         className={cn(
-          "w-full sm:w-[calc(100%-60px)]  bg-white float-right right-0 z-[48] fixed flex justify-between items-center ",
+          "w-full sm:w-[calc(100%-60px)]  bg-white float-right right-0 z-[48] fixed top-0 flex justify-between items-center ",
           isNav && "w-[calc(100%-60px)]"
         )}
       >
@@ -87,7 +89,7 @@ function SideBarLayoutComp({ children }: { children: React.ReactNode }) {
         query={query}
         isHaveEvent={isHaveEvent}
       />
-      <div className="w-full sm:w-[calc(100%-60px)] float-right pt-[4.4rem] pb-[50px]">
+      <div className="w-full bg-[#F9FAFF] sm:w-[calc(100%-60px)] pt-[4.4rem] pb-[50px] md:pb-0 float-right">
         {/** mt-24 is affecting many parts in the event */}
         {children}
       </div>

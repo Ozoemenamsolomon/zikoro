@@ -9,11 +9,12 @@ import {
   useRouter,
   useSearchParams,
 } from "next/navigation";
+import Link from "next/link";
+import { cn } from "@/lib";
 
 type TMarketingTabs = {
   label: string;
   value: string;
-  component: React.ReactNode;
   disabled?: boolean;
 };
 
@@ -21,23 +22,20 @@ const marketingTabs: TMarketingTabs[] = [
   {
     label: "Email",
     value: "email",
-    component: <Email />,
   },
   {
     label: "SMS",
     value: "sms",
-    component: <SMS />,
     disabled: true,
   },
   {
     label: "Whatsapp",
     value: "whatsapp",
-    component: <Whatsapp />,
     disabled: true,
   },
 ];
 
-const page = ({ currentTab }: { currentTab: string }) => {
+const MarketingLayout = ({ children }: { children: React.ReactNode }) => {
   const divRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
@@ -56,39 +54,29 @@ const page = ({ currentTab }: { currentTab: string }) => {
   const router = useRouter();
   const pathName = usePathname() || "/";
 
-  function handleTabChange(updatedTab: string) {
-    console.log(currentTab, updatedTab);
-    router.push(`${pathName}?currentTab=${updatedTab}`, {
-      shallow: true,
-    });
-  }
-
   return (
-    <section className="bg-white space-y-6" ref={divRef || null}>
-      <Tabs
-        onValueChange={(value) => handleTabChange(value)}
-        defaultValue={currentTab || "email"}
-      >
-        <TabsList className="bg-transparent border-b pl-[60px] lg:pl-[30px] px-4 pt-4 w-full hidden">
-          {marketingTabs.map((tab) => (
-            <TabsTrigger
+    <section className="space-y-6" ref={divRef || null}>
+      <div className="bg-transparent border-b pl-[60px] lg:pl-[30px] px-4 pt-4 w-full hidden">
+        {marketingTabs.map((tab) => (
+          <Link href={"/" + tab.value}>
+            <button
               key={tab.label}
-              className="data-[state=active]:shadow-none px-4 data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-b-basePrimary data-[state=active]:text-basePrimary rounded-none"
+              className={cn(
+                "px-4 rounded-none",
+                pathName.includes(tab.value) &&
+                  "shadow-none bg-transparent border-b-2 border-b-basePrimary text-basePrimary"
+              )}
               value={tab.value}
               disabled={tab.disabled}
             >
               {tab.label}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-        {marketingTabs.map((tab) => (
-          <TabsContent value={tab.value} key={tab.label}>
-            {tab.component}
-          </TabsContent>
+            </button>
+          </Link>
         ))}
-      </Tabs>
+      </div>
+      <div>{children}</div>
     </section>
   );
 };
 
-export default page;
+export default MarketingLayout;

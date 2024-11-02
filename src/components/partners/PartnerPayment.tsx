@@ -155,18 +155,20 @@ type TEventData = {
   );
 }
 
-function PaymentSuccessModal({
+export function PaymentSuccessModal({
   partnerData,
   eventName,
   startDate,
   endDate,
   location,
+  eventAlias
 }: {
-  partnerData: Partial<TPartner>;
+  partnerData?: Partial<TPartner>;
   eventName: string | null;
   startDate: string | null;
   endDate: string | null;
   location: string | null;
+  eventAlias?:string
 }) {
   const [isShare, setIsShare] = useState(false);
 
@@ -200,12 +202,12 @@ function PaymentSuccessModal({
             <h2 className="text-green-500 font-medium text-lg sm:text-2xl">
               Payment Successful
             </h2>
-            <p className="text-xs sm:text-mobile">
+            {partnerData && <p className="text-xs sm:text-mobile">
               Reference:{" "}
               <span className="text-basePrimary">
                 {partnerData?.paymentReference ?? ""}
               </span>
-            </p>
+            </p>}
           </div>
           <p className="text-center max-w-sm">
             You have successfully made payment to be a{" "}
@@ -251,8 +253,8 @@ function PaymentSuccessModal({
       </div>
       {isShare && eventName && eventStartDate && eventEndDate && (
         <ShareModal
-          eventId={partnerData?.eventAlias!}
-          text={`I am excited to be exhibiting at the ${eventName} happening on ${eventStartDate} to ${eventEndDate}. We would be delighted to have you visit our booth. Here is the link to register if you would like to attend.  https://www.zikoro.com/live-events/${partnerData?.eventAlias}`}
+          eventId={partnerData ? partnerData?.eventAlias! : eventAlias!}
+          text={`I am excited to be exhibiting at the ${eventName} happening on ${eventStartDate} to ${eventEndDate}. We would be delighted to have you visit our booth. Here is the link to register if you would like to attend.  https://www.zikoro.com/live-events/${partnerData ? partnerData?.eventAlias! : eventAlias!}`}
           close={onClose}
         />
       )}

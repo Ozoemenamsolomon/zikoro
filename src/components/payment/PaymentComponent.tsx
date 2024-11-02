@@ -202,11 +202,6 @@ export default function PaymentComponent({
       setTotalPrice(calculatedTotalPrice);
     };
 
-    console.log(
-      "checking currency method",
-      convertCurrencyCodeToSymbol(currency)
-    );
-
     updateTotalPrice();
   }, [coupons, currentCoupon, total]);
 
