@@ -41,16 +41,18 @@ const UserContacts = ({
   user,
   engagementsSettings,
   engagementsSettingsIsLoading,
+  eventAlias,
 }: {
   user: TUser;
   engagementsSettingsIsLoading: boolean;
   engagementsSettings: EngagementsSettings;
+  eventAlias: string;
 }) => {
   const {
     userContactRequests,
     isLoading: contactRequestIsLoading,
     getContactRequests,
-  } = useGetContactRequests({ userEmail: user.userEmail });
+  } = useGetContactRequests({ userEmail: user.userEmail, eventAlias });
 
   console.log(
     user.userEmail,
@@ -392,6 +394,7 @@ export default function ThirdSection({
           engagementsSettings={engagementsSettings}
           engagementsSettingsIsLoading={engagementsSettingsIsLoading}
           user={user}
+          eventAlias={event.eventAlias}
         />
       )}
       {(isEventOwner || attendeeIsUser) && (

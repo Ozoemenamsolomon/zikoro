@@ -126,7 +126,7 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
     userContactRequests,
     isLoading: contactRequestIsLoading,
     getContactRequests,
-  } = useGetContactRequests({ userEmail: user.userEmail });
+  } = useGetContactRequests({ userEmail: user.userEmail, eventAlias: eventId });
 
   useEffect(() => {
     if (isLoading) return;
