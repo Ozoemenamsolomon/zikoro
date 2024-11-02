@@ -463,7 +463,7 @@ export default function FirstSection({
                 </DialogHeader>
                 {CurrentSelectedModal && (
                   <CurrentSelectedModal.Component
-                    attendees={mappedAttendees}
+                    attendees={mappedAttendees.filter(({ archive }) => !archive)}
                     getAttendees={getAttendees}
                     attendeesTags={attendeesTags}
                     favourites={favourites ? favourites : undefined}
