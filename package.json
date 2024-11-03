@@ -8,7 +8,9 @@
     "build": "npm run clean && NODE_OPTIONS='--max-old-space-size=8192' next build",
     "start": "next start",
     "ts": "tsc --noEmit --incremental",
-    "lint": "next lint"
+    "lint": "next lint",
+    "cypress:open": "cypress open",
+    "e2e:headless": "start-server-and-test dev http://localhost:3000 \"cypress run --e2e\""
   },
   "dependencies": {
     "@craftjs/core": "^0.2.5",
