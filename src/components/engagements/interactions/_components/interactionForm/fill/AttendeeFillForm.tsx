@@ -9,6 +9,7 @@ import { useGetData, usePostRequest } from "@/hooks/services/request";
 import {
   TEngagementFormAnswer,
   TEngagementFormQuestion,
+  EngagementsSettings
 } from "@/types/engagements";
 import {
   CheckboxTypeAnswer,
@@ -47,8 +48,6 @@ function SubmittedModal() {
       </div>
     </div>
   );
-
-
 }
 
 function AttendeeFillFormComp({
@@ -71,6 +70,12 @@ function AttendeeFillFormComp({
   const [isSuccess, setOpenSuccess] = useState(false);
   const { data, isLoading } = useGetData<TEngagementFormQuestion>(
     `/engagements/form/${formId}`
+  );
+  const { data: formAnswers} = useGetData<TEngagementFormAnswer[]>(
+    `/engagements/form/answer/${formId}`
+  );
+  const { data: engagementsSettings } = useGetData<EngagementsSettings>(
+    `engagements/${eventId}/settings`
   );
   const { postData, isLoading: loading } = usePostRequest<
     Partial<TEngagementFormAnswer>
@@ -95,7 +100,9 @@ function AttendeeFillFormComp({
   const [currentQuestions, setCurrentQuestion] = useState(fields);
 
   async function onSubmit(values: z.infer<typeof formAnswerSchema>) {
-    //  console.log(values);
+    //  console.log(values); formEngagementPoints 
+    const formpointsAllocation =
+    engagementsSettings?.pointsAllocation["participate in survey"];
     const { questions, ...restData } = values;
 
     const responses = await Promise.all(
@@ -121,14 +128,45 @@ function AttendeeFillFormComp({
         return item;
       })
     );
-    const payload: Partial<TEngagementFormAnswer> = {
+  let payload: Partial<TEngagementFormAnswer> = {
       ...restData,
       responses,
     };
+    if (formpointsAllocation?.status && (attendeeId|| attendee?.attendeeAlias)) {
+      const filtered = formAnswers?.filter(
+        (answer) => answer?.attendeeAlias === (attendeeId || attendee?.attendeeAlias)
+      );
+      if (filtered && filtered?.length > 0) {
+        const sum = filtered?.reduce(
+          (acc, answer) => acc + (answer?.formEngagementPoints || 0),
+          0
+        );
+        if (
+          sum >=
+          formpointsAllocation?.points *
+          formpointsAllocation?.maxOccurrence
+        ) {
+          payload = payload;
+          return;
+        }
+
+        payload = {
+          ...payload,
+          formEngagementPoints: sum + formpointsAllocation?.points,
+        };
+      } else {
+        payload = {
+          ...payload,
+          formEngagementPoints: 0 + formpointsAllocation?.points,
+        };
+      }
+    }
     await postData({ payload });
 
     if (query) {
-      router.push(`${link}?&redirect=form&id=${attendeeId}&responseAlias=${values?.formResponseAlias}`);
+      router.push(
+        `${link}?&redirect=form&id=${attendeeId}&responseAlias=${values?.formResponseAlias}`
+      );
       return;
     }
     setOpenSuccess(true);
@@ -143,7 +181,7 @@ function AttendeeFillFormComp({
         currentIndexes,
         currentIndexes + questionPerSlide
       );
-      console.log(currentIndexes, currentIndexes + questionPerSlide)
+      console.log(currentIndexes, currentIndexes + questionPerSlide);
       setCurrentQuestion(slicedQuestion);
     } else {
       setCurrentQuestion(fields);
@@ -207,29 +245,40 @@ function AttendeeFillFormComp({
             onSubmit={form.handleSubmit(onSubmit)}
             className="w-full flex flex-col items-start justify-start gap-y-4 sm:gap-y-6 2xl:gap-y-8"
           >
-           
             {currentQuestions?.map((field, index) => (
-              <div className="w-full" key={`${field.id}-${JSON.stringify(field)}`}>
-              
+              <div
+                className="w-full"
+                key={`${field.id}-${JSON.stringify(field)}`}
+              >
                 {field.selectedType === "INPUT_TEXT" && (
-                  <TextTypeAnswer   form={form} index={index+ currentIndexes} />
+                  <TextTypeAnswer form={form} index={index + currentIndexes} />
                 )}
                 {field.selectedType === "INPUT_DATE" && (
-                  <DateTypeAnswer  form={form} index={index+ currentIndexes} />
+                  <DateTypeAnswer form={form} index={index + currentIndexes} />
                 )}
                 {field.selectedType === "INPUT_CHECKBOX" && (
-                  <CheckboxTypeAnswer  form={form} index={index+ currentIndexes} />
+                  <CheckboxTypeAnswer
+                    form={form}
+                    index={index + currentIndexes}
+                  />
                 )}
                 {field.selectedType === "INPUT_RATING" && (
-                  <RatingTypeAnswer   form={form} index={index+ currentIndexes} />
+                  <RatingTypeAnswer
+                    form={form}
+                    index={index + currentIndexes}
+                  />
                 )}
                 {field.selectedType === "ATTACHMENT" && (
-                  <UploadTypeAnswer  form={form} index={index+ currentIndexes} />
+                  <UploadTypeAnswer
+                    form={form}
+                    index={index + currentIndexes}
+                  />
                 )}
                 {field.selectedType === "INPUT_MULTIPLE_CHOICE" && (
-               
-                  <MultiChoiceTypeAnswer form={form} index={index+ currentIndexes} />
-                 
+                  <MultiChoiceTypeAnswer
+                    form={form}
+                    index={index + currentIndexes}
+                  />
                 )}
               </div>
             ))}
@@ -244,12 +293,14 @@ function AttendeeFillFormComp({
                     const questionPerSlide = parseInt(
                       data?.formSettings?.questionPerSlides || "1"
                     );
-                    
+
                     if (
-                      currentIndexes >= parseInt(data?.formSettings?.questionPerSlides || "1") 
-                      
+                      currentIndexes >=
+                      parseInt(data?.formSettings?.questionPerSlides || "1")
                     ) {
-                      setCurrentIndexes((prev) => Math.max(0, prev - questionPerSlide));
+                      setCurrentIndexes((prev) =>
+                        Math.max(0, prev - questionPerSlide)
+                      );
                     }
                   }}
                   style={{
@@ -262,9 +313,9 @@ function AttendeeFillFormComp({
                 >
                   Previous
                 </Button>
-                { currentIndexes +
-                  parseInt(data?.formSettings?.questionPerSlides || "1") >= fields?.length
-                ? (
+                {currentIndexes +
+                  parseInt(data?.formSettings?.questionPerSlides || "1") >=
+                fields?.length ? (
                   <Button
                     type="submit"
                     disabled={loading}
@@ -292,7 +343,6 @@ function AttendeeFillFormComp({
                       if (currentIndexes + questionPerSlide < fields.length) {
                         setCurrentIndexes((prev) => prev + questionPerSlide);
                       }
-                  
                     }}
                     style={{
                       backgroundColor: data?.formSettings?.buttonColor || "",
