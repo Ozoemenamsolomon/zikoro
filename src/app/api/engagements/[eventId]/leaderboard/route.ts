@@ -14,7 +14,8 @@ export async function GET(
     "quizAnswer",
     "Leads",
     "leadsInterests",
-    "myAgenda"
+    "myAgenda",
+    "formResponse"
   ];
 
   //   "quizAnswer", "leadsInterests",
@@ -30,7 +31,8 @@ export async function GET(
         leadsInterests: [],
         sessionReviews: [],
         Leads: [],
-        myAgenda: []
+        myAgenda: [],
+        formResponse:[]
       };
 
       for (let table of tables) {
@@ -77,7 +79,21 @@ export async function GET(
             scoreData["quizAnswer"] = mappedData;
             // console.log(scoreData[table])
           }
-        } else {
+        } 
+        else if (table === "formResponse") {
+          if (data && data.length > 0) {
+            const mappedData = data?.map((item: any) => {
+              return {
+                ...item.attendees,
+                points: item?.formEngagementPoints || 0,
+              };
+            });
+            scoreData["formResponse"] = mappedData;
+            // console.log(scoreData[table])
+          }
+
+        }
+        else {
           // points
           if (data && data.length > 0) {
             const mappedData = data?.map((item: any) => {
