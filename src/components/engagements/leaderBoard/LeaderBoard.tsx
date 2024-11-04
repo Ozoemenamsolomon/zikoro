@@ -74,6 +74,11 @@ let pointsAllocation: TAllocation = {
     icon: "/images/quiz.png",
     score: 0,
   },
+  formResponse: {
+    title: "Participate in Survey",
+    icon: "/images/poll.png",
+    score: 0,
+  },
   askQuestion: {
     title: "Ask a Question",
     icon: "/images/chat-question.png",
@@ -221,7 +226,7 @@ export default function LeaderBoard({ eventId }: { eventId: string }) {
                     <p className="text-white font-medium">
                       {`${ranks[1]?.firstName.charAt(0)}. ${
                         ranks[1]?.lastName
-                      }` ?? ""}
+                      }` }
                     </p>
                   </div>
 
@@ -267,7 +272,7 @@ export default function LeaderBoard({ eventId }: { eventId: string }) {
                     <p className="text-white font-medium text-sm">
                       {`${ranks[0]?.firstName.charAt(0)}. ${
                         ranks[0]?.lastName
-                      }` ?? ""}
+                      }` }
                     </p>
                   </div>
 
@@ -313,7 +318,7 @@ export default function LeaderBoard({ eventId }: { eventId: string }) {
                     <p className="text-white font-medium">
                       {`${ranks[2]?.firstName.charAt(0)}. ${
                         ranks[2]?.lastName
-                      }` ?? ""}
+                      }`}
                     </p>
                   </div>
 
@@ -367,7 +372,7 @@ export default function LeaderBoard({ eventId }: { eventId: string }) {
                         <p className="">
                           {`${attendee?.firstName?.charAt(0)}. ${
                             attendee?.lastName
-                          }` ?? ""}
+                          }`}
                         </p>
                       </div>
                       <div className="flex items-center justify-end gap-x-1">

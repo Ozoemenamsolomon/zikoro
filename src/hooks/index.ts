@@ -20,4 +20,3 @@ export * from "./services/attendee";
 export * from "./services/agenda";
 export * from "./services/quiz";
 export * from "./services/leads";
-export * from "./services/appointments"

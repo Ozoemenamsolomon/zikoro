@@ -25,7 +25,7 @@ import { InlineIcon } from "@iconify/react";
 import { FaWhatsapp } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { RxLink2 } from "react-icons/rx";
-import { SlSocialLinkedin } from "react-icons/sl";
+import { SlSocialLinkedin, SlSocialFacebook } from "react-icons/sl";
 import copy from "copy-to-clipboard";
 export function SendMailModal<T>({
   close,
@@ -112,7 +112,10 @@ export function SendMailModal<T>({
       Icon: FaXTwitter,
       link: `https://x.com/intent/tweet?url=${url}`,
     },
-
+    {
+      Icon: SlSocialFacebook,
+      link: `https://www.facebook.com/sharer/sharer.php?u=${url}`,
+    },
     {
       Icon: SlSocialLinkedin,
       link: `https://www.linkedin.com/shareArticle?url=${url}`,
