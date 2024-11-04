@@ -115,8 +115,7 @@ const UserContacts = ({
                     </AvatarFallback>
                   </Avatar>
                   <p className="text-black text-sm font-medium">
-                    contact request from{" "}
-                    {request.sender.firstName + " " + request.sender.lastName}
+                    Sender: {request.sender.firstName} {request.sender.lastName}
                   </p>
                 </div>
                 <div className="flex gap-2">
