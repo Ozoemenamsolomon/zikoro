@@ -200,7 +200,7 @@
 .ql-toolbar.ql-snow {
   border-radius: 8px 8px 0px 0px;
   border: 1px solid #f3f3f3 !important;
-  background: linear-gradient(to right, #001FCC19 0%, #9D00FF19 100%);
+  background: linear-gradient(to right, #001fcc19 0%, #9d00ff19 100%);
 }
 
 .ql-editor.ql-blank::before {
@@ -214,10 +214,8 @@
 }
 
 .ql-container.ql-snow .ql-editor {
-  border: 1px solid #001FCC19 !important;
+  border: 1px solid #001fcc19 !important;
 }
-
-
 
 .banner .slick-dots {
   display: none;
@@ -255,7 +253,6 @@
   /* height: 4.5rem; */
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  
 }
 
 .line-clamp-one {
@@ -570,7 +567,7 @@ input[type="number"] {
 .partner-description-input .ql-toolbar.ql-snow {
   border-radius: 8px 8px 0px 0px;
   border: 1px solid #f3f3f3 !important;
-  background: linear-gradient(to right, #001FCC19 0%, #9D00FF19 100%);
+  background: linear-gradient(to right, #001fcc19 0%, #9d00ff19 100%);
 }
 
 .partner-description-input .ql-editor.ql-blank::before {
@@ -623,11 +620,10 @@ input[type="number"] {
   @apply border  flex items-center justify-center rounded-lg shadow-md border-gray-300 bg-transparent text-xl w-12 h-16;
 }
 
-
 .border-gradient {
   border-width: 1px;
   border-style: solid;
-  border-image: linear-gradient(to right, #001FCC 0%, #9D00FF 100%) 1;
+  border-image: linear-gradient(to right, #001fcc 0%, #9d00ff 100%) 1;
 }
 
 .quiz-lobby {
@@ -765,4 +761,25 @@ input[type="number"] {
   background: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 20"%3E%3Cpath fill="none" stroke="%23FFFFFF" stroke-width="2" d="M0 10 Q 25 20 50 10 T 100 10 T 150 10 T 200 10" /%3E%3C/svg%3E')
     repeat-x;
   background-size: 180px 50px; /* Adjusts the width of the curly pattern */
+}
+
+/* blogPost pictures*/
+
+.blogPost p img {
+  width: 100%;
+  object-position: contain;
+  display: block;
+}
+
+@media screen and (min-width: 768px) {
+  .blogPost p img {
+    height: 380px;
+  }
+}
+
+/* Phone screens (smaller than 768px) */
+@media screen and (max-width: 767px) {
+  .blogPost p img {
+    height: 228px;
+  }
 }
