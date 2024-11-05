@@ -184,9 +184,9 @@ export function CheckBoxTypeResponse({
         </ResponsiveContainer>
       </div>
 
-      <div className="w-full flex items-center justify-center gap-x-3">
+      <div className="w-full flex items-center justify-center gap-x-4">
         {reformedArray?.map((v, index, arr) => (
-          <div className="w-full flex items-start gap-x-2">
+          <div className=" flex items-start gap-x-2">
             <GoDotFill size={24} color={COLORS[index]} />
             <div>
               {v?.option?.startsWith("https://") ? (
