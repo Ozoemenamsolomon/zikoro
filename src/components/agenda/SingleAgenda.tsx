@@ -44,7 +44,7 @@ export default function SingleAgenda({
             refetch={refetch}
             refetchSession={getAgenda}
           />
-          <div className="lg:col-span-3  p-2 lg:p-4 w-full">
+          <div className="lg:col-span-3  px-2 lg:px-4 w-full">
          
            
             { agenda &&(
