@@ -136,8 +136,8 @@ function Fields({
   copyQuestion: (i: number) => void;
   remove: UseFieldArrayRemove;
 }) {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: field?.id });
+  // const { attributes, listeners, setNodeRef, transform, transition } =
+  //   useSortable({ id: field?.id });
 
   return (
     <div
