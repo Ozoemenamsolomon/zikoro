@@ -87,7 +87,7 @@ function AttendeeFillFormComp({
       eventAlias: eventId,
       attendeeEmail: attendee?.email,
       attendeeAlias:
-        attendeeId || attendee?.attendeeAlias || generateAlias(),
+        attendeeId || attendee?.attendeeAlias || null,
       formResponseAlias: generateAlias(),
       formAlias: formId,
       questions: data?.questions,
