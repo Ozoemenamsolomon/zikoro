@@ -64,7 +64,7 @@ export interface TEngagementFormAnswer {
 }[];
   formResponseAlias: string;
   eventAlias: string;
-  attendeeAlias: string;
+  attendeeAlias: string | null;
   attendeeEmail?:string;
   formEngagementPoints : number | null;
 }

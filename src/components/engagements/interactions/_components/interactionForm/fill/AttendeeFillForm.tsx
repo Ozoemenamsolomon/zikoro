@@ -86,8 +86,7 @@ function AttendeeFillFormComp({
     defaultValues: {
       eventAlias: eventId,
       attendeeEmail: attendee?.email,
-      attendeeAlias:
-        attendeeId || attendee?.attendeeAlias || null,
+     
       formResponseAlias: generateAlias(),
       formAlias: formId,
       questions: data?.questions,
@@ -131,7 +130,10 @@ function AttendeeFillFormComp({
     );
   let payload: Partial<TEngagementFormAnswer> = {
       ...restData,
+      attendeeAlias:
+      attendeeId || attendee?.attendeeAlias || null,
       responses,
+
     };
     if (formpointsAllocation?.status && (attendeeId|| attendee?.attendeeAlias)) {
       const filtered = formAnswers?.filter(
