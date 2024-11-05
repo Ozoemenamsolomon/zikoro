@@ -144,7 +144,6 @@ export function Engagement({
 
       {active === 3 && <iframe
       width="100%"
-      height="400"
       style={{ border: "none", borderRadius: "8px" }}
       src={`${window.location.origin}/engagements/c3c78107412a4a80abe9/form/e6b8c70ae2254fd9a4c9`} className="w-full h"></iframe>}
       {/** collapsible widgets */}
