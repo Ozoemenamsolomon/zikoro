@@ -45,23 +45,24 @@ import { ShareModal } from "./ShareModal";
 import FormResponses from "../formResponse/FormResponse";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import {
-  DndContext,
-  KeyboardSensor,
-  MouseSensor,
-  PointerSensor,
-  TouchSensor,
-  closestCorners,
-  useSensor,
-  useSensors,
-  DragEndEvent,
-} from "@dnd-kit/core";
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-  arrayMove,
-  sortableKeyboardCoordinates,
-} from "@dnd-kit/sortable";
+import {TouchEvent, MouseEvent} from "react"
+// import {
+//   DndContext,
+//   KeyboardSensor,
+//   MouseSensor as LibMouseSensor,
+//   PointerSensor ,
+//   TouchSensor as LibTouchSensor,
+//   closestCorners,
+//   useSensor,
+//   useSensors,
+//   DragEndEvent,
+// } from "@dnd-kit/core";
+// import {
+//   SortableContext,
+//   verticalListSortingStrategy,
+//   arrayMove,
+//   sortableKeyboardCoordinates,
+// } from "@dnd-kit/sortable";
 import { PreviewModal } from "@/components/contents/_components";
 
 const options = [
@@ -85,6 +86,26 @@ const optionsType = [
 
 //  { name: "Likert", type: "INPUT_LIKERT" },
 
+// Block DnD event propagation if element have "data-no-dnd" attribute
+const handler = ({ nativeEvent: event }: MouseEvent | TouchEvent) => {
+  let cur = event.target as HTMLElement;
+
+  while (cur) {
+      if (cur.dataset && cur.dataset.noDnd) {
+          return false;
+      }
+      cur = cur.parentElement as HTMLElement;
+  }
+
+  return true;
+};
+// class MouseSensor extends LibMouseSensor {
+//   static activators = [{ eventName: 'onMouseDown', handler }] as typeof LibMouseSensor['activators'];
+// }
+
+//  class TouchSensor extends LibTouchSensor {
+//   static activators = [{ eventName: 'onTouchStart', handler }] as typeof LibTouchSensor['activators'];
+// }
 function Fields({
   field,
   index,
@@ -115,19 +136,19 @@ function Fields({
   copyQuestion: (i: number) => void;
   remove: UseFieldArrayRemove;
 }) {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: field?.id });
+  // const { attributes, listeners, setNodeRef, transform, transition } =
+  //   useSortable({ id: field?.id });
 
   return (
     <div
-      ref={setNodeRef}
-      {...attributes}
-      {...listeners}
-      style={{
-        transition,
-        transform: CSS.Transform.toString(transform),
-        touchAction: "none",
-      }}
+      // ref={setNodeRef}
+      // {...attributes}
+      // {...listeners}
+      // style={{
+      //   transition,
+      //   transform: CSS.Transform.toString(transform),
+      //   touchAction: "none",
+      // }}
       className="w-full"
     >
       {field.selectedType === "INPUT_TEXT" && (
@@ -405,31 +426,48 @@ setFlattenedResponse(newData)
     }
   }, [data, formResponses]);
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 0.01,
-      },
-    }),
-    useSensor(TouchSensor),
-    useSensor(MouseSensor),
-    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
-  );
 
-  //get position
-  const getPosition = (id: string): number | undefined =>
-    fields.findIndex((item) => item?.id === id);
-  async function handleDrop(e: DragEndEvent) {
-    if (!fields) return;
-    const { active, over } = e;
+  // Block DnD event propagation if element have "data-no-dnd" attribute
+const handler = ({ nativeEvent: event }: MouseEvent | TouchEvent) => {
+  let cur = event.target as HTMLElement;
 
-    if (active?.id === over?.id) return;
-    const originPos = getPosition(active?.id as string)!;
-    const destPos = getPosition(over?.id as string)!;
-    const updatedFields = arrayMove(fields, originPos, destPos);
-
-    form.setValue("questions", updatedFields);
+  while (cur) {
+      if (cur.dataset && cur.dataset.noDnd) {
+          return false;
+      }
+      cur = cur.parentElement as HTMLElement;
   }
+
+  return true;
+};
+
+
+
+  // const sensors = useSensors(
+  //   useSensor(PointerSensor, {
+  //     activationConstraint: {
+  //       distance: 0.01,
+  //     },
+  //   }),
+  //   useSensor(TouchSensor),
+  //   useSensor(MouseSensor),
+  //   useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  // );
+
+  // //get position
+  // const getPosition = (id: string): number | undefined =>
+  //   fields.findIndex((item) => item?.id === id);
+  // async function handleDrop(e: DragEndEvent) {
+  //   if (!fields) return;
+  //   const { active, over } = e;
+
+  //   if (active?.id === over?.id) return;
+  //   const originPos = getPosition(active?.id as string)!;
+  //   const destPos = getPosition(over?.id as string)!;
+  //   const updatedFields = arrayMove(fields, originPos, destPos);
+
+  //   form.setValue("questions", updatedFields);
+  // }
   return (
     <InteractionLayout eventId={eventId}>
       <div
@@ -537,11 +575,11 @@ setFlattenedResponse(newData)
                     control={form.control}
                     name="title"
                     render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
+                      <FormItem className="w-full">
+                        <FormControl className="w-full">
                           <Input
                             {...form.register("title")}
-                            className="bg-transparent border-none h-14 text-2xl placeholder:text-gray-500 placeholder:text-2xl"
+                            className="bg-transparent w-full border-none h-14 text-2xl placeholder:text-gray-500 placeholder:text-2xl"
                             placeholder="Form Title"
                           />
                         </FormControl>
@@ -552,11 +590,11 @@ setFlattenedResponse(newData)
                     control={form.control}
                     name="description"
                     render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
+                      <FormItem  className="w-full">
+                        <FormControl className="w-full">
                           <Input
                             {...form.register("description")}
-                            className="bg-transparent border-none h-11  placeholder:text-gray-500"
+                            className="bg-transparent border-none h-11 w-full placeholder:text-gray-500"
                             placeholder="Form Description"
                           />
                         </FormControl>
@@ -566,7 +604,7 @@ setFlattenedResponse(newData)
                 </div>
 
                 <div className="w-full flex flex-col items-start justify-start gap-y-6 sm:gap-y-8">
-                  <DndContext
+                  {/* <DndContext
                     collisionDetection={closestCorners}
                     sensors={sensors}
                     onDragEnd={handleDrop}
@@ -574,7 +612,7 @@ setFlattenedResponse(newData)
                     <SortableContext
                       items={fields}
                       strategy={verticalListSortingStrategy}
-                    >
+                    > */}
                       {fields.map((field, index) => (
                         <Fields
                           key={field.id}
@@ -585,8 +623,8 @@ setFlattenedResponse(newData)
                           form={form}
                         />
                       ))}
-                    </SortableContext>
-                  </DndContext>
+                    {/* </SortableContext>
+                  </DndContext> */}
                 </div>
 
                 <div className="w-full flex items-center justify-center ">
@@ -621,7 +659,7 @@ setFlattenedResponse(newData)
           />
         )}
       </div>
-      {active === 1 && <FormResponses data={formattedResponses}  flattenedResponse={flattenedResponse}/>}
+      {active === 1 && <FormResponses data={formattedResponses}  flattenedResponse={flattenedResponse} questions={data}/>}
       {isOpenPreview && (
         <PreviewModal
           url={`/engagements/${eventId}/form/${formId}`}

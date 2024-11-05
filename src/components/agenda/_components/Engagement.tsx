@@ -157,6 +157,7 @@ export function Engagement({
         ></iframe>
       )}
       {/** collapsible widgets */}
+   {active === 1 &&   <>
       <CollapsibleWidget
         title="Speakers"
         session={agenda}
@@ -272,6 +273,7 @@ export function Engagement({
             ))}
         </div>
       </CollapsibleWidget>
+      </>}
     </div>
   );
 }

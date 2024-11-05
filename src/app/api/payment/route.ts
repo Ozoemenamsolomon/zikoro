@@ -200,9 +200,8 @@ export async function POST(req: NextRequest) {
         ticketType: string;
         attendeeAlias: string;
       }[] = await Promise.all(resolveAttendees);
+      
       // sending email
-
-      //
       var { SendMailClient } = require("zeptomail");
 
       let client = new SendMailClient({
@@ -633,6 +632,8 @@ export async function POST(req: NextRequest) {
           });
         }
       });
+
+
 
       return NextResponse.json(
         { msg: "Transaction details updated successfully", check },

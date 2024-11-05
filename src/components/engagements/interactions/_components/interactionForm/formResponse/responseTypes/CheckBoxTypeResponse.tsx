@@ -4,6 +4,7 @@ import { GoDotFill } from "react-icons/go";
 import { useMemo, useState } from "react";
 import { IoPieChartOutline } from "react-icons/io5";
 import { RiBarChartHorizontalLine } from "react-icons/ri";
+import Image from "next/image";
 import {
   PieChart,
   Pie,
@@ -32,24 +33,26 @@ export function CheckBoxTypeResponse({
   const optionArray = flattenedResponse[0]?.optionFields;
   console.log("responses data ", flattenedResponse);
 
-  const reformedArray: { name: string; value: number }[] = useMemo(() => {
-    const mappedArray = optionArray.map((v: any, index: number) => {
-      const selectedCount = flattenedResponse.filter((selected) => {
-        // console.log(selected.response, v.id,)
-        return type === "multi"
-          ? selected.response
-              ?.map(({ optionId }: { optionId: any }) => optionId)
-              .includes(v.id)
-          : selected.response?.optionId === v.id;
-      }).length;
-      // console.log(selectedCount)
-      return {
-        name: `Option ${index + 1}`,
-        value: selectedCount || 0,
-      };
-    });
-    return mappedArray;
-  }, [responses]);
+  const reformedArray: { name: string; value: number; option: string }[] =
+    useMemo(() => {
+      const mappedArray = optionArray.map((v: any, index: number) => {
+        const selectedCount = flattenedResponse.filter((selected) => {
+          // console.log(selected.response, v.id,)
+          return type === "multi"
+            ? selected.response
+                ?.map(({ optionId }: { optionId: any }) => optionId)
+                .includes(v.id)
+            : selected.response?.optionId === v.id;
+        }).length;
+        // console.log(selectedCount)
+        return {
+          name: `Option ${index + 1}`,
+          option: v?.option || v?.optionImage,
+          value: selectedCount || 0,
+        };
+      });
+      return mappedArray;
+    }, [responses]);
 
   console.log("dddd", reformedArray);
 
@@ -179,6 +182,27 @@ export function CheckBoxTypeResponse({
             </Bar>
           </BarChart>
         </ResponsiveContainer>
+      </div>
+
+      <div className="w-full flex items-center justify-center gap-x-4">
+        {reformedArray?.map((v, index, arr) => (
+          <div className=" flex items-start gap-x-2">
+            <GoDotFill size={24} color={COLORS[index]} />
+            <div>
+              {v?.option?.startsWith("https://") ? (
+                <Image
+                  src={v?.option}
+                  alt=""
+                  className="w-[50px] h-[50px]"
+                  width={50}
+                  height={50}
+                />
+              ) : (
+                v?.option
+              )}
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
