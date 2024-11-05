@@ -98,6 +98,8 @@ export function ContentSetting({
   const commissionType = watch("affiliateSettings.commissionType");
   const enableAffiliateSettings = watch("affiliateSettings.enabled");
 
+  console.log(getWorkspaceSubscriptionPlanData, "subscription");
+
   function formatDate(date: Date): string {
     return date.toISOString();
   }
@@ -613,16 +615,15 @@ export function ContentSetting({
                 checked={includeJoinEventLink}
                 disabled={
                   getWorkspaceSubscriptionIsLoading ||
-                  organization.subscriptionPlan === "Free"
+                  organization?.subscriptionPlan === "free"
                 }
                 className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary "
               />
               <div className="flex flex-col items-start w-full col-span-11 justify-start gap-y-1">
                 <h2 className="text-base sm:text-xl">
-                  Include Join Event Link (
-                  {organization.subscriptionPlan === "Free" &&
-                    "Not available for free plan"}
-                  )
+                  Include Join Event Link
+                  {organization?.subscriptionPlan === "free" &&
+                    "(Not available for free plan)"}
                 </h2>
                 <p className="text-gray-500 text-start text-xs sm:text-sm">
                   When active, a link to join the event will be included in the

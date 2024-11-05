@@ -86,7 +86,7 @@ export async function POST(req: NextRequest) {
       // Fetch the event by ID
       const { data: originalEvent, error: fetchError } = await supabase
         .from("events")
-        .select("*")
+        .select("*, organization!inner(*)")
         .eq("id", params.eventId)
         .single();
 
@@ -109,6 +109,26 @@ export async function POST(req: NextRequest) {
           }
         );
       }
+
+      const { data: subscriptions, error: fetchError } = await supabase
+        .from("subscription")
+        .select("subscriptionType")
+        .eq("organizationId", orgId)
+        .order("created_at", { ascending: false }); // Assuming you have a timestamp column to get the latest entry
+
+      if (fetchError) {
+        return NextResponse.json(
+          {
+            error: fetchError.message,
+          },
+          {
+            status: 400,
+          }
+        );
+      }
+
+      const subscriptionType = subscriptions?.[0]?.subscriptionType || null;
+
       // AttendeeEmailInvites
       const { error: updateError, status: updateStatus } = await supabase
         .from("attendeeEmailInvites")
@@ -310,18 +330,23 @@ export async function POST(req: NextRequest) {
                 attendee?.name
               }</p>
             
-              <a
-               href="https://www.zikoro.com/event/${eventAlias}/people/info/${
-            attendee?.attendeeAlias
-          }?email=${
-            attendee?.email
-          }&createdAt=${new Date().toISOString()}&isPasswordless=${true}&alias=${
-            attendee?.attendeeAlias
-          }" 
-              style="display: block; color: #001fcc; font-size: 12px; text-decoration: none;"
-              >
-              Update Profile</a>
-             
+              ${
+                originalEvent.organization.subscriptionPlan === "free" &&
+                `
+                <a
+                  href="https://www.zikoro.com/event/${eventAlias}/people/info/${
+                  attendee?.attendeeAlias
+                }?email=${
+                  attendee?.email
+                }&createdAt=${new Date().toISOString()}&isPasswordless=${true}&alias=${
+                  attendee?.attendeeAlias
+                }" 
+                  style="display: block; color: #001fcc; font-size: 12px; text-decoration: none;"
+                  >
+                    Update Profile
+                </a>
+                `
+              }
             </div>
           </div>
           <!---registration-->
@@ -408,12 +433,14 @@ export async function POST(req: NextRequest) {
           src=${attendee?.qrCode}
             alt="qrcode" />
           </div>
-            <a
+   ${
+     originalEvent.organization.subscriptionPlan === "free" &&
+     `         <a
             href="https://www.zikoro.com/event/${eventAlias}/reception?email=${
-            attendee?.email
-          }&createdAt=${new Date().toISOString()}&isPasswordless=${true}&alias=${
-            attendee?.attendeeAlias
-          }"
+       attendee?.email
+     }&createdAt=${new Date().toISOString()}&isPasswordless=${true}&alias=${
+       attendee?.attendeeAlias
+     }"
             style="max-width:600px; margin:0 auto;"
             >
             <button
@@ -437,7 +464,8 @@ export async function POST(req: NextRequest) {
             <p style="margin:0; width:100%; text-align:center; color:white">Join Event</p>
           </button>
             </a>
-           
+           `
+   }
       
             <div
               style="

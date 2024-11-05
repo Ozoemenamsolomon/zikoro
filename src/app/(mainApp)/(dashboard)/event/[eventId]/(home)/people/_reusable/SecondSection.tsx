@@ -531,32 +531,34 @@ export default function SecondSection({
       />
       <section className="space-y-6 p-4 pt-0">
         <div className="space-y-2">
-          {attendeeAlias && attendeeIsUser && (
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-medium text-gray-700">
-                Attendee Code: {attendeeAlias}
-              </span>
-              <span className="bg-white h-full flex items-center px-2">
-                {hasCopiedText ? (
-                  <svg
-                    stroke="currentColor"
-                    fill="currentColor"
-                    strokeWidth={0}
-                    viewBox="0 0 24 24"
-                    height="1.25em"
-                    width="1.25em"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M2.394 13.742L7.137 17.362 14.753 8.658 13.247 7.342 6.863 14.638 3.606 12.152zM21.753 8.658L20.247 7.342 13.878 14.621 13.125 14.019 11.875 15.581 14.122 17.379z" />
-                  </svg>
-                ) : (
-                  <button onClick={() => copyToClipboard(attendeeAlias)}>
-                    <Copy className="w-5 h-5 text-gray-700" />
-                  </button>
-                )}
-              </span>
-            </div>
-          )}
+          {attendeeAlias &&
+            (attendeeIsUser ||
+              (String(event?.createdBy) === String(user.id) && (
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-medium text-gray-700">
+                    Attendee Code: {attendeeAlias}
+                  </span>
+                  <span className="bg-white h-full flex items-center px-2">
+                    {hasCopiedText ? (
+                      <svg
+                        stroke="currentColor"
+                        fill="currentColor"
+                        strokeWidth={0}
+                        viewBox="0 0 24 24"
+                        height="1.25em"
+                        width="1.25em"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path d="M2.394 13.742L7.137 17.362 14.753 8.658 13.247 7.342 6.863 14.638 3.606 12.152zM21.753 8.658L20.247 7.342 13.878 14.621 13.125 14.019 11.875 15.581 14.122 17.379z" />
+                      </svg>
+                    ) : (
+                      <button onClick={() => copyToClipboard(attendeeAlias)}>
+                        <Copy className="w-5 h-5 text-gray-700" />
+                      </button>
+                    )}
+                  </span>
+                </div>
+              )))}
           {user &&
             (String(event?.createdBy) === String(user.id) ||
               email === user.userEmail) && (
