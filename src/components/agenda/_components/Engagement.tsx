@@ -143,7 +143,7 @@ export function Engagement({
         </div>
       )}
 
-      {active === 3 && agenda?.engagementAlias && (
+      {active === 3 && agenda?.engagementAlias ? (
         <iframe
           width="100%"
           height="550"
@@ -155,7 +155,9 @@ export function Engagement({
           }
           className="w-full h-[550px]"
         ></iframe>
-      )}
+      ):
+      <div className="my-6 font-semibold">You did not connect any engagement</div>
+      }
       {/** collapsible widgets */}
    {active === 1 &&   <>
       <CollapsibleWidget
