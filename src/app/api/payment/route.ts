@@ -110,25 +110,6 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      const { data: subscriptions, error: fetchError } = await supabase
-        .from("subscription")
-        .select("subscriptionType")
-        .eq("organizationId", orgId)
-        .order("created_at", { ascending: false }); // Assuming you have a timestamp column to get the latest entry
-
-      if (fetchError) {
-        return NextResponse.json(
-          {
-            error: fetchError.message,
-          },
-          {
-            status: 400,
-          }
-        );
-      }
-
-      const subscriptionType = subscriptions?.[0]?.subscriptionType || null;
-
       // AttendeeEmailInvites
       const { error: updateError, status: updateStatus } = await supabase
         .from("attendeeEmailInvites")
