@@ -6,10 +6,13 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { eventId: string } }
 ) {
+
   const supabase = createRouteHandlerClient({ cookies });
 
   const { eventId } = params;
+
   if (req.method === "GET") {
+
     try {
 
       const { data, error, status } = await supabase
