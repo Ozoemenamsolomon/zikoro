@@ -45,6 +45,7 @@ export const formSettingSchema = z.object({
 
 export const formAnswerSchema = z.object( {
     attendeeAlias: z.string(),
+    attendeeEmail:z.any(),
     eventAlias: z.string(),
     formResponseAlias: z.string(),
     formAlias: z.string(),

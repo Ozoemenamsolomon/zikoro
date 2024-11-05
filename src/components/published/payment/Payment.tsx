@@ -159,6 +159,8 @@ export function Payment({
     await sendTransactionDetail(toggleSuccessModal, payload);
   }
 
+ // console.log("parsedData", parsedData, "data", data)
+
   return (
     <>
       <div className="w-full h-full z-[200] bg-[#F9FAFF] fixed inset-0">
