@@ -10,8 +10,7 @@ import {
 import { AboutSession, Engagement } from "./_components";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { useGetAllAttendees } from "../../hooks/services/attendee";
-import { cn } from "@/lib";
-import { useState } from "react";
+
 
 
 export default function SingleAgenda({
