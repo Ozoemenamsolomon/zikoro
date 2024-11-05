@@ -122,3 +122,37 @@ export function useGetWorkspaceSubscriptionPlan(userId: number | undefined, orgI
     isLoading,
   };
 }
+
+
+
+//downgradeExpiredSubscriptions
+// async function downgradeExpiredSubscriptions() {
+//   const currentDate = new Date().toISOString();
+
+//   // Fetch subscriptions where expirationDate is in the past
+//   const { data: expiredSubscriptions, error } = await supabase
+//     .from('subscription')
+//     .select('userId, subscriptionType, expirationDate')
+//     .lt('expirationDate', currentDate)
+//     .neq('subscriptionType', 'free'); // Avoid updating free subscriptions
+
+//   if (error) {
+//     console.error('Error fetching expired subscriptions:', error);
+//     return;
+//   }
+
+//   // Loop over expired subscriptions and update their subscriptionType
+//   const updates = expiredSubscriptions.map(async (subscription) => {
+//     return supabase
+//       .from('subscription')
+//       .update({ subscriptionType: 'free' })
+//       .eq('userId', subscription.userId);
+//   });
+
+//   // Execute all updates
+//   await Promise.all(updates);
+//   console.log('Expired subscriptions downgraded to free.');
+// }
+
+// // Run the function
+// downgradeExpiredSubscriptions();
