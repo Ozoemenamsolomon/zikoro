@@ -238,14 +238,19 @@ function generateEmailContent(attendee, event, formattedDate) {
             attendee.firstName + " " + attendee.lastName
           }</p>
 
-          <a href="https://www.zikoro.com/event/${
-            event.eventAlias
-          }/people/info/${attendee.attendeeAlias}?email=${
-    attendee?.email
-  }&createdAt=${new Date().toISOString()}&isPasswordless=${true}&alias=${
-    attendee?.attendeeAlias
-  }" style="display: block; color: #001fcc; font-size: 12px; text-decoration: none;">
-            Update Profile</a>
+          ${
+            event.organization.subscriptionPlan === "free" &&
+            `
+            <a href="https://www.zikoro.com/event/${
+              event.eventAlias
+            }/people/info/${attendee.attendeeAlias}?email=${
+              attendee?.email
+            }&createdAt=${new Date().toISOString()}&isPasswordless=${true}&alias=${
+              attendee?.attendeeAlias
+            }" style="display: block; color: #001fcc; font-size: 12px; text-decoration: none;">
+              Update Profile</a>
+            `
+          }
 
         </div>
       </div>
@@ -321,14 +326,21 @@ function generateEmailContent(attendee, event, formattedDate) {
         </div>
       </div>
       <!--end-->
-      <a href="https://www.zikoro.com/event/${
-        event.eventAlias
-      }/reception?email=${
-    attendee?.email
-  }&createdAt=${new Date().toISOString()}&isPasswordless=${true}&alias=${
-    attendee?.attendeeAlias
-  }" style="max-width:600px; margin:0 auto;">
-        <button style="
+      ${
+        event.organization.subscriptionPlan === "free" &&
+        `
+        <a
+          href="https://www.zikoro.com/event/${
+            event.eventAlias
+          }/reception?email=${
+          attendee?.email
+        }&createdAt=${new Date().toISOString()}&isPasswordless=${true}&alias=${
+          attendee?.attendeeAlias
+        }"
+          style="max-width:600px; margin:0 auto;"
+        >
+          <button
+            style="
             width:100%;
             max-width: 600px;
             margin:0 auto;
@@ -343,11 +355,15 @@ function generateEmailContent(attendee, event, formattedDate) {
             background-color: rgb(0, 31, 204);
             border-radius: 6px;
             border: 0;
-            ">
-          <p style="margin:0; width:100%; text-align:center; color:white">Join Event</p>
-        </button>
-      </a>
-
+            "
+          >
+            <p style="margin:0; width:100%; text-align:center; color:white">
+              Join Event
+            </p>
+          </button>
+        </a>
+      `
+      }
 
       <div style="
                 max-width: 600px;

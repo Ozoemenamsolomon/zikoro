@@ -100,9 +100,9 @@ const UserContacts = ({
                 receiverUserEmail === user.userEmail && status === "pending"
             )
             ?.map((request) => (
-              <div className="flex items-center justify-between px-4 py-6 border-b">
-                <div className="flex items-center gap-2">
-                  <Avatar className="size-8">
+              <div className="w-full grid grid-cols-10 items-center gap-1.5 px-1.5 py-4 border-b border-gray-100">
+                <div className="col-span-2">
+                  <Avatar className="size-12">
                     <AvatarImage
                       className="h-full w-full object-cover"
                       src={request.sender.profilePicture ?? ""}
@@ -114,11 +114,22 @@ const UserContacts = ({
                       </span>
                     </AvatarFallback>
                   </Avatar>
-                  <p className="text-black text-sm font-medium">
-                    Sender: {request.sender.firstName} {request.sender.lastName}
-                  </p>
                 </div>
-                <div className="flex gap-2">
+                <div className="col-span-6">
+                  <div className="flex items-center gap-2">
+                    <p className="text-gray-900 font-semibold text-sm capitalize">
+                      {request.sender.firstName} {request.sender.lastName}
+                    </p>
+                  </div>
+                  <span className="text-tiny font-medium text-gray-700 truncate w-full text-left">
+                    {`${
+                      request.sender.jobTitle
+                        ? request.sender.jobTitle + ", "
+                        : ""
+                    }${request.sender.organization || ""}`}
+                  </span>
+                </div>
+                <div className="col-span-2 flex gap-2">
                   <Button
                     variant={"ghost"}
                     onClick={() => {

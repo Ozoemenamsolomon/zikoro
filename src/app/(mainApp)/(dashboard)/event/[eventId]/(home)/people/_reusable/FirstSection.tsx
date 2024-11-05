@@ -380,15 +380,36 @@ export default function FirstSection({
             Attendees{" "}
           </h1>
           {contactRequests.length > 0 && (
-            <span className="bg-basePrimary/20 text-basePrimary text-sm p-1.5 flex items-center justify-center rounded-xl">
+            <>
               {contactRequests.filter(
-                (contactRequest) => contactRequest.status === "accepted"
-              ).length > 0
-                ? contactRequests.filter(
-                    (contactRequest) => contactRequest.status === "accepted"
-                  ).length + "  contacts exchanged"
-                : ""}
-            </span>
+                (contactRequest) => contactRequest.status === "pending"
+              ).length > 0 && (
+                <div className="relative inline-block">
+                  <span className="absolute top-0 right-0 bg-red-500 text-white text-xs font-semibold w-5 h-5 rounded-full flex items-center justify-center">
+                    {
+                      contactRequests.filter(
+                        (contactRequest) => contactRequest.status === "pending"
+                      ).length
+                    }
+                  </span>
+                  <span className="bg-basePrimary/20 text-basePrimary text-sm p-1.5 rounded-xl">
+                    Pending Contacts
+                  </span>
+                </div>
+              )}
+
+              <span className="bg-basePrimary/20 text-basePrimary text-sm p-1.5 flex items-center justify-center rounded-xl">
+                {contactRequests.filter(
+                  (contactRequest) => contactRequest.status === "accepted"
+                ).length > 0
+                  ? `${
+                      contactRequests.filter(
+                        (contactRequest) => contactRequest.status === "accepted"
+                      ).length
+                    } contacts exchanged`
+                  : ""}
+              </span>
+            </>
           )}
         </div>
         {user && String(event?.createdBy) === String(user.id) && (
@@ -463,7 +484,7 @@ export default function FirstSection({
                 </DialogHeader>
                 {CurrentSelectedModal && (
                   <CurrentSelectedModal.Component
-                    attendees={mappedAttendees.filter(({ archive }) => !archive)}
+                    attendees={mappedAttendees}
                     getAttendees={getAttendees}
                     attendeesTags={attendeesTags}
                     favourites={favourites ? favourites : undefined}
@@ -641,6 +662,7 @@ export default function FirstSection({
                 toggleFavourites={toggleFavourites}
                 event={event}
                 user={user}
+                contactRequests={contactRequests}
               />
             ))}
           {!isLoading && (

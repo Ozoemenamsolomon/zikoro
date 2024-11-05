@@ -9,6 +9,7 @@ import { useGetData } from "@/hooks/services/request";
 import { EngagementsSettings } from "@/types/engagements";
 import { cn } from "@/lib";
 import { CheckCircle } from "lucide-react";
+import { ContactRequest } from "@/types/contacts";
 
 type AttendeeProps = {
   attendee: TAttendee;
@@ -174,14 +175,18 @@ const Attendee: React.FC<AttendeeProps> = ({
         <div className="justify-start items-start flex flex-col gap-1 min-w-full">
           <h4
             className={cn(
-              "text-gray-900 font-semibold text-sm capitalize w-full text-left flex items-center gap-x-2 truncate",
+              "text-gray-900 font-semibold text-sm capitalize w-full text-left flex items-center gap-x-2 justify-start",
               archive && "text-red-600"
             )}
           >
-            <span>{firstName + " " + lastName}</span>
-            <span className="text-tiny font-medium text-gray-700 truncate w-full text-left">
-              {attendeeIsUser && " (you)"}
+            <span className="truncate max-w-full">
+              {firstName + " " + lastName}
             </span>
+            {attendeeIsUser && (
+              <span className="text-tiny font-medium text-gray-700 truncate w-full text-left">
+                (you)
+              </span>
+            )}
             {!isLead &&
               contactRequests &&
               contactRequests.find(
@@ -190,7 +195,7 @@ const Attendee: React.FC<AttendeeProps> = ({
                     request.receiverUserEmail === attendee.email) &&
                   !attendeeIsUser &&
                   request.status === "accepted"
-              ) && <CheckCircle className="w-5 h-5 text-green-600" />}
+              ) && <CheckCircle className="w-6 h-6 text-green-600" />}
           </h4>
           <span className="text-tiny font-medium text-gray-700 truncate w-full text-left">
             {`${jobTitle ? jobTitle + ", " : ""}${organization || ""}`}
