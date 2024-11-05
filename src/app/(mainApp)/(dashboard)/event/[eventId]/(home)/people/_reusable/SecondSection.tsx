@@ -531,7 +531,7 @@ export default function SecondSection({
       />
       <section className="space-y-6 p-4 pt-0">
         <div className="space-y-2">
-          {/* {attendeeAlias && attendeeIsUser && (
+          {attendeeAlias && attendeeIsUser && (
             <div className="flex items-center gap-2">
               <span className="text-xs font-medium text-gray-700">
                 Attendee Code: {attendeeAlias}
@@ -556,7 +556,7 @@ export default function SecondSection({
                 )}
               </span>
             </div>
-          )} */}
+          )}
           {user &&
             (String(event?.createdBy) === String(user.id) ||
               email === user.userEmail) && (

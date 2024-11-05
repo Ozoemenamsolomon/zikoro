@@ -39,6 +39,8 @@ import { CalendarIcon } from "@radix-ui/react-icons";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { Input } from "@/components/ui/input";
 import { format } from "date-fns";
+import { useGetWorkspaceSubscriptionPlan } from "@/hooks/services/subscription";
+import useUserStore from "@/store/globalUserStore";
 
 const eventWebsiteSettings = [
   { title: "Logo", status: false },
@@ -48,7 +50,7 @@ const eventWebsiteSettings = [
   { title: "Partners", status: true },
   { title: "Reviews", status: true },
   { title: "Rewards", status: true },
-  {title: "Partner Registration", status: true}
+  { title: "Partner Registration", status: true },
 ];
 type FormValue = {
   attendeePayProcessingFee: boolean;
@@ -56,7 +58,7 @@ type FormValue = {
   eventAppAccess: string;
   selfCheckInAllowed: boolean;
   affiliateSettings: Omit<TAffiliateLink, "affiliateId"> & { enabled: boolean };
-  
+  includeJoinEventLink: boolean;
 };
 export function ContentSetting({
   onClose,
@@ -79,13 +81,20 @@ export function ContentSetting({
       affiliateSettings: {
         commissionType: "percentage",
         commissionValue: 5,
+        includeJoinEventLink: false,
       },
     },
   });
 
   const { watch } = form;
 
+  const { user, setUser } = useUserStore();
   const { organization, setOrganization } = useOrganizationStore();
+  const {
+    data: getWorkspaceSubscriptionPlanData,
+    refetch: getWorkspaceSubscriptionPlan,
+    isLoading: getWorkspaceSubscriptionIsLoading,
+  } = useGetWorkspaceSubscriptionPlan(user?.id, organization?.id);
   const commissionType = watch("affiliateSettings.commissionType");
   const enableAffiliateSettings = watch("affiliateSettings.enabled");
 
@@ -124,6 +133,7 @@ export function ContentSetting({
     }
   }, [data?.startDateTime, data]);
 
+  const includeJoinEventLink = form.watch("includeJoinEventLink");
   const processingFeeStatus = form.watch("attendeePayProcessingFee");
   const exploreStatus = form.watch("explore");
   const appAccess = form.watch("eventAppAccess");
@@ -172,8 +182,7 @@ export function ContentSetting({
       }
     }
   }, [data, form]);
-  // relative bg-none
-  // relative mx-auto w-full max-h-full bg-none
+
   return (
     <div
       onClick={onClose}
@@ -209,7 +218,7 @@ export function ContentSetting({
               <Switch
                 onClick={() =>
                   form.setValue(
-                    "attendeePayProcessingFee" ,
+                    "attendeePayProcessingFee",
                     !processingFeeStatus
                   )
                 }
@@ -280,7 +289,6 @@ export function ContentSetting({
                   <span>{title}</span>
                 </label>
               ))}
-
             </div>
 
             <div className="flex flex-col w-full items-start justify-start">
@@ -596,6 +604,32 @@ export function ContentSetting({
                 </>
               )}
             </section>
+
+            <div className="grid w-full grid-cols-12 gap-3 items-start">
+              <Switch
+                onClick={() =>
+                  form.setValue("includeJoinEventLink", !includeJoinEventLink)
+                }
+                checked={includeJoinEventLink}
+                disabled={
+                  getWorkspaceSubscriptionIsLoading ||
+                  organization.subscriptionPlan === "Free"
+                }
+                className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary "
+              />
+              <div className="flex flex-col items-start w-full col-span-11 justify-start gap-y-1">
+                <h2 className="text-base sm:text-xl">
+                  Include Join Event Link (
+                  {organization.subscriptionPlan === "Free" &&
+                    "Not available for free plan"}
+                  )
+                </h2>
+                <p className="text-gray-500 text-start text-xs sm:text-sm">
+                  When active, a link to join the event will be included in the
+                  event registration email.
+                </p>
+              </div>
+            </div>
 
             <Button
               type="submit"
