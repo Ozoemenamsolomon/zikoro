@@ -102,7 +102,7 @@ export function BookEvent({
   // const [priceCategory, setPriceCategory] = useState<string | undefined>("");
   const { sendTransactionDetail } = useTransactionDetail();
   const [chosenAttendee, setChosenAttendee] = useState<TChosenAttendee[]>([]);
-  const [description, setDescription] = useState("");
+  const [description, setDescription] = useState<string | undefined>("");
   const [isNotSelectedTicket, setIsNoteSelectedTicket] = useState(false)
   const form = useForm<z.infer<typeof eventBookingValidationSchema>>({
     resolver: zodResolver(eventBookingValidationSchema),
@@ -266,6 +266,7 @@ export function BookEvent({
   async function onSubmit(
     values: z.infer<typeof eventBookingValidationSchema>
   ) {
+    console.log("in the form")
     // maually checking
     if (!values.aboutUs) {
       form.setError("aboutUs", {
@@ -275,6 +276,8 @@ export function BookEvent({
 
       return; /// stop submission
     }
+
+    console.log("in the form A")
     // maually checking for "others"
     if (values.aboutUs === "others" && !values.others) {
       form.setError("others", {
@@ -284,7 +287,7 @@ export function BookEvent({
 
       return; /// stop submission
     }
-
+    console.log("in the form C", minAttendees, fields?.length)
     // checking if the attendees number satisfy the minimum attendees required to use the event discount code
     if (minAttendees !== undefined && minAttendees !== fields?.length) {
       toast({
@@ -293,6 +296,8 @@ export function BookEvent({
       });
       return;
     }
+
+    console.log("in the form D")
 
     const paymentLink = `${
       window.location.origin
@@ -445,6 +450,8 @@ export function BookEvent({
 
     return result;
   }
+
+  console.log(form.getValues())
 
   // useEffect(() => {
   //   if (chosenAttendee.length === 0) {
@@ -1002,8 +1009,8 @@ function DescriptionModal({
   description,
   setDescription,
 }: {
-  description: string;
-  setDescription: React.Dispatch<React.SetStateAction<string>>;
+  description?: string;
+  setDescription: React.Dispatch<React.SetStateAction<string| undefined>>;
 }) {
   return (
     <div
@@ -1026,7 +1033,7 @@ function DescriptionModal({
         </div>
         <p className="font-semibold">Description</p>
         <div className="w-full flex-wrap flex items-start justify-start leading-7">
-          {description}
+          {description ?? ''}
         </div>
       </div>
     </div>
