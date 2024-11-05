@@ -45,12 +45,13 @@ import { ShareModal } from "./ShareModal";
 import FormResponses from "../formResponse/FormResponse";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import {TouchEvent, MouseEvent} from "react"
 import {
   DndContext,
   KeyboardSensor,
-  MouseSensor,
-  PointerSensor,
-  TouchSensor,
+  MouseSensor as LibMouseSensor,
+  PointerSensor ,
+  TouchSensor as LibTouchSensor,
   closestCorners,
   useSensor,
   useSensors,
@@ -85,6 +86,26 @@ const optionsType = [
 
 //  { name: "Likert", type: "INPUT_LIKERT" },
 
+// Block DnD event propagation if element have "data-no-dnd" attribute
+const handler = ({ nativeEvent: event }: MouseEvent | TouchEvent) => {
+  let cur = event.target as HTMLElement;
+
+  while (cur) {
+      if (cur.dataset && cur.dataset.noDnd) {
+          return false;
+      }
+      cur = cur.parentElement as HTMLElement;
+  }
+
+  return true;
+};
+class MouseSensor extends LibMouseSensor {
+  static activators = [{ eventName: 'onMouseDown', handler }] as typeof LibMouseSensor['activators'];
+}
+
+ class TouchSensor extends LibTouchSensor {
+  static activators = [{ eventName: 'onTouchStart', handler }] as typeof LibTouchSensor['activators'];
+}
 function Fields({
   field,
   index,
@@ -405,6 +426,23 @@ setFlattenedResponse(newData)
     }
   }, [data, formResponses]);
 
+
+  // Block DnD event propagation if element have "data-no-dnd" attribute
+const handler = ({ nativeEvent: event }: MouseEvent | TouchEvent) => {
+  let cur = event.target as HTMLElement;
+
+  while (cur) {
+      if (cur.dataset && cur.dataset.noDnd) {
+          return false;
+      }
+      cur = cur.parentElement as HTMLElement;
+  }
+
+  return true;
+};
+
+
+
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -537,11 +575,11 @@ setFlattenedResponse(newData)
                     control={form.control}
                     name="title"
                     render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
+                      <FormItem className="w-full">
+                        <FormControl className="w-full">
                           <Input
                             {...form.register("title")}
-                            className="bg-transparent border-none h-14 text-2xl placeholder:text-gray-500 placeholder:text-2xl"
+                            className="bg-transparent w-full border-none h-14 text-2xl placeholder:text-gray-500 placeholder:text-2xl"
                             placeholder="Form Title"
                           />
                         </FormControl>
@@ -552,11 +590,11 @@ setFlattenedResponse(newData)
                     control={form.control}
                     name="description"
                     render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
+                      <FormItem  className="w-full">
+                        <FormControl className="w-full">
                           <Input
                             {...form.register("description")}
-                            className="bg-transparent border-none h-11  placeholder:text-gray-500"
+                            className="bg-transparent border-none h-11 w-full placeholder:text-gray-500"
                             placeholder="Form Description"
                           />
                         </FormControl>
@@ -621,7 +659,7 @@ setFlattenedResponse(newData)
           />
         )}
       </div>
-      {active === 1 && <FormResponses data={formattedResponses}  flattenedResponse={flattenedResponse}/>}
+      {active === 1 && <FormResponses data={formattedResponses}  flattenedResponse={flattenedResponse} questions={data}/>}
       {isOpenPreview && (
         <PreviewModal
           url={`/engagements/${eventId}/form/${formId}`}
