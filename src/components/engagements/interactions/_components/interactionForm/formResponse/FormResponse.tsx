@@ -1,5 +1,9 @@
 "use client";
-import { TFormattedEngagementFormAnswer } from "@/types/engagements";
+import {
+  TEngagementFormAnswer,
+  TEngagementFormQuestion,
+  TFormattedEngagementFormAnswer,
+} from "@/types/engagements";
 import { InlineIcon } from "@iconify/react";
 import {
   CheckBoxTypeResponse,
@@ -21,13 +25,13 @@ interface FormResponseProps {
       }
     | undefined;
   flattenedResponse: TFormattedEngagementFormAnswer[];
+  questions: TEngagementFormQuestion;
 }
 export default function FormResponses({
   data,
   flattenedResponse,
+  questions,
 }: FormResponseProps) {
- 
-
   const inputMultiChoiceCheckBox = useMemo(() => {
     const checkData: { key: TFormattedEngagementFormAnswer[] }[] = [];
     if (data) {
@@ -99,10 +103,46 @@ export default function FormResponses({
     );
   }
 
-
   async function downloadCsv() {
     try {
-      const csv = json2csv(flattenedResponse);
+      function transformToQuestionAnswerArray(
+        data: TFormattedEngagementFormAnswer[]
+      ) {
+        const questionIds = Array.from(
+          new Set(data.map((item) => item.questionId))
+        );
+
+        const groupedResponses: { [key: string]: any }[] = [];
+        const attendeeGroups = data.reduce((acc, item) => {
+          const attendeeId = item.attendeeAlias;
+          if (!acc[attendeeId]) acc[attendeeId] = {};
+          acc[attendeeId][item.questionId] = item.response || "";
+          return acc;
+        }, {} as { [attendeeAlias: string]: { [questionId: string]: any } });
+
+        for (const attendeeId in attendeeGroups) {
+          const responseRow = questionIds.map(
+            (questionId) => attendeeGroups[attendeeId][questionId] || ""
+          );
+          groupedResponses.push(responseRow);
+        }
+
+        const newHeaders = questionIds?.map(
+          (v) =>
+          {
+            const q =  questions?.questions?.find((i) => i.questionId === v)?.question
+            const qimg =  questions?.questions?.find((i) => i.questionId === v)?.questionImage
+            return   q || qimg || ""
+          }
+        );
+
+        const result = [newHeaders, ...groupedResponses];
+
+        return result;
+      }
+
+      const transformedData = transformToQuestionAnswerArray(flattenedResponse);
+      const csv = json2csv(transformedData);
       const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
 
       saveAs(blob, "response.csv");
@@ -112,15 +152,12 @@ export default function FormResponses({
   }
   return (
     <div className="w-full px-4 mx-auto max-w-[1300px] text-mobile sm:text-sm sm:px-6 mt-4 sm:mt-6">
-     <div className="w-full mb-4 flex items-end justify-end">
-     <Button
-        onClick={downloadCsv}
-        className="w-fit  gap-x-1 items-center"
-      >
-        <p>Export</p>
-        <InlineIcon icon="lets-icons:export-duotone" fontSize={22}/>
-      </Button>
-     </div>
+      <div className="w-full mb-4 flex items-end justify-end">
+        <Button onClick={downloadCsv} className="w-fit  gap-x-1 items-center">
+          <p>Export</p>
+          <InlineIcon icon="lets-icons:export-duotone" fontSize={22} />
+        </Button>
+      </div>
       {Object.entries(data).map(([key, value]) => (
         <div
           key={Math.random()}
