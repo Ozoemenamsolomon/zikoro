@@ -15,7 +15,7 @@ async function downgradeExpiredSubscriptions() {
   // Fetch subscriptions where expirationDate is in the past
   const { data: expiredSubscriptions, error } = await supabase
     .from("subscription")
-    .select("organizationId, subscriptionType, expirationDate")
+    .select("id, subscriptionType, expirationDate")
     .lt("expirationDate", currentDate)
     .neq("subscriptionType", "free"); // Avoid updating free subscriptions
 
@@ -29,7 +29,7 @@ async function downgradeExpiredSubscriptions() {
     return supabase
       .from("subscription")
       .update({ subscriptionType: "free" })
-      .eq("userId", subscription.organizationId);
+      .eq("id", subscription.id);
   });
 
   // Execute all updates
