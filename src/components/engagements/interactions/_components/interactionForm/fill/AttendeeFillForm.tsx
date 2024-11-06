@@ -86,7 +86,7 @@ function AttendeeFillFormComp({
     defaultValues: {
       eventAlias: eventId,
       attendeeAlias:
-        attendeeId || attendee?.attendeeAlias || user?.userId || "user",
+        attendeeId || attendee?.attendeeAlias || generateAlias(),
       formResponseAlias: generateAlias(),
       formAlias: formId,
       questions: data?.questions,
