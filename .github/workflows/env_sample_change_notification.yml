@@ -1,0 +1,23 @@
+name: Notify on env.sample Change
+
+on:
+  push:
+    paths:
+      - 'env.sample'
+    branches:
+      - integrate
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+      
+      - name: Send email if.env.sample changed
+        run: |
+          # Retrieve the recipient's email from GitHub Secrets
+          RECIPIENT_EMAIL=${{ secrets.ENV_CHANGE_RECIPIENT_EMAIL }}
+          
+          # Use mailx to send an email
+          echo "Subject: Zikoro - Update Production Environment Required" | mailx -s "Update Production Environment Required" -r "workflow@zikoro.com" $RECIPIENT_EMAIL
