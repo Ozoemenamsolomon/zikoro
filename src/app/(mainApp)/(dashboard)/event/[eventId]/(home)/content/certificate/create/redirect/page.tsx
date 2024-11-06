@@ -1,13 +1,7 @@
-"use client"
-import { useRouter, useSearchParams } from "next/navigation";
-import React from "react";
+import { redirect } from "next/navigation";
 
-const page = () => {
-  const searchParams = useSearchParams();
-  const certificateId = searchParams.get("certificateId");
-
-  const router = useRouter();
-  return router.push("create?certificateId=" + certificateId);
+const page = ({ searchParams: { certificateId } }) => {
+  return redirect("create?certificateId=" + certificateId);
 };
 
 export default page;

@@ -13,16 +13,16 @@ export function useCreateOrgSubscription(
   initialTotal: string | null,
   couponCode: string | null,
   discountAmount: number | null,
-  orgId: string | null
+  orgAlias?: string | null,
+  orgId?: string | null,
+
 ) {
   async function createOrgSubscription() {
     try {
-      const userIdNum = Number(userId);
       const totalPriceNum = Number(totalPrice);
       const isMonthlyValue = isMonthly === "true" ? "month" : "year";
       const initialTotalNum = initialTotal ? Number(initialTotal) : null;
       const discountAmountNum = discountAmount ? Number(discountAmount) : null;
-      const orgIdNum = orgId ? Number(orgId) : null;
 
       // Format the start date
       const startDate = new Date();
@@ -37,12 +37,17 @@ export function useCreateOrgSubscription(
       }
       const formattedExpirationDate = expirationDate.toISOString().split("T")[0];
 
-      // Attempt to update the subscription
+      //convert orgId to int data type
+      const orgIdConvert = Number(orgId)
+
+      //convert orgAlias to string
+      const orgAliasConvert = orgAlias?.toString()
+
+      // create in the subscription table
       const { error } = await supabase
         .from("subscription")
         .insert({
           userId: userId,
-          organizationId: orgId,
           subscriptionType: plan,
           amountPayed: totalPriceNum,
           startDate: formattedStartDate,
@@ -52,6 +57,12 @@ export function useCreateOrgSubscription(
           planPrice: initialTotalNum,
           discountValue: discountAmountNum,
           discountCode: couponCode,
+
+          // Insert organizationId if orgId exists
+          ...(orgId && { organizationId: orgIdConvert }),
+
+          // Insert organizationAlias if orgAlias exists
+          ...(orgAlias && { organizationAlias: orgAliasConvert })
         })
 
 

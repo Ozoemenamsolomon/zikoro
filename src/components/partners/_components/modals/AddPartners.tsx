@@ -6,26 +6,24 @@ import {
   Input,
   Button,
   ReactSelect,
-  Textarea,
-  FormControl,
-  FormItem,
-  FormLabel,
-  FormMessage,
 } from "@/components";
 import { useForm } from "react-hook-form";
 import { ArrowBack } from "styled-icons/boxicons-regular";
 import { COUNTRY_CODE, uploadFile, generateAlias, formatDate } from "@/utils";
 import { TPartner } from "@/types";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
-import { useEffect, useState, useMemo } from "react";
+import {  useState, useMemo } from "react";
 import { cn } from "@/lib";
-import { useAddPartners, useFetchSingleEvent } from "@/hooks";
+import { useAddPartners, useFetchSingleEvent, useRedeemPartnerDiscountCode } from "@/hooks";
 import Image from "next/image";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { addPartnerToTierSchema } from "@/schemas";
 import { generateAlphanumericHash } from "@/utils/helpers";
 import useOrganizationStore from "@/store/globalOrganizationStore";
+import InputOffsetLabel from "@/components/InputOffsetLabel";
+import { PaymentSuccessModal } from "../../PartnerPayment";
+
 
 type TSIngleTier = {
   validity: string;
@@ -49,47 +47,36 @@ export function AddPartners({
   const { data: eventData } = useFetchSingleEvent(eventId);
   const { organization } = useOrganizationStore();
   const [loading, setLoading] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false)
+  const [code, setCode] = useState("")
   const { addPartners } = useAddPartners();
-  const [phoneCountryCode, setPhoneCountryCode] = useState<string | undefined>(
-    "+234"
-  );
-
-  const [whatsappCountryCode, setWhatsAppCountryCode] = useState<
-    string | undefined
-  >("+234");
+const {verifyDiscountCode, loading: discountLoading,
+  minAttendees,
+  discountAmount,
+  discountPercentage,} = useRedeemPartnerDiscountCode()
 
   // <z.infer<typeof partnerSchema>>
   const form = useForm<z.infer<typeof addPartnerToTierSchema>>({
     resolver: zodResolver(addPartnerToTierSchema),
+   
   });
 
   //
   const country = form.watch("country");
   const companyImage = form.watch("companyLogo");
 
-  useEffect(() => {
-    if (country) {
-      const currentCountryCode = COUNTRY_CODE.find(
-        (v) => v.name === country
-      )?.dial_code;
-
-      setWhatsAppCountryCode(currentCountryCode);
-      setPhoneCountryCode(currentCountryCode);
-    }
-  }, [country]);
+  // calculating  the discount
+  const discount = useMemo(() => {
+   
+    return discountAmount !== null
+      ? Number(discountAmount)
+      : (Number(partnerTier?.price) * Number(discountPercentage)) / 100;
+  }, [partnerTier, discountAmount, discountPercentage]);
 
   // calculating the processing Fee
   const processingFee = useMemo(() => {
-    return (Number(partnerTier?.price) * 5) / 100;
-  }, [partnerTier]);
-
-  const total = useMemo(() => {
-    if (eventData?.attendeePayProcessingFee) {
-      return Number(partnerTier?.price) + processingFee;
-    } else {
-      return Number(partnerTier?.price);
-    }
-  }, [processingFee, partnerTier, eventData]);
+    return ((Number(partnerTier?.price )- discount) * 5) / 100;
+  }, [partnerTier, discount]);
 
   const computedPrice = useMemo(() => {
     if (eventData?.attendeePayProcessingFee) {
@@ -98,6 +85,21 @@ export function AddPartners({
       return Number(partnerTier?.price) - processingFee;
     }
   }, [eventData, partnerTier, processingFee]);
+
+// calculating total
+const total = useMemo(() => {
+  if (computedPrice && processingFee && eventData?.attendeePayProcessingFee) {
+    return computedPrice - discount + processingFee;
+  } else if (
+    computedPrice &&
+    processingFee &&
+    !eventData?.attendeePayProcessingFee
+  ) {
+    return computedPrice - discount + processingFee;
+  } else {
+    return 0;
+  }
+}, [computedPrice, processingFee, discount, eventData?.attendeePayProcessingFee]);
 
   async function onSubmit(values: z.infer<typeof addPartnerToTierSchema>) {
     setLoading(true);
@@ -149,13 +151,14 @@ export function AddPartners({
 
     if (total === 0) {
       await addPartners(payload, eventPayload);
+      setIsSuccess(true);
     } else {
       const encodedData = encodeURIComponent(JSON.stringify(payload));
       const encodedEventPayload = encodeURIComponent(
         JSON.stringify(eventPayload)
       );
       window.open(
-        `/partner-payment?p=${encodedData}&e=${encodedEventPayload}`,
+        `/partner-payment?p=${encodedData}&e=${encodedEventPayload}&discountAmount=${discount}`,
         "_self"
       );
     }
@@ -179,7 +182,13 @@ export function AddPartners({
     }
   }, [companyImage]);
 
+    /// verifying and redeeming a discount code'
+    async function redeem() {
+      await verifyDiscountCode(code, String(eventData?.eventAlias));
+      // setCode("")
+    }
   return (
+    <>
     <div
       role="button"
       className="w-full h-full fixed z-[200]  overflow-y-auto  inset-0 bg-[#F9FAFF]"
@@ -198,10 +207,10 @@ export function AddPartners({
             <p>{formatDate(eventData?.startDateTime ?? "0")}</p>
             {eventData?.eventPoster ? (
               <Image
-                className="w-full rounded-lg h-[16rem]"
+                className="w-full rounded-lg object-cover h-[18rem]"
                 src={eventData?.eventPoster ?? ""}
                 width={800}
-                height={400}
+                height={600}
                 alt=""
               />
             ) : (
@@ -217,10 +226,15 @@ export function AddPartners({
                 {partnerTier?.currency} {computedPrice.toLocaleString()}
               </p>
             </div>
+            <div className="w-full mt-4 mb-2 flex items-center justify-between">
+              <p>1x Discount</p>
+              <p>
+                - {partnerTier?.currency} {discount?.toLocaleString()}
+              </p>
+            </div>
             <div className="w-full  mb-2 flex items-center justify-between">
               <p>1x Processing Fee</p>
               <p>
-                {" "}
                 {partnerTier?.currency} {processingFee.toLocaleString()}
               </p>
             </div>
@@ -253,19 +267,14 @@ export function AddPartners({
                 control={form.control}
                 name="companyName"
                 render={({ field }) => (
-                  <FormItem className="relative w-full h-fit">
-                    <FormLabel>Company Name</FormLabel>
-                    <FormControl>
-                      <Input
+                  <InputOffsetLabel label="Company Name">
+                    <Input
                         type="text"
                         placeholder="Enter the Company Name"
                         {...form.register("companyName")}
-                        className="placeholder:text-sm h-12 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinc-700"
+                        className="placeholder:text-sm h-11 text-zinc-700"
                       />
-                    </FormControl>
-
-                    <FormMessage />
-                  </FormItem>
+                  </InputOffsetLabel>
                 )}
               />
 
@@ -273,18 +282,14 @@ export function AddPartners({
                 control={form.control}
                 name="email"
                 render={({ field }) => (
-                  <FormItem className="w-full md:col-span-2">
-                    <FormLabel>Email Address</FormLabel>
-                    <FormControl>
-                      <Input
+                <InputOffsetLabel label="Email Address">
+                  <Input
                         type="text"
                         placeholder="Enter the Email Address"
                         {...form.register("email")}
-                        className="placeholder:text-sm h-12 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinc-700"
+                        className="placeholder:text-sm h-11 text-zinc-700"
                       />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                </InputOffsetLabel>
                 )}
               />
 
@@ -293,19 +298,15 @@ export function AddPartners({
                   control={form.control}
                   name="companyLogo"
                   render={({ field }) => (
-                    <FormItem className="w-full md:col-span-2">
-                      <FormLabel>Logo</FormLabel>
-                      <FormControl>
-                        <Input
+                    <InputOffsetLabel label="Logo">
+                       <Input
                           type="file"
                           accept="image/*"
                           placeholder="File"
                           {...form.register("companyLogo")}
-                          className="placeholder:text-sm h-12 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinc-700"
+                          className="placeholder:text-sm h-11 text-zinc-700"
                         />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+                    </InputOffsetLabel>
                   )}
                 />
 
@@ -329,18 +330,14 @@ export function AddPartners({
                   control={form.control}
                   name="city"
                   render={({ field }) => (
-                    <FormItem className="w-full md:col-span-2">
-                      <FormLabel>City</FormLabel>
-                      <FormControl>
-                        <Input
+                    <InputOffsetLabel label="City">
+                      <Input
                           type="text"
                           placeholder="Enter City"
                           {...form.register("city")}
-                          className="placeholder:text-sm h-12 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinc-700"
+                          className="placeholder:text-sm h-11  text-zinc-700"
                         />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+                    </InputOffsetLabel>
                   )}
                 />
 
@@ -348,21 +345,15 @@ export function AddPartners({
                   control={form.control}
                   name="country"
                   render={({ field }) => (
-                    <FormItem className="w-full">
-                      <FormLabel>Country</FormLabel>
-                      <FormControl>
-                        <ReactSelect
+                   <InputOffsetLabel label="Country">
+                     <ReactSelect
                           {...form.register("country")}
                           placeHolder="Select the Country"
                           borderColor="#001fcc"
                           bgColor="#001fcc1a"
-                          height="3rem"
-                          placeHolderColor="#64748b"
                           options={countriesList}
                         />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+                   </InputOffsetLabel>
                   )}
                 />
               </div>
@@ -371,20 +362,15 @@ export function AddPartners({
                   control={form.control}
                   name="phoneNumber"
                   render={({ field }) => (
-                    <FormItem className="w-full relative h-fit">
-                      <FormLabel>Phone number</FormLabel>
-                      <FormControl>
-                        <Input
+                  <InputOffsetLabel label="Phone Number">
+                         <Input
                           placeholder="Enter Phone Number"
                           {...form.register("phoneNumber")}
                           type="tel"
                           {...field}
-                          className="placeholder:text-sm h-12 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinc-700"
+                          className="placeholder:text-sm h-11 text-zinc-700"
                         />
-                      </FormControl>
-
-                      <FormMessage />
-                    </FormItem>
+                  </InputOffsetLabel>
                   )}
                 />
 
@@ -392,19 +378,14 @@ export function AddPartners({
                   control={form.control}
                   name="whatsApp"
                   render={({ field }) => (
-                    <FormItem className="w-full relative">
-                      <FormLabel>WhatsApp number</FormLabel>
-
-                      <FormControl>
-                        <Input
-                          className="placeholder:text-sm h-12 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinc-700"
+                   <InputOffsetLabel label="WhatsApp Number">
+                     <Input
+                          className="placeholder:text-sm h-11 text-zinc-700"
                           placeholder="Enter Whatsapp Number"
                           {...form.register("whatsApp")}
                           type="tel"
                         />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+                   </InputOffsetLabel>
                   )}
                 />
               </div>
@@ -412,38 +393,28 @@ export function AddPartners({
                 control={form.control}
                 name="contactFirstName"
                 render={({ field }) => (
-                  <FormItem className="relative w-full h-fit">
-                    <FormLabel>Contact Person First Name </FormLabel>
-                    <FormControl>
-                      <Input
+                 <InputOffsetLabel label="Contact Person First Name">
+                    <Input
                         type="text"
                         placeholder="Enter First Name"
                         {...form.register("contactFirstName")}
-                        className="placeholder:text-sm h-12 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinc-700"
+                        className="placeholder:text-sm h-11 text-zinc-700"
                       />
-                    </FormControl>
-
-                    <FormMessage />
-                  </FormItem>
+                 </InputOffsetLabel>
                 )}
               />
               <FormField
                 control={form.control}
                 name="contactLastName"
                 render={({ field }) => (
-                  <FormItem className="relative w-full h-fit">
-                    <FormLabel>Contact Person Last Name</FormLabel>
-                    <FormControl>
-                      <Input
+                 <InputOffsetLabel label="Contact Person Last Name">
+                   <Input
                         type="text"
                         placeholder="Enter Last Name"
                         {...form.register("contactLastName")}
-                        className="placeholder:text-sm h-12 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinc-700"
+                        className="placeholder:text-sm h-11 text-zinc-700"
                       />
-                    </FormControl>
-
-                    <FormMessage />
-                  </FormItem>
+                 </InputOffsetLabel>
                 )}
               />
 
@@ -451,20 +422,47 @@ export function AddPartners({
                 control={form.control}
                 name="website"
                 render={({ field }) => (
-                  <FormItem className="w-full md:col-span-2">
-                    <FormLabel>Website URL</FormLabel>
-                    <FormControl>
-                      <Input
+                  <InputOffsetLabel label="Website URL">
+                     <Input
                         type="text"
                         placeholder="Enter the Website"
                         {...form.register("website")}
-                        className="placeholder:text-sm h-12 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinc-700"
+                        className="placeholder:text-sm h-11 text-zinc-700"
                       />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                  </InputOffsetLabel>
                 )}
               />
+
+<div
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                  }}
+                  className="w-full my-2 flex flex-col gap-y-2 items-start justify-start"
+                >
+                  <div className="w-full space-y-1">
+                    <div className="w-full flex items-center ">
+                      
+                      <input
+                        type="text"
+                        value={code}
+                        onChange={(e) => setCode(e.target.value)}
+                        placeholder="Enter a valid discount code"
+                        className="bg-gradient-to-tr rounded-md from-custom-bg-gradient-start to-custom-bg-gradient-end h-12 rounded-l-md px-3 outline-none  border border-basePrimary w-[75%]"
+                      />
+                      <Button
+                        disabled={code === "" || discountLoading}
+                        onClick={redeem}
+                        className="h-12 text-white rounded-r-md rounded-l-none bg-gray-500 font-medium px-0 w-[25%]"
+                      >
+                        {discountLoading ? "Verifying..." : "Redeem"}
+                      </Button>
+                    </div>
+                    <p className="text-tiny text-gray-500">
+                      Discount code is case sensitive
+                    </p>
+                  </div>
+                </div>
 
               <Button
                 disabled={loading}
@@ -478,5 +476,14 @@ export function AddPartners({
         </div>
       </div>
     </div>
+    {isSuccess && eventData && <PaymentSuccessModal
+    startDate={eventData?.startDateTime}
+    endDate={eventData?.endDateTime}
+    location={`${eventData?.eventCity}, ${eventData?.eventCountry}`}
+    eventName={eventData?.eventTitle}
+    eventAlias={eventData?.eventAlias}
+
+    />}
+    </>
   );
 }

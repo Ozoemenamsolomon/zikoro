@@ -91,7 +91,6 @@ export default function EditPost({ postId }: { postId: string }): JSX.Element {
       const responseBody = await res.json();
 
       if (res.ok) {
-        toast.success("Image Uploaded");
         return responseBody.url;
       } else {
         console.error("Image upload response:", responseBody);

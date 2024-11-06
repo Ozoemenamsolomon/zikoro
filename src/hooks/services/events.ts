@@ -9,6 +9,7 @@ import {
   Organization,
   RedeemPoint,
   TAttendee,
+  TEventDiscount,
   TEventTransactionDetail,
   TOrgEvent,
 } from "@/types";
@@ -181,8 +182,8 @@ export function useCreateOrganisation() {
           teamMembers: [
             {
               userId: userData?.id,
-              firstName: userData?.firstName,
-              lastName: userData?.lastName,
+              userFirstName: userData?.firstName,
+              userLastName: userData?.lastName,
               userEmail: userData?.userEmail,
               userRole: "owner",
             },
@@ -223,7 +224,7 @@ export function useGetUserHomePageEvents() {
     isLoading: orgLoading,
   } = useGetOrganizations();
   const { events, getEvents, isLoading } = useGetEvents();
-  const {setOrganization} = useOrganizationStore()
+  const { setOrganization } = useOrganizationStore();
 
   async function refetch() {
     getEvents();
@@ -250,9 +251,10 @@ export function useGetUserHomePageEvents() {
         return Number(organizationIds[0]) === Number(event?.organisationId);
       });
 
-      const chosenOrganization = organizations?.find((v) => v?.id ===Number(organizationIds[0]) )
-      setOrganization(chosenOrganization || null)
-
+      const chosenOrganization = organizations?.find(
+        (v) => v?.id === Number(organizationIds[0])
+      );
+      setOrganization(chosenOrganization || null);
 
       setFirstSetEvents(firstSet);
 
@@ -650,23 +652,24 @@ export function useFetchSingleEvent(eventId: string) {
     try {
       setLoading(true);
       // Fetch the event by ID
-      const { data, error: fetchError } = await supabase
-        .from("events")
-        .select("*, organization!inner(*)")
-        .eq("eventAlias", eventId)
-        .maybeSingle();
-
-      if (fetchError) {
-        toast.error(fetchError.message);
-        setLoading(false);
-        return null;
+      // const { data, error: fetchError } = await supabase
+      //   .from("events")
+      //   .select("*, organization!inner(*)")
+      //   .eq("eventAlias", eventId)
+      //   .maybeSingle();
+      const { data, status } = await getRequest<TOrgEvent>({
+        endpoint: `events/${eventId}/event`,
+      });
+      if (status !== 200) {
+        return;
       }
 
-      setLoading(false);
-      setData(data);
+      setData(data.data);
     } catch (error) {
       setLoading(false);
       return null;
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -706,7 +709,8 @@ export function useBookingEvent() {
           userEmail: userData?.userEmail,
         };
       });
-
+     
+setLoading(true)
       const { error, status } = await supabase
         .from("attendees")
         .upsert([...attendees]);
@@ -715,11 +719,13 @@ export function useBookingEvent() {
           error.message ===
           `duplicate key value violates unique constraint "attendees_email_key"`
         ) {
+          toast.error(
+            "You have already registered for this event. Kindly check your mail to continue."
+          );
           // shadcnToast({variant:"destructive",description:"User has already registered for this event")
         } else {
           toast.error(error.message);
         }
-
         setIsRegistered(true);
         return;
       }
@@ -734,6 +740,9 @@ export function useBookingEvent() {
       }
     } catch (error) {
       setLoading(false);
+    }
+    finally {
+      setLoading(false)
     }
   }
 
@@ -887,34 +896,38 @@ export function useUpdateTransactionDetail() {
 
 export function useRedeemDiscountCode() {
   const [loading, setLoading] = useState(false);
-  const [discountAmount, setDiscountAmount] = useState<number>(0);
-  const [discountPercentage, setDiscountPercentage] = useState<number>(0);
+  const [discountAmount, setDiscountAmount] = useState<
+    number | null | undefined
+  >(null);
+  const [discountPercentage, setDiscountPercentage] = useState<
+    number | null | undefined
+  >(null);
   const [minAttendees, setMinAttendees] = useState<number | undefined>();
 
   async function verifyDiscountCode(code: string | undefined, eventId: string) {
     setLoading(true);
     try {
-      const { data, error } = await supabase
-        .from("discount")
-        .select("*")
-        .eq("eventId", eventId);
+      const { data, status } = await getRequest<TEventDiscount[]>({
+        endpoint: `/events/${eventId}/discount/event`,
+      });
 
-      if (error) {
-        setLoading(false);
-        throw error;
+      if (status !== 200) {
+        throw data;
       }
 
       //
 
       // check if code exist
-      let isDiscountCodeExist = data?.map((v) => v.discountCode).includes(code);
+      let isDiscountCodeExist = data?.data
+        ?.map((v) => v.discountCode)
+        .includes(code!);
       if (!isDiscountCodeExist) {
         toast.error("Discount code does not exist");
         setLoading(false);
         return;
       }
       // check if status is false
-      let discount = data?.find((v) => v.discountCode === code);
+      let discount = data?.data?.find((v) => v.discountCode === code);
       let isDiscountCodeValid = discount?.status;
       if (!isDiscountCodeValid) {
         toast.error("Discount code has expired");
@@ -938,6 +951,8 @@ export function useRedeemDiscountCode() {
     } catch (error) {
       setLoading(false);
       return null;
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -1207,15 +1222,49 @@ export function useAttenedeeEvents() {
   };
 }
 
-export function useCheckTeamMember({ eventId }: { eventId?: string }) {
-  const {organization} = useOrganizationStore()
-  const {user} = useUserStore()
+export function useCheckTeam({ eventId }: { eventId: string }) {
+  const { user } = useUserStore();
+  const { organization } = useOrganizationStore();
 
-const isIdPresent = organization?.teamMembers?.some(
-  (v) => v?.userEmail === user?.userEmail
-) || false;
+  const isIdPresent =
+    organization?.teamMembers?.some((v) => v?.userEmail === user?.userEmail) ||
+    false;
 
   return {
+    isIdPresent,
+  };
+}
+export function useCheckTeamMember({ eventId }: { eventId?: string }) {
+  const [loading, setLoading] = useState(false);
+  const { user } = useUserStore();
+  const [isIdPresent, setIsIdPresent] = useState(false);
+
+  async function fetchSingleEvent() {
+    try {
+      setLoading(true);
+      const { data, status } = await getRequest<TOrgEvent>({
+        endpoint: `events/${eventId}/event`,
+      });
+
+      const eventOrganization = data?.data?.organization;
+
+      const isMember = eventOrganization.teamMembers.some(
+        (v) => v.userEmail === user?.userEmail
+      );
+      setIsIdPresent(isMember);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    fetchSingleEvent();
+  }, [eventId, user]);
+
+  return {
+    verifyTeamMember: loading,
     isIdPresent,
   };
 }
@@ -1237,8 +1286,8 @@ export function useVerifyUserAccess(eventId: string) {
           eventAlias === eventId && email === user?.userEmail
       )?.id;
       const attendee = eventAttendees?.find(
-        ({ email, eventAlias }) =>
-          eventAlias === eventId && email === user?.userEmail
+        ({ email, eventAlias, archive }) =>
+          eventAlias === eventId && email === user?.userEmail && !archive
       );
 
       setAttendeeId(atId);
@@ -1266,6 +1315,7 @@ export function useVerifyUserAccess(eventId: string) {
     isOrganizer,
     loading,
     isLoading,
+    eventAttendees
   };
 }
 
@@ -1330,5 +1380,76 @@ export function useRedeemReward() {
   return {
     redeemAReward,
     loading,
+  };
+}
+
+export function useRedeemPartnerDiscountCode() {
+  const [loading, setLoading] = useState(false);
+  const [discountAmount, setDiscountAmount] = useState<
+    number | null | undefined
+  >(null);
+  const [discountPercentage, setDiscountPercentage] = useState<
+    number | null | undefined
+  >(null);
+  const [minAttendees, setMinAttendees] = useState<number | undefined>();
+
+  async function verifyDiscountCode(code: string | undefined, eventId: string) {
+    setLoading(true);
+    try {
+      const { data, status } = await getRequest<TEventDiscount[]>({
+        endpoint: `/events/${eventId}/discount/partner`,
+      });
+
+      if (status !== 200) {
+        throw data;
+      }
+
+      //
+
+      // check if code exist
+      let isDiscountCodeExist = data?.data
+        ?.map((v) => v.discountCode)
+        .includes(code!);
+      if (!isDiscountCodeExist) {
+        toast.error("Discount code does not exist");
+        setLoading(false);
+        return;
+      }
+      // check if status is false
+      let discount = data?.data?.find((v) => v.discountCode === code);
+      let isDiscountCodeValid = discount?.status;
+      if (!isDiscountCodeValid) {
+        toast.error("Discount code has expired");
+
+        setLoading(false);
+        return;
+      }
+
+      toast.success("Discount code has been applied successfully");
+
+      // check the minQty
+      if (isDiscountCodeValid) setMinAttendees(discount?.minQty);
+
+      // setDiscount amount
+      if (isDiscountCodeValid) setDiscountAmount(discount?.discountAmount);
+
+      if (isDiscountCodeValid)
+        setDiscountPercentage(discount?.discountPercentage);
+
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return {
+    verifyDiscountCode,
+    loading,
+    minAttendees,
+    discountAmount,
+    discountPercentage,
   };
 }

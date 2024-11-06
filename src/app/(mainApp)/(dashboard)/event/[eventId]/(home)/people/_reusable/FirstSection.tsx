@@ -40,9 +40,10 @@ import { TAttendeeTags } from "@/types/tags";
 import { TFavouriteContact } from "@/types/favourites";
 import { TFilter } from "@/types/filter";
 import { Event, TUser } from "@/types";
-import { getCookie } from "@/hooks";
 import { eachDayOfInterval, format, isSameDay } from "date-fns";
 import useUserStore from "@/store/globalUserStore";
+import ArchiveAttendee from "@/components/moreOptionDialog/archiveAttendee";
+import { ContactRequest } from "@/types/contacts";
 
 type TSortorder = "asc" | "desc" | "none";
 
@@ -150,17 +151,21 @@ const moreOptions: TMoreOptions[] = [
     label: "Change Attendee Type",
     Component: ChangeAttendeeType,
   },
-  {
-    label: "Print Badges",
-    Component: PrintBadges,
-  },
-  {
-    label: "Certificates",
-    Component: CertificateDialog,
-  },
+  // {
+  //   label: "Print Badges",
+  //   Component: PrintBadges,
+  // },
+  // {
+  //   label: "Certificates",
+  //   Component: CertificateDialog,
+  // },
   {
     label: "Import Attendees",
     Component: ImportAttendees,
+  },
+  {
+    label: "Archive Attendees",
+    Component: ArchiveAttendee,
   },
 ];
 
@@ -172,6 +177,7 @@ export default function FirstSection({
   onSelectAttendee,
   selectedAttendee,
   event,
+  contactRequests,
 }: {
   onOpen: () => void;
   attendees: TAttendee[];
@@ -180,6 +186,7 @@ export default function FirstSection({
   onSelectAttendee: (attendee: TAttendee) => void;
   selectedAttendee: TAttendee;
   event: Event;
+  contactRequests: ContactRequest[];
 }) {
   const { user, setUser } = useUserStore();
   const divRef = useRef<HTMLDivElement>(null);
@@ -359,12 +366,31 @@ export default function FirstSection({
     );
   };
 
+  const isEventOwner = user && String(event?.createdBy) === String(user.id);
+
+  const userAttendee = mappedAttendees.find(
+    ({ email }) => email === user?.userEmail
+  );
+
   return (
     <>
-      <div className="flex space-between justify-between border-b-[1px] border-[#F3F3F3] py-4 md:py-2 px-2">
-        <h1 className="font-semibold leading-normal text-greyBlack ">
-          Attendees
-        </h1>
+      <div className="flex space-between justify-between border-b-[1px] border-[#F3F3F3] py-4 md:py-2 px-2 bg-white">
+        <div className="flex items-center gap-2">
+          <h1 className="font-semibold leading-normal text-greyBlack">
+            Attendees{" "}
+          </h1>
+          {contactRequests.length > 0 && (
+            <span className="bg-basePrimary/20 text-basePrimary text-sm p-1.5 flex items-center justify-center rounded-xl">
+              {contactRequests.filter(
+                (contactRequest) => contactRequest.status === "accepted"
+              ).length > 0
+                ? contactRequests.filter(
+                    (contactRequest) => contactRequest.status === "accepted"
+                  ).length + "  contacts exchanged"
+                : ""}
+            </span>
+          )}
+        </div>
         {user && String(event?.createdBy) === String(user.id) && (
           <div className="flex gap-4 items-center">
             <button
@@ -449,7 +475,7 @@ export default function FirstSection({
           </div>
         )}
       </div>
-      <div className="flex justify-between my-2 px-2 items-center gap-1">
+      <div className="flex justify-between my-2 px-2 items-center gap-1 bg-white">
         <div className="relative w-fit flex-1">
           <svg
             className="absolute left-2 top-[25%]"
@@ -522,14 +548,14 @@ export default function FirstSection({
         )}
       </div>
       <Filter
-        className={`transition-all duration-150 my-4 space-y-4 ${
+        className={`transition-all duration-150 my-4 space-y-4 bg-white ${
           showFilter ? "h-fit" : "h-0 overflow-hidden"
         }`}
         filters={filters}
         applyFilter={applyFilter}
         selectedFilters={selectedFilters}
       />
-      <div className="flex justify-between px-2 mt-4 mb-2">
+      <div className="flex justify-between px-2 mt-4 mb-2 bg-white">
         <div className="flex items-center">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -544,7 +570,8 @@ export default function FirstSection({
             />
           </svg>
           <p className="text-xs text-gray-500">
-            {mappedAttendees.length} attendees listed in your view
+            {mappedAttendees.filter(({ archive }) => !archive).length} attendees
+            listed in your view
           </p>
         </div>
         <div className=" flex items-center ">
@@ -565,15 +592,37 @@ export default function FirstSection({
           </button>
         </div>
       </div>
-      <div className="overflow-auto hide-scrollbar md:pb-32" ref={divRef}>
+      <div
+        className="overflow-auto hide-scrollbar pb-16 md:pb-32 relative"
+        ref={divRef}
+      >
         <div className="min-h-max">
+          {userAttendee && (
+            <>
+              <Attendee
+                attendee={userAttendee}
+                isSelected={userAttendee.id === selectedAttendee?.id}
+                selectAttendee={onSelectAttendee}
+                getAttendees={getAttendees}
+                favourites={favourites}
+                favouriteIsLoading={favouriteIsLoading}
+                toggleFavourites={toggleFavourites}
+                event={event}
+                user={user}
+                contactRequests={contactRequests}
+              />
+            </>
+          )}
           {mappedAttendees
+            .filter(({ email }) => email !== user?.userEmail)
+            .filter(({ archive }) => !archive)
             .filter(
-              ({ firstName, lastName, organization, jobTitle }) =>
+              ({ firstName, lastName, organization, jobTitle, archive }) =>
                 firstName?.toLowerCase().includes(searchTerm) ||
                 lastName?.toLowerCase().includes(searchTerm) ||
                 jobTitle?.toLowerCase().includes(searchTerm) ||
-                organization?.toLowerCase().includes(searchTerm)
+                organization?.toLowerCase().includes(searchTerm) ||
+                archive
             )
             .sort((a, b) =>
               sortOrder === "asc"
@@ -594,7 +643,9 @@ export default function FirstSection({
                 user={user}
               />
             ))}
-          {!isLoading && <div className="bg-gray-200 w-full h-[25px]" />}
+          {!isLoading && (
+            <div className="bg-gray-200 w-full h-[25px] hidden md:block" />
+          )}
         </div>
       </div>
     </>

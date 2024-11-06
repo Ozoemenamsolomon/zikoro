@@ -27,6 +27,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { getCookie } from "@/hooks";
 import { TUser } from "@/types";
+import useUserStore from "@/store/globalUserStore";
 
 const FormSchema = z.object({
   pin: z.string().min(6, {
@@ -49,7 +50,11 @@ export default function TransferOTP({
   requestedBy: TUser;
   amount: number;
 }) {
-  const user = getCookie("user");
+  const { user } = useUserStore();
+
+  console.log(user, "user");
+
+  if (!user) return null;
 
   const [timer, setTimer] = useState<number>(60);
   const [isResendDisabled, setIsResendDisabled] = useState<boolean>(true);
@@ -86,6 +91,7 @@ export default function TransferOTP({
   }, []);
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
+    if (!user) return null;
     const { reference, status } = await finalizePayOut({
       payload: {
         transferCode,
@@ -159,7 +165,7 @@ export default function TransferOTP({
           Submit OTP
         </Button>{" "}
         <DialogClose>
-          <button className="hidden" ref={clsBtnRef}>
+          <button type="button" className="hidden" ref={clsBtnRef}>
             close
           </button>
         </DialogClose>

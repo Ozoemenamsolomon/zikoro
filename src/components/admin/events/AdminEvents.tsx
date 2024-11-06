@@ -15,7 +15,7 @@ import { AboutWidget, EventLocationType } from "@/components/composables";
 import { TOrgEvent } from "@/types";
 import { PublishCard } from "@/components/composables";
 import { PreviewModal } from "../../contents/_components/modal/PreviewModal";
-import { useMemo, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
 import { useFormatEventData, usePublishEvent, getCookie } from "@/hooks";
 import { Download } from "styled-icons/bootstrap";
 import { Eye } from "styled-icons/feather";
@@ -25,21 +25,21 @@ import useUserStore from "@/store/globalUserStore";
 import { ExternalLink } from "styled-icons/feather";
 import Link from "next/link";
 
-export default function AdminEvents() {
+export default function AdminEvents({searchParams:{e}}) {
   const { events, getEvents: refetch, isLoading: loading } = useGetEvents();
-  const search = useSearchParams();
-  const query = search.get("e");
+ // const search = useSearchParams();
+ // const query = search.get("e");
 
   const eventData = useMemo(() => {
-    if (query === "review" || query === null) {
+    if (e === "review" || e === null) {
       return events?.filter(({ eventStatus }) => eventStatus === "review");
     } else {
-      return events?.filter(({ eventStatus }) => eventStatus === query);
+      return events?.filter(({ eventStatus }) => eventStatus === e);
     }
-  }, [events, query]);
+  }, [events, e]);
 
   return (
-    <EventLayout>
+    <EventLayout query={e}>
       {loading && (
         <div className="w-full h-[300px] flex items-center justify-center">
           <LoaderAlt size={30} className="animate-spin" />
@@ -56,7 +56,7 @@ export default function AdminEvents() {
                 key={event?.id}
                 refetch={refetch}
                 event={event}
-                query={query}
+                query={e}
               />
             ))}
         </div>
@@ -260,10 +260,19 @@ function EventCard({
       {isOpen && (
         <PreviewModal
           close={onClose}
-          eventDetail={event}
+          type="Preview"
+          title={event?.eventTitle}
           url={`/preview/${event?.eventAlias}`}
         />
       )}
     </>
   );
 }
+
+//  function AdminEvents() {
+// return (
+//   <Suspense>
+//     <AdminEventsComp />
+//   </Suspense>
+// )
+// }

@@ -4,27 +4,25 @@ import { TOrganization } from "./organization";
 export interface TBadge {
   id?: number;
   created_at?: string;
-  eventId: number;
   eventAlias: string;
-  badgeName: string;
-  badgeDetails: any;
-  badgeSettings: TBadgeSettings;
-  badgeBackground: string;
-  badgeUrl: string;
+  title: string;
+  settings: TBadgeSettings;
+  previewUrl: string;
   lastEdited: Date;
+  badgeAlias?: string;
+  badgeHash: Record<string, any>;
 }
 
+
 export interface TBadgeSettings {
-  width: number;
-  height: number;
-  size: string;
-  orientation: string;
   canReceive: {
     eventAttendees: boolean;
     quizParticipants: boolean;
     sessionAttendees: boolean;
     trackAttendees: boolean;
+    exceptions: number[];
   };
+  
 }
 
 export interface TBadgeTemplate {

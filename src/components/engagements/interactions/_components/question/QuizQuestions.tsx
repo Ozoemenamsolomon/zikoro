@@ -136,7 +136,7 @@ export default function QuizQuestion({
         </div>
       ) : (
         <>
-          <div className="w-full border-b p-4 flex items-center justify-between">
+          <div className="w-full border-b  px-4 mx-auto  max-w-[1300px] text-mobile sm:text-sm sm:px-6 mt-6 sm:mt-10 flex items-center justify-between">
             <Button
               onClick={() => router.back()}
               className="px-0 w-fit h-fit gap-x-2 text-sm"
@@ -148,7 +148,7 @@ export default function QuizQuestion({
             <input
               defaultValue={quiz?.coverTitle}
               placeholder="Quiz Title"
-              className="outline-none border-0 p-2 text-gray-500"
+              className="outline-none border-0 p-2 bg-transparent text-gray-500"
             />
             {(isIdPresent || isOrganizer) && quizId ? (
               <div className="flex items-center gap-x-2">
@@ -203,7 +203,7 @@ export default function QuizQuestion({
                 </div>
 
                 <div
-                  style={{ maxHeight: height === 0 ? "initial" : height + 30 }}
+                  style={{ maxHeight: height === 0 ? "initial" : height + 30 , minHeight: 500}}
                   className="w-full lg:col-span-3 border-l p-2  lg:overflow-y-auto space-y-3"
                 >
                   {quiz?.questions && (
@@ -239,6 +239,9 @@ export default function QuizQuestion({
           </div>
         </>
       )}
+
+
+
 
       {openQuestionModal && (
         <AddQuestion refetch={getQuiz} close={onToggle} quiz={quiz} />

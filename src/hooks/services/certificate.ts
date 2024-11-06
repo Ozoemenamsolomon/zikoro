@@ -10,24 +10,58 @@ import {
   TIssuedCertificate,
 } from "@/types/certificates";
 import { RequestStatus, UseGetResult, usePostResult } from "@/types/request";
-import { deleteRequest, getRequest, postRequest } from "@/utils/api";
+import { deleteRequest, getRequest, patchRequest, postRequest } from "@/utils/api";
 import { useEffect, useState } from "react";
-import { getCookie } from "@/hooks";
 import useUserStore from "@/store/globalUserStore";
+
+export const useCreateCertificate = () => {
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const createCertificate = async () => {
+    setLoading(true);
+    toast({
+      description: "creating certificate...",
+    });
+    try {
+      const { data, status } = await postRequest<TCertificate>({
+        endpoint: "/certificates",
+        payload: {},
+      });
+
+      if (status !== 201) throw data.data;
+      toast({
+        description: "Certificate Saved Successfully",
+      });
+      return data.data;
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { createCertificate, isLoading, error };
+};
 
 export const useSaveCertificate = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
-  const saveCertificate = async ({ payload }: { payload: TCertificate }) => {
+  const saveCertificate = async ({
+    payload,
+    certificateAlias,
+  }: {
+    payload: TCertificate;
+    certificateAlias: string;
+  }) => {
     setLoading(true);
     toast({
       description: "saving certificate...",
     });
     try {
-      
-      const { data, status } = await postRequest<TCertificate>({
-        endpoint: "/certificates",
+      const { data, status } = await patchRequest<TCertificate>({
+        endpoint: "/certificates/" + certificateAlias,
         payload,
       });
 
@@ -292,7 +326,6 @@ export const useUpdateAttendeeCertificates = ({
         return data.data;
       }
     } catch (error) {
-      
       setError(true);
       toast({
         description: "an error has occurred",
@@ -430,7 +463,6 @@ export const useRecallAttendeeCertificates = ({
         description: data.data?.msg,
       });
     } catch (error) {
-      
       setError(true);
       toast({
         description: "an error has occurred",
@@ -659,7 +691,7 @@ export function useGetUserCertificates() {
   >([]);
   const { attendeeCertificates, isLoading } =
     useGetAllEventAttendeesCertificates();
-    const { user, setUser } = useUserStore();
+  const { user, setUser } = useUserStore();
   // const user = getCookie("user");
 
   useEffect(() => {

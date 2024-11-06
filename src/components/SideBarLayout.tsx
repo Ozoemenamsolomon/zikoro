@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo, Suspense } from "react";
 import Image from "next/image";
 import { Button, MobileBottomNav, NavLinks } from ".";
 import Link from "next/link";
@@ -17,32 +17,23 @@ import {
   ReferralIcon,
   WhatsappIcon,
 } from "@/constants";
-import {
-  getCookie,
-  useGetEvents,
-  useGetUserTeamOrganizations,
-  useLogOut,
-  useValidateUser,
-} from "@/hooks";
+import { useGetEvents, useLogOut, useValidateUser } from "@/hooks";
 import { sendMail, whatsapp } from "@/utils";
 import useUserStore from "@/store/globalUserStore";
 import { useGetUserOrganization } from "@/hooks/services/userOrganization";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
+import { ArrowBack } from "styled-icons/typicons";
 
-export function SideBarLayout({
-  eventId,
-  children,
-}: {
-  eventId: string;
-  children: React.ReactNode;
-}) {
+function SideBarLayoutComp({ children }: { children: React.ReactNode }) {
+  const search = useSearchParams();
+  const query = search.get("organization");
   const [isNav, setNav] = useState(false);
-  const param = useSearchParams();
+  const { eventId } = useParams();
+  const router = useRouter();
 
   const [isOpen, setOpen] = useState(false);
-  const query = param.get("organization");
   const { events } = useGetEvents();
-  const { user, setUser } = useUserStore();
-  const router = useRouter();
+  const { user } = useUserStore();
 
   // console.log(user);
 
@@ -80,11 +71,14 @@ export function SideBarLayout({
     <>
       <div
         className={cn(
-          "w-full sm:w-[calc(100%-60px)]  bg-white float-right right-0 z-[48] fixed flex justify-between items-center ",
+          "w-full sm:w-[calc(100%-60px)]  bg-white float-right right-0 z-[48] fixed top-0 flex justify-between items-center ",
           isNav && "w-[calc(100%-60px)]"
         )}
       >
-        <MainTopBar eventId={eventId} userOrganizations={userOrganizations!} />
+        <MainTopBar
+          eventId={eventId as string}
+          userOrganizations={userOrganizations!}
+        />
       </div>
 
       <SideNavs
@@ -95,7 +89,7 @@ export function SideBarLayout({
         query={query}
         isHaveEvent={isHaveEvent}
       />
-      <div className="w-full sm:w-[calc(100%-60px)] float-right pt-[4.4rem]">
+      <div className="w-full bg-[#F9FAFF] sm:w-[calc(100%-60px)] pt-[4.4rem] pb-[50px] md:pb-0 float-right">
         {/** mt-24 is affecting many parts in the event */}
         {children}
       </div>
@@ -160,7 +154,7 @@ function SideNavs({
             />
             {/**nav links */}
             <NavLinks
-            close={close}
+              close={close}
               isHaveEvent={isHaveEvent}
               query={query}
               id={organizationId}
@@ -169,7 +163,6 @@ function SideNavs({
           <div className="flex items-start text-[#717171] justify-start w-full flex-col gap-4 border-t p-4 border-basebody">
             <div className="w-full flex items-center gap-x-2 ">
               <Link
-
                 href={`/create`}
                 className="text-mobile sm:text-sm text-basePrimary font-medium hover:underline "
               >
@@ -227,9 +220,7 @@ function SideNavs({
                 Give feedback
               </p>
             </button>
-            <Link 
-            onClick={close}
-            href={"/referrals"}>
+            <Link onClick={close} href={"/referrals"}>
               <div className="flex items-center gap-2">
                 <ReferralIcon />
                 <p className="font-medium group-hover:block hidden">
@@ -272,5 +263,19 @@ function SideNavs({
         </div>
       </div>
     </>
+  );
+}
+
+export function SideBarLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <Suspense
+      fallback={
+        <div className="w-full min-h-screen flex items-center  justify-center">
+          <LoaderAlt size={40} className="animate-spin text-basePrimary" />
+        </div>
+      }
+    >
+      <SideBarLayoutComp>{children}</SideBarLayoutComp>
+    </Suspense>
   );
 }

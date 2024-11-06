@@ -1,5 +1,5 @@
 import { partnerDetails } from "@/schemas";
-import { TOrganization } from ".";
+import { TAffiliateLink, TAttendee, TOrganization } from ".";
 import * as z from "zod";
 export interface Attendees {
   firstName: string;
@@ -20,14 +20,16 @@ export enum EventDetailTab {
   SPEAKERS_TAB,
   EXIHIBITORS_TAB,
   REWARD_TAB,
+  REVIEW_TAB
 }
 
 interface PricingType {
   ticketQuantity: string;
   attendeeType: string;
-  description: string;
+  description?: string;
   price: string;
   validity: string;
+  accessibility: boolean;
 }
 
 export type PartnerIndustry = {
@@ -41,6 +43,7 @@ interface TEventStatusDetail {
   user: string;
 }
 export interface Event {
+  affiliateSettings: TAffiliateLink & { enabled: boolean };
   selfCheckInAllowed: boolean;
   createdAt: string;
   createdBy: string;
@@ -134,6 +137,7 @@ export interface Organization {
 
 export type TOrgEvent = Event & {
   organization: TOrganization;
+  attendees: TAttendee[];
 };
 
 export interface Reward {
@@ -221,4 +225,19 @@ export interface TEventTransactionDetail {
   userEmail: string;
   userId: string;
   eventAlias: string;
+}
+
+export interface TEventDiscount {
+  created_at: string;
+  discountAmount: number | null;
+  discountCode: string;
+  discountPercentage: number | null;
+  discountUsers: string;
+  eventAlias: string;
+  eventId: string;
+  id: number;
+  minQty: number;
+  quantity: number;
+  status: boolean;
+  validUntil: string;
 }

@@ -11,14 +11,15 @@ import { AddPartnerManually } from "../modals/AddPartnerManually";
 export function HeaderTab({
   eventId,
   refetch,
+  query,
 }: {
   eventId: string;
   refetch: () => Promise<any>;
+  query: any
 }) {
   const [isOpen, setOpen] = useState(false);
-  const search = useSearchParams();
+
   const router = useRouter();
-  const query = search.get("p");
 
   function onClose() {
     setOpen((prev) => !prev);
@@ -28,9 +29,7 @@ export function HeaderTab({
       <div className="flex bg-white pr-4 py-1 items-center pl-[60px] lg:pl-[18px] justify-between w-full  border-b ">
         <div className="flex items-center gap-x-3 sm:gap-x-8 text-sm">
           <Button
-            onClick={() =>
-              router.push(`/event/${eventId}/partners?p=sponsors`)
-            }
+            onClick={() => router.push(`/event/${eventId}/partners?p=sponsors`)}
             className={cn(
               "bg-transparent",
               query === "sponsors" && "text-basePrimary"

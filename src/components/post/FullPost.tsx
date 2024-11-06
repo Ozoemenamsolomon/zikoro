@@ -14,6 +14,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useUpdatePostView, useUpdatePostshare } from "@/hooks/services/post";
 import CopyrightFooter from "../CopyrightFooter";
+import { Copy } from "styled-icons/fa-regular";
+import toast from "react-hot-toast";
 
 type DBSimilarPost = {
   id: number;
@@ -62,6 +64,12 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
   const contentRef = useRef<HTMLDivElement>(null);
   const { updatePostShare } = useUpdatePostshare();
   const { updatePostView } = useUpdatePostView();
+
+  //copy Url
+  const copyUrl = () => {
+    navigator.clipboard.writeText(window.location.href);
+    toast.success("Copied to clipboard");
+  };
 
   // Extracting the date only
   function extractAndFormatDate(dateTimeString: any): any {
@@ -146,7 +154,7 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
           const targetElement = document.getElementById(targetId.slice(1));
           if (targetElement) {
             targetElement.scrollIntoView({ behavior: "smooth" });
-            router.push(`#${targetId.slice(1)}`, { shallow: true });
+            router.push(`#${targetId.slice(1)}`);
           }
         }
       }
@@ -287,7 +295,7 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
                   {/* Share Buttons */}
                   <div className="mt-8">
                     <p className="text-xl font-medium">Share This Article</p>
-                    <div className="flex gap-x-[14px] mt-4">
+                    <div className="flex gap-x-[14px] items-center mt-4">
                       <div
                         className="cursor-pointer"
                         onClick={handleShareOnTwitter}
@@ -311,6 +319,10 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
                         onClick={handleShareOnLinkedin}
                       >
                         <Linkedin />
+                      </div>
+
+                      <div className="cursor-pointer" onClick={() => copyUrl()}>
+                        <Copy size={20} />
                       </div>
                     </div>
                   </div>
@@ -336,7 +348,7 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
             <div className="max-w-full lg:max-w-6xl mx-auto flex gap-x-4 ">
               <p className="font-bold">Tags:</p>
               <div className="grid grid-cols-4 gap-x-2">
-                {data.tags.map((tag:string) => (
+                {data.tags.map((tag: string) => (
                   <p className="text-b">{tag}</p>
                 ))}
               </div>
@@ -354,7 +366,7 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
 
               {similarPosts.length > 0 ? (
                 <div className="flex flex-col lg:flex-row mx-auto max-w-full lg:max-w-6xl gap-x-0 lg:gap-x-[60px] gap-y-7 lg:gap-y-0 pb-[80px] lg:pb-[162px] pt-12  ">
-                  {similarPosts.slice(0, 3).map((post) => (
+                  {similarPosts.slice(0, 2).map((post) => (
                     <PostArticle
                       key={post.id}
                       id={post.id}

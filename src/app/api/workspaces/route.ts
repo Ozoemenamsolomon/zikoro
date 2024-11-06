@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
+  
   const supabase = createRouteHandlerClient({ cookies });
 
   if (req.method === "GET") {
@@ -11,7 +12,7 @@ export async function GET(req: NextRequest) {
         .from("events")
         .select("*, organization!inner(*)")
         .eq("published", true)
-        .eq("eventVisibility", "Public" )
+        .neq("eventVisibility", "Private") // Filter out Private events
         .gte("startDateTime", new Date().toISOString()) // Filter non-expired events
 
       if (error) throw error;
@@ -39,3 +40,5 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Method not allowed" });
   }
 }
+
+export const dynamic = "force-dynamic";

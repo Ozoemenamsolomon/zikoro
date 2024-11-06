@@ -32,4 +32,5 @@ export const organizationSchema = z.object({
   userEmail: z.string(),
   lastName: z.string(),
   firstName: z.string(),
+  organizationAlias: z.string()
 })

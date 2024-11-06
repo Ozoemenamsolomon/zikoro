@@ -1,13 +1,20 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import {
+  useCreateBadge,
   useDeleteBadge,
   useGetBadges,
   useSaveBadge,
 } from "@/hooks/services/badge";
 import { format } from "date-fns";
 import { useParams, useRouter } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
+import React, {
+  startTransition,
+  useEffect,
+  useRef,
+  useState,
+  useTransition,
+} from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,44 +38,73 @@ import {
 } from "@/components/ui/select";
 import { TBadge } from "@/types/badge";
 
-const Badges = () => {
+const Badges = ({
+  params: { eventId },
+}: {
+  params: {
+    eventId: string;
+  };
+}) => {
   const router = useRouter();
 
-  const { eventId } = useParams();
-
-  
+  const [pending, startTransition] = useTransition();
 
   const { badges, isLoading, getBadges } = useGetBadges({ eventId });
+
+  console.log(badges, "badges");
+
+  const { createBadge, isLoading: creatingBadge } = useCreateBadge();
 
   const { saveBadge, isLoading: badgeIsSaving } = useSaveBadge();
 
   const { deleteBadge, isLoading: deletingBadge, error } = useDeleteBadge();
 
-  
+  const createBadgeFn = () =>
+    startTransition(async () => {
+      try {
+        const badge = await createBadge({ payload: { eventAlias: eventId } });
 
-  const makeACopy = async (badge: TBadge, eventId: number) => {
+        if (badge) {
+          router.push(`badge/edit/${badge.badgeAlias}`);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    });
+
+  const makeACopy = async (badge: TBadge, eventId: string) => {
     delete badge.id;
     delete badge.created_at;
 
     const payload: TBadge = {
       ...badge,
-      eventId,
-      badgeName: badge.badgeName + " copy",
+      eventAlias: eventId,
+      title: badge.title + " copy",
     };
 
-    const newBadge = await saveBadge({ payload });
+    const newBadge = await createBadge();
 
     if (newBadge) {
-      
-      router.push(`create?badgeId=${newBadge.id}`);
+      const editedBadge = await saveBadge({
+        badgeAlias: newBadge.badgeAlias ?? "",
+        payload: {
+          badgeAlias: newBadge.badgeAlias ?? "",
+          ...payload,
+        },
+      });
+
+      if (editedBadge) {
+        router.push(`edit/${editedBadge.badgeAlias}`);
+      }
     }
   };
 
-  const MakeACopy = ({ badgeId }: { badgeId: number | undefined }) => {
-    if (!badgeId) return;
+  const MakeACopy = ({ badgeAlias }: { badgeAlias: string }) => {
     const { events, isLoading } = useGetEvents();
     const [eventId, setEventId] = useState<number>();
-    const badge = badges?.find(({ id }) => badgeId === id);
+    const badge = badges?.find(
+      ({ badgeAlias: thisBadgeAlias }) => badgeAlias === thisBadgeAlias
+    );
 
     if (!badge) return;
 
@@ -162,8 +198,7 @@ const Badges = () => {
     );
   };
 
-  const Delete = ({ badgeId }: { badgeId: number | undefined }) => {
-    if (!badgeId) return;
+  const Delete = ({ badgeAlias }: { badgeAlias: string }) => {
     const clsBtnRef = useRef<HTMLButtonElement>(null);
 
     return (
@@ -231,7 +266,7 @@ const Badges = () => {
                   onClick={async (e) => {
                     e.stopPropagation();
                     clsBtnRef.current?.click();
-                    await deleteBadge({ badgeId });
+                    await deleteBadge({ badgeId: badgeAlias });
                     await getBadges();
                   }}
                   className="bg-basePrimary w-full"
@@ -375,7 +410,8 @@ const Badges = () => {
     <div className="flex flex-col gap-2 px-2 py-4">
       <Button
         className="bg-basePrimary flex gap-4 items-center self-end w-fit py-2"
-        onClick={() => router.push("badge/create")}
+        onClick={createBadgeFn}
+        disabled={creatingBadge || pending}
       >
         <svg
           stroke="currentColor"
@@ -392,7 +428,7 @@ const Badges = () => {
         <span>Badge</span>
       </Button>
       <div className="grid-cols-4 grid gap-4">
-        {badges?.map(({ badgeUrl, badgeName, created_at, id, eventId }) => (
+        {badges?.map(({ previewUrl, badgeAlias, title, created_at, id }) => (
           <div className="relative h-full">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -420,26 +456,24 @@ const Badges = () => {
               <DropdownMenuContent>
                 <ul>
                   <li className="w-full">
-                    <MakeACopy badgeId={id} />
+                    <MakeACopy badgeAlias={id} />
                   </li>
                   <li className="text-center p-2 hover:bg-gray-100 text-red-700">
-                    <Delete badgeId={id} />
+                    <Delete badgeAlias={id} />
                   </li>
                 </ul>
               </DropdownMenuContent>
             </DropdownMenu>
             <button
-              disabled={badgeIsSaving}
+              disabled={badgeIsSaving || creatingBadge || pending}
               className="border border-gray-200 rounded-md relative w-full h-full"
-              onClick={() => router.push(`badge/create?badgeId=${id}`)}
+              onClick={() => router.push(`badge/edit/${badgeAlias}`)}
             >
               <div className="w-full h-[250px] overflow-hidden">
-                <img className="object-fill" src={badgeUrl || ""} />
+                <img className="object-fill" src={previewUrl || ""} />
               </div>
               <div className="space-y-1 px-4 py-2 border-t border-gray-200 h-full">
-                <h2 className="text-gray-800 font-bold text-left">
-                  {badgeName}
-                </h2>
+                <h2 className="text-gray-800 font-bold text-left">{title}</h2>
                 <div className="flex gap-2 items-center text-sm text-gray-600 font-medium">
                   <svg
                     stroke="currentColor"

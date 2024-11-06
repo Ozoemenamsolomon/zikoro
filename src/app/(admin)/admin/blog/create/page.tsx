@@ -64,6 +64,7 @@ export default function BlogCreate() {
   });
 
   const categories = [
+    { name: "Select A Category", value: "" },
     { name: "Event tips", value: "Event" },
     { name: "Product Updates", value: "Product" },
     { name: "Guides and Tutorial", value: "Guide" },
@@ -115,7 +116,7 @@ export default function BlogCreate() {
 
       if (res.ok) {
         const data = await res.json();
-        toast.success("Image Uploaded");
+        console.log("Image Uploaded");
         setHeaderImageUrl(data.url);
         return data.url; // Return the uploaded image URL
       } else {
@@ -134,22 +135,26 @@ export default function BlogCreate() {
       return;
     }
 
-    uploadImage().then((headerImageUrl) => {
-      const blogData: BlogData = {
-        title: formData.title,
-        category: formData.category,
-        tags: formData.tags,
-        headerImageUrl,
-        readingDuration: formData.readingDuration,
-        status,
-        content,
-        created_at: Date.now(),
-      };
+    uploadImage()
+      .then((headerImageUrl) => {
+        const blogData: BlogData = {
+          title: formData.title,
+          category: formData.category,
+          tags: formData.tags,
+          headerImageUrl,
+          readingDuration: formData.readingDuration,
+          status,
+          content,
+          created_at: Date.now(),
+        };
 
-      localStorage.setItem("blogPreviewData", JSON.stringify(blogData));
+        localStorage.setItem("blogPreviewData", JSON.stringify(blogData));
 
-      window.open("/post/preview", "_blank");
-    });
+        window.open("/post/preview", "_blank");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   //submit post function
@@ -349,7 +354,7 @@ export default function BlogCreate() {
                   >
                     Publish
                   </DialogTrigger>
-                  <DialogContent className="max-w-2xl mx-auto py-[100px] font-montserrat ">
+                  <DialogContent className={`max-w-2xl mx-auto py-[100px]`}>
                     <div className="h-[168px] w-[367px] flex mx-auto">
                       <Image
                         className="rounded-lg w-full h-full object-cover "

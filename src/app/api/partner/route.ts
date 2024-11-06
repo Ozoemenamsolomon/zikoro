@@ -158,10 +158,12 @@ export async function POST(req: NextRequest) {
                 "
               >
                 <p style="font-size: 14px; color: #b4b4b4; width: 50%;">1x ${
-                  values?.tierName} Ticket</p>
+                  values?.tierName
+                } Ticket</p>
                 <p style="font-size: 14px;  width: 50%; text-align: end;">${
-              Number(values?.amountPaid) > 0
-                    ? event?.currency + Number(values?.amountPaid)?.toLocaleString()
+                  Number(values?.amountPaid) > 0
+                    ? event?.currency +
+                      Number(values?.amountPaid)?.toLocaleString()
                     : "Free"
                 }</p>
               </div>
@@ -190,9 +192,7 @@ export async function POST(req: NextRequest) {
                   gap: 0.75rem;
                 "
               >
-              <a style="margin-right:15px;" href="mailto:${
-                organizerEmail
-              }">
+              <a style="margin-right:15px;" href="mailto:${organizerEmail}">
                <img src="https://firebasestorage.googleapis.com/v0/b/preem-whatsapp-cloning-cd897.appspot.com/o/images%2Ficons8-mail-48.png?alt=media&token=4e723639-4f5a-4fcc-965d-7d6ce04e203c" style="width:30px; height:30px;" >
               </a>
                 <a style="margin-right:15px;" target="_blank" href="tel:${
@@ -258,7 +258,8 @@ export async function PATCH(req: NextRequest) {
   if (req.method === "PATCH") {
     try {
       const params = await req.json();
-      const { organizerEmail, ...restData } = params;
+      const { payload, deactivate } = params;
+      const { organizerEmail, ...restData } = payload;
       const { error } = await supabase
         .from("eventPartners")
         .update([
@@ -266,7 +267,52 @@ export async function PATCH(req: NextRequest) {
             ...restData,
           },
         ])
-        .eq("partnerAlias", params?.partnerAlias);
+        .eq("partnerAlias", payload?.partnerAlias);
+
+      var { SendMailClient } = require("zeptomail");
+     
+      if (deactivate) {
+        
+
+        let client = new SendMailClient({
+          url: process.env.NEXT_PUBLIC_ZEPTO_URL,
+          token: process.env.NEXT_PUBLIC_ZEPTO_TOKEN,
+        });
+
+        const resp = await client.sendMail({
+          from: {
+            address: process.env.NEXT_PUBLIC_EMAIL,
+            name: "Zikoro",
+          },
+          to: [
+            {
+              email_address: {
+                address: payload?.email,
+                name: payload?.companyName,
+              },
+            },
+          ],
+          subject: `Account Deactivation Notification`,
+          htmlbody: `
+            <div>
+            <div
+            style="
+                   
+                    margin: 0 auto;
+                    display: block;
+                    
+                  "
+            >
+                  <p style="font-weight: 600;">Hi there,</p>
+                <br/>
+                <br/>
+                <p style="text-algin: start;">${deactivate?.reason}</p>
+                  </div>
+                
+    
+            </div>`,
+        });
+      }
 
       if (error) {
         return NextResponse.json(
@@ -301,3 +347,5 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ error: "Method not allowed" });
   }
 }
+
+export const dynamic = "force-dynamic";

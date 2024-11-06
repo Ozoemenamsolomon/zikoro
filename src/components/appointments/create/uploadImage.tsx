@@ -6,7 +6,6 @@ import {  XCircle} from 'lucide-react';
 import { ImgaeIcon, } from '@/constants';
 
 
-
 export const uploadImage = async (files: File[]) => {
     if(!files?.length) return
 

@@ -46,7 +46,7 @@ export default function Section1() {
           alt=""
           width={376}
           height={138}
-          className="block lg:hidden"
+          className="block lg:hidden w-[376px] md:w-[700px] h-full"
         />
       </div>
     </div>

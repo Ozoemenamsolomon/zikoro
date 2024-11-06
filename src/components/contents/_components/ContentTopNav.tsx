@@ -22,14 +22,14 @@ export function ContentTopNav({ eventId }: { eventId: string | string[] }) {
       name: "Discount",
       href: `discount`,
     },
-    {
-      name: "Badge",
-      href: `badge`,
-    },
-    {
-      name: "Certificate",
-      href: `certificate`,
-    },
+    // {
+    //   name: "Badge",
+    //   href: `badge`,
+    // },
+    // {
+    //   name: "Certificate",
+    //   href: `certificate`,
+    // },
     {
       name: "Partners",
       href: `partners`,
@@ -42,12 +42,12 @@ export function ContentTopNav({ eventId }: { eventId: string | string[] }) {
         <div className="flex items-center font-normal justify-center gap-x-8 text-sm">
           {links.map(({ name, href }, index) => {
             const path = pathname.split("/");
-            console.log(path.length, pathname.split("/")[path.length - 1])
+            console.log(path.length, pathname.split("/")[path.length - 1]);
             return (
               <Link
                 href={`/event/${eventId}/content/${href}`}
                 key={index}
-                className={`pl-2 ${
+                className={`pl-2 text-[#3E404B] ${
                   pathname.split("/")[path.length - 1] === href &&
                   "text-basePrimary"
                 }`}

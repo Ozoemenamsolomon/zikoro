@@ -10,6 +10,7 @@ import { Reward, RedeemPoint } from "@/types";
 import { Edit } from "styled-icons/material";
 import { CreateReward } from "./CreateReward";
 import { useRedeemReward } from "@/hooks";
+import {usePathname} from "next/navigation"
 export function RewardCard({
   reward,
   isOrganizer,
@@ -27,6 +28,7 @@ export function RewardCard({
   redeemedRewards: RedeemPoint[] | null;
   refetchRedeemed: () => Promise<any>;
 }) {
+  const pathname = usePathname()
   const [isAlert, setAlert] = useState(false);
   const [isOpen, setOpen] = useState(false);
   const [isEdit, setEdit] = useState(false);
@@ -76,12 +78,12 @@ export function RewardCard({
       : false;
   }, [attendeeId, redeemedRewards]);
 
-  console.log(
-    "available",
-    availableAttendeepoint,
-    attendeeId,
-    isAttendeeAlreadyRedeemed
-  );
+  // console.log(
+  //   "available",
+  //   availableAttendeepoint,
+  //   attendeeId,
+  //   isAttendeeAlreadyRedeemed
+  // );
 
   async function redeem() {
     const payload = {
@@ -106,14 +108,14 @@ export function RewardCard({
   }
   return (
     <>
-      <div className="w-full text-sm h-fit pb-3 flex flex-col border rounded-md  gap-y-2 items-start">
-        <div className="relative w-full h-40 sm:h-56 rounded-t-md overflow-hidden">
+      <div className="w-full bg-white b text-sm h-fit pb-3 flex flex-col border rounded-md  gap-y-2 items-start">
+        <div className="relative w-full h-40 sm:h-56 xl:h-60 rounded-t-md overflow-hidden">
           <Image
             src={reward?.image}
             alt="product"
             width={600}
             height={600}
-            className="w-full rounded-t-md h-[180px] sm:h-56"
+            className="w-full rounded-t-md object-cover h-[180px] sm:h-56 xl:h-60"
           />
         </div>
         <div className="w-full px-3 flex items-start justify-between">
@@ -147,8 +149,9 @@ export function RewardCard({
         isAttendeeAlreadyRedeemed ? null : (
           <div className="px-3 w-full mt-1 flex items-center justify-between">
             <button
+
               onClick={onSubmit}
-              disabled={loading}
+              disabled={loading || pathname.includes("/live-events")}
               className="text-basePrimary text-sm font-semibold"
             >
               Redeem Reward

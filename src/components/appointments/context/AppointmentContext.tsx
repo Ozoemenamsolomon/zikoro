@@ -1,14 +1,16 @@
 "use client"
 
-import { Booking, User, UserType } from '@/types/appointments';
+import { Booking, BookingsContact, UserType } from '@/types/appointments';
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { fetchUser } from '../auth';
 
 export interface AppState {
   isLoading: boolean;
   setLoading: (loading: boolean) => void;
-  isFormUp: boolean;
-  setIsFormUp: (loading: boolean) => void;
+  isfetching: boolean;
+  setIsFetching: (loading: boolean) => void;
+  isFormUp: string;
+  setIsFormUp: (formType: string) => void;
   bookingFormData: Booking|null; 
   setBookingFormData: React.Dispatch<React.SetStateAction<Booking|null>>;
   selectedType: string; 
@@ -21,6 +23,11 @@ export interface AppState {
   setUser: React.Dispatch<React.SetStateAction<UserType|null>>;
   selectedItem: any; 
   setSelectedItem: React.Dispatch<React.SetStateAction<any>>;
+  contact: BookingsContact | null, 
+  setContact:React.Dispatch<React.SetStateAction<BookingsContact | null >>;
+  contacts: BookingsContact[] | null, 
+  setContacts:React.Dispatch<React.SetStateAction<BookingsContact[] | null >>;
+
 }
 
 export interface AppointmentContextProps extends AppState {
@@ -31,7 +38,8 @@ const AppointmentContext = createContext<AppointmentContextProps | undefined>(un
 
 export const AppointmentProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [isLoading, setLoading] = useState<boolean>(false);
-  const [isFormUp, setIsFormUp] = useState<boolean>(false);
+  const [isfetching, setIsFetching] = useState<boolean>(true);
+  const [isFormUp, setIsFormUp] = useState<string>('');
   const [user, setUser] = useState<UserType|null>(null);
 
   const [bookingFormData, setBookingFormData] = useState<Booking|null>(null)
@@ -39,9 +47,13 @@ export const AppointmentProvider: React.FC<{ children: ReactNode }> = ({ childre
   const [selectedType, setselectedType] = useState<string>('single');
   const [slotCounts, setSlotCounts] = useState<{ [key: string]: number }|null>(null);
   const [selectedItem, setSelectedItem] = useState<any>();
+  
+  const [contact, setContact] = useState<BookingsContact | null>(null);
+  const [contacts, setContacts] = useState<BookingsContact[] | null>(null);
+
 
   const contextValue: AppointmentContextProps = {
-    isLoading,setLoading,
+    isLoading,setLoading,isfetching, setIsFetching,
     isFormUp,setIsFormUp,
     bookingFormData, setBookingFormData,
     inactiveSlots, setInactiveSlots,
@@ -49,6 +61,7 @@ export const AppointmentProvider: React.FC<{ children: ReactNode }> = ({ childre
     user, setUser,
     selectedType, setselectedType,
     selectedItem, setSelectedItem,
+    contact, setContact, contacts, setContacts,
   };
 
   useEffect(() => {

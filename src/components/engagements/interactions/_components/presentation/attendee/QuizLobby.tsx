@@ -15,6 +15,7 @@ import { useUpdateQuiz, useDeleteQuizLobby } from "@/hooks";
 import { QLUsers } from "@/constants";
 import Avatar from "react-nice-avatar";
 import Link from "next/link";
+import { Maximize2 } from "styled-icons/feather";
 
 export function QuizLobby({
   quiz,
@@ -24,6 +25,10 @@ export function QuizLobby({
   refetch,
   liveQuizPlayers,
   isMaxLiveParticipant,
+  onToggle,
+  isLeftBox,
+  refetchLobby,
+  id
 }: {
   close: () => void;
   goBack: () => void;
@@ -32,6 +37,10 @@ export function QuizLobby({
   refetch: () => Promise<any>;
   liveQuizPlayers: TLiveQuizParticipant[];
   isMaxLiveParticipant: boolean;
+  onToggle:() => void;
+  isLeftBox: boolean;
+  refetchLobby?:() => Promise<any>;
+  id:string;
 }) {
   const [loading, setLoading] = useState(false);
   const { deleteQuizLobby } = useDeleteQuizLobby(quiz?.quizAlias);
@@ -68,6 +77,20 @@ export function QuizLobby({
     if (isAttendee && quiz?.liveMode?.isStarting) {
       close();
     }
+    // check if quiz has started and user is in the lobby , and has been admitted
+    if (
+      isAttendee &&
+      quiz?.quizParticipants?.some(
+        (participant) => {
+          
+          return participant.id === id 
+        }
+      )
+    ) {
+      close();
+      
+    }
+   
   }, [quiz]);
 
   async function openQuestion() {
@@ -84,16 +107,21 @@ export function QuizLobby({
     await updateQuiz({ payload });
     await deleteQuizLobby();
     refetch();
+    refetchLobby?.();
 
     setLoading(false);
     close();
   }
 
+
+
+
   return (
     <div
       className={cn(
         "w-full bg-white h-[90vh] relative border-x flex flex-col gap-y-8 items-center py-8 col-span-5 ",
-        isAttendee && "col-span-full"
+        isAttendee && "col-span-full",
+        !isLeftBox && "col-span-full max-w-4xl mx-auto rounded-lg"
       )}
     >
       <div className="px-4  w-full flex items-center justify-between">
@@ -102,7 +130,7 @@ export function QuizLobby({
           className="gap-x-1 self-start w-fit h-fit px-0"
         >
           <ArrowBackOutline size={20} />
-          <p className="text-sm">Exit Quiz</p>
+          <p className="text-sm">Exit</p>
         </Button>
         <h2 className="font-semibold text-base  sm:text-xl text-basePrimary">
           {quiz?.coverTitle ?? ""}
@@ -167,6 +195,16 @@ export function QuizLobby({
       </div>
 
       <div className="w-full flex flex-col items-center justify-center absolute inset-x-0 bottom-0 gap-y-3  mx-auto bg-white py-2">
+     {!isLeftBox &&  <Button
+       className="absolute left-3 bottom-3"
+       onClick={(e) => {
+        e.stopPropagation()
+        onToggle()
+       }}
+       >
+        <Maximize2 size={22}/>
+       </Button>}
+       
         {!isAttendee && (
           <Button
             disabled={loading}

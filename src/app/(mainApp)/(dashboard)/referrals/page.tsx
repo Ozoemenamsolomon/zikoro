@@ -18,6 +18,14 @@ import { useCopyToClipboard } from "@uidotdev/usehooks";
 import { Copy } from "styled-icons/boxicons-regular";
 import { useGetData } from "@/hooks/services/request";
 import { ISubscription } from "@/types/subscription";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+} from "@/components/ui/dialog";
+import { cn } from "@/lib";
+import Link from "next/link";
 
 const page = () => {
   const { user, setUser } = useUserStore();
@@ -267,6 +275,27 @@ const page = () => {
           </div>
         </div>
       </div>
+      <Dialog open={!user.referralCode}>
+        <DialogContent>
+          <DialogHeader>
+            <span className="text-2xl font-bold">Complete Onboarding</span>
+          </DialogHeader>
+          <p className="text-gray-700 font-medium">
+            Complete your onboarding to become eligible for the Zikoro referral
+            program.
+          </p>
+          <DialogFooter>
+            <Button
+              className={cn("bg-basePrimary text-white rounded-lg flex")}
+              asChild
+            >
+              <Link href="/onboarding">
+                <p>Go to onboarding</p>
+              </Link>
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

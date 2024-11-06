@@ -50,6 +50,7 @@ export async function GET(req: NextRequest) {
       .select(`*`)
       .eq("createdBy", userId)
       .order("created_at", { ascending: false });
+      console.log("SCHEDULES:",data, error);
 
     if (error) {
       console.error("Error fetching appointment links:", error.message);
@@ -57,11 +58,10 @@ export async function GET(req: NextRequest) {
     } 
 
     return NextResponse.json(
-      { data, error:null  },
+      { data },
       { status: 200 }
     );
   } catch (error) {
-    console.error("Unhandled error:", error);
 
     return NextResponse.json(
       { error: "An error occurred while processing the request", data:null  },
@@ -70,3 +70,4 @@ export async function GET(req: NextRequest) {
   }
 }
 
+export const dynamic = "force-dynamic";

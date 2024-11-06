@@ -57,8 +57,8 @@ export const useGetAffiliates = ({
 
     try {
       console.log(
-        `marketing/affiliate?${userId && `userId=${userId}&`}${
-          organizationId && `organizationId=${organizationId}`
+        `marketing/affiliate?${userId ? `userId=${userId}&` : ""}${
+          organizationId ? `organizationId=${organizationId}` : ""
         }`
       );
       const { data, status } = await getRequest<TAffiliate[]>({
@@ -92,8 +92,10 @@ export const useGetAffiliates = ({
 
 export const useGetMarketingEmails = ({
   userId,
+  eventAlias,
 }: {
   userId: number;
+  eventAlias: string;
 }): UseGetResult<TSentEmail[], "marketingEmails", "getMarketingEmails"> => {
   const [marketingEmails, setMarketingEmails] = useState<TSentEmail[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
@@ -104,7 +106,9 @@ export const useGetMarketingEmails = ({
 
     try {
       const { data, status } = await getRequest<TSentEmail[]>({
-        endpoint: `marketing/email${userId ? "?userId=" + userId : ""}`,
+        endpoint: `marketing/email?${userId ? "?userId" + userId : ""}${
+          eventAlias ? "&eventAlias=" + eventAlias : ""
+        }`,
       });
 
       if (status !== 200) {
@@ -120,7 +124,7 @@ export const useGetMarketingEmails = ({
 
   useEffect(() => {
     getMarketingEmails();
-  }, []);
+  }, [eventAlias]);
 
   return {
     marketingEmails,
@@ -217,9 +221,11 @@ export const useCreateAffiliate = (): usePostResult<
 export const useGetAffiliateLinks = ({
   userId,
   eventId,
+  isUsed,
 }: {
   userId?: number;
   eventId?: string;
+  isUsed?: boolean;
 }): UseGetResult<TAffiliateLink[], "affiliateLinks", "getAffiliateLinks"> => {
   const [affiliateLinks, setAffiliateLinks] = useState<TAffiliateLink[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
@@ -232,7 +238,9 @@ export const useGetAffiliateLinks = ({
       const { data, status } = await getRequest<TAffiliateLink[]>({
         endpoint: `marketing/affiliate/link?${
           userId ? `userId=${userId}&` : ""
-        }${eventId ? `&eventId=${eventId}` : ""}`,
+        }${eventId ? `&eventId=${eventId}` : ""}${
+          isUsed ? `&isUsed=${isUsed}` : ""
+        }`,
       });
 
       if (status !== 200) {

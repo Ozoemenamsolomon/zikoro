@@ -31,6 +31,7 @@ export type TAttendee = z.infer<typeof AttendeeSchema> & {
   completedFields: TCompletedFields;
   speakingAt: { session: TAgenda; sessionLink: string }[];
   moderatingAt: { session: TAgenda; sessionLink: string }[];
+  archive: boolean;
 };
 
 export type TAttendeeNote = z.infer<typeof attendeeNoteSchema>;

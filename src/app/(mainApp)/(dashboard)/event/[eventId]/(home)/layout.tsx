@@ -1,15 +1,13 @@
 "use client";
 import { Topbar } from "@/components";
 import { useParams } from "next/navigation";
-import MainTopBar from "@/components/MainTopBar";
-import useUserStore from "@/store/globalUserStore";
-import { useGetAttendeeWithEmail } from "@/hooks";
+
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { eventId }: { eventId: string } = useParams();
 
   return (
-    <div className="w-full h-full ">
+    <div className="w-full h-full">
       <div className="w-full bg-[#F9FAFF] lg:w-[calc(100%-180px)] h-full float-right ">
         <Topbar eventId={eventId} />
         {children}

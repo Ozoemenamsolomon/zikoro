@@ -41,7 +41,7 @@ export default function All() {
 
   useEffect(() => {
     fetchBlogPost();
-  }, [blogData]);
+  }, []);
 
   return (
     <>

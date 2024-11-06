@@ -125,7 +125,7 @@ export default function Create() {
   //fetching blog Post
   useEffect(() => {
     fetchBlogPost();
-  }, [blogData]);
+  }, []);
 
   //filter use Effect
   useEffect(() => {

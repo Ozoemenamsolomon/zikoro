@@ -1,7 +1,7 @@
 "use client";
 
 import { LoaderAlt } from "styled-icons/boxicons-regular";
-import { useFetchSingleEvent, useGetAllAttendees } from "@/hooks";
+import { useCheckTeamMember, useFetchSingleEvent, useGetAllAttendees } from "@/hooks";
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib";
@@ -17,15 +17,16 @@ export function AccessVerification({ id }: { id?: string | any }) {
   const router = useRouter();
   const [remainingTime, setRemainingTime] = useState(0);
   const { attendees, isLoading } = useGetAllAttendees(id);
-  const [notRegistered, setNotRegistered] = useState(false);
+  const [notRegistered] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState<number>(0);
+ const {isIdPresent, verifyTeamMember} = useCheckTeamMember({eventId: id});
   const {
     data,
     loading: singleEventLoading,
     refetch,
   } = useFetchSingleEvent(id);
   const [notAuthorized, setNotAuthorized] = useState(false);
-  const { userAccess } = useAccessStore();
+
 
   useEffect(() => {
     if (data && !singleEventLoading) {
@@ -49,7 +50,6 @@ export function AccessVerification({ id }: { id?: string | any }) {
   },[pathname])
  */
 
-  console.log("single event loading", userAccess?.isTeamMember);
 
   useEffect(() => {
     if (!user) {
@@ -60,10 +60,10 @@ export function AccessVerification({ id }: { id?: string | any }) {
       !isLoading &&
       user !== null &&
       !singleEventLoading &&
-      data !== null &&
-      typeof userAccess?.isTeamMember === "boolean"
+      data !== null
+      && !verifyTeamMember
     ) {
-      console.log("I entered the hooks .....");
+      
       const appAccess = data?.eventAppAccess;
 
       let remainder = remainingTime;
@@ -85,15 +85,13 @@ export function AccessVerification({ id }: { id?: string | any }) {
           }
         }, 1000);
       }
-      const isTeamMember = organization?.teamMembers?.some(
-        (v) => v?.userEmail === user?.userEmail
-      ) || userAccess?.isTeamMember;
+
       // checked if the user is an attendee
       const isPresent = attendees?.some(({ email, eventAlias }) => {
         return eventAlias === id && email === user?.userEmail;
       });
 
-      if (isTeamMember) {
+      if (isIdPresent) {
         // user is a team member or an organizer
         setLoading(false);
 
@@ -123,7 +121,7 @@ export function AccessVerification({ id }: { id?: string | any }) {
 
       // return () => clearInterval(interval);
     }
-  }, [user, isLoading, singleEventLoading, userAccess, pathname]);
+  }, [user, isLoading, singleEventLoading, isIdPresent, verifyTeamMember, pathname]);
 
   // const isLoadedAll = useMemo(() => {
   //   return (

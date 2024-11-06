@@ -11,14 +11,16 @@ export function Advert({
   close,
   isLeftBox,
   eventName,
+  isFromPoll
 }: {
   quiz: TQuiz<TQuestion[]>;
   isLeftBox: boolean;
   close: () => void;
   isRightBox: boolean;
   eventName: string;
+  isFromPoll?:boolean;
 }) {
-  console.log("ileft", isLeftBox, isRightBox);
+ // console.log("ileft", isLeftBox, isRightBox);
   const quizLink =
     quiz?.interactionType === "poll"
       ? `${window.location.origin}/poll/${quiz?.eventAlias}/present/${quiz?.quizAlias}`
@@ -28,7 +30,8 @@ export function Advert({
       className={cn(
         "w-full flex-col  rounded-l-xl h-[90vh] border-l border-y items-start justify-between hidden col-span-3 md:hidden",
         isLeftBox && "flex md:flex ",
-        !isRightBox && "col-span-3"
+        !isRightBox && "col-span-3",
+        isRightBox &&  isFromPoll && "col-span-full max-w-3xl border-r rounded-r-xl"
       )}
     >
       {quiz?.branding?.eventName ? (
@@ -75,7 +78,10 @@ export function Advert({
       </div>
 
       <div className="p-4 w-full flex items-end justify-end">
-        <Button onClick={close} className="px-0 h-fit w-fit">
+        <Button onClick={(e) => {
+          e.stopPropagation()
+          close()
+        }} className="px-0 h-fit w-fit">
           <Minimize2 size={20} />
         </Button>
       </div>

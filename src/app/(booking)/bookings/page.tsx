@@ -9,10 +9,11 @@ import AppointmentSec5 from "@/components/appointments/home/AppointmentSec5";
 import AppointmentFooter from "@/components/appointments/home/AppointmentFooter";
 
 
+
 const AppointmentHomePage = () => {
   return (
     <div className="bg-[#f9faff]">
-      <div className="sticky top-10 z-10">
+      <div className="sticky top-4 z-10">
         <AppointmentNav />
       </div>
       <AppointmentSec1 />

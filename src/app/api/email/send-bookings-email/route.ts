@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
   }
   const { bookingFormData, appointmentLink } = await req.json();
-
+console.log( { bookingFormData, appointmentLink })
   try {
 
     if (!bookingFormData || !appointmentLink) {

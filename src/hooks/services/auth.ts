@@ -5,7 +5,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import * as z from "zod";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { getRequest, postRequest } from "@/utils/api";
 import { TAuthUser, TUser } from "@/types";
@@ -59,8 +59,8 @@ export function useOnboarding() {
         endpoint: "/auth/user",
         payload: {
           ...values,
-          userEmail:email,
-          created_at:createdAt
+          userEmail: email,
+          created_at: createdAt,
         },
       });
 
@@ -233,7 +233,7 @@ export function useRegistration() {
   };
 }
 
-export function useLogOut() {
+export function useLogOut(redirectPath: string = "/") {
   const router = useRouter();
   const { setOrganization } = useOrganizationStore();
   const { setEvent } = useEventStore();
@@ -244,7 +244,7 @@ export function useLogOut() {
     setUser(null);
     setOrganization(null);
     setEvent(null);
-    router.push("/");
+    router.push(redirectPath);
   }
 
   return {
@@ -409,13 +409,16 @@ export function useVerifyCode() {
 }
 
 // user that register for an event
-export function useAttendee() {
-  const params = useSearchParams();
+export function useAttendee({
+  email,
+  isPasswordless,
+}: {
+  email: string;
+  isPasswordless: string;
+}) {
   const [loading, setLoading] = useState(false);
   const { user, setUser } = useUserStore();
-  const [userData, setUserData] = useState<TUser | null>(null)
-  const email = params.get("email");
-  const isPasswordless = params.get("isPasswordless");
+  const [userData, setUserData] = useState<TUser | null>(null);
   const getUser = async () => {
     setLoading(true);
     try {
@@ -429,7 +432,9 @@ export function useAttendee() {
       }
 
       setLoading(false);
-    } catch (error) {}
+    } catch (error) {
+      console.log(error, "error");
+    }
   };
 
   useEffect(() => {

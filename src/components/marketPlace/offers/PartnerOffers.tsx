@@ -53,8 +53,9 @@ export function PartnerOffers({ eventId }: { eventId: string }) {
 
   return (
     <MarketPlaceLayout eventId={eventId}>
+      
       <div className="flex items-end w-full justify-end">
-        <div className="flex w-full sm:w-fit items-center px-4">
+        <div className="flex w-full sm:w-fit items-center ">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="w-fit">
               <FormField
@@ -94,7 +95,7 @@ export function PartnerOffers({ eventId }: { eventId: string }) {
       {!loading && (
         <Offers
           data={offerData || offers}
-          className="grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+          className="grid-cols-1 sm:grid-cols-2 md:grid-cols-3 min-[1300px]:grid-cols-3 "
           attendee={attendee}
           eventId={eventId}
           refetch={refetch}

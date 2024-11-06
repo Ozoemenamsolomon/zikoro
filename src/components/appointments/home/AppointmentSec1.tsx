@@ -33,25 +33,23 @@ export default function AppointmentSec1() {
           Effortless Bookings, <span className="">Happier Clients</span>
         </p>
         <p className="max-w-full lg:max-w-[698px] mx-auto text-center text-[14px] text-base font-normal mt-5 lg:mt-10">
-          Simplify our appointments,{" "}
+          Simplify your appointments,{" "}
           <span className="font-medium">improve </span>
-          you can clients interactions, and run an
-          <span className="font-medium"> effectient </span> business.{" "}
+          clients interactions, and run an
+          <span className="font-medium"> effectient </span> business.
           <br className="block lg:hidden" /> Whether you're a
-          <span className="font-medium">freelancer </span> small
-          <span className="font-medium">business owner </span>
-          or a<span className="font-medium">large enterprise, </span>
+          <span className="font-medium"> freelancer </span> small
+          <span className="font-medium"> business owner </span>
+          or a<span className="font-medium"> large enterprise, </span>
           Zikoro Bookings has the features you need to manage your appointments
-          effortlessly... 
+          effortlessly. 
         </p>
       </div>
-
-
       <div className="flex flex-col lg:hidden mt-20">
         <div>
           <div className=" flex items-center justify-center mx-auto">
             <button
-              onClick={() => router.push("/home")}
+              onClick={() => router.push("/appointments")}
               className="text-white font-semibold text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-[64px] rounded-lg"
             >
               Get Started For Free!

@@ -1,6 +1,7 @@
 "use client";
 
 import Select from "react-select";
+import {cn} from "@/lib"
 import * as React from "react";
 import {
   UseControllerProps,
@@ -18,6 +19,7 @@ interface SelectProps<T extends FieldValues> extends UseControllerProps<T> {
   height?: string;
   borderColor?: string;
   placeHolderColor?: string;
+  minHeight?: string;
 }
 function ErrorText({ children }: { children?: string }) {
   return (
@@ -33,6 +35,7 @@ export const ReactSelect = React.forwardRef<
 >((props, ref) => {
   const {
     label,
+    minHeight,
     options,
     bgColor,
     height,
@@ -48,31 +51,35 @@ export const ReactSelect = React.forwardRef<
   } = useController(controllerProps) as UseControllerReturn<FieldValues>;
 
   return (
-    <div className="w-full relative 3rem">
-      {label && (
+    <div className="w-full relative ">
+      {/* {label && (
         <label
-          className="absolute  -top-2 z-30 right-4 bg-white text-gray-600 text-tiny px-1"
+          className=" text-gray-600 mb-4 text-sm "
           htmlFor="select"
         >
           {label}
         </label>
-      )}
-      <Select
+      )} */}
+     <div className={cn("w-full h-[2.75rem]", height)}>
+     <Select
         defaultValue={defaultValue}
         placeholder={placeHolder}
         styles={{
           control: (baseStyles, state) => ({
             ...baseStyles,
-            borderColor: state?.isFocused
-              ? borderColor || "#6b7280"
-              : borderColor || "#e5e7eb",
-            "&:hover": {
-              borderColor: borderColor || "#6b7280",
-            },
-            height: height || "3rem",
-            backgroundColor: bgColor || "#ffffff",
+            // borderColor: state?.isFocused
+            //   ?"#818cf8"
+            //   :  "#818cf8",
+            // "&:hover": {
+            //   borderColor: borderColor || "#6b7280",
+            // },
+            height: "100%",
+            minHeight: minHeight || baseStyles.minHeight,
+           // backgroundColor: bgColor || "#ffffff",
             boxShadow: "0px",
             borderRadius: "6px",
+            backgroundImage: 'linear-gradient(to right, #001FCC19 0%, #9D00FF19 100%)',
+            border: '0px'
           }),
 
           option: (baseStyles, state) => ({
@@ -91,7 +98,7 @@ export const ReactSelect = React.forwardRef<
           placeholder: (baseStyles) => ({
             ...baseStyles,
             textAlign: "start",
-            color: placeHolderColor || "#e5e7eb",
+            color: '#6b7280',
             fontSize: "13px",
           }),
           menu: (baseStyles) => ({
@@ -108,10 +115,16 @@ export const ReactSelect = React.forwardRef<
             ...baseStyle,
             width: "0px",
           }),
+          container: (baseStyle) => ({
+            ...baseStyle,
+            height: minHeight || baseStyle.height,
+          }),
         }}
         options={options}
         onChange={(newValue) => onChange(newValue?.value)}
       />
+
+     </div>
       <ErrorText>{error}</ErrorText>
     </div>
   );

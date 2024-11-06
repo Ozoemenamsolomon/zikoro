@@ -205,7 +205,7 @@ export default function LeaderBoard({ eventId }: { eventId: string }) {
                     {ranks[1]?.profilePicture ? (
                       <Image
                         src={ranks[1]?.profilePicture}
-                        className=" w-[5rem] rounded-full h-[5rem]"
+                        className=" w-[5rem] object-cover rounded-full h-[5rem]"
                         alt=""
                         width={150}
                         height={150}
@@ -251,7 +251,7 @@ export default function LeaderBoard({ eventId }: { eventId: string }) {
                     {ranks[0]?.profilePicture ? (
                       <Image
                         src={ranks[0]?.profilePicture}
-                        className="w-[5rem] rounded-full h-[5rem] "
+                        className="w-[5rem] object-cover  rounded-full h-[5rem] "
                         alt=""
                         width={150}
                         height={150}
@@ -297,7 +297,7 @@ export default function LeaderBoard({ eventId }: { eventId: string }) {
                     {ranks[2]?.profilePicture ? (
                       <Image
                         src={ranks[2]?.profilePicture}
-                        className=" w-[5rem] rounded-full h-[5rem]"
+                        className=" w-[5rem] object-cover  rounded-full h-[5rem]"
                         alt=""
                         width={150}
                         height={150}
@@ -350,7 +350,7 @@ export default function LeaderBoard({ eventId }: { eventId: string }) {
                           {attendee?.profilePicture ? (
                             <Image
                               src={attendee?.profilePicture}
-                              className="w-[5rem] rounded-full  h-[5rem]"
+                              className="w-[5rem] rounded-full object-cover  h-[5rem]"
                               alt=""
                               width={150}
                               height={150}

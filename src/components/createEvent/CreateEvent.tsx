@@ -35,6 +35,7 @@ import { ImageAdd } from "styled-icons/boxicons-regular";
 import DatePicker from "react-datepicker";
 import { DateRange } from "styled-icons/material-outlined";
 import { cn } from "@/lib";
+import useOrganizationStore from "@/store/globalOrganizationStore";
 type OrganizationListType = {
   label: string;
   value: any;
@@ -45,6 +46,7 @@ export default function CreateEvent() {
   const [isStartDate, setStartDate] = useState(false);
   const [isEndDate, setEndDate] = useState(false);
   const { user: userData } = useUserStore();
+  const { setOrganization } = useOrganizationStore();
 
   const router = useRouter();
   const { organizations: organizationList, getOrganizations } =
@@ -63,8 +65,8 @@ export default function CreateEvent() {
   const endDate = form.watch("endDateTime");
 
   const minimumDate = useMemo(() => {
-      return parseFormattedDate(startDate)
-  },[startDate])
+    return parseFormattedDate(startDate);
+  }, [startDate]);
   function formatDate(date: Date): string {
     return date.toISOString();
   }
@@ -78,7 +80,6 @@ export default function CreateEvent() {
   }, [organizationList]);
 
   async function onSubmit(values: z.infer<typeof newEventSchema>) {
-   
     const today = new Date();
 
     const newPromise = new Promise(async (resolve) => {
@@ -92,6 +93,11 @@ export default function CreateEvent() {
       }
     });
     const eventImage: any = await newPromise;
+
+    const org = organizationList.find(
+      (og: any) => String(og.id) === values.organisationId
+    );
+    setOrganization(org!);
 
     const eventAlias = generateAlias();
     await createEvent({
@@ -127,6 +133,7 @@ export default function CreateEvent() {
   }, []);
 
   const poster = form.watch("eventPoster");
+  const location = form.watch("locationType");
 
   const image = useMemo(() => {
     if (typeof poster === "string") {
@@ -162,20 +169,20 @@ export default function CreateEvent() {
                 className="grid grid-cols-1 md:grid-cols-8 items-start w-full  gap-3"
               >
                 <div className="w-full md:col-span-3">
-                  <div className="w-full rounded-lg p-4 bg-basePrimary bg-opacity-80 h-56 flex items-center justify-center relative">
+                  <div className="w-full rounded-lg p-4 bg-basePrimary bg-opacity-80 h-72 flex items-center justify-center relative">
                     <div className="w-full h-full bg-white/40 absolute inset-0"></div>
                     {image && (
                       <Image
                         src={image}
                         width={500}
-                        height={500}
-                        className="w-full h-56 inset-0 z-10 rounded-lg absolute"
+                        height={600}
+                        className="w-full h-72 inset-0 z-10 object-cover rounded-lg absolute"
                         alt=""
                       />
                     )}
                     <label
                       htmlFor="eventImageUpload"
-                      className="relative bg-white/50 flex z-20 items-center gap-x-2 w-full px-4  rounded-md outline-none border border-white h-12"
+                      className="relative bg-white/50 flex z-20 items-center gap-x-2 w-full px-4  rounded-md outline-none border border-white h-11"
                     >
                       <div className="bg-basePrimary  rounded-full text-white flex items-center justify-center h-9 w-9">
                         <div className="w-full h-full bg-white/40 absolute inset-0"></div>
@@ -205,25 +212,23 @@ export default function CreateEvent() {
                           type="text"
                           placeholder="Enter the event title"
                           {...field}
-                          className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                          className=" placeholder:text-sm h-11 text-gray-700"
                         />
                       </InputOffsetLabel>
                     )}
                   />
-                  <div className="w-full flex items-center gap-x-2">
+                  <div className="w-full flex items-end gap-x-2">
                     <FormField
                       control={form.control}
                       name="organisationId"
                       render={({ field }) => (
-                        <FormItem className="w-full relative">
+                        <InputOffsetLabel label="Organization">
                           <ReactSelect
                             {...field}
                             placeHolder="Select a Workspace"
-                            label="Workspace"
                             options={formattedList}
                           />
-                          <FormMessage />
-                        </FormItem>
+                        </InputOffsetLabel>
                       )}
                     />
                     <Button
@@ -232,7 +237,7 @@ export default function CreateEvent() {
                         e.preventDefault();
                         onClose();
                       }}
-                      className="hover:bg-basePrimary  text-basePrimary  rounded-md border border-basePrimary hover:text-gray-50 gap-x-2 h-11 sm:h-12 font-medium"
+                      className="hover:bg-basePrimary  text-basePrimary  rounded-md border border-basePrimary hover:text-gray-50 gap-x-2 h-[3.2rem]  font-medium"
                     >
                       <PlusCircle size={22} />
                       <p>Workspace</p>
@@ -248,11 +253,11 @@ export default function CreateEvent() {
                           <div
                             onClick={(e) => {
                               e.stopPropagation();
-                              e.preventDefault()
-                              setStartDate((prev) => !prev)
+                              e.preventDefault();
+                              setStartDate((prev) => !prev);
                             }}
                             role="button"
-                            className="w-full relative h-12"
+                            className="w-full relative h-11"
                           >
                             <button className="absolute left-3 top-[0.6rem]">
                               <DateRange size={22} className="text-gray-600" />
@@ -261,7 +266,7 @@ export default function CreateEvent() {
                               placeholder=" Start Date Time"
                               type="text"
                               {...form.register("startDateTime")}
-                              className="placeholder:text-sm pl-10 pr-4 h-12 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700 accent-basePrimary"
+                              className="placeholder:text-sm pl-10 pr-4 h-11 inline-block  text-gray-700 accent-basePrimary"
                             />
                             {isStartDate && (
                               <SelectDate
@@ -284,11 +289,11 @@ export default function CreateEvent() {
                           <div
                             onClick={(e) => {
                               e.stopPropagation();
-                              e.preventDefault()
-                              setEndDate((prev) => !prev)
+                              e.preventDefault();
+                              setEndDate((prev) => !prev);
                             }}
                             role="button"
-                            className="w-full relative h-12"
+                            className="w-full relative h-11"
                           >
                             <button className="absolute left-3 top-[0.6rem]">
                               <DateRange size={22} className="text-gray-600" />
@@ -297,7 +302,7 @@ export default function CreateEvent() {
                               placeholder="End Date Time"
                               type="text"
                               {...form.register("endDateTime")}
-                              className="placeholder:text-sm pl-10 pr-4 h-12 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700 accent-basePrimary"
+                              className="placeholder:text-sm pl-10 pr-4 h-11 inline-block  text-gray-700 accent-basePrimary"
                             />
                             {/** */}
                             {isEndDate && (
@@ -324,78 +329,76 @@ export default function CreateEvent() {
                           type="number"
                           placeholder="Enter the number of expected participants"
                           {...field}
-                          className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                          className=" placeholder:text-sm h-11  text-gray-700"
                         />
                       </InputOffsetLabel>
                     )}
                   />
-                           <FormField
+                  <FormField
                     control={form.control}
                     name="locationType"
                     render={({ field }) => (
-                      <FormItem className="w-full relative">
+                      <InputOffsetLabel label="Location Type">
                         <ReactSelect
                           {...field}
                           placeHolder="Select the Location Type"
-                          label="Location Type"
                           options={[
                             { value: "Hybrid", label: "Hybrid" },
                             { value: "Onsite", label: "Onsite" },
                             { value: "Virtual", label: "Virtual" },
                           ]}
                         />
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="eventAddress"
-                    render={({ field }) => (
-                      <InputOffsetLabel label="Event Address">
-                        <Input
-                          type="text"
-                          placeholder="Enter Event Address"
-                          {...field}
-                          className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
-                        />
                       </InputOffsetLabel>
                     )}
                   />
-                  <div className="w-full grid grid-cols-1 sm:grid-cols-2 items-center gap-2">
+                  {location !== "Virtual" && (
                     <FormField
                       control={form.control}
-                      name="eventCity"
+                      name="eventAddress"
                       render={({ field }) => (
-                        <InputOffsetLabel label="Event City">
+                        <InputOffsetLabel label="Event Address">
                           <Input
                             type="text"
-                            placeholder="Enter City"
+                            placeholder="Enter Event Address"
                             {...field}
-                            className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                            className=" placeholder:text-sm h-11  text-gray-700"
                           />
                         </InputOffsetLabel>
                       )}
                     />
+                  )}
+                  {location !== "Virtual" && (
+                    <div className="w-full grid grid-cols-1 sm:grid-cols-2 items-center gap-2">
+                      <FormField
+                        control={form.control}
+                        name="eventCity"
+                        render={({ field }) => (
+                          <InputOffsetLabel label="Event City">
+                            <Input
+                              type="text"
+                              placeholder="Enter City"
+                              {...field}
+                              className=" placeholder:text-sm h-11  text-gray-700"
+                            />
+                          </InputOffsetLabel>
+                        )}
+                      />
 
-                    <FormField
-                      control={form.control}
-                      name="eventCountry"
-                      render={({ field }) => (
-                        <FormItem className="w-full relative">
-                          <ReactSelect
-                            {...field}
-                            placeHolder="Select the Country"
-                            label="Event Country"
-                            options={countriesList}
-                          />
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-         
+                      <FormField
+                        control={form.control}
+                        name="eventCountry"
+                        render={({ field }) => (
+                          <InputOffsetLabel label="Event Country">
+                            <ReactSelect
+                              {...field}
+                              placeHolder="Select the Country"
+                              options={countriesList}
+                            />
+                          </InputOffsetLabel>
+                        )}
+                      />
+                    </div>
+                  )}
 
                   <Button
                     disabled={loading}
@@ -426,13 +429,13 @@ function SelectDate({
   close,
   name,
   value,
-  minimumDate
+  minimumDate,
 }: {
   form: UseFormReturn<z.infer<typeof newEventSchema>, any, any>;
   close: () => void;
   className?: string;
   name: any;
-  minimumDate?:Date
+  minimumDate?: Date;
   value: string;
 }) {
   const selectedDate = useMemo(() => {
@@ -442,18 +445,18 @@ function SelectDate({
     <div
       onClick={(e) => {
         e.stopPropagation();
-        e.preventDefault()
+        e.preventDefault();
       }}
       className={cn(
-        "absolute left-0 sm:-left-24 md:left-[-8rem] top-[3.2rem]",
+        "absolute left-0 sm:-left-24 md:left-[-8rem] top-[3.0rem]",
         className
       )}
     >
       <button
-         onClick={(e) => {
+        onClick={(e) => {
           e.stopPropagation();
-          e.preventDefault()
-          close()
+          e.preventDefault();
+          close();
         }}
         className="w-full h-full inset-0 fixed z-20"
       ></button>

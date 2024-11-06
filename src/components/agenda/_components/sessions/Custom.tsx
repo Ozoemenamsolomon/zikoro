@@ -6,17 +6,17 @@ import { SessionCard, Deletes, Duplicate, Edit, AddToMyAgenda } from "..";
 import { Button } from "@/components";
 import { CheckmarkDone } from "styled-icons/ionicons-solid";
 import { Star } from "styled-icons/bootstrap";
-import { EventLocationType } from "@/components/composables";
 import { LocationPin } from "styled-icons/entypo";
 import Image from "next/image";
 import { cn } from "@/lib";
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
-import { TSessionAgenda, TAgenda,TMyAgenda, Event } from "@/types";
+import { TSessionAgenda, TAgenda, TMyAgenda, Event, TAttendee } from "@/types";
 import { useRouter } from "next/navigation";
 import { EngagementsSettings } from "@/types/engagements";
+import { EventAttendeeWidget } from "@/components/published";
 export function Custom({
   sessionAgenda,
   className,
@@ -29,7 +29,8 @@ export function Custom({
   isFullScreen,
   isReception,
   myAgendas,
-  engagementsSettings
+  engagementsSettings,
+  isEventDetail
 }: {
   className?: string;
   sessionAgenda: TSessionAgenda;
@@ -40,9 +41,10 @@ export function Custom({
   isIdPresent: boolean;
   isOrganizer: boolean;
   isFullScreen?: boolean;
-  isReception?:boolean;
+  isReception?: boolean;
   myAgendas?: TMyAgenda[];
-  engagementsSettings?: EngagementsSettings | null
+  engagementsSettings?: EngagementsSettings | null;
+  isEventDetail?:boolean;
 }) {
   const settings = {
     dots: true,
@@ -62,10 +64,9 @@ export function Custom({
       timeStamp={sessionAgenda?.timeStamp}
       isGreaterThanOne={sessionAgenda?.sessions?.length > 1}
       className={className}
-     
       isReception={isReception}
     >
-      <div className="w-full md:col-span-6 lg:col-span-8 ">
+      <div className="w-full ">
         <Comp className="w-full agenda-slider h-full z-4" {...settings}>
           {sessionAgenda?.sessions?.map((session, index) => (
             <Widget
@@ -74,6 +75,8 @@ export function Custom({
               event={event}
               attendeeId={attendeeId}
               refetchEvent={refetchEvent}
+              isReception={isReception}
+              isEventDetail={isEventDetail}
               refetchSession={refetchSession}
               isIdPresent={isIdPresent}
               isOrganizer={isOrganizer}
@@ -98,7 +101,9 @@ function Widget({
   isOrganizer,
   isFullScreen,
   myAgendas,
-  engagementsSettings
+  engagementsSettings,
+  isReception,
+  isEventDetail
 }: {
   session: TAgenda;
   event?: Event | null;
@@ -109,9 +114,14 @@ function Widget({
   isOrganizer: boolean;
   isFullScreen?: boolean;
   myAgendas?: TMyAgenda[];
-  engagementsSettings?: EngagementsSettings | null
+  engagementsSettings?: EngagementsSettings | null;
+  isReception?:boolean;
+  isEventDetail?:boolean;
 }) {
   const router = useRouter();
+  const [otherStaffsCount, setOtherStaffsCount] = useState(0);
+  const [staffs, setStaffs] = useState<TAttendee[]>([]);
+  const divRef = useRef<HTMLDivElement | null>(null);
 
   const isAddedAttendee = useMemo(() => {
     if (
@@ -135,54 +145,64 @@ function Widget({
     }
   }, [session]);
 
+  useEffect(() => {
+    if (divRef && divRef?.current && mergedSM) {
+      const width = divRef?.current?.offsetWidth;
+      const staffLength = mergedSM?.length * 200;
+      if (staffLength >= width) {
+        const x = (staffLength - width) /200
+        const willInclude = parseInt(
+          Math.round(x).toFixed(0)
+        );
+        console.log(staffLength, width);
+        setStaffs(mergedSM.slice(0, willInclude));
+        setOtherStaffsCount(mergedSM?.length - willInclude);
+      } else {
+        setStaffs(mergedSM);
+      }
+    }
+  }, [divRef, mergedSM]);
+
   return (
     <>
       <div
+        ref={divRef}
         role="button"
         onClick={() => {
-          if (session?.description) {
+          if (session?.description && !isEventDetail) {
             router.push(
               `/event/${event?.eventAlias}/agenda/${session?.sessionAlias}`
             );
           }
         }}
         className={cn(
-          "flex border-0 flex-col w-full  p-3 rounded-xl items-start justify-start ",
-          session.isMyAgenda && "bg-gray-50 border rounded-lg "
+          "flex border-0 flex-col w-full  rounded-xl items-start justify-start ",
+          session.isMyAgenda && " "
         )}
       >
         <h2 className="text-base w-full mb-2 text-ellipsis whitespace-nowrap overflow-hidden sm:text-xl font-medium">
           {session?.sessionTitle ?? ""}
         </h2>
-        {isAddedAttendee && (
-          <div className="w-full grid grid-cols-2 sm:grid-cols-3 mb-2  gap-3">
-            {Array.isArray(mergedSM) &&
-              mergedSM.map((attendee, index) => (
-                <BoothStaffWidget
-                  company={""}
-                  image={attendee?.profilePicture || null}
-                  name={`${attendee?.firstName} ${attendee?.lastName}`}
-                  profession={attendee?.jobTitle ?? ""}
-                  email={attendee?.email ?? ""}
-                  key={index}
-                />
-              ))}
-          </div>
-        )}
+       
         <div className="flex items-center gap-x-3 mb-2 ">
           {session?.sessionType && (
-            <EventLocationType locationType={session?.sessionType ?? ""} />
+            <div className="w-fit px-2 py-2 bg-gradient-to-tr border rounded-2xl border-[#001fcc] from-custom-bg-gradient-start to-custom-bg-gradient-end">
+              <p className="gradient-text bg-basePrimary text-xs">
+                {session?.sessionType ?? ""}
+              </p>
+            </div>
+          )}
+
+          {session?.Track && (
+            <button className="bg-[#F44444]/10 text-xs border text-[#F44444] border-[#F44444] px-2 py-2 rounded-2xl">
+              {session?.Track ?? ""}
+            </button>
           )}
           {session?.sessionVenue && (
             <div className="flex items-center gap-x-1">
               <LocationPin size={20} />
               <p>{session?.sessionVenue ?? ""}</p>
             </div>
-          )}
-          {session?.Track && (
-            <button className="bg-[#F44444]/10 text-xs text-[#F44444] px-2 py-2 rounded-md">
-              {session?.Track ?? ""}
-            </button>
           )}
           <div
             onClick={(e) => {
@@ -201,7 +221,34 @@ function Widget({
             />
           </div>
         </div>
-        {!isFullScreen && (isIdPresent || isOrganizer) && (
+        {isAddedAttendee && (
+          <>
+          <div className="w-full hidden relative md:flex items-center mb-2  gap-1">
+            {Array.isArray(staffs) &&
+              staffs.map((attendee, index) => (
+                <BoothStaffWidget
+                  company={""}
+                  image={attendee?.profilePicture || null}
+                  name={`${attendee?.firstName} ${attendee?.lastName}`}
+                  profession={attendee?.jobTitle ?? ""}
+                  email={attendee?.email ?? ""}
+                  key={index}
+                  className="grid grid-cols-7 w-[180px] items-center "
+                />
+              ))}
+            {otherStaffsCount > 0 && (
+              <div className="flex absolute top-[8%] right-[0.3rem] from-custom-bg-gradient-start bg-gradient-to-tr to-custom-bg-gradient-end items-center text-lg justify-center w-[3rem] h-[3rem] rounded-full border border-basePrimary ">
+                {otherStaffsCount}+
+              </div>
+            )}
+          </div>
+          <div className="block my-2 md:hidden">
+            <EventAttendeeWidget attendees={mergedSM}/>
+          </div>
+          
+          </>
+        )}
+        {!isFullScreen && (isIdPresent || isOrganizer) && !isReception &&  (
           <div
             onClick={(e) => {
               e.stopPropagation();
@@ -240,7 +287,7 @@ function Widget({
             </div>
           </div>
         )}
-        {Array.isArray(session?.sessionSponsors) &&
+        {!isReception && Array.isArray(session?.sessionSponsors) &&
           session?.sessionSponsors?.length > 0 && (
             <div className="w-full flex flex-col mb-2  items-start justify-start gap-y-2">
               <p>Sponsors</p>

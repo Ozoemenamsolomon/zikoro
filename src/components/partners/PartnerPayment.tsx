@@ -5,9 +5,9 @@ import { MdClose } from "react-icons/md";
 import { paymentConfig, useAddPartners } from "@/hooks";
 import { TPartner } from "@/types";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useMemo, useState, Suspense } from "react";
 import { Lock } from "styled-icons/fa-solid";
-import { ArrowBack, Show } from "styled-icons/boxicons-regular";
+import { ArrowBack } from "styled-icons/boxicons-regular";
 import { PaystackButton } from "react-paystack";
 import { BsPatchCheck } from "react-icons/bs";
 import { CiShare2, CiCalendar, CiLocationOn } from "react-icons/ci";
@@ -23,45 +23,43 @@ import { TbLoader3 } from "react-icons/tb";
 import { SlSocialLinkedin } from "react-icons/sl";
 
 type TEventData = {
-  eventName:string;
+  eventName: string;
   eventStartDate: string;
   eventEndDate: string;
   location: string;
-  eventPoster:string;
+  eventPoster: string;
   address: string;
-  organizerName:string;
+  organizerName: string;
   currency: string;
   organizerPhoneNumber: string;
-  organizerWhatsappNumber:string;
-
-}
-export default function PartnerPayment() {
+  organizerWhatsappNumber: string;
+};
+ export default function PartnerPayment({searchParams:{p,e,discountAmount}}:{searchParams: any}) {
   const router = useRouter();
-  const params = useSearchParams();
   const [isSuccess, setIsSuccess] = useState(false);
-  const data = params.get("p");
-  const eventData = params.get("e")
+  // const data = params.get("p");
+  // const eventData = params.get("e");
+  // const discountAmount = params.get("discountAmount");
   const { addPartners, loading } = useAddPartners();
 
   const partnerData: Partial<TPartner> = useMemo(() => {
-    if (data) {
-      const dataString = decodeURIComponent(data);
+    if (p) {
+      const dataString = decodeURIComponent(p);
       const decodedData = JSON.parse(dataString);
       return decodedData;
     } else {
       return null;
     }
-  }, [data]);
+  }, [p]);
   const parsedEventData: TEventData | null = useMemo(() => {
-      if (eventData) {
-        const dataString = decodeURIComponent(eventData);
-        const decodedData = JSON.parse(dataString);
-        return decodedData;
-      }
-      else {
-        return null;
-      }
-  },[eventData])
+    if (e) {
+      const dataString = decodeURIComponent(e);
+      const decodedData = JSON.parse(dataString);
+      return decodedData;
+    } else {
+      return null;
+    }
+  }, [e]);
 
   const config = paymentConfig({
     reference: partnerData?.paymentReference!,
@@ -77,7 +75,7 @@ export default function PartnerPayment() {
     };
 
     const eventPayload = {
-      ...parsedEventData
+      ...parsedEventData,
     };
 
     await addPartners(payload, eventPayload);
@@ -118,9 +116,10 @@ export default function PartnerPayment() {
               <p>1X SubTotal</p>
               <p className="font-medium">
                 {partnerData?.currency}{" "}
-                {partnerData?.amountPaid?.toLocaleString()}
+                {(partnerData?.amountPaid || 0)?.toLocaleString()}
               </p>
             </div>
+
             <div className="w-full  flex items-center justify-between">
               <p className="font-semibold">Total</p>
               <p className="font-semibold">
@@ -156,18 +155,20 @@ export default function PartnerPayment() {
   );
 }
 
-function PaymentSuccessModal({
+export function PaymentSuccessModal({
   partnerData,
   eventName,
   startDate,
   endDate,
   location,
+  eventAlias
 }: {
-  partnerData: Partial<TPartner>;
+  partnerData?: Partial<TPartner>;
   eventName: string | null;
   startDate: string | null;
   endDate: string | null;
   location: string | null;
+  eventAlias?:string
 }) {
   const [isShare, setIsShare] = useState(false);
 
@@ -201,12 +202,12 @@ function PaymentSuccessModal({
             <h2 className="text-green-500 font-medium text-lg sm:text-2xl">
               Payment Successful
             </h2>
-            <p className="text-xs sm:text-mobile">
+            {partnerData && <p className="text-xs sm:text-mobile">
               Reference:{" "}
               <span className="text-basePrimary">
                 {partnerData?.paymentReference ?? ""}
               </span>
-            </p>
+            </p>}
           </div>
           <p className="text-center max-w-sm">
             You have successfully made payment to be a{" "}
@@ -252,8 +253,8 @@ function PaymentSuccessModal({
       </div>
       {isShare && eventName && eventStartDate && eventEndDate && (
         <ShareModal
-          eventId={partnerData?.eventAlias!}
-          text={`I am excited to be exhibiting at the ${eventName} happening on ${eventStartDate} to ${eventEndDate}. We would be delighted to have you visit our booth. Here is the link to register if you would like to attend.  https://www.zikoro.com/live-events/${partnerData?.eventAlias}`}
+          eventId={partnerData ? partnerData?.eventAlias! : eventAlias!}
+          text={`I am excited to be exhibiting at the ${eventName} happening on ${eventStartDate} to ${eventEndDate}. We would be delighted to have you visit our booth. Here is the link to register if you would like to attend.  https://www.zikoro.com/live-events/${partnerData ? partnerData?.eventAlias! : eventAlias!}`}
           close={onClose}
         />
       )}
@@ -265,12 +266,12 @@ export function ShareModal({
   eventId,
   text,
   close,
-  header
+  header,
 }: {
   close: () => void;
   eventId: string;
   text: string;
-  header?:string;
+  header?: string;
 }) {
   const [isShow, showSuccess] = useState(false);
 
@@ -298,8 +299,8 @@ export function ShareModal({
     },
     {
       Icon: SlSocialLinkedin,
-      link: `https://www.linkedin.com/shareArticle?url=${text}`
-    }
+      link: `https://www.linkedin.com/shareArticle?url=${text}`,
+    },
   ];
   return (
     <div
@@ -314,7 +315,7 @@ export function ShareModal({
       >
         <div className="w-full mb-3 flex items-center justify-between">
           <p className="font-medium border-b border-basePrimary pb-1">
-           {header || " Share event with your network"}
+            {header || " Share event with your network"}
           </p>
           <Button
             onClick={close}
@@ -351,3 +352,11 @@ export function ShareModal({
     </div>
   );
 }
+
+// export default function PartnerPayment() {
+//   return (
+//     <Suspense>
+//       <PartnerPaymentComp/>
+//     </Suspense>
+//   )
+// }

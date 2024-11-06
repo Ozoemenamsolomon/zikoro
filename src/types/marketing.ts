@@ -13,9 +13,15 @@ export interface TSentEmail {
   sendersName: string;
   replyTo?: string;
   emailBody: string;
-  emailRecipient: string[];
+  emailRecipient: {
+    attendeeAlias: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+  }[];
   sendDateTime?: Date;
   sendTimeZone?: string;
+  eventAlias: string;
 }
 
 // interface TAffiliate {
@@ -34,8 +40,10 @@ export interface TSentEmail {
 // }
 
 export interface TAffiliate extends z.TypeOf<typeof AffiliateSchema> {
+  createdBy: string;
   affliateCode: string;
   organizationId: number;
+  attendeeAlias: string;
 }
 
 export interface TAffiliateLink {

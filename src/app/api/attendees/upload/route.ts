@@ -12,6 +12,57 @@ export async function POST(req: NextRequest) {
     try {
       const params = await req.json();
 
+      const { data: oldUsers, error: oldUsersError } = await supabase
+        .from("users")
+        .select("*")
+        .in(
+          "userEmail",
+          params.map((user) => user.email)
+        );
+
+      if (oldUsersError) throw oldUsersError;
+
+      console.log(
+        params.filter(
+          (user) =>
+            !oldUsers.find((oldUser) => oldUser.userEmail === user.userEmail)
+        ),
+        "params"
+      );
+
+      const { data: users, error: userError } = await supabase
+        .from("users")
+        .insert(
+          params
+            .filter(
+              (user) =>
+                !oldUsers.find(
+                  (oldUser) => oldUser.userEmail === user.email
+                )
+            )
+            .map((user) => ({
+              firstName: user.firstName || null,
+              lastName: user.lastName || null,
+              phoneNumber: user.phoneNumber || null,
+              jobTitle: user.jobTitle || null,
+              organization: user?.organization || null,
+              city: user.city || null,
+              country: user.country || null,
+              linkedin: user.linkedin || null,
+              instagram: user.instagram || null,
+              facebook: user.facebook || null,
+              bio: user.bio || null,
+              userEmail: user.email || "ubahyusuf484@gmail.com",
+              x: user.x || null,
+              created_at: new Date().toISOString(),
+            }))
+        )
+        .select("*");
+
+      console.log(users, "users", userError, "error");
+
+      if (userError) throw userError;
+
       const { data: attendees, error } = await supabase
         .from("attendees")
         .insert(params)
@@ -88,6 +139,8 @@ export async function POST(req: NextRequest) {
               email: attendee.email,
             }
           );
+
+          console.log(attendee.email, "attendee email");
 
           const resp = await client.sendMail({
             from: {
@@ -183,7 +236,7 @@ export async function POST(req: NextRequest) {
               <a
               href="https://www.zikoro.com/event/${
                 currentEvent.eventAlias
-              }/people/info/${attendee.id}?email=${
+              }/people/info/${attendee.attendeeAlias}?email=${
               attendee?.email
             }&createdAt=${new Date().toISOString()}&isPasswordless=${true}&alias=${
               attendee?.attendeeAlias
@@ -271,7 +324,7 @@ export async function POST(req: NextRequest) {
           </div>
           <!--end-->
             <a
-            href="www.zikoro.com/event/${
+            href="https://www.zikoro.com/event/${
               currentEvent.eventAlias
             }/reception?email=${
               attendee?.email
@@ -400,7 +453,7 @@ export async function POST(req: NextRequest) {
               },
             ],
           });
-          console.log(`Email sent to ${email}:`, resp);
+          console.log(`Email sent to ${attendee.email}:`, resp);
         } catch (error) {
           console.error(`Error sending email to ${attendee.email}:`, error);
         }

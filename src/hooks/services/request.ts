@@ -1,6 +1,7 @@
 import { toast } from "@/components/ui/use-toast";
 import { getRequest, postRequest } from "@/utils/api";
 import { useEffect, useState } from "react";
+import { deleteRequest } from "@/utils/api";
 
 type RequestStatus = {
   isLoading: boolean;
@@ -41,6 +42,7 @@ export const useGetData = <TData>(
         throw new Error("Failed to fetch data");
       }
       setData(responseData.data);
+      console.log(responseData.data);
       return responseData.data;
     } catch (error) {
       setError(true);
@@ -50,8 +52,10 @@ export const useGetData = <TData>(
   };
 
   useEffect(() => {
+    console.log("endpoint changed");
     fetchInitial && getData();
-  }, [endpoint]);
+    // }, [endpoint]);
+  }, []);
 
   return {
     data,
@@ -107,4 +111,64 @@ export const useMutateData = <TData, TReturnData = any>(
   };
 
   return { isLoading, error, mutateData };
+};
+
+export const usePostRequest = <T>(endpoint: string) => {
+  const [isLoading, setLoading] = useState<boolean>(false);
+
+  const postData = async ({ payload }: { payload: T }) => {
+    setLoading(true);
+
+    try {
+      const { data, status } = await postRequest<T>({
+        endpoint: endpoint,
+        payload,
+      });
+
+      toast({
+        description: "Creation Attempt Successful",
+      });
+      return data;
+    } catch (error: any) {
+      //
+      toast({
+        description: error?.response?.data?.error,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { postData, isLoading };
+};
+
+export const useDeleteRequest = <T>(endpoint: string) => {
+  const [isLoading, setLoading] = useState<boolean>(false);
+
+  const deleteData = async () => {
+    setLoading(true);
+
+    try {
+      const { data, status } = await deleteRequest<T>({
+        endpoint: endpoint,
+      });
+
+      if (status !== 201) throw data.data;
+      toast({
+        description: " Delete successful",
+      });
+
+      return data.data;
+    } catch (error: any) {
+      toast({
+        description: error?.response?.data?.error,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { deleteData, isLoading };
 };

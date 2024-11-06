@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
         .from('blog')
         .select()
         .eq( 'status', 'publish')
-        .eq('category', 'product')
+        .eq('category', 'Product')
   
         if (error) throw error;
   
@@ -38,3 +38,5 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Method not allowed" });
     }
   }
+
+export const dynamic = "force-dynamic";

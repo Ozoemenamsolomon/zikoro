@@ -11,6 +11,7 @@ import { isDateGreaterThanToday } from "@/utils";
 import { PlusCircleFill } from "styled-icons/bootstrap";
 import { CircleMinus } from "styled-icons/fa-solid";
 import { useFieldArray } from "react-hook-form";
+import { RiLock2Line } from "react-icons/ri";
 import {
   Form,
   FormField,
@@ -102,6 +103,7 @@ export function BookEvent({
   const { sendTransactionDetail } = useTransactionDetail();
   const [chosenAttendee, setChosenAttendee] = useState<TChosenAttendee[]>([]);
   const [description, setDescription] = useState("");
+  const [isNotSelectedTicket, setIsNoteSelectedTicket] = useState(false)
   const form = useForm<z.infer<typeof eventBookingValidationSchema>>({
     resolver: zodResolver(eventBookingValidationSchema),
     defaultValues: {},
@@ -199,7 +201,7 @@ export function BookEvent({
   const pricingArray = useMemo(() => {
     if (Array.isArray(event?.pricing)) {
       return event?.pricing?.map(
-        ({ price, validity, ticketQuantity, attendeeType, description }) => {
+        ({ price, validity, ticketQuantity, attendeeType, description, accessibility }) => {
           let discountPrice = 0;
           if (!price || Number(price) === 0) {
             discountPrice = 0;
@@ -223,6 +225,7 @@ export function BookEvent({
                   100
                 : 0,
             attendeeType,
+            accessibility,
           };
         }
       );
@@ -406,7 +409,7 @@ export function BookEvent({
     return result;
   }
 
-  //
+  
 
   function formatTicketPrice(attendees: TChosenAttendee[]): TChosenTicket[] {
     // init a Map to hold the sum of prices for each ticketType
@@ -443,6 +446,11 @@ export function BookEvent({
     return result;
   }
 
+  // useEffect(() => {
+  //   if (chosenAttendee.length === 0) {
+  //     setIsNoteSelectedTicket(true)
+  //   }
+  // },[chosenAttendee])
   return (
     <>
       <div
@@ -558,7 +566,7 @@ export function BookEvent({
                 )}
               </div>
 
-              <div className="w-full lg:h-[510px] pb-32 space-y-5 no-scrollbar lg:overflow-y-auto">
+              <div className="w-full lg:h-[480px] pb-32 space-y-5 no-scrollbar lg:overflow-y-auto">
                 <div className="grid grid-cols-1 gap-6  items-center w-full">
                   {Array.isArray(pricingArray) &&
                     pricingArray &&
@@ -572,14 +580,21 @@ export function BookEvent({
                               // selectedPrice(v?.price);
                               // selectedPriceCategory(v?.attendeeType);
                             }}
-                            disabled={isDateGreaterThanToday(v?.validity)}
+                            disabled={isDateGreaterThanToday(v?.validity) || !v?.accessibility}
                             className={cn(
                               "flex flex-col group relative rounded-lg mt-3 items-start justify-between  border p-4 h-[7.5rem] w-full",
-                              isDateGreaterThanToday(v?.validity)
+                              isDateGreaterThanToday(v?.validity) 
                                 ? ""
                                 : "hover:border-basePrimary border-gray-300"
                             )}
                           >
+                             {(isDateGreaterThanToday(v?.validity) || !v?.accessibility) && (
+                              <div className="w-full h-full absolute rounded-lg z-40 flex items-center justify-center inset-0 bg-white/50">
+                                <p className="flex items-center gap-x-2 text-red-300 transform rotate-[30deg]">
+                                  <RiLock2Line size={24}/>
+                                  <span className="text-base sm:text-xl font-medium">Locked</span></p>
+                              </div>
+                            )}
                             {v?.discountPercentage &&
                             v?.discountPercentage > 0 ? (
                               <p
@@ -589,9 +604,7 @@ export function BookEvent({
                               >{`${v?.discountPercentage.toFixed(0)}%`}</p>
                             ) : null}
 
-                            {isDateGreaterThanToday(v?.validity) && (
-                              <div className="w-full h-full absolute inset-0 bg-white/50"></div>
-                            )}
+                           
                             <div className="flex items-center justify-between w-full">
                               <div className="flex flex-col items-start justify-start">
                                 <p className="font-medium text-base">
@@ -673,11 +686,13 @@ export function BookEvent({
                                     onClick={(e) => {
                                       e.stopPropagation();
                                       e.preventDefault();
+                                      
                                       addChosenAttendee(
                                         v?.attendeeType,
                                         v?.price,
                                         index
                                       );
+                                      setIsNoteSelectedTicket(false)
                                     }}
                                     className={cn(
                                       "px-0 h-fit w-fit text-basePrimary"
@@ -700,13 +715,13 @@ export function BookEvent({
                   }}
                   className="w-full flex flex-col gap-y-2 items-start justify-start"
                 >
-                  <div className="w-full space-y-1">
+                {  <div className="w-full space-y-1">
                     <div className="w-full flex items-center ">
                       <input
                         type="text"
                         value={code}
                         onChange={(e) => setCode(e.target.value)}
-                        placeholder="Enter a valid discount code"
+                        placeholder="Enter a valid discount code (optional)"
                         className="bg-transparent h-14 rounded-l-md px-3 outline-none placeholder:text-gray-300 border border-gray-300 w-[75%]"
                       />
                       <Button
@@ -720,15 +735,23 @@ export function BookEvent({
                     <p className="text-tiny text-gray-500">
                       Discount code is case sensitive
                     </p>
-                  </div>
+                  </div>}
                 </div>
-           <div className="w-full inset-x-0 md:bg-white md:p-2 md:absolute bottom-0 md:h-32">
+           <div className="w-full inset-x-0 flex flex-col items-center justify-center md:bg-white md:p-2 md:absolute bottom-0 md:h-32">
+           {isNotSelectedTicket && <p className="text-red-500 text-sm font-medium">You must select a ticket type to continue</p>}
            <Button
                   disabled={
-                    chosenAttendee?.length === 0 || pathname.includes("preview")
+                   pathname.includes("preview")
                   }
                   type="submit"
-                  onClick={() => setActive(2)}
+                  onClick={() => {
+                    if (chosenAttendee?.length === 0) {
+                      setIsNoteSelectedTicket(true)
+                      return 
+                    }
+                    setActive(2)
+                  
+                  }}
                   className={cn(
                     "h-14 w-full gap-x-2 bg-basePrimary hover:bg-opacity-90 transition-all duration-300 ease-in-out transform text-white font-medium",
                     (chosenAttendee?.length === 0 ||

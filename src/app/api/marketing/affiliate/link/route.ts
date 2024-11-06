@@ -1,8 +1,10 @@
+
 import { NextRequest, NextResponse } from "next/server";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { convertDateFormat } from "@/utils/date";
 import { generateAlphanumericHash } from "@/utils/helpers";
+import { TEventTransaction } from "@/types";
 
 export async function POST(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
@@ -148,20 +150,23 @@ export async function GET(req: NextRequest) {
   if (req.method === "GET") {
     try {
       const { searchParams } = new URL(req.url);
+      const isUsed = searchParams.get("isUsed");
       const userId = searchParams.get("userId");
       const eventId = searchParams.get("eventId");
 
       // Query for affiliateLinks with optional filters
       const affiliateLinksQuery = supabase
         .from("affiliateLinks")
-        .select("*, affiliate!inner(*)")
-        .eq("isUsed", true);
+        .select("*, affiliate!inner(*)");
 
+      if (isUsed) affiliateLinksQuery.eq("isUsed", !!isUsed);
       if (eventId) affiliateLinksQuery.eq("eventId", eventId);
       if (userId) affiliateLinksQuery.eq("userId", userId);
 
       const { data: affiliateLinksData, error: affiliateLinksError } =
         await affiliateLinksQuery;
+
+      console.log(affiliateLinksData, !!isUsed);
 
       if (affiliateLinksError) throw affiliateLinksError;
 
@@ -180,13 +185,41 @@ export async function GET(req: NextRequest) {
 
       if (eventTransactionsError) throw eventTransactionsError;
 
-      // Combine the results based on affiliateLinkId
-      const combinedData = affiliateLinksData.map((link) => ({
-        ...link,
-        eventTransactions: eventTransactionsData.filter(
-          (transaction) => transaction.affiliateCode === link.linkCode
-        ),
-      }));
+      const combinedData = await Promise.all(
+        affiliateLinksData.map(async (link) => {
+          const eventTransactions = await Promise.all(
+            eventTransactionsData
+              .filter(
+                (transaction) => transaction.affiliateCode === link.linkCode
+              )
+              .map(async (eventTransaction: TEventTransaction) => {
+                const attendeeEmails =
+                  eventTransaction.attendeesDetails?.map(
+                    ({ email }) => email
+                  ) || [];
+
+                console.log(attendeeEmails, "ëmails");
+
+                const { data, error } = await supabase
+                  .from("attendees")
+                  .select("*")
+                  .in("email", attendeeEmails)
+                  .eq("eventAlias", eventTransaction.eventAlias);
+
+                if (error || !data) {
+                  return { ...eventTransaction, attendeesDetails: [] };
+                }
+
+                return { ...eventTransaction, attendeesDetails: data };
+              })
+          );
+
+          return {
+            ...link,
+            eventTransactions,
+          };
+        })
+      );
 
       return NextResponse.json(
         { data: combinedData },

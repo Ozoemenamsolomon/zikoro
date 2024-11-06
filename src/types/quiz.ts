@@ -1,4 +1,4 @@
-import * as z from "zod";
+import {z} from "zod";
 import { quizQuestionSchema } from "@/schemas";
 import { TAttendee } from ".";
 import { AvatarFullConfig } from "react-nice-avatar";
@@ -13,6 +13,7 @@ export interface TLiveQuizParticipant {
   email?: string;
   phone?: string;
   attemptedQuiz?: TQuiz<TRefinedQuestion[]>;
+  formResponseAlias?: string | null;
 }
 export type TQuizParticipant = {
   id: string;
@@ -23,6 +24,7 @@ export type TQuizParticipant = {
   email?: string;
   phone?: string;
   attemptedQuiz?: TQuiz<any[]>;
+  formResponseAlias?: string | null;
 };
 export interface TQuiz<T> {
   id: number;
@@ -33,6 +35,7 @@ export interface TQuiz<T> {
   liveMode: any;
   description: string;
   interactionType: string;
+  formAlias?: string;
   coverImage: string;
   branding: { poweredBy: boolean; eventName: boolean };
   questions: T;
@@ -53,6 +56,7 @@ export interface TQuiz<T> {
     isCollectEmail: boolean;
     showAnswer: boolean;
     showResult: boolean;
+    isForm:boolean;
   };
 }
 

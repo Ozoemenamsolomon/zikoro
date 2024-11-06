@@ -8,10 +8,12 @@ import {
   useDeleteQuizLobby,
   useFetchSingleEvent,
   useGetAnswer,
+  useUpdateQuiz,
+  useGetLiveParticipant
 } from "@/hooks";
 import { useState, useEffect, useMemo } from "react";
 import { AvatarFullConfig } from "react-nice-avatar";
-import { TQuiz, TQuestion, TAnswer } from "@/types";
+import { TQuiz, TQuestion, TAnswer,TLiveQuizParticipant  } from "@/types";
 import { generateAlias } from "@/utils";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
@@ -20,6 +22,7 @@ import { PlayersOnboarding } from "../presentation/Presentation";
 import { PollQuestion } from "./_components/PollQuestion";
 import { SendMailModal } from "../presentation/attendee/SendMailModal";
 import { AnswerSheet } from "./_components/AnswerSheet";
+import { useSearchParams } from "next/navigation";
 type TPlayerDetail = {
   phone: string;
   email: string;
@@ -31,6 +34,7 @@ const supabase = createClientComponentClient();
 export default function PollPresentation({
   eventId,
   quizId,
+  
 }: {
   eventId: string;
   quizId: string;
@@ -44,7 +48,8 @@ export default function PollPresentation({
   const { isOrganizer, attendeeId, attendee, loading, isLoading } =
     useVerifyUserAccess(eventId); // verify user
   const { data } = useFetchSingleEvent(eventId);
-  const { isIdPresent, eventLoading } = useCheckTeamMember({ eventId }); // verify team member
+  const [isRightBox, setRightBox] = useState(false);
+  const { isIdPresent } = useCheckTeamMember({ eventId }); // verify team member
   const [isLeftBox, setLeftBox] = useState(true); // state to toggle ad visibility
   const [isLobby, setisLobby] = useState(false); // state to show the attendee's or player's lobby
   const { answers, getAnswers, setAnswers } = useGetQuizAnswer(); // hook to fetch all poll answers
@@ -56,13 +61,18 @@ export default function PollPresentation({
     useState<Required<AvatarFullConfig> | null>(null);
   // quiz result stores the state for quiz that is currently being answered by the attendee (for attendees only)
   const [pollResult, setPollResult] = useState<TQuiz<TQuestion[]> | null>(null);
-
+  const { updateQuiz, isLoading: isUpdating } = useUpdateQuiz();
+  const params = useSearchParams()
+  const query = params.get("redirect")
+  const aId = params.get("id")
   const [playerDetail, setPlayerDetail] = useState<TPlayerDetail>({
     phone: "",
     email: "",
     nickName: attendee?.firstName || "",
   });
-  // const player = getCookie<TConnectedUser>("player");
+  const { liveQuizPlayers, setLiveQuizPlayers, getLiveParticipant } = useGetLiveParticipant({
+    quizId: quizId,
+  });
 
   const [refinedPollArray, setRefinedPollArray] = useState<TQuiz<
     TQuestion[]
@@ -93,6 +103,45 @@ export default function PollPresentation({
     };
   }, [supabase, poll, isIdPresent, isOrganizer]);
 
+  function createBeep() {
+    if (typeof window !== "undefined") {
+      const audio = new Audio("/audio/beep.wav");
+      //  audio.src = "audio/AylexCinematic.mp3";
+
+      audio.volume = 0.2;
+
+      audio.play();
+    }
+  }
+
+    // subscribe to player
+    useEffect(() => {
+      if (!poll?.accessibility?.live) return;
+      const channel = supabase
+        .channel("live-players")
+        .on(
+          "postgres_changes",
+          {
+            event: "INSERT",
+            schema: "public",
+            table: "quizLobby",
+            filter: `quizAlias=eq.${poll?.quizAlias}`,
+          },
+          (payload) => {
+            // console.log("new", payload.new);
+            setLiveQuizPlayers((prev) => [
+              ...prev,
+              payload.new as TLiveQuizParticipant,
+            ]);
+            createBeep();
+          }
+        )
+        .subscribe();
+  
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    }, [supabase, poll]);
   // subscribe to answers
   useEffect(() => {
     if (!poll?.accessibility?.live) return;
@@ -119,6 +168,8 @@ export default function PollPresentation({
 
   // generate a unique id for player
   const id = useMemo(() => {
+    //TODO if redirect, return;
+    if (query) return aId!;
     return generateAlias();
   }, []);
 
@@ -148,9 +199,9 @@ export default function PollPresentation({
     setIsNotStarted(true);
   }
 
-  function onCloseScoreSheet() {
-    setShowScoreSheet(false);
-  }
+  // function onCloseScoreSheet() {
+  //   setShowScoreSheet(false);
+  // }
 
   function onOpenScoreSheet() {
     setShowScoreSheet(true);
@@ -161,7 +212,7 @@ export default function PollPresentation({
     setIsSendMailModal(false);
     setShowScoreSheet(true);
   }
-  console.log("ileft", isLeftBox);
+
   // show score sheet after live quiz
   useEffect(() => {
     (async () => {
@@ -189,11 +240,24 @@ export default function PollPresentation({
     setPollResult(quiz);
   }
 
-  console.log("ansers", answers);
+  // reset the poll
+  async function closeAnswerSheet() {
+    const payload = {
+      ...poll,
+      liveMode: {
+        isStarted: false,
+        isEnded: false,
+      },
+    };
+    await updateQuiz({ payload });
+    setShowScoreSheet(false);
+    setIsNotStarted(true);
+    window.open(window.location.href, "_self");
+  }
 
   return (
     <div className="w-full">
-      {poll && !loading && !isLoading && !eventLoading ? (
+      {poll && !loading && !isLoading ? (
         <>
           {showScoreSheet ? (
             <>
@@ -210,28 +274,26 @@ export default function PollPresentation({
                 <AnswerSheet
                   poll={pollResult} // change it to pull
                   answers={answers}
-                  close={() => {
-                    setShowScoreSheet(false);
-                    setIsNotStarted(true);
-                    window.open(window.location.href, "_self");
-                  }}
+                  close={closeAnswerSheet}
+                  isAttendee={!isOrganizer && !isIdPresent}
                 />
               )}
             </>
           ) : (
             <>
               {isNotStarted && poll ? (
-                <div className="w-full grid grid-cols-8 bg-white items-center h-full">
+                <div className="w-full grid grid-cols-8  items-center h-full">
                   {(isIdPresent || isOrganizer) && isLobby && (
                     <Advert
                       quiz={poll}
                       eventName={data?.eventTitle ?? ""}
                       isRightBox={false}
                       isLeftBox={isLeftBox}
-                      close={onClose}
+                      close={onToggle}
                     />
                   )}
                   <PlayersOnboarding
+                    refetchLobby={getLiveParticipant}
                     attendee={attendee}
                     close={close}
                     isAttendee={!isIdPresent && !isOrganizer}
@@ -245,33 +307,48 @@ export default function PollPresentation({
                     setisLobby={setisLobby}
                     chosenAvatar={chosenAvatar}
                     setChosenAvatar={setChosenAvatar}
+                    onToggle={onToggle}
+                    isLeftBox={isLeftBox}
+                    liveQuizPlayers={liveQuizPlayers}
                   />
                 </div>
               ) : (
-                <div className="w-full mx-auto absolute px-4 sm:px-6 bg-white inset-x-0 top-10 grid md:grid-cols-11 h-[90vh] overflow-hidden items-start">
+                <div className="w-full mx-auto absolute px-4 sm:px-6  inset-x-0 top-10 grid md:grid-cols-11 h-[90vh] overflow-hidden items-start">
                   {(isIdPresent || isOrganizer) && poll && (
                     <Advert
                       quiz={poll}
+                      isFromPoll
                       eventName={data?.eventTitle ?? ""}
-                      isRightBox={false}
+                      isRightBox={isRightBox}
                       isLeftBox={isLeftBox}
-                      close={onClose}
+                      close={() => {
+                        if (isRightBox) {
+                          setRightBox(false);
+                        } else {
+                          onToggle();
+                        }
+                      }}
                     />
                   )}
                   <PollQuestion
                     isLeftBox={isLeftBox}
+                    isRightBox={isRightBox}
+                    toggleRightBox={() => setRightBox(true)}
                     answer={answer}
                     quizAnswer={answers}
                     getAnswer={getAnswer}
                     refetchQuiz={getPoll}
                     refetchQuizAnswers={getAnswers}
                     poll={poll || refinedPollArray}
-                    toggleLeftBox={onClose}
+                    actualPoll={poll}
+                    getLiveParticipant={getLiveParticipant}
+                    toggleLeftBox={onToggle}
                     onOpenScoreSheet={onOpenScoreSheet}
                     goBack={exitPoll}
                     updateQuiz={updatePoll}
                     updateQuizResult={updatePollResult}
                     pollParticipantId={id}
+                    liveQuizPlayers={liveQuizPlayers}
                     attendeeDetail={{
                       attendeeId: attendeeId ? String(attendeeId) : null,
                       attendeeName: playerDetail?.nickName,

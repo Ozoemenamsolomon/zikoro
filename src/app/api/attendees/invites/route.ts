@@ -129,8 +129,7 @@ export async function POST(req: NextRequest) {
   </p>
   <div style="display: flex; gap: 10px">
     <a
-      href="http://${
-        process.env.NEXT_PUBLIC_HOME_URL +
+      href="https://zikoro.com${
         "/live-events/" +
         eventAlias +
         "?trackingId=" +
@@ -161,10 +160,8 @@ export async function POST(req: NextRequest) {
       </p>
     </a>
     <a
-      href="http://${
-        process.env.NEXT_PUBLIC_HOME_URL +
-        "/api/attendees/invites/reject?trackingId=" +
-        trackingId
+      href="https://zikoro.com${
+        "/api/attendees/invites/reject?trackingId=" + trackingId
       }"
       style="
         width: 100%;
