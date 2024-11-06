@@ -1,6 +1,5 @@
 "use client";
 import {
-  TEngagementFormAnswer,
   TEngagementFormQuestion,
   TFormattedEngagementFormAnswer,
 } from "@/types/engagements";
@@ -139,13 +138,16 @@ export default function FormResponses({
         //   }
         // );
 
-        // const result = [newHeaders, ...groupedResponses];
-        const results = data?.map((item) => {
+      // Define all possible keys based on unique questions and/or images
+const csvHeaders = [...new Set(data.map(item => item?.question || item?.questionImage || "Unknown"))];
 
-          return {
-            [item?.question || item?.questionImage || "Unknown"] : item?.response
-          }
-        })
+// Map data to an object with consistent keys for CSV output
+const results = data.map(item => {
+  return csvHeaders.reduce((acc, header) => {
+    acc[header] = item.question === header || item.questionImage === header ? item.response : '';
+    return acc;
+  }, {});
+});
         return results;
       }
 

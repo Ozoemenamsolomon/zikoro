@@ -31,7 +31,7 @@ export function RatingTypeAnswer({
     form.setValue(`responses.${index}.questionId`, questionId);
   }
   return (
-    <div className="w-full shadow border grid grid-cols-1 gap-4 h-fit rounded-lg p-4">
+    <div className="w-full  border grid grid-cols-1 gap-4 h-fit rounded-lg p-4">
      <div className="w-full space-y-1 p-2 ">
         {question && (
           <p className="w-full text-start leading-7 flex ">
