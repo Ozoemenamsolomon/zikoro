@@ -192,7 +192,7 @@ function AttendeeFillFormComp({
   }, [data, fields, currentIndexes]);
 
   // console.log(form.getValues());
-  console.log("uiop", currentQuestions);
+ // console.log("uiop", currentQuestions);
 
   useEffect(() => {
     if (data) {
@@ -234,6 +234,7 @@ function AttendeeFillFormComp({
         <h2
           style={{
             fontSize: data?.formSettings?.titleFontSize + "px" || "30px",
+            lineHeight:(1.3 * parseInt(data?.formSettings?.titleFontSize)) + "px" || "40px",
           }}
           className="text-lg mb-3 sm:text-xl lg:text-2xl"
         >

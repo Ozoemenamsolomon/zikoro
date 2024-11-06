@@ -108,37 +108,45 @@ export default function FormResponses({
       function transformToQuestionAnswerArray(
         data: TFormattedEngagementFormAnswer[]
       ) {
-        const questionIds = Array.from(
-          new Set(data.map((item) => item.questionId))
-        );
+      //  const questionIds = data.map((item) => item.questionId)
+       
+       
 
-        const groupedResponses: { [key: string]: any }[] = [];
-        const attendeeGroups = data.reduce((acc, item) => {
-          const attendeeId = item.attendeeAlias;
-          if (!acc[attendeeId]) acc[attendeeId] = {};
-          acc[attendeeId][item.questionId] = item.response || "";
-          return acc;
-        }, {} as { [attendeeAlias: string]: { [questionId: string]: any } });
+        // const groupedResponses: { [key: string]: any }[] = [];
+        // const attendeeGroups = data.reduce((acc, item) => {
+        //   const attendeeId = item.attendeeAlias;
+        //   if (!acc[attendeeId]) acc[attendeeId] = {};
+        //   acc[attendeeId][item.questionId] = item.response || "";
+        //   return acc;
+        // }, {} as { [attendeeAlias: string]: { [questionId: string]: any } });
 
-        for (const attendeeId in attendeeGroups) {
-          const responseRow = questionIds.map(
-            (questionId) => attendeeGroups[attendeeId][questionId] || ""
-          );
-          groupedResponses.push(responseRow);
-        }
+        // for (const attendeeId in attendeeGroups) {
+        //   const responseRow = questionIds.map(
+        //     (questionId) => attendeeGroups[attendeeId][questionId] || ""
+        //   );
+        //   groupedResponses.push(responseRow);
+        // }
 
-        const newHeaders = questionIds?.map(
-          (v) =>
-          {
-            const q =  questions?.questions?.find((i) => i.questionId === v)?.question
-            const qimg =  questions?.questions?.find((i) => i.questionId === v)?.questionImage
-            return   q || qimg || ""
+        // const newHeaders = questionIds?.map(
+        //   (v) =>
+        //   {
+        //     const q =  questions?.questions?.find((i) => i.questionId === v)?.question
+        //     const qimg =  questions?.questions?.find((i) => i.questionId === v)?.questionImage
+        //     const filtered = data?.map((i) => i?.questionId === v)
+        //     return {
+        //       [q|| qimg ||"unknown"]:""
+        //     }
+        //   }
+        // );
+
+        // const result = [newHeaders, ...groupedResponses];
+        const results = data?.map((item) => {
+
+          return {
+            [item?.question || item?.questionImage || "Unknown"] : item?.response
           }
-        );
-
-        const result = [newHeaders, ...groupedResponses];
-
-        return result;
+        })
+        return results;
       }
 
       const transformedData = transformToQuestionAnswerArray(flattenedResponse);

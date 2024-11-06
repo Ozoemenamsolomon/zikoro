@@ -87,18 +87,18 @@ const optionsType = [
 //  { name: "Likert", type: "INPUT_LIKERT" },
 
 // Block DnD event propagation if element have "data-no-dnd" attribute
-const handler = ({ nativeEvent: event }: MouseEvent | TouchEvent) => {
-  let cur = event.target as HTMLElement;
+// const handler = ({ nativeEvent: event }: MouseEvent | TouchEvent) => {
+//   let cur = event.target as HTMLElement;
 
-  while (cur) {
-      if (cur.dataset && cur.dataset.noDnd) {
-          return false;
-      }
-      cur = cur.parentElement as HTMLElement;
-  }
+//   while (cur) {
+//       if (cur.dataset && cur.dataset.noDnd) {
+//           return false;
+//       }
+//       cur = cur.parentElement as HTMLElement;
+//   }
 
-  return true;
-};
+//   return true;
+// };
 // class MouseSensor extends LibMouseSensor {
 //   static activators = [{ eventName: 'onMouseDown', handler }] as typeof LibMouseSensor['activators'];
 // }

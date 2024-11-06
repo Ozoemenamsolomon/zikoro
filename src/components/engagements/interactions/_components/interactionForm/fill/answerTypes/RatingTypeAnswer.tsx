@@ -56,7 +56,7 @@ export function RatingTypeAnswer({
           />
         </div>
       )}
-      <div className="w-full flex items-center gap-x-2 justify-center">
+      <div className="w-full flex flex-wrap items-center gap-x-2 justify-center">
         {Array.from({ length: optionFields as number })?.map((v, index) => (
           <button
             onClick={(e) => {
@@ -71,9 +71,9 @@ export function RatingTypeAnswer({
             )}
           >
             {index + 1 <= rating ? (
-              <StarFullOutline size={40} />
+              <StarFullOutline size={24} />
             ) : (
-              <Star size={40} />
+              <Star size={24} />
             )}
           </button>
         ))}
