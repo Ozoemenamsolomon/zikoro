@@ -19,6 +19,22 @@ export async function POST(req: NextRequest) {
         );
       }
 
+      if (error) throw error;
+
+// if (params?.accessibility?.agendaId) {
+
+ 
+//   const { error: fetchError } = await supabase
+//   .from("agenda")
+//   .update([
+//     {
+//       ...params,
+//     },
+//   ])
+//   .eq("sessionAlias", params?.accessibility?.agendaId)
+
+
+// }
  
 
       return NextResponse.json(

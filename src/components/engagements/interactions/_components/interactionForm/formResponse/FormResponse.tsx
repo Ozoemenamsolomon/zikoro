@@ -1,5 +1,8 @@
 "use client";
-import { TFormattedEngagementFormAnswer } from "@/types/engagements";
+import {
+  TEngagementFormQuestion,
+  TFormattedEngagementFormAnswer,
+} from "@/types/engagements";
 import { InlineIcon } from "@iconify/react";
 import {
   CheckBoxTypeResponse,
@@ -21,13 +24,13 @@ interface FormResponseProps {
       }
     | undefined;
   flattenedResponse: TFormattedEngagementFormAnswer[];
+  questions: TEngagementFormQuestion;
 }
 export default function FormResponses({
   data,
   flattenedResponse,
+  questions,
 }: FormResponseProps) {
- 
-
   const inputMultiChoiceCheckBox = useMemo(() => {
     const checkData: { key: TFormattedEngagementFormAnswer[] }[] = [];
     if (data) {
@@ -99,9 +102,9 @@ export default function FormResponses({
     );
   }
 
-
   async function downloadCsv() {
     try {
+ 
       const csv = json2csv(flattenedResponse);
       const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
 
@@ -112,15 +115,12 @@ export default function FormResponses({
   }
   return (
     <div className="w-full px-4 mx-auto max-w-[1300px] text-mobile sm:text-sm sm:px-6 mt-4 sm:mt-6">
-     <div className="w-full mb-4 flex items-end justify-end">
-     <Button
-        onClick={downloadCsv}
-        className="w-fit  gap-x-1 items-center"
-      >
-        <p>Export</p>
-        <InlineIcon icon="lets-icons:export-duotone" fontSize={22}/>
-      </Button>
-     </div>
+      <div className="w-full mb-4 flex items-end justify-end">
+        <Button onClick={downloadCsv} className="w-fit  gap-x-1 items-center">
+          <p>Export</p>
+          <InlineIcon icon="lets-icons:export-duotone" fontSize={22} />
+        </Button>
+      </div>
       {Object.entries(data).map(([key, value]) => (
         <div
           key={Math.random()}

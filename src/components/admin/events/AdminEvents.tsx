@@ -15,11 +15,10 @@ import { AboutWidget, EventLocationType } from "@/components/composables";
 import { TOrgEvent } from "@/types";
 import { PublishCard } from "@/components/composables";
 import { PreviewModal } from "../../contents/_components/modal/PreviewModal";
-import { Suspense, useMemo, useState } from "react";
-import { useFormatEventData, usePublishEvent, getCookie } from "@/hooks";
+import {  useMemo, useState } from "react";
+import { useFormatEventData, usePublishEvent } from "@/hooks";
 import { Download } from "styled-icons/bootstrap";
 import { Eye } from "styled-icons/feather";
-import { useSearchParams } from "next/navigation";
 import { EmptyCard } from "../../composables";
 import useUserStore from "@/store/globalUserStore";
 import { ExternalLink } from "styled-icons/feather";
@@ -101,7 +100,7 @@ function EventCard({
       user: userData?.userEmail,
     };
 
-    const { organization, ...remainingData }: any = event;
+    const { organization, attendees, ...remainingData }: any = event;
     await update({
       payload: {
         ...remainingData,

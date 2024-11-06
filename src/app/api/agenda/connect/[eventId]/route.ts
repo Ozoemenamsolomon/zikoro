@@ -6,28 +6,29 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { eventId: string } }
 ) {
-
   const supabase = createRouteHandlerClient({ cookies });
 
-  const { eventId } = params;
-
   if (req.method === "GET") {
+   const {eventId} = params
 
     try {
-
       const { data, error, status } = await supabase
-        .from("attendees")
+        .from("agenda")
         .select("*")
-        .eq("eventAlias", eventId);
+        .eq("eventAlias", eventId)
+      
 
-        if (error) {
-            return NextResponse.json(
-              { error: error?.message },
-              {
-                status: 400,
-              }
-            );
+      // 
+      if (error) {
+        return NextResponse.json(
+          {
+            error,
+          },
+          {
+            status: 400,
           }
+        );
+      }
 
       if (error) throw error;
 
