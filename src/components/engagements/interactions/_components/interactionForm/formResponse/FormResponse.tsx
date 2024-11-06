@@ -105,44 +105,8 @@ export default function FormResponses({
 
   async function downloadCsv() {
     try {
-      function transformToQuestionAnswerArray(
-        data: TFormattedEngagementFormAnswer[]
-      ) {
-        const questionIds = Array.from(
-          new Set(data.map((item) => item.questionId))
-        );
-
-        const groupedResponses: { [key: string]: any }[] = [];
-        const attendeeGroups = data.reduce((acc, item) => {
-          const attendeeId = item.attendeeAlias;
-          if (!acc[attendeeId]) acc[attendeeId] = {};
-          acc[attendeeId][item.questionId] = item.response || "";
-          return acc;
-        }, {} as { [attendeeAlias: string]: { [questionId: string]: any } });
-
-        for (const attendeeId in attendeeGroups) {
-          const responseRow = questionIds.map(
-            (questionId) => attendeeGroups[attendeeId][questionId] || ""
-          );
-          groupedResponses.push(responseRow);
-        }
-
-        const newHeaders = questionIds?.map(
-          (v) =>
-          {
-            const q =  questions?.questions?.find((i) => i.questionId === v)?.question
-            const qimg =  questions?.questions?.find((i) => i.questionId === v)?.questionImage
-            return   q || qimg || ""
-          }
-        );
-
-        const result = [newHeaders, ...groupedResponses];
-
-        return result;
-      }
-
-      const transformedData = transformToQuestionAnswerArray(flattenedResponse);
-      const csv = json2csv(transformedData);
+ 
+      const csv = json2csv(flattenedResponse);
       const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
 
       saveAs(blob, "response.csv");
