@@ -21,6 +21,7 @@ import {
   useFetchPartners,
   useCreateAgenda,
   useUpdateAgenda,
+  useGetQuizzes,
 } from "@/hooks";
 import { useEffect, useMemo, useState } from "react";
 import { TAttendee, TExPartner, TAgenda, TPartner } from "@/types";
@@ -34,6 +35,8 @@ import { PlusCircle } from "styled-icons/bootstrap";
 import { nanoid } from "nanoid";
 import { formatFileSize, generateAlias, uploadFile } from "@/utils";
 import { FilePdf } from "styled-icons/fa-regular";
+import { TEngagementFormQuestion } from "@/types/engagements";
+import { useGetData } from "@/hooks/services/request";
 
 type TSessionFile<T> = {
   size: string;
@@ -64,6 +67,10 @@ export function AddSession({
   const { updateAgenda } = useUpdateAgenda();
   const [loading, setLoading] = useState(false);
   const [chosenModerators, setChosenModerators] = useState<TAttendee[]>([]);
+  const { quizzes } = useGetQuizzes(eventId);
+  const { data: forms } = useGetData<TEngagementFormQuestion[]>(
+    `/engagements/${eventId}/form`
+  );
   const [chosenSpeakers, setChosenSpeakers] = useState<TAttendee[]>([]);
   const [chosenSponsors, setChosenSponsors] = useState<any[]>([]); // don't forget to resolve the type issue here
   const [chosenFiles, setChosenFiles] = useState<TSessionFile<File | string>[]>(
@@ -118,7 +125,6 @@ export function AddSession({
       };
     });
   }, [attendees]);
-
 
   // session tracks
   const formattedSessions = useMemo(() => {
@@ -241,6 +247,22 @@ export function AddSession({
   async function onSubmit(values: z.infer<typeof sessionSchema>) {
     if (isNotSameDay) return;
 
+    let engagementType = null;
+    if (
+      Array.isArray(quizzes) ||
+      Array.isArray(forms) ||
+      values?.engagementAlias
+    ) {
+      const filteredQuizzes =
+        quizzes?.filter((quiz) => !quiz?.accessibility?.disable) || [];
+      const filteredForms = forms?.filter((form) => !form?.isActive) || [];
+
+      const fq = filteredQuizzes?.find(
+        (v) => v?.quizAlias === values?.engagementAlias
+      )?.interactionType;
+      engagementType = fq || "form" || null;
+    }
+
     let files: TSessionFile<string>[] = [];
     setLoading(true);
     if (chosenFiles?.length > 0) {
@@ -280,6 +302,7 @@ export function AddSession({
           sessionFiles: files,
           eventAlias: event?.eventAlias,
           eventId: String(event?.id),
+          engagementType,
         }
       : {
           ...values,
@@ -291,8 +314,9 @@ export function AddSession({
           sessionAlias,
           eventAlias: event?.eventAlias,
           eventId: String(event?.id),
+          engagementType,
         };
-    // console.log("tile", payload)
+
     // return
     const asyncFn = session?.id ? updateAgenda : createAgenda;
     await asyncFn({ payload });
@@ -344,10 +368,58 @@ export function AddSession({
     }
   }, [session]);
 
+  const engagements = useMemo(() => {
+    if (Array.isArray(quizzes) || Array.isArray(forms)) {
+      const filteredQuizzes =
+        quizzes?.filter((quiz) => !quiz?.accessibility?.disable) || [];
+      const filteredForms = forms?.filter((form) => !form?.isActive) || [];
+      const quizSelect = filteredQuizzes?.map((v) => {
+        return {
+          value: v?.quizAlias,
+          label: v?.coverTitle,
+        };
+      });
+      const formSelect = filteredForms?.map((v) => {
+        return {
+          value: v?.formAlias,
+          label: v?.title,
+        };
+      });
+
+      return [...quizSelect, ...formSelect];
+    }
+    return [];
+  }, [quizzes, forms]);
+
+  const prevengagement = useMemo(() => {
+    if ((Array.isArray(quizzes) || Array.isArray(forms)) && session) {
+      const filteredQuizzes =
+        quizzes?.filter((quiz) => !quiz?.accessibility?.disable) || [];
+      const filteredForms = forms?.filter((form) => !form?.isActive) || [];
+      const quizSelect = filteredQuizzes?.map((v) => {
+        return {
+          value: v?.quizAlias,
+          label: v?.coverTitle,
+        };
+      });
+      const formSelect = filteredForms?.map((v) => {
+        return {
+          value: v?.formAlias,
+          label: v?.title,
+        };
+      });
+
+      const newArray = [...quizSelect, ...formSelect];
+
+      return newArray?.find((v) => v?.value === session?.engagementAlias) || "";
+    }
+    return "";
+  }, [quizzes, forms, session]);
+
   return (
     <Portal>
       <div
-      //  onClick={close}
+        //  onClick={close}
         role="button"
         className="w-full h-full fixed inset-0 z-[300] bg-black/50"
       >
@@ -478,18 +550,18 @@ export function AddSession({
                       control={form.control}
                       name="Track"
                       render={({ field }) => (
-                       <InputOffsetLabel label="Track">
-                         <ReactSelect
-                          {...form.register("Track")}
-                          placeHolder="Select Track"
-                          defaultValue={{
-                            value: session?.Track,
-                            label: session?.Track,
-                          }}
-                          label="Track"
-                          options={formattedSessions}
-                        />
-                       </InputOffsetLabel>
+                        <InputOffsetLabel label="Track">
+                          <ReactSelect
+                            {...form.register("Track")}
+                            placeHolder="Select Track"
+                            defaultValue={{
+                              value: session?.Track,
+                              label: session?.Track,
+                            }}
+                            label="Track"
+                            options={formattedSessions}
+                          />
+                        </InputOffsetLabel>
                       )}
                     />
                     <Button
@@ -592,14 +664,14 @@ export function AddSession({
                     control={form.control}
                     name="sessionSpeakers"
                     render={({ field }) => (
-                     <InputOffsetLabel label="Speaker">
-                       <ReactSelect
-                        {...form.register("sessionSpeakers")}
-                        placeHolder="Select Speaker"
-                        label="Speaker"
-                        options={formattedAttendees}
-                      />
-                     </InputOffsetLabel>
+                      <InputOffsetLabel label="Speaker">
+                        <ReactSelect
+                          {...form.register("sessionSpeakers")}
+                          placeHolder="Select Speaker"
+                          label="Speaker"
+                          options={formattedAttendees}
+                        />
+                      </InputOffsetLabel>
                     )}
                   />
 
@@ -632,14 +704,13 @@ export function AddSession({
                     control={form.control}
                     name="sessionModerators"
                     render={({ field }) => (
-                     <InputOffsetLabel label="Moderator">
-                       <ReactSelect
-                        {...form.register("sessionModerators")}
-                        placeHolder="Select Moderator"
-                        
-                        options={formattedAttendees}
-                      />
-                     </InputOffsetLabel>
+                      <InputOffsetLabel label="Moderator">
+                        <ReactSelect
+                          {...form.register("sessionModerators")}
+                          placeHolder="Select Moderator"
+                          options={formattedAttendees}
+                        />
+                      </InputOffsetLabel>
                     )}
                   />
                   <div className="w-full grid grid-cols-2 items-center gap-4">
@@ -671,14 +742,13 @@ export function AddSession({
                     control={form.control}
                     name="sessionSponsors"
                     render={({ field }) => (
-                     <InputOffsetLabel label="Sponsor">
-                       <ReactSelect
-                        {...form.register("sessionSponsors")}
-                        placeHolder="Select Sponsor"
-                      
-                        options={sponsors}
-                      />
-                     </InputOffsetLabel>
+                      <InputOffsetLabel label="Sponsor">
+                        <ReactSelect
+                          {...form.register("sessionSponsors")}
+                          placeHolder="Select Sponsor"
+                          options={sponsors}
+                        />
+                      </InputOffsetLabel>
                     )}
                   />
                   <p className="w-full text-xs col-span-full text-gray-500">
@@ -746,6 +816,20 @@ export function AddSession({
                   </div>
                 </>
               )}
+              <FormField
+                control={form.control}
+                name="engagementAlias"
+                render={({ field }) => (
+                  <InputOffsetLabel label="Connect Engagement">
+                    <ReactSelect
+                      {...form.register("engagementAlias")}
+                      placeHolder="Select Engagement"
+                      defaultValue={prevengagement}
+                      options={engagements}
+                    />
+                  </InputOffsetLabel>
+                )}
+              />
 
               <Button
                 disabled={loading}

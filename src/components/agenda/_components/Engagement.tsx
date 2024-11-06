@@ -97,50 +97,65 @@ export function Engagement({
         </section>
       )}
 
-     { active === 2 &&  <div
-        className=
-          "p-2 lg:p-4 w-full  h-fit bg-gray-100 "
-      >
-        {rating > 0 || isSent ? (
-          <ReviewComment
-            rating={rating}
-            sessionAlias={agenda?.sessionAlias}
-            attendeeId={attendeeId}
-            eventId={id}
-            reviews={reviews}
-            engagementsSettings={engagementsSettings}
-            isSent={isSent}
-            setSent={setSent}
-          />
-        ) : (
-          <div className="w-full flex flex-col p-6 items-start justify-start gap-y-2">
-            <h3 className="text-base sm:text-lg font-semibold">
-              How would you rate this session?
-            </h3>
-            <div className="w-[80%] mx-auto space-y-2">
-              <div className="grid text-gray-500 grid-cols-5 gap-3 w-full">
-                {[1, 2, 3, 4, 5]?.map((v, index) => (
-                  <button
-                    onClick={() => setRating(index + 1)}
-                    key={v}
-                    className={cn(index + 1 <= rating && "text-basePrimary")}
-                  >
-                    {index + 1 <= rating ? (
-                      <StarFullOutline size={40} />
-                    ) : (
-                      <Star size={40} />
-                    )}
-                  </button>
-                ))}
-              </div>
-              <div className="w-full grid grid-cols-2 items-center text-gray-500">
-                <p className="text-xs flex item-start justify-start">Bad</p>
-                <p className="text-xs flex items-end justify-end">Excellent</p>
+      {active === 2 && (
+        <div className="p-2 lg:p-4 w-full  h-fit bg-gray-100 ">
+          {rating > 0 || isSent ? (
+            <ReviewComment
+              rating={rating}
+              sessionAlias={agenda?.sessionAlias}
+              attendeeId={attendeeId}
+              eventId={id}
+              reviews={reviews}
+              engagementsSettings={engagementsSettings}
+              isSent={isSent}
+              setSent={setSent}
+            />
+          ) : (
+            <div className="w-full flex flex-col p-6 items-start justify-start gap-y-2">
+              <h3 className="text-base sm:text-lg font-semibold">
+                How would you rate this session?
+              </h3>
+              <div className="w-[80%] mx-auto space-y-2">
+                <div className="grid text-gray-500 grid-cols-5 gap-3 w-full">
+                  {[1, 2, 3, 4, 5]?.map((v, index) => (
+                    <button
+                      onClick={() => setRating(index + 1)}
+                      key={v}
+                      className={cn(index + 1 <= rating && "text-basePrimary")}
+                    >
+                      {index + 1 <= rating ? (
+                        <StarFullOutline size={40} />
+                      ) : (
+                        <Star size={40} />
+                      )}
+                    </button>
+                  ))}
+                </div>
+                <div className="w-full grid grid-cols-2 items-center text-gray-500">
+                  <p className="text-xs flex item-start justify-start">Bad</p>
+                  <p className="text-xs flex items-end justify-end">
+                    Excellent
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
-        )}
-      </div>}
+          )}
+        </div>
+      )}
+
+      {active === 3 && agenda?.engagementAlias && (
+        <iframe
+          width="100%"
+          height="550"
+          style={{ border: "none", borderRadius: "4px" }}
+          src={
+            agenda?.engagementType === "form"
+              ? `${window.location.origin}/engagements/${agenda?.eventAlias}/form/${agenda?.engagementAlias}`
+              : `${window.location.origin}/${agenda?.engagementType}/${agenda?.eventAlias}/present/${agenda?.engagementAlias}`
+          }
+          className="w-full h-[550px]"
+        ></iframe>
+      )}
       {/** collapsible widgets */}
       <CollapsibleWidget
         title="Speakers"
