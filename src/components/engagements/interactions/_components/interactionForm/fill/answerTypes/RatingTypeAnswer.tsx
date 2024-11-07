@@ -31,7 +31,7 @@ export function RatingTypeAnswer({
     form.setValue(`responses.${index}.questionId`, questionId);
   }
   return (
-    <div className="w-full shadow border grid grid-cols-1 gap-4 h-fit rounded-lg p-4">
+    <div className="w-full  border grid grid-cols-1 gap-4 h-fit rounded-lg p-4">
      <div className="w-full space-y-1 p-2 ">
         {question && (
           <p className="w-full text-start leading-7 flex ">
@@ -56,7 +56,7 @@ export function RatingTypeAnswer({
           />
         </div>
       )}
-      <div className="w-full flex items-center gap-x-2 justify-center">
+      <div className="w-full flex flex-wrap items-center gap-x-2 justify-center">
         {Array.from({ length: optionFields as number })?.map((v, index) => (
           <button
             onClick={(e) => {
@@ -71,9 +71,9 @@ export function RatingTypeAnswer({
             )}
           >
             {index + 1 <= rating ? (
-              <StarFullOutline size={40} />
+              <StarFullOutline size={24} />
             ) : (
-              <Star size={40} />
+              <Star size={24} />
             )}
           </button>
         ))}
