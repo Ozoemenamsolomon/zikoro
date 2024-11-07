@@ -137,10 +137,19 @@ export default function WorkspaceComponent({
 
   useEffect(() => {
     //fetching event categories
-    if (eventData) {
-      const categories: string[] = eventData
+    // if (eventData) {
+    //   const categories: string[] = eventData
+    //     .map((event) => event.eventCategory)
+    //     .filter((category) => category !== null && category !== undefined);
+    //   setFilterCategories(categories);
+    // }
+
+    if (eventData && searchQuery) {
+      const categories = eventData
+        .filter((event) => event.organization.organizationName === searchQuery) // Filter by the name
         .map((event) => event.eventCategory)
         .filter((category) => category !== null && category !== undefined);
+  
       setFilterCategories(categories);
     }
     //fetching event location type
@@ -160,7 +169,7 @@ export default function WorkspaceComponent({
       const cities: string[] = eventData.map((event) => event.eventCity);
       setFilterCity(cities);
     }
-  }, [eventData]);
+  }, [eventData, searchQuery]);
 
   const categorizeButtons = (buttons: string[]): CategorizedButtons => {
     const categories: CategorizedButtons = {
