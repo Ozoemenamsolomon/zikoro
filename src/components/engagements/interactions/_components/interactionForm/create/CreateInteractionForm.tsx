@@ -46,23 +46,23 @@ import FormResponses from "../formResponse/FormResponse";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import {TouchEvent, MouseEvent} from "react"
-import {
-  DndContext,
-  KeyboardSensor,
-  MouseSensor as LibMouseSensor,
-  PointerSensor ,
-  TouchSensor as LibTouchSensor,
-  closestCorners,
-  useSensor,
-  useSensors,
-  DragEndEvent,
-} from "@dnd-kit/core";
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-  arrayMove,
-  sortableKeyboardCoordinates,
-} from "@dnd-kit/sortable";
+// import {
+//   DndContext,
+//   KeyboardSensor,
+//   MouseSensor as LibMouseSensor,
+//   PointerSensor ,
+//   TouchSensor as LibTouchSensor,
+//   closestCorners,
+//   useSensor,
+//   useSensors,
+//   DragEndEvent,
+// } from "@dnd-kit/core";
+// import {
+//   SortableContext,
+//   verticalListSortingStrategy,
+//   arrayMove,
+//   sortableKeyboardCoordinates,
+// } from "@dnd-kit/sortable";
 import { PreviewModal } from "@/components/contents/_components";
 
 const options = [
@@ -87,25 +87,25 @@ const optionsType = [
 //  { name: "Likert", type: "INPUT_LIKERT" },
 
 // Block DnD event propagation if element have "data-no-dnd" attribute
-const handler = ({ nativeEvent: event }: MouseEvent | TouchEvent) => {
-  let cur = event.target as HTMLElement;
+// const handler = ({ nativeEvent: event }: MouseEvent | TouchEvent) => {
+//   let cur = event.target as HTMLElement;
 
-  while (cur) {
-      if (cur.dataset && cur.dataset.noDnd) {
-          return false;
-      }
-      cur = cur.parentElement as HTMLElement;
-  }
+//   while (cur) {
+//       if (cur.dataset && cur.dataset.noDnd) {
+//           return false;
+//       }
+//       cur = cur.parentElement as HTMLElement;
+//   }
 
-  return true;
-};
-class MouseSensor extends LibMouseSensor {
-  static activators = [{ eventName: 'onMouseDown', handler }] as typeof LibMouseSensor['activators'];
-}
+//   return true;
+// };
+// class MouseSensor extends LibMouseSensor {
+//   static activators = [{ eventName: 'onMouseDown', handler }] as typeof LibMouseSensor['activators'];
+// }
 
- class TouchSensor extends LibTouchSensor {
-  static activators = [{ eventName: 'onTouchStart', handler }] as typeof LibTouchSensor['activators'];
-}
+//  class TouchSensor extends LibTouchSensor {
+//   static activators = [{ eventName: 'onTouchStart', handler }] as typeof LibTouchSensor['activators'];
+// }
 function Fields({
   field,
   index,
@@ -136,19 +136,19 @@ function Fields({
   copyQuestion: (i: number) => void;
   remove: UseFieldArrayRemove;
 }) {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: field?.id });
+  // const { attributes, listeners, setNodeRef, transform, transition } =
+  //   useSortable({ id: field?.id });
 
   return (
     <div
-      ref={setNodeRef}
-      {...attributes}
-      {...listeners}
-      style={{
-        transition,
-        transform: CSS.Transform.toString(transform),
-        touchAction: "none",
-      }}
+      // ref={setNodeRef}
+      // {...attributes}
+      // {...listeners}
+      // style={{
+      //   transition,
+      //   transform: CSS.Transform.toString(transform),
+      //   touchAction: "none",
+      // }}
       className="w-full"
     >
       {field.selectedType === "INPUT_TEXT" && (
@@ -443,31 +443,31 @@ const handler = ({ nativeEvent: event }: MouseEvent | TouchEvent) => {
 
 
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 0.01,
-      },
-    }),
-    useSensor(TouchSensor),
-    useSensor(MouseSensor),
-    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
-  );
+  // const sensors = useSensors(
+  //   useSensor(PointerSensor, {
+  //     activationConstraint: {
+  //       distance: 0.01,
+  //     },
+  //   }),
+  //   useSensor(TouchSensor),
+  //   useSensor(MouseSensor),
+  //   useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  // );
 
-  //get position
-  const getPosition = (id: string): number | undefined =>
-    fields.findIndex((item) => item?.id === id);
-  async function handleDrop(e: DragEndEvent) {
-    if (!fields) return;
-    const { active, over } = e;
+  // //get position
+  // const getPosition = (id: string): number | undefined =>
+  //   fields.findIndex((item) => item?.id === id);
+  // async function handleDrop(e: DragEndEvent) {
+  //   if (!fields) return;
+  //   const { active, over } = e;
 
-    if (active?.id === over?.id) return;
-    const originPos = getPosition(active?.id as string)!;
-    const destPos = getPosition(over?.id as string)!;
-    const updatedFields = arrayMove(fields, originPos, destPos);
+  //   if (active?.id === over?.id) return;
+  //   const originPos = getPosition(active?.id as string)!;
+  //   const destPos = getPosition(over?.id as string)!;
+  //   const updatedFields = arrayMove(fields, originPos, destPos);
 
-    form.setValue("questions", updatedFields);
-  }
+  //   form.setValue("questions", updatedFields);
+  // }
   return (
     <InteractionLayout eventId={eventId}>
       <div
@@ -604,7 +604,7 @@ const handler = ({ nativeEvent: event }: MouseEvent | TouchEvent) => {
                 </div>
 
                 <div className="w-full flex flex-col items-start justify-start gap-y-6 sm:gap-y-8">
-                  <DndContext
+                  {/* <DndContext
                     collisionDetection={closestCorners}
                     sensors={sensors}
                     onDragEnd={handleDrop}
@@ -612,7 +612,7 @@ const handler = ({ nativeEvent: event }: MouseEvent | TouchEvent) => {
                     <SortableContext
                       items={fields}
                       strategy={verticalListSortingStrategy}
-                    >
+                    > */}
                       {fields.map((field, index) => (
                         <Fields
                           key={field.id}
@@ -623,8 +623,8 @@ const handler = ({ nativeEvent: event }: MouseEvent | TouchEvent) => {
                           form={form}
                         />
                       ))}
-                    </SortableContext>
-                  </DndContext>
+                    {/* </SortableContext>
+                  </DndContext> */}
                 </div>
 
                 <div className="w-full flex items-center justify-center ">
