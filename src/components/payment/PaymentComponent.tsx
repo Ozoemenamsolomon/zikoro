@@ -82,7 +82,6 @@ export default function PaymentComponent({
     orgId
   );
 
-  console.log(`isMonthly,  ${monthly}`);
 
   async function handleSuccess(reference: any) {
     const isCreating = decodeURIComponent(isCreate!);
