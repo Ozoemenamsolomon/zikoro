@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
-import { generateAlphanumericHash } from "@/utils/helpers";
 
 export async function GET(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
@@ -44,11 +43,11 @@ export async function POST(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
   if (req.method === "POST") {
     try {
-      const certificateAlias = generateAlphanumericHash(12);
+      const params = await req.json();
 
       const { data, error } = await supabase
         .from("certificate")
-        .insert({ certificateAlias })
+        .upsert(params)
         .select()
         .maybeSingle();
       if (error) throw error;
