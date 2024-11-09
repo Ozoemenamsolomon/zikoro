@@ -56,7 +56,7 @@ const payOutsFilter: TFilter<TPayOut>[] = [
     ),
     optionsFromData: true,
     type: "multiple",
-    order: 1, 
+    order: 1,
   },
 
   {
@@ -193,9 +193,11 @@ export default function page() {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const { user, setUser } = useUserStore();
 
-  const { payOuts, isLoading, getPayOuts } = useGetPayOuts({ userId: user?.id || 0 });
+  const { payOuts, isLoading, getPayOuts } = useGetPayOuts({
+    userId: user?.id || 0,
+  });
 
-  console.log(payOuts);
+  console.log(user, "user");
 
   const { filteredData, filters, selectedFilters, applyFilter, setOptions } =
     useFilter<IPayOut>({

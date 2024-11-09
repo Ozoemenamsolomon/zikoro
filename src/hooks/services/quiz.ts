@@ -518,7 +518,13 @@ export function useGetBroadCastMessage() {
 
 type TQuizScore = {
   quiz: Partial<TQuiz<TQuestion[]>>;
-  mailto: { email: string; url: string };
+  mailto: {
+    email: string;
+    url: string;
+    createQuiz: string;
+    attendeePoint: number;
+    leaderboard: string;
+  };
 };
 export const useSendQuizScore = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
@@ -645,4 +651,32 @@ export const useDeleteQuizLobby = (quizId: string) => {
   };
 
   return { deleteQuizLobby, isLoading };
+};
+
+export const useDeleteSingleParticipantFromLobby = () => {
+  const [isLoading, setLoading] = useState<boolean>(false);
+
+  const deleteFromLobby = async (id: string) => {
+    try {
+      setLoading(true);
+      const { data, status } = await deleteRequest<TLiveQuizParticipant[]>({
+        endpoint: `/quiz/participant/single/${id}`,
+      });
+
+      // toast({
+      //   description: "Participant deleted successfully",
+      // });
+      return data;
+    } catch (error: any) {
+      //
+      toast({
+        description: error?.response?.data?.error,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { deleteFromLobby, isLoading };
 };

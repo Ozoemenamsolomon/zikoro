@@ -21,6 +21,9 @@ export function RatingTypeAnswer({
   const questionId = form.watch(`questions.${index}.questionId`);
   const optionFields = form.watch(`questions.${index}.optionFields`);
   const rating = form.watch(`responses.${index}.response`) || "";
+  const questionDescription = form.watch(
+    `questions.${index}.questionDescription`
+  );
 
   function setRating(n: number) {
     form.setValue(`responses.${index}.response`, n);
@@ -28,15 +31,20 @@ export function RatingTypeAnswer({
     form.setValue(`responses.${index}.questionId`, questionId);
   }
   return (
-    <div className="w-full bg-white border grid grid-cols-1 gap-4 h-fit rounded-lg p-4">
-      {question && (
-        <div className="w-full p-2 bg-gradient-to-tr  from-custom-bg-gradient-start to-custom-bg-gradient-end">
+    <div className="w-full  border grid grid-cols-1 gap-4 h-fit rounded-lg p-4">
+     <div className="w-full space-y-1 p-2 ">
+        {question && (
           <p className="w-full text-start leading-7 flex ">
             {question ?? ""}{" "}
             {isRequired && <IoMdStar size={12} className="text-red-700" />}
           </p>
-        </div>
-      )}
+        )}
+        {questionDescription && (
+          <p className="w-full text-start text-xs sm:text-mobile leading-7 flex ">
+            {questionDescription ?? ""}
+          </p>
+        )}
+      </div>
       {questionImage && (
         <div className="w-full max-w-3xl mx-auto">
           <Image
@@ -48,7 +56,7 @@ export function RatingTypeAnswer({
           />
         </div>
       )}
-      <div className="w-full flex items-center gap-x-2 justify-center">
+      <div className="w-full flex flex-wrap items-center gap-x-2 justify-center">
         {Array.from({ length: optionFields as number })?.map((v, index) => (
           <button
             onClick={(e) => {
@@ -63,9 +71,9 @@ export function RatingTypeAnswer({
             )}
           >
             {index + 1 <= rating ? (
-              <StarFullOutline size={40} />
+              <StarFullOutline size={24} />
             ) : (
-              <Star size={40} />
+              <Star size={24} />
             )}
           </button>
         ))}

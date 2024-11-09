@@ -11,7 +11,8 @@ const includedPaths = [
   "/profile",
   "/referrals",
   "/appointments",
-  "/create"
+  "/create",
+  "/admin",
 ];
 
 export async function middleware(req: NextRequest) {
@@ -25,7 +26,7 @@ export async function middleware(req: NextRequest) {
   const path = req.nextUrl.pathname;
 
   // Check if the request path starts with /appointments
-  if (path.startsWith('/appointments')) {
+  if (path.startsWith("/appointments")) {
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -41,7 +42,7 @@ export async function middleware(req: NextRequest) {
   const isIncludedPath = includedPaths.some((includedPath) =>
     path.startsWith(includedPath)
   );
-
+  
   if (isIncludedPath && !session) {
     // If user is not authenticated and path is included, redirect to the login page
     if (path.startsWith("/api")) {
@@ -69,5 +70,6 @@ export const config = {
     "/profile/:path*",
     "/referrals/:path*",
     "/appointments/:path*",
+    "/admin/:path*",
   ],
 };

@@ -51,6 +51,11 @@ import { getCookie } from "@/hooks";
 import { TUser } from "@/types";
 import useEventStore from "@/store/globalEventStore";
 import useUserStore from "@/store/globalUserStore";
+import { ReactSelect } from "@/components";
+import Editor from "./custom_editor/Editor";
+import { ArrowBack } from "@styled-icons/boxicons-regular/ArrowBack";
+import { useRouter } from "next/navigation";
+import useOrganizationStore from "@/store/globalOrganizationStore";
 
 const CreateEmailSchema = z
   .object({
@@ -58,11 +63,28 @@ const CreateEmailSchema = z
     subject: z.string(),
     sender: z.string(),
     replyTo: z.string().optional(),
-    recipients: z.string(),
+    recipients: z
+      .array(
+        z.object({
+          email: z.string(),
+          attendeeAlias: z.string(),
+          firstName: z.string(),
+          lastName: z.string(),
+        })
+      )
+      .optional(),
     content: z.string(),
     isScheduled: z.boolean(),
     schedule: z.date().optional(),
     timezone: z.string().optional(),
+    addCTA: z.boolean(),
+    CTAText: z.string(),
+    enableCTA: z.boolean(),
+    addProfileButton: z.boolean(),
+    profileButtonText: z.string().optional(),
+    addCustomButton: z.boolean(),
+    customButtonText: z.string().optional(),
+    customButtonLink: z.string().optional(),
   })
   .superRefine(({ isScheduled, schedule, timezone }, refinementContext) => {
     if (isScheduled && !schedule) {
@@ -85,7 +107,11 @@ type TCreateEmail = z.infer<typeof CreateEmailSchema>;
 
 const Create = () => {
   const currentEvent = useEventStore((state) => state.event);
+  const organization = useOrganizationStore((state) => state.organization);
+  const router = useRouter();
   const { user, setUser } = useUserStore();
+
+  if (!user) return null;
 
   const { attendees, getAttendees, isLoading } = useGetAttendees({
     eventId: currentEvent?.eventAlias,
@@ -107,13 +133,18 @@ const Create = () => {
     isScheduled: false,
     content: "",
     replyTo: user.userEmail,
+    addCTA: false,
+    CTAText: "Join Event",
+    addProfileButton: false,
+    profileButtonText: "Edit Profile",
+    addCustomButton: false,
+    customButtonText: "Custom Button",
+    customButtonLink: "",
+    enableCTA: false,
   };
 
   const [sendTest, setSendTest] = useState<boolean>(false);
   const [testEmail, setTestEmail] = useState<string>("");
-  const [recipientSource, setRecipientSource] = useState<"attendees" | "list">(
-    "attendees"
-  );
 
   const { sendMarketingEmail, isLoading: sendEmailIsLoading } =
     useSendMarketingEmail();
@@ -131,19 +162,28 @@ const Create = () => {
 
   const content = watch("content");
   const isScheduled = watch("isScheduled");
+  const enableCTA = watch("enableCTA");
+  const addCTA = watch("addCTA");
+  const addProfileButton = watch("addProfileButton");
+  const addCustomButton = watch("addCustomButton");
 
   useEffect(() => {
-    if (recipientSource === "attendees")
-      setValue(
-        "recipients",
-        attendees?.map(({ email }) => email).join("; ") || ""
-      );
-  }, [recipientSource]);
+    setValue("addCTA", enableCTA);
+    setValue("addProfileButton", enableCTA);
+    setValue("addCustomButton", enableCTA);
+  }, [enableCTA]);
 
   const setRecipients = () => {
     setValue(
       "recipients",
-      selectedAttendees.map(({ email }) => email).join("; ")
+      selectedAttendees.map(
+        ({ email, attendeeAlias, firstName, lastName }) => ({
+          email,
+          attendeeAlias,
+          firstName,
+          lastName,
+        })
+      )
     );
   };
 
@@ -152,7 +192,9 @@ const Create = () => {
 
     await sendMarketingEmail({
       payload: {
-        organizationId: currentEvent?.organisationId || 0,
+        ...data,
+        eventAlias: currentEvent?.eventAlias || "",
+        organizationId: currentEvent?.organisationId || "",
         userId: user.id,
         userEmail: user.userEmail,
         emailCategory: data.category,
@@ -160,7 +202,16 @@ const Create = () => {
         sendersName: data.sender,
         replyTo: data.replyTo,
         emailBody: data.content,
-        emailRecipient: sendTest ? [testEmail] : data.recipients.split("; "),
+        emailRecipient: sendTest
+          ? [
+              {
+                email: testEmail,
+                attendeeAlias: "#0#0#0#0",
+                firstName: "John",
+                lastName: "AppleBee",
+              },
+            ]
+          : data.recipients,
       },
     });
   };
@@ -175,47 +226,42 @@ const Create = () => {
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-8 px-4 py-4"
       >
+        <div className="w-full flex items-center justify-between">
+          <Button
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              router.back();
+            }}
+            className="h-fit w-fit px-0 gap-x-2"
+            variant={"ghost"}
+          >
+            <ArrowBack size={20} />
+            <p>Back</p>
+          </Button>
+        </div>
         <div className="flex flex-col md:flex-row gap-4 h-fit">
           <div className="flex-1">
             <FormField
               control={form.control}
               name="category"
               render={({ field }) => (
-                <FormItem className="relative w-full space-y-0">
-                  <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
-                    Category
-                    <sup className="text-red-700">*</sup>
-                  </FormLabel>
-                  <FormControl>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue
-                            placeholder="Select campaign category"
-                            className="[&>*]:text-sm [&>*]:text-gray-200 [&>*]:capitalize w-full"
-                          />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent className="max-h-[250px] hide-scrollbar overflow-auto">
-                        {["announcements", "reminders", "marketing"].map(
-                          (event) => (
-                            <SelectItem
-                              key={event}
-                              value={event}
-                              className="inline-flex gap-2 capitalize"
-                            >
-                              {event}
-                            </SelectItem>
-                          )
-                        )}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                <InputOffsetLabel label={"Category"}>
+                  <ReactSelect
+                    placeHolder="Select Category"
+                    defaultValue={{
+                      label: field.value,
+                      value: field.value,
+                    }}
+                    {...field}
+                    options={["announcements", "reminders", "marketing"].map(
+                      (category) => ({
+                        label: category,
+                        value: category,
+                      })
+                    )}
+                  />
+                </InputOffsetLabel>
               )}
             />
           </div>
@@ -272,123 +318,223 @@ const Create = () => {
         </div>
         <div className="space-y-4 px-3 py-4">
           {isLoading ? (
-            <span className="font-medium text-gray-700">Loading...</span>
+            <span className=" text-gray-700">Loading...</span>
           ) : (
             <>
               <div className="flex justify-between items-center">
                 <span>Who should receive this email?</span>
-                <div className="flex">
-                  <Button
-                    onClick={() => setRecipientSource("attendees")}
-                    type="button"
-                    className={cn(
-                      "rounded-none border-2 w-28 border-basePrimary",
-                      recipientSource === "attendees"
-                        ? "bg-basePrimary text-white"
-                        : "bg-white text-basePrimary"
-                    )}
-                  >
-                    Attendees
-                  </Button>
-                  <Button
-                    onClick={() => setRecipientSource("list")}
-                    type="button"
-                    className={cn(
-                      "rounded-none border-2 w-28 border-basePrimary",
-                      recipientSource === "list"
-                        ? "bg-basePrimary text-white"
-                        : "bg-white text-basePrimary"
-                    )}
-                  >
-                    List
-                  </Button>
-                </div>
               </div>
-              {recipientSource === "attendees" ? (
-                <div className="flex items-center gap-2">
-                  {selectedAttendees.length > 0 && (
-                    <span className="text-sm font-medium">
-                      {selectedAttendees.length} attendees will receive this
-                      mail
-                    </span>
-                  )}
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        className="text-sm text-basePrimary font-medium hover:bg-transparent hover:text-basePrimary flex gap-2 items-center"
+              <div className="flex items-center gap-2">
+                {selectedAttendees.length > 0 && (
+                  <span className="text-sm ">
+                    {selectedAttendees.length} attendees will receive this mail
+                  </span>
+                )}
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className="text-sm text-basePrimary  hover:bg-transparent hover:text-basePrimary flex gap-2 items-center"
+                    >
+                      <svg
+                        stroke="currentColor"
+                        fill="currentColor"
+                        stroke-width="0"
+                        viewBox="0 0 1024 1024"
+                        height="1.5em"
+                        width="1.5em"
+                        xmlns="http://www.w3.org/2000/svg"
                       >
-                        <svg
-                          stroke="currentColor"
-                          fill="currentColor"
-                          stroke-width="0"
-                          viewBox="0 0 1024 1024"
-                          height="1.5em"
-                          width="1.5em"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path d="M696 480H544V328c0-4.4-3.6-8-8-8h-48c-4.4 0-8 3.6-8 8v152H328c-4.4 0-8 3.6-8 8v48c0 4.4 3.6 8 8 8h152v152c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8V544h152c4.4 0 8-3.6 8-8v-48c0-4.4-3.6-8-8-8z"></path>
-                          <path d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372 372 166.6 372 372-166.6 372-372 372z"></path>
-                        </svg>
-                        <span>Recipients</span>
+                        <path d="M696 480H544V328c0-4.4-3.6-8-8-8h-48c-4.4 0-8 3.6-8 8v152H328c-4.4 0-8 3.6-8 8v48c0 4.4 3.6 8 8 8h152v152c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8V544h152c4.4 0 8-3.6 8-8v-48c0-4.4-3.6-8-8-8z"></path>
+                        <path d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372 372 166.6 372 372-166.6 372-372 372z"></path>
+                      </svg>
+                      <span>Recipients</span>
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="px-3 max-h-[500px] overflow-auto hide-scrollbar">
+                    <DialogHeader>
+                      <DialogTitle>
+                        <span className="capitalize">Email Recipient</span>
+                      </DialogTitle>
+                    </DialogHeader>
+                    <ViewAttendeesSection
+                      attendees={attendees.filter(({ archive }) => !archive)}
+                      selectedAttendees={selectedAttendees}
+                      toggleValue={toggleValue}
+                    />
+                    <DialogClose>
+                      <Button
+                        disabled={selectedAttendees.length === 0}
+                        className="bg-basePrimary w-full"
+                        onClick={setRecipients}
+                      >
+                        Continue
                       </Button>
-                    </DialogTrigger>
-                    <DialogContent className="px-3 max-h-[500px] overflow-auto hide-scrollbar">
-                      <DialogHeader>
-                        <DialogTitle>
-                          <span className="capitalize">Email Recipient</span>
-                        </DialogTitle>
-                      </DialogHeader>
-                      <ViewAttendeesSection
-                        attendees={attendees}
-                        selectedAttendees={selectedAttendees}
-                        toggleValue={toggleValue}
-                      />
-                      <DialogClose>
-                        <Button
-                          disabled={selectedAttendees.length === 0}
-                          className="bg-basePrimary w-full"
-                          onClick={setRecipients}
-                        >
-                          Continue
-                        </Button>
-                      </DialogClose>
-                    </DialogContent>
-                  </Dialog>
-                </div>
-              ) : (
-                <FormField
-                  control={form.control}
-                  name="recipients"
-                  render={({ field }) => (
-                    <InputOffsetLabel isRequired label={"Recipients"}>
-                      <Input
-                        value={field.value}
-                        type="string"
-                        placeholder={
-                          "Enter emails seperated by semi-colon seperated"
-                        }
-                        onInput={(e) => field.onChange(e.currentTarget.value)}
-                        className="placeholder:text-sm placeholder:text-gray-200 text-gray-700"
-                      />
-                    </InputOffsetLabel>
-                  )}
-                />
-              )}
+                    </DialogClose>
+                  </DialogContent>
+                </Dialog>
+              </div>
             </>
           )}
         </div>
-        <div className="w-full bg-background text-sm relative">
-          <span className="absolute top-0 -translate-y-1/2 right-4 text-gray-900 text-tiny px-1 z-10 bg-white">
-            Message
-          </span>
-          <TextEditor
-            onChange={setMessage}
-            defaultValue={content}
-            placeholder="Write message"
-          />
-        </div>
-        <div className="flex flex-col md:flex-row gap-8 md:items-center">
+        <InputOffsetLabel label="Message">
+          <Editor onChangeContent={setMessage} />
+        </InputOffsetLabel>
+        <FormField
+          control={form.control}
+          name="enableCTA"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-center gap-4 space-y-0">
+              <FormLabel className="text-gray-700">
+                Enable Call to Action Buttons (available to paid plans only)
+              </FormLabel>
+              <FormControl>
+                <Switch
+                  disabled={organization?.subscriptionPlan === "free"}
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                  className="data-[state=checked]:bg-basePrimary    "
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        {enableCTA && (
+          <>
+            <div className="flex gap-2">
+              <div className="flex flex-col gap-2 flex-1">
+                <FormField
+                  control={form.control}
+                  name="addCTA"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center gap-4 space-y-0">
+                      <FormLabel className="text-gray-700">
+                        Add Join Event Button
+                      </FormLabel>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                          className="data-[state=checked]:bg-basePrimary    "
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <div className={cn("flex-1", !addCTA && "hidden")}>
+                  <FormField
+                    control={form.control}
+                    name="CTAText"
+                    render={({ field }) => (
+                      <InputOffsetLabel label={"Button Label"}>
+                        <Input
+                          disabled={!addCTA}
+                          type="string"
+                          {...field}
+                          placeholder="Enter Button Label"
+                          className="placeholder:text-sm placeholder:text-gray-200 text-gray-700"
+                        />
+                      </InputOffsetLabel>
+                    )}
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col gap-2 flex-1">
+                <FormField
+                  control={form.control}
+                  name="addProfileButton"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center gap-4 space-y-0">
+                      <FormLabel className=" text-gray-700">
+                        Add Edit Profile Button
+                      </FormLabel>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                          className="data-[state=checked]:bg-basePrimary    "
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <div className={cn("flex-1", !addProfileButton && "hidden")}>
+                  <FormField
+                    control={form.control}
+                    name="profileButtonText"
+                    render={({ field }) => (
+                      <InputOffsetLabel label={"Label"}>
+                        <Input
+                          disabled={!addProfileButton}
+                          type="string"
+                          {...field}
+                          placeholder="Enter Profile Button Label"
+                          className="placeholder:text-sm placeholder:text-gray-200 text-gray-700"
+                        />
+                      </InputOffsetLabel>
+                    )}
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col gap-2">
+              <FormField
+                control={form.control}
+                name="addCustomButton"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center gap-4 space-y-0">
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        className="data-[state=checked]:bg-basePrimary"
+                      />
+                    </FormControl>
+                    <FormLabel className=" text-gray-700">
+                      Add Custom Button
+                    </FormLabel>
+                  </FormItem>
+                )}
+              />
+              <div className="flex gap-2 items-center">
+                <div className={cn("flex-1", !addCustomButton && "hidden")}>
+                  <FormField
+                    control={form.control}
+                    name="customButtonText"
+                    render={({ field }) => (
+                      <InputOffsetLabel label={"Label"}>
+                        <Input
+                          type="string"
+                          {...field}
+                          placeholder="Enter Label"
+                          className="placeholder:text-sm placeholder:text-gray-200 text-gray-700"
+                        />
+                      </InputOffsetLabel>
+                    )}
+                  />
+                </div>
+                <div className={cn("flex-1", !addCustomButton && "hidden")}>
+                  <FormField
+                    control={form.control}
+                    name="customButtonLink"
+                    render={({ field }) => (
+                      <InputOffsetLabel label={"URL"}>
+                        <Input
+                          type="string"
+                          {...field}
+                          placeholder="Enter URL"
+                          className="placeholder:text-sm placeholder:text-gray-200 text-gray-700"
+                        />
+                      </InputOffsetLabel>
+                    )}
+                  />
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* <div className="flex flex-col md:flex-row gap-8 md:items-center">
           <FormField
             control={form.control}
             name="isScheduled"
@@ -401,7 +547,7 @@ const Create = () => {
                     className="data-[state=checked]:bg-basePrimary    "
                   />
                 </FormControl>
-                <FormLabel className="font-medium text-gray-700">
+                <FormLabel className=" text-gray-700">
                   Schedule email
                 </FormLabel>
               </FormItem>
@@ -499,7 +645,7 @@ const Create = () => {
               )}
             />
           </div>
-        </div>
+        </div> */}
 
         <div className="flex flex-col md:flex-row gap-y-4 gap-8 md:items-center">
           <div className="flex flex-row items-center gap-4 space-y-0 flex-[20%]">
@@ -510,25 +656,22 @@ const Create = () => {
                 className="data-[state=checked]:bg-basePrimary"
               />
             </div>
-            <span className="font-medium text-gray-700 text-sm">
-              Send test email
-            </span>
+            <span className=" text-gray-700 text-lg">Send test email</span>
           </div>
           <div className="relative flex-[50%]">
-            <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
-              Email
-            </span>
-            <Input
-              className="placeholder:text-sm placeholder:text-gray-200 text-gray-700"
-              onInput={(e) => setTestEmail(e.currentTarget.value)}
-              placeholder="Enter email"
-              disabled={!sendTest}
-            />
+            <InputOffsetLabel isRequired={sendTest} label={"email"}>
+              <Input
+                className="placeholder:text-sm placeholder:text-gray-200 text-gray-700"
+                onInput={(e) => setTestEmail(e.currentTarget.value)}
+                placeholder="Enter email"
+                disabled={!sendTest}
+              />
+            </InputOffsetLabel>
           </div>
           <Button
             disabled={isLoading || (sendTest && !testEmail)}
             type="submit"
-            className="bg-basePrimary w-full flex items-center gap-4 flex-[30%]"
+            className="text-gray-50 bg-basePrimary gap-x-2 w-fit py-4"
           >
             <span className="text-white">
               Send {sendTest ? "test" : ""} email

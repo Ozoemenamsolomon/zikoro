@@ -8,7 +8,9 @@
     "build": "npm run clean && NODE_OPTIONS='--max-old-space-size=8192' next build",
     "start": "next start",
     "ts": "tsc --noEmit --incremental",
-    "lint": "next lint"
+    "lint": "next lint",
+    "cypress:open": "cypress open",
+    "e2e:headless": "start-server-and-test dev http://localhost:3000 \"cypress run --e2e\""
   },
   "dependencies": {
     "@craftjs/core": "^0.2.5",
@@ -64,11 +66,13 @@
     "cmdk": "^1.0.0",
     "copy-to-clipboard": "^3.3.3",
     "date-fns": "^3.6.0",
+    "file-saver": "^2.0.5",
     "framer-motion": "^11.0.24",
     "html2canvas": "^1.4.1",
     "ics": "^3.7.2",
     "input-otp": "^1.2.4",
     "js-cookie": "^3.0.5",
+    "json-2-csv": "^5.5.6",
     "jspdf": "^2.5.1",
     "lodash": "^4.17.21",
     "lucide-react": "^0.331.0",
@@ -106,6 +110,7 @@
     "react-stately": "^3.30.1",
     "react-to-pdf": "^1.0.1",
     "react-toastify": "^10.0.5",
+    "react-use-measure": "^2.1.1",
     "react-verification-input": "^4.1.2",
     "react-zoom-pan-pinch": "^3.4.4",
     "recharts": "^2.12.7",
@@ -122,6 +127,7 @@
   },
   "devDependencies": {
     "@iconify/react": "^5.0.2",
+    "@types/file-saver": "^2.0.7",
     "@types/js-cookie": "^3.0.6",
     "@types/lodash": "^4.17.6",
     "@types/node": "^20.10.4",
@@ -132,7 +138,9 @@
     "@types/react-slick": "^0.23.13",
     "@types/uuid": "^9.0.8",
     "autoprefixer": "^10.4.16",
+    "cypress": "^13.15.2",
     "postcss": "^8.4.32",
+    "start-server-and-test": "^2.0.8",
     "tailwindcss": "^3.3.6",
     "typescript": "^5.5.2"
   }

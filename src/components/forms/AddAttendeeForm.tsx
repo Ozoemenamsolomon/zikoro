@@ -43,6 +43,7 @@ import { useGetData } from "@/hooks/services/request";
 import { EngagementsSettings } from "@/types/engagements";
 import useUserStore from "@/store/globalUserStore";
 import useEventStore from "@/store/globalEventStore";
+import { ReactSelect } from "../custom_ui/ReactSelect";
 
 export default function AddAttendeeForm({
   attendee,
@@ -318,24 +319,18 @@ export default function AddAttendeeForm({
                 name="country"
                 render={({ field }) => (
                   <InputOffsetLabel isRequired label={"Country"}>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue
-                            placeholder="Enter country"
-                            className="placeholder:text-sm placeholder:text-gray-200 text-gray-700"
-                          />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {COUNTRY_CODE.map(({ name }) => (
-                          <SelectItem value={name}>{name}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <ReactSelect
+                      placeHolder="Enter Country"
+                      defaultValue={{
+                        label: field.value,
+                        value: field.value,
+                      }}
+                      {...form.register("country")}
+                      options={COUNTRY_CODE.map(({ name }) => ({
+                        label: name,
+                        value: name,
+                      }))}
+                    />
                   </InputOffsetLabel>
                 )}
               />
@@ -347,7 +342,7 @@ export default function AddAttendeeForm({
                 control={form.control}
                 name="phoneNumber"
                 render={({ field }) => (
-                  <FormItem className="relative h-fit">
+                  <FormItem className="w-full bg-gradient-to-tr rounded-md from-custom-bg-gradient-start to-custom-bg-gradient-end placeholder-gray-500 h-fit relative">
                     <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
                       Phone number
                       <sup className="text-red-700">*</sup>
@@ -370,7 +365,7 @@ export default function AddAttendeeForm({
                 control={form.control}
                 name="whatsappNumber"
                 render={({ field }) => (
-                  <FormItem className="relative">
+                  <FormItem className="w-full bg-gradient-to-tr rounded-md from-custom-bg-gradient-start to-custom-bg-gradient-end placeholder-gray-500 h-fit relative">
                     <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
                       WhatsApp number
                     </FormLabel>
@@ -465,7 +460,7 @@ export default function AddAttendeeForm({
               control={form.control}
               name="appointmentLink"
               render={({ field }) => (
-                <FormItem className="relative">
+                <FormItem className="w-full bg-gradient-to-tr rounded-md from-custom-bg-gradient-start to-custom-bg-gradient-end placeholder-gray-500 h-fit relative">
                   <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
                     Appointment Link
                   </FormLabel>
@@ -511,7 +506,7 @@ export default function AddAttendeeForm({
             control={form.control}
             name="x"
             render={({ field }) => (
-              <FormItem className="relative">
+              <FormItem className="w-full bg-gradient-to-tr rounded-md from-custom-bg-gradient-start to-custom-bg-gradient-end placeholder-gray-500 h-fit relative">
                 <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
                   Twitter
                 </FormLabel>
@@ -533,7 +528,7 @@ export default function AddAttendeeForm({
             control={form.control}
             name="linkedin"
             render={({ field }) => (
-              <FormItem className="relative">
+              <FormItem className="w-full bg-gradient-to-tr rounded-md from-custom-bg-gradient-start to-custom-bg-gradient-end placeholder-gray-500 h-fit relative">
                 <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
                   LinkedIn
                 </FormLabel>
@@ -555,7 +550,7 @@ export default function AddAttendeeForm({
             control={form.control}
             name="instagram"
             render={({ field }) => (
-              <FormItem className="relative">
+              <FormItem className="w-full bg-gradient-to-tr rounded-md from-custom-bg-gradient-start to-custom-bg-gradient-end placeholder-gray-500 h-fit relative">
                 <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
                   Instagram
                 </FormLabel>
@@ -577,7 +572,7 @@ export default function AddAttendeeForm({
             control={form.control}
             name="facebook"
             render={({ field }) => (
-              <FormItem className="relative">
+              <FormItem className="w-full bg-gradient-to-tr rounded-md from-custom-bg-gradient-start to-custom-bg-gradient-end placeholder-gray-500 h-fit relative">
                 <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
                   Facebook
                 </FormLabel>
@@ -599,7 +594,7 @@ export default function AddAttendeeForm({
             control={form.control}
             name="websiteUrl"
             render={({ field }) => (
-              <FormItem className="relative">
+              <FormItem className="w-full bg-gradient-to-tr rounded-md from-custom-bg-gradient-start to-custom-bg-gradient-end placeholder-gray-500 h-fit relative">
                 <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
                   Website
                 </FormLabel>

@@ -55,6 +55,7 @@ import { saveContact } from "@/utils";
 import { useCopyToClipboard } from "@uidotdev/usehooks";
 import { Copy } from "styled-icons/boxicons-regular";
 import QRCode from "react-qr-code";
+import { calculateAndSetMaxHeight } from "@/utils/helpers";
 
 function AttendeeNotesSection(props) {
   return (
@@ -124,6 +125,7 @@ export default function SecondSection({
   userContactRequests,
   contactRequestIsLoading,
   getContactRequests,
+  onGetAttendees,
 }: {
   attendee: TAttendee;
   getAttendees?: () => Promise<void>;
@@ -133,6 +135,7 @@ export default function SecondSection({
   userContactRequests: ContactRequest;
   contactRequestIsLoading: boolean;
   getContactRequests: () => Promise<void>;
+  onGetAttendees: () => Promise<void>;
 }) {
   const router = useRouter();
   const {
@@ -400,7 +403,9 @@ export default function SecondSection({
 
   const clsBtnRef = useRef<HTMLButtonElement>(null);
 
-  const { requestContact, isLoading: requestingContact } = useRequestContact();
+  const { requestContact, isLoading: requestingContact } = useRequestContact({
+    receiverAlias: attendeeAlias,
+  });
 
   const isEventOwner = user && String(event?.createdBy) === String(user.id);
   const attendeeIsUser = user.userEmail === email;
@@ -414,11 +419,18 @@ export default function SecondSection({
     user.userEmail,
     email,
     attendeeExchangedContacts,
-    userContactRequests
+    userContactRequests,
+    "request"
   );
 
+  const divRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    calculateAndSetMaxHeight(divRef);
+  }, [attendee]);
+
   return (
-    <div className="h-fit space-y-4">
+    <div className="overflow-auto no-scrollbar space-y-4 pb-48" ref={divRef}>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           {" "}
@@ -469,8 +481,10 @@ export default function SecondSection({
                     payload: {
                       senderUserEmail: user.userEmail,
                       receiverUserEmail: email,
+                      eventAlias: eventId,
                     },
                   });
+                  await onGetAttendees();
                 }}
                 className="bg-basePrimary w-full"
               >
@@ -510,35 +524,41 @@ export default function SecondSection({
         attendeeIsUser={attendeeIsUser}
         attendeeExchangedContacts={attendeeExchangedContacts}
         sendWhatsAppMessage={sendWhatsAppMessage}
+        action={() => {
+          setOpen(true);
+        }}
+        requestingContact={requestingContact}
       />
       <section className="space-y-6 p-4 pt-0">
         <div className="space-y-2">
-          {/* {attendeeAlias && attendeeIsUser && (
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-medium text-gray-700">
-                Attendee Code: {attendeeAlias}
-              </span>
-              <span className="bg-white h-full flex items-center px-2">
-                {hasCopiedText ? (
-                  <svg
-                    stroke="currentColor"
-                    fill="currentColor"
-                    strokeWidth={0}
-                    viewBox="0 0 24 24"
-                    height="1.25em"
-                    width="1.25em"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M2.394 13.742L7.137 17.362 14.753 8.658 13.247 7.342 6.863 14.638 3.606 12.152zM21.753 8.658L20.247 7.342 13.878 14.621 13.125 14.019 11.875 15.581 14.122 17.379z" />
-                  </svg>
-                ) : (
-                  <button onClick={() => copyToClipboard(attendeeAlias)}>
-                    <Copy className="w-5 h-5 text-gray-700" />
-                  </button>
-                )}
-              </span>
-            </div>
-          )} */}
+          {attendeeAlias &&
+            (attendeeIsUser ||
+              (String(event?.createdBy) === String(user.id) && (
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-medium text-gray-700">
+                    Attendee Code: {attendeeAlias}
+                  </span>
+                  <span className="bg-white h-full flex items-center px-2">
+                    {hasCopiedText ? (
+                      <svg
+                        stroke="currentColor"
+                        fill="currentColor"
+                        strokeWidth={0}
+                        viewBox="0 0 24 24"
+                        height="1.25em"
+                        width="1.25em"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path d="M2.394 13.742L7.137 17.362 14.753 8.658 13.247 7.342 6.863 14.638 3.606 12.152zM21.753 8.658L20.247 7.342 13.878 14.621 13.125 14.019 11.875 15.581 14.122 17.379z" />
+                      </svg>
+                    ) : (
+                      <button onClick={() => copyToClipboard(attendeeAlias)}>
+                        <Copy className="w-5 h-5 text-gray-700" />
+                      </button>
+                    )}
+                  </span>
+                </div>
+              )))}
           {user &&
             (String(event?.createdBy) === String(user.id) ||
               email === user.userEmail) && (
@@ -569,43 +589,47 @@ export default function SecondSection({
             )}
         </div>
         <div className="flex gap-4 justify-evenly">
-          {phoneNumber && (
-            <button
-              onClick={() =>
-                saveContact({
-                  name: `${firstName} ${lastName}`,
-                  phone: phoneNumber,
-                  email,
-                })
-              }
-              className="flex-1 flex flex-col gap-2 items-center justify-center"
-            >
-              <div className="w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex  justify-center items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
+          {isEventOwner ||
+            attendeeIsUser ||
+            (attendeeExchangedContacts &&
+              attendeeExchangedContacts.status === "accepted" &&
+              phoneNumber && (
+                <button
+                  onClick={() =>
+                    saveContact({
+                      name: `${firstName} ${lastName}`,
+                      phone: phoneNumber,
+                      email,
+                    })
+                  }
+                  className="flex-1 flex flex-col gap-2 items-center justify-center"
                 >
-                  <g clip-path="url(#clip0_11643_35877)">
-                    <path
-                      d="M16 14C17.3261 14 18.5979 14.5268 19.5355 15.4645C20.4732 16.4021 21 17.6739 21 19V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V19C3 17.6739 3.52678 16.4021 4.46447 15.4645C5.40215 14.5268 6.67392 14 8 14H16ZM20 8C20.2652 8 20.5196 8.10536 20.7071 8.29289C20.8946 8.48043 21 8.73478 21 9V10H22C22.2652 10 22.5196 10.1054 22.7071 10.2929C22.8946 10.4804 23 10.7348 23 11C23 11.2652 22.8946 11.5196 22.7071 11.7071C22.5196 11.8946 22.2652 12 22 12H21V13C21 13.2652 20.8946 13.5196 20.7071 13.7071C20.5196 13.8946 20.2652 14 20 14C19.7348 14 19.4804 13.8946 19.2929 13.7071C19.1054 13.5196 19 13.2652 19 13V12H18C17.7348 12 17.4804 11.8946 17.2929 11.7071C17.1054 11.5196 17 11.2652 17 11C17 10.7348 17.1054 10.4804 17.2929 10.2929C17.4804 10.1054 17.7348 10 18 10H19V9C19 8.73478 19.1054 8.48043 19.2929 8.29289C19.4804 8.10536 19.7348 8 20 8ZM12 2C13.3261 2 14.5979 2.52678 15.5355 3.46447C16.4732 4.40215 17 5.67392 17 7C17 8.32608 16.4732 9.59785 15.5355 10.5355C14.5979 11.4732 13.3261 12 12 12C10.6739 12 9.40215 11.4732 8.46447 10.5355C7.52678 9.59785 7 8.32608 7 7C7 5.67392 7.52678 4.40215 8.46447 3.46447C9.40215 2.52678 10.6739 2 12 2Z"
-                      fill="#15161B"
-                    />
-                  </g>
-                  <defs>
-                    <clipPath id="clip0_11643_35877">
-                      <rect width="24" height="24" fill="white" />
-                    </clipPath>
-                  </defs>
-                </svg>
-              </div>
-              <span className="text-xs text-[#3E404B] font-semibold text-center">
-                Save contact
-              </span>
-            </button>
-          )}
+                  <div className="w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex  justify-center items-center">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                    >
+                      <g clip-path="url(#clip0_11643_35877)">
+                        <path
+                          d="M16 14C17.3261 14 18.5979 14.5268 19.5355 15.4645C20.4732 16.4021 21 17.6739 21 19V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V19C3 17.6739 3.52678 16.4021 4.46447 15.4645C5.40215 14.5268 6.67392 14 8 14H16ZM20 8C20.2652 8 20.5196 8.10536 20.7071 8.29289C20.8946 8.48043 21 8.73478 21 9V10H22C22.2652 10 22.5196 10.1054 22.7071 10.2929C22.8946 10.4804 23 10.7348 23 11C23 11.2652 22.8946 11.5196 22.7071 11.7071C22.5196 11.8946 22.2652 12 22 12H21V13C21 13.2652 20.8946 13.5196 20.7071 13.7071C20.5196 13.8946 20.2652 14 20 14C19.7348 14 19.4804 13.8946 19.2929 13.7071C19.1054 13.5196 19 13.2652 19 13V12H18C17.7348 12 17.4804 11.8946 17.2929 11.7071C17.1054 11.5196 17 11.2652 17 11C17 10.7348 17.1054 10.4804 17.2929 10.2929C17.4804 10.1054 17.7348 10 18 10H19V9C19 8.73478 19.1054 8.48043 19.2929 8.29289C19.4804 8.10536 19.7348 8 20 8ZM12 2C13.3261 2 14.5979 2.52678 15.5355 3.46447C16.4732 4.40215 17 5.67392 17 7C17 8.32608 16.4732 9.59785 15.5355 10.5355C14.5979 11.4732 13.3261 12 12 12C10.6739 12 9.40215 11.4732 8.46447 10.5355C7.52678 9.59785 7 8.32608 7 7C7 5.67392 7.52678 4.40215 8.46447 3.46447C9.40215 2.52678 10.6739 2 12 2Z"
+                          fill="#15161B"
+                        />
+                      </g>
+                      <defs>
+                        <clipPath id="clip0_11643_35877">
+                          <rect width="24" height="24" fill="white" />
+                        </clipPath>
+                      </defs>
+                    </svg>
+                  </div>
+                  <span className="text-xs text-[#3E404B] font-semibold text-center">
+                    Save contact
+                  </span>
+                </button>
+              ))}
           {appointmentLink && !attendeeIsUser ? (
             <a target="_blank" rel="noopener noreferrer" href={appointmentLink}>
               <div className="flex-1 flex flex-col gap-2 items-center justify-center">
@@ -704,7 +728,7 @@ export default function SecondSection({
                     maxWidth: "100%",
                     width: "100%",
                   }}
-                  value={`www.zikoro.com/event/${event.eventAlias}/${id}`}
+                  value={`www.zikoro.com/event/${event.eventAlias}/people/info/${attendeeAlias}`}
                   viewBox={`0 0 256 256`}
                 />
               </div>
@@ -739,7 +763,7 @@ export default function SecondSection({
           )}
         </div>
       </section>
-      {user &&
+      {/* {user &&
         (String(event?.createdBy) === String(user.id) ||
           email === user.userEmail) && (
           <AttendeeCredentials
@@ -750,8 +774,8 @@ export default function SecondSection({
             attendeeCertificatesIsLoading={attendeeCertificatesIsLoading}
             getAttendeeCertificates={getAttendeeCertificates}
           />
-        )}
-      <section className="flex justify-between items-center px-2">
+        )} */}
+      {/* <section className="flex justify-between items-center px-2">
         {!badgeIsLoading &&
           !attendeeBadge &&
           user &&
@@ -918,7 +942,7 @@ export default function SecondSection({
               </DropdownMenuContent>
             </DropdownMenu>
           )}
-      </section>
+      </section> */}
       <AttendeeAbout
         city={city}
         country={country}
@@ -927,6 +951,13 @@ export default function SecondSection({
         linkedin={linkedin}
         instagram={instagram}
         facebook={facebook}
+      />
+      <AttendeeNotesSection
+        attendee={attendee}
+        note={note}
+        noteIsLoading={noteIsLoading}
+        getnote={getnote}
+        removeAttendeeTag={removeAttendeeTag}
       />
       <AttendeeTagsSection
         attendee={attendee}
@@ -1048,13 +1079,6 @@ export default function SecondSection({
           </div>
         </section>
       )}
-      <AttendeeNotesSection
-        attendee={attendee}
-        note={note}
-        noteIsLoading={noteIsLoading}
-        getnote={getnote}
-        removeAttendeeTag={removeAttendeeTag}
-      />
       <AddAttendeeForm
         isOpen={attendeeFormIsOpen}
         onClose={onCloseAttendeeForm}

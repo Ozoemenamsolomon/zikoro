@@ -7,27 +7,28 @@ import { Search } from "styled-icons/evil";
 import useSearch from "@/hooks/common/useSearch";
 import { Sponsors } from "./sponsors/Sponsors";
 import { Exhibitors } from "./sponsors/Exhibitors";
-import { useFetchPartners, useFetchSingleEvent } from "@/hooks";
+import {
+  useFetchPartners,
+  useFetchSingleEvent,
+  useVerifyUserAccess,
+  useCheckTeamMember,
+} from "@/hooks";
 import { useMemo, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { extractUniqueTypes } from "@/utils/helpers";
 import { TFilter } from "@/types/filter";
-import { TExPartner } from "@/types";
+import { TExPartner, Event } from "@/types";
 import { useFilter } from "@/hooks";
 import _ from "lodash";
 import { cn } from "@/lib";
 
-export function Partners({
-  eventId,
- 
-}: {
-  eventId: string;
- 
-}) {
+export function Partners({ eventId }: { eventId: string }) {
   const { data, loading, refetch } = useFetchPartners(eventId);
   const { data: event } = useFetchSingleEvent(eventId);
-  const params = useSearchParams()
-  const query = params.get("p")
+  const { isOrganizer } = useVerifyUserAccess(eventId);
+  const { isIdPresent } = useCheckTeamMember({ eventId });
+  const params = useSearchParams();
+  const query = params.get("p");
   const partnersFilter: TFilter<TExPartner>[] = [
     {
       label: "Location",
@@ -205,17 +206,39 @@ export function Partners({
   ];
 
   const formatPartners: TExPartner[] = useMemo(() => {
-    return data?.map((value) => {
-      return {
-        ...value,
-        stampIt: value?.stampIt || false,
-        offers: Array.isArray(value?.offers)
-          ? value?.offers?.length > 0
-          : false,
-        industry: value?.industry,
-        jobs: Array.isArray(value?.jobs) ? value?.jobs?.length > 0 : false,
-      };
-    });
+    if (Array.isArray(data) && data?.length > 0) {
+      return isOrganizer || isIdPresent
+        ? data?.map((value) => {
+            return {
+              ...value,
+              stampIt: value?.stampIt || false,
+              offers: Array.isArray(value?.offers)
+                ? value?.offers?.length > 0
+                : false,
+              industry: value?.industry,
+              jobs: Array.isArray(value?.jobs)
+                ? value?.jobs?.length > 0
+                : false,
+            };
+          })
+        : data
+            ?.filter(({ partnerStatus }) => partnerStatus === "active")
+            .map((value) => {
+              return {
+                ...value,
+                stampIt: value?.stampIt || false,
+                offers: Array.isArray(value?.offers)
+                  ? value?.offers?.length > 0
+                  : false,
+                industry: value?.industry,
+                jobs: Array.isArray(value?.jobs)
+                  ? value?.jobs?.length > 0
+                  : false,
+              };
+            });
+    } else {
+      return [];
+    }
   }, [data]);
 
   const { filteredData, filters, selectedFilters, applyFilter, setOptions } =
@@ -254,14 +277,14 @@ export function Partners({
     );
   }, [data, searchedData]);
 
-  const singleEvent = useMemo(() => {
-    if (event !== null) {
-      const { organization, ...restData } = event;
-      return restData;
-    } else {
-      return null;
-    }
-  }, [event]);
+  // const singleEvent = useMemo(() => {
+  //   if (event !== null) {
+  //     const { organization, ...restData } = event;
+  //     return restData;
+  //   } else {
+  //     return null;
+  //   }
+  // }, [event]);
 
   return (
     <div className="w-full pb-24">
@@ -301,15 +324,11 @@ export function Partners({
         </div>
       </div>
 
-      {query === "sponsors" && singleEvent && (
-        <Sponsors event={singleEvent} sponsors={sponsors} loading={loading} />
+      {query === "sponsors" && event && (
+        <Sponsors event={event} sponsors={sponsors} loading={loading} />
       )}
-      {query === "exhibitors" && singleEvent && (
-        <Exhibitors
-          event={singleEvent}
-          exhibitors={exhibitors}
-          loading={loading}
-        />
+      {query === "exhibitors" && event && (
+        <Exhibitors event={event} exhibitors={exhibitors} loading={loading} />
       )}
     </div>
   );

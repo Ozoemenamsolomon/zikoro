@@ -66,6 +66,12 @@ const DEFAULT_POINTS_ALLOCATION: TPointsAllocation = {
     maxPoints: 5,
     status: false,
   },
+  "participate in survey": {
+    maxOccurrence: 5,
+    points: 5,
+    maxPoints: 5,
+    status: false,
+  },
   "participate in quiz": {
     maxOccurrence: 5,
     points: 5,
@@ -168,8 +174,9 @@ const page = () => {
 
   useEffect(() => {
     if (engagementsSettingsIsLoading || !engagementsSettings) return;
-
-    setAllocation(engagementsSettings.pointsAllocation);
+   
+      setAllocation({...pointsAllocation,...engagementsSettings.pointsAllocation });
+   
   }, [engagementsSettings]);
 
   const {

@@ -14,7 +14,6 @@ import { TAnswer, TQuestion, TQuiz } from "@/types";
 import { QUser } from "@/constants";
 import Avatar from "react-nice-avatar";
 import { AvatarFullConfig } from "react-nice-avatar";
-import { ArrowUpwardOutline } from "styled-icons/evaicons-outline";
 import { FeedStar } from "styled-icons/octicons";
 import { Plus } from "styled-icons/bootstrap";
 import { Reorder } from "framer-motion";
@@ -322,7 +321,7 @@ export function LeaderBoard({
         !isLeftBox && "col-span-4"
       )}
     >
-      <div className="w-full h-[37vh] gap-y-2 flex bg-[#001fcc]/20 pb-2 flex-col rounded-tr-xl items-center ">
+      <div className="w-full h-[41vh] gap-y-2 flex bg-[#001fcc]/20 pb-2 flex-col rounded-tr-xl items-center ">
         <div className="flex items-center p-4 justify-between w-full">
           <h2 className="font-semibold  text-base sm:text-xl">LeaderBoard</h2>
           <div className="flex items-center gap-x-2">
@@ -437,7 +436,7 @@ export function LeaderBoard({
         )}
       </div>
 
-      <div className="w-full overflow-y-auto no-scrollbar h-[53vh] space-y-2">
+      <div className="w-full overflow-y-auto no-scrollbar h-[49vh] space-y-2">
         <Reorder.Group values={board} onReorder={setBoard}>
           {Array.isArray(board) &&
             board.slice(3, board?.length)?.map((attendee, index) => (

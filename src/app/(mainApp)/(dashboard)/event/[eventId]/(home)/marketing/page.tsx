@@ -1,6 +1,6 @@
-import MarketingPage from "./_components/MarketingPage";
+import MarketingPage from "./_components/MarketingLayout";
 
-export function page({
+export default function page({
   searchParams: { currentTab },
 }: {
   searchParams: { currentTab: string };

@@ -8,6 +8,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useGetData } from "@/hooks/services/request";
 import { EngagementsSettings } from "@/types/engagements";
 import { cn } from "@/lib";
+import { CheckCircle } from "lucide-react";
+import { ContactRequest } from "@/types/contacts";
 
 type AttendeeProps = {
   attendee: TAttendee;
@@ -20,6 +22,7 @@ type AttendeeProps = {
   event: Event;
   user: TUser;
   isLead: boolean;
+  contactRequests: ContactRequest[] | null;
 };
 
 const Attendee: React.FC<AttendeeProps> = ({
@@ -33,6 +36,7 @@ const Attendee: React.FC<AttendeeProps> = ({
   event,
   user,
   isLead,
+  contactRequests,
 }) => {
   const router = useRouter();
 
@@ -41,7 +45,7 @@ const Attendee: React.FC<AttendeeProps> = ({
     isLoading: engagementsSettingsIsLoading,
     getData: getEngagementsSettings,
   } = useGetData<EngagementsSettings>(
-    `engagements/${event.eventAlias}/settings`
+    `engagements/${event.eventAlias}/settings333`
   );
   const {
     id,
@@ -56,6 +60,8 @@ const Attendee: React.FC<AttendeeProps> = ({
     checkInPoints,
     attendeeProfilePoints,
     attendeeAlias,
+    archive,
+    email,
   } = attendee;
 
   console.log(checkInPoints, firstName);
@@ -141,10 +147,12 @@ const Attendee: React.FC<AttendeeProps> = ({
     await getAttendees();
   };
 
+  const attendeeIsUser = user && email === user?.userEmail;
+
   return (
     <button
       className={`w-full grid grid-cols-10 items-center gap-1.5 p-1.5 border-b border-gray-100 ${
-        isSelected ? "bg-gray-100" : ""
+        isSelected ? "bg-[#F9FAFF]" : ""
       }`}
       onClick={() =>
         window.innerWidth > 768
@@ -165,8 +173,29 @@ const Attendee: React.FC<AttendeeProps> = ({
       </div>
       <div className="col-span-6">
         <div className="justify-start items-start flex flex-col gap-1 min-w-full">
-          <h4 className="text-gray-900 font-semibold text-sm capitalize w-full text-left">
-            {firstName + " " + lastName}
+          <h4
+            className={cn(
+              "text-gray-900 font-semibold text-sm capitalize w-full text-left flex items-center gap-x-2 justify-start",
+              archive && "text-red-600"
+            )}
+          >
+            <span className="truncate max-w-full">
+              {firstName + " " + lastName}
+            </span>
+            {attendeeIsUser && (
+              <span className="text-tiny font-medium text-gray-700 truncate w-full text-left">
+                (you)
+              </span>
+            )}
+            {!isLead &&
+              contactRequests &&
+              contactRequests.find(
+                (request) =>
+                  (request.senderUserEmail === attendee.email ||
+                    request.receiverUserEmail === attendee.email) &&
+                  !attendeeIsUser &&
+                  request.status === "accepted"
+              ) && <CheckCircle className="w-6 h-6 text-green-600" />}
           </h4>
           <span className="text-tiny font-medium text-gray-700 truncate w-full text-left">
             {`${jobTitle ? jobTitle + ", " : ""}${organization || ""}`}
@@ -222,7 +251,10 @@ const Attendee: React.FC<AttendeeProps> = ({
         ) : (
           <>
             <button
-              className={favouriteIsLoading ? "pulse" : ""}
+              className={cn(
+                favouriteIsLoading ? "pulse" : "",
+                archive && "hidden"
+              )}
               disabled={favouriteIsLoading}
               onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                 e.stopPropagation();
@@ -279,7 +311,8 @@ const Attendee: React.FC<AttendeeProps> = ({
                   isWithinInterval(new Date(), {
                     start: event.startDateTime,
                     end: event.endDateTime,
-                  })
+                  }) &&
+                  !archive
                   ? ""
                   : "hidden",
                 checkCheckin ? "text-basePrimary" : "text-gray-700"

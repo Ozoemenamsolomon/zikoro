@@ -34,6 +34,7 @@ type BlogPostProps = {
   scheduled: boolean;
   headerImageUrl: string;
   tags: string[];
+  fetchBlogPost: () => Promise<void>;
 };
 
 export default function AdminBlogTemplate({
@@ -51,6 +52,7 @@ export default function AdminBlogTemplate({
   scheduled,
   headerImageUrl,
   tags,
+  fetchBlogPost,
 }: BlogPostProps) {
   const [date, setDate] = useState<string | null>(null);
 
@@ -117,12 +119,11 @@ export default function AdminBlogTemplate({
       });
       if (response.ok) {
         toast.success("Post Deleted");
+        fetchBlogPost();
       } else {
         throw new Error("Failed to delete post");
       }
-    } catch (error) {
-      
-    }
+    } catch (error) {}
   };
 
   //function that edit post

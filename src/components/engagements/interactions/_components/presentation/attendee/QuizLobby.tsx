@@ -26,7 +26,9 @@ export function QuizLobby({
   liveQuizPlayers,
   isMaxLiveParticipant,
   onToggle,
-  isLeftBox
+  isLeftBox,
+  refetchLobby,
+  id
 }: {
   close: () => void;
   goBack: () => void;
@@ -37,6 +39,8 @@ export function QuizLobby({
   isMaxLiveParticipant: boolean;
   onToggle:() => void;
   isLeftBox: boolean;
+  refetchLobby?:() => Promise<any>;
+  id:string;
 }) {
   const [loading, setLoading] = useState(false);
   const { deleteQuizLobby } = useDeleteQuizLobby(quiz?.quizAlias);
@@ -73,6 +77,20 @@ export function QuizLobby({
     if (isAttendee && quiz?.liveMode?.isStarting) {
       close();
     }
+    // check if quiz has started and user is in the lobby , and has been admitted
+    if (
+      isAttendee &&
+      quiz?.quizParticipants?.some(
+        (participant) => {
+          
+          return participant.id === id 
+        }
+      )
+    ) {
+      close();
+      
+    }
+   
   }, [quiz]);
 
   async function openQuestion() {
@@ -89,10 +107,14 @@ export function QuizLobby({
     await updateQuiz({ payload });
     await deleteQuizLobby();
     refetch();
+    refetchLobby?.();
 
     setLoading(false);
     close();
   }
+
+
+
 
   return (
     <div

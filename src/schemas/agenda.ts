@@ -13,5 +13,6 @@ export const sessionSchema = z.object({
   sessionSpeakers: z.any(),
   sessionModerators: z.any(),
   sessionFiles: z.any(),
-  sessionVenue:z.any()
+  sessionVenue:z.any(),
+  engagementAlias: z.any()
 });

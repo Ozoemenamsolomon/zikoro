@@ -54,18 +54,30 @@ export default function Interactions({ eventId }: { eventId: string }) {
     }
   }, [quizzes, isIdPresent, isOrganizer]);
 
+  const visibleForm = useMemo(() => {
+    if (!isIdPresent && !isOrganizer) {
+      const filteredQuizzes = data?.filter(
+        (form) => !form?.isActive
+      );
+
+      return filteredQuizzes;
+    } else {
+      return data;
+    }
+  },[data, isIdPresent, isOrganizer])
+
 
   const interactioDataLength = useMemo(() => {
-      if (data && visibleQuizzes) {
+      if (visibleForm && visibleQuizzes) {
         return [
-          ...data,
+          ...visibleForm,
           ...visibleQuizzes
         ].length
       }
       else {
         return 0
       }
-  },[data, quizzes, visibleQuizzes])
+  },[visibleForm, visibleQuizzes])
 
   //console.log({ visibleQuizzes, quizzes, isIdPresent, isOrganizer });
 
@@ -107,9 +119,9 @@ export default function Interactions({ eventId }: { eventId: string }) {
 
   return (
     <InteractionLayout eventId={eventId}>
-      <div className="w-full">
+      <div className="w-full px-4 mx-auto  max-w-[1300px] text-mobile sm:text-sm sm:px-6 mt-6 sm:mt-10">
         <div className="flex items-end w-full justify-end p-4">
-          {Array.isArray(visibleQuizzes) && visibleQuizzes?.length > 0 && (
+          {!isLoading && !loading && interactioDataLength > 0 && (
             <Button
               onClick={toggleInteractionModal}
               className={cn(
@@ -149,8 +161,8 @@ export default function Interactions({ eventId }: { eventId: string }) {
               />
             ))}
              {!isLoading && !loading &&
-            Array.isArray(data) &&
-            data.map((form, index) => (
+            Array.isArray(visibleForm) &&
+            visibleForm.map((form, index) => (
               <FormCard
                 refetch={getData}
                 isNotAttendee={isIdPresent || isOrganizer}

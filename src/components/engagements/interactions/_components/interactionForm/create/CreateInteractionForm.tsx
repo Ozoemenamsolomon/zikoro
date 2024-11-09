@@ -1,43 +1,79 @@
 "use client";
 
 import { Form, FormField, FormItem, FormControl } from "@/components/ui/form";
-import { useFieldArray, useForm } from "react-hook-form";
+import {
+  useFieldArray,
+  UseFieldArrayRemove,
+  useForm,
+  UseFormReturn,
+  FieldArrayWithId,
+} from "react-hook-form";
 import { Button } from "@/components/custom_ui/Button";
 import { Input } from "@/components/ui/input";
 import { ArrowBack } from "@styled-icons/boxicons-regular/ArrowBack";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { AddCircle } from "@styled-icons/ionicons-sharp/AddCircle";
-import { useState, Suspense, useEffect } from "react";
+import { useState, Suspense, useEffect, useMemo } from "react";
 import Image from "next/image";
 import { IoIosCloseCircleOutline } from "react-icons/io";
+import { InlineIcon } from "@iconify/react";
+import { Settings } from "styled-icons/feather";
 import toast from "react-hot-toast";
 import {
   TextType,
   DateType,
   CheckBoxType,
   RatingType,
+  UploadType,
 } from "./_components/optionsType/organizer";
 import { cn } from "@/lib";
 import { InteractionLayout } from "@/components/engagements/_components";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formQuestionSchema } from "@/schemas/engagement";
-import { AddCoverImage } from "./_components/formcomposables";
 import { nanoid } from "nanoid";
 import { useGetData, usePostRequest } from "@/hooks/services/request";
-import { TEngagementFormQuestion } from "@/types/engagements";
+import {
+  TEngagementFormAnswer,
+  TEngagementFormQuestion,
+  TFormattedEngagementFormAnswer,
+} from "@/types/engagements";
 import { Loader2Icon } from "lucide-react";
-import { generateAlias, uploadFile } from "@/utils";
+import { uploadFile } from "@/utils";
 import { CiShare2 } from "react-icons/ci";
 import { ShareModal } from "./ShareModal";
+import FormResponses from "../formResponse/FormResponse";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import {TouchEvent, MouseEvent} from "react"
+// import {
+//   DndContext,
+//   KeyboardSensor,
+//   MouseSensor as LibMouseSensor,
+//   PointerSensor ,
+//   TouchSensor as LibTouchSensor,
+//   closestCorners,
+//   useSensor,
+//   useSensors,
+//   DragEndEvent,
+// } from "@dnd-kit/core";
+// import {
+//   SortableContext,
+//   verticalListSortingStrategy,
+//   arrayMove,
+//   sortableKeyboardCoordinates,
+// } from "@dnd-kit/sortable";
+import { PreviewModal } from "@/components/contents/_components";
+
 const options = [
   { name: "Mutiple Choice", image: "/fmultiplechoice.png" },
   { name: "Text", image: "/ftext.png" },
   { name: "Date", image: "/fdate.png" },
   { name: "CheckBox", image: "/fcheckbox.png" },
   { name: "Rating", image: "/fstarr.png" },
-  { name: "Likert", image: "/flikert.png" },
+  { name: "Upload", image: "/fattachment.png" },
 ];
+// { name: "Likert", image: "/flikert.png" },
 
 const optionsType = [
   { name: "Mutiple Choice", type: "INPUT_MULTIPLE_CHOICE" },
@@ -45,8 +81,128 @@ const optionsType = [
   { name: "Date", type: "INPUT_DATE" },
   { name: "CheckBox", type: "INPUT_CHECKBOX" },
   { name: "Rating", type: "INPUT_RATING" },
-  { name: "Likert", type: "INPUT_LIKERT" },
+  { name: "Upload", type: "ATTACHMENT" },
 ];
+
+//  { name: "Likert", type: "INPUT_LIKERT" },
+
+// Block DnD event propagation if element have "data-no-dnd" attribute
+// const handler = ({ nativeEvent: event }: MouseEvent | TouchEvent) => {
+//   let cur = event.target as HTMLElement;
+
+//   while (cur) {
+//       if (cur.dataset && cur.dataset.noDnd) {
+//           return false;
+//       }
+//       cur = cur.parentElement as HTMLElement;
+//   }
+
+//   return true;
+// };
+// class MouseSensor extends LibMouseSensor {
+//   static activators = [{ eventName: 'onMouseDown', handler }] as typeof LibMouseSensor['activators'];
+// }
+
+//  class TouchSensor extends LibTouchSensor {
+//   static activators = [{ eventName: 'onTouchStart', handler }] as typeof LibTouchSensor['activators'];
+// }
+function Fields({
+  field,
+  index,
+  copyQuestion,
+  form,
+  remove,
+}: {
+  form: UseFormReturn<z.infer<typeof formQuestionSchema>, any, any>;
+  field: FieldArrayWithId<
+    {
+      title: string;
+      questions: {
+        question: string;
+        selectedType: string;
+        isRequired: boolean;
+        questionId: string;
+        questionImage?: any;
+        optionFields?: any;
+        questionDescription?: any;
+      }[];
+      isActive: boolean;
+      description?: string | undefined;
+    },
+    "questions",
+    "id"
+  >;
+  index: number;
+  copyQuestion: (i: number) => void;
+  remove: UseFieldArrayRemove;
+}) {
+  // const { attributes, listeners, setNodeRef, transform, transition } =
+  //   useSortable({ id: field?.id });
+
+  return (
+    <div
+      // ref={setNodeRef}
+      // {...attributes}
+      // {...listeners}
+      // style={{
+      //   transition,
+      //   transform: CSS.Transform.toString(transform),
+      //   touchAction: "none",
+      // }}
+      className="w-full"
+    >
+      {field.selectedType === "INPUT_TEXT" && (
+        <TextType
+          form={form}
+          index={index}
+          remove={remove}
+          append={copyQuestion}
+        />
+      )}
+      {field.selectedType === "INPUT_DATE" && (
+        <DateType
+          form={form}
+          index={index}
+          remove={remove}
+          append={copyQuestion}
+        />
+      )}
+      {field.selectedType === "INPUT_CHECKBOX" && (
+        <CheckBoxType
+          form={form}
+          index={index}
+          remove={remove}
+          append={copyQuestion}
+        />
+      )}
+      {field.selectedType === "INPUT_MULTIPLE_CHOICE" && (
+        <CheckBoxType
+          form={form}
+          index={index}
+          remove={remove}
+          append={copyQuestion}
+        />
+      )}
+      {field.selectedType === "INPUT_RATING" && (
+        <RatingType
+          form={form}
+          index={index}
+          remove={remove}
+          append={copyQuestion}
+        />
+      )}
+      {field.selectedType === "ATTACHMENT" && (
+        <UploadType
+          form={form}
+          index={index}
+          remove={remove}
+          append={copyQuestion}
+        />
+      )}
+    </div>
+  );
+}
+
 function SelectQuestionType({
   onClose,
   //selectedOption,
@@ -57,7 +213,7 @@ function SelectQuestionType({
   setSelectedOption: (selected: string) => void;
 }) {
   return (
-    <div className="w-full flex flex-col to-custom-bg-gradient-end bg-gradient-to-tr  rounded-lg border from-custom-bg-gradient-start p-3 ">
+    <div className="w-full flex flex-col  rounded-lg border p-3 ">
       <Button
         onClick={onClose}
         className="self-end gap-x-2 w-fit h-fit px-0 text-gray-600"
@@ -89,33 +245,33 @@ function SelectQuestionType({
 }
 
 function CreateInteractionFormComp({
+  formId,
   eventId,
-  
 }: {
+  formId: string;
   eventId: string;
 }) {
   const [loading, setLoading] = useState(false);
-  const params = useSearchParams()
-  const prevFormId = params.get("form")
+  const [active, setActive] = useState(0);
+  const [isOpenPreview, setIsOpenPreview] = useState(false);
+  const [flattenedResponse, setFlattenedResponse] = useState<TFormattedEngagementFormAnswer[]>([])
   const { postData } =
     usePostRequest<Partial<TEngagementFormQuestion>>("/engagements/form");
-  const { data } = prevFormId
-    ? useGetData<TEngagementFormQuestion>(`/engagements/form/${prevFormId}`)
-    : { data: null };
-  const [isCreated, setIsCreated] = useState(false);
+  const { data } = useGetData<TEngagementFormQuestion>(
+    `/engagements/form/${formId}`
+  );
+  const { data: formResponses } = useGetData<TEngagementFormAnswer[]>(
+    `/engagements/form/answer/${formId}`
+  );
   const [isShare, setShowShare] = useState(false);
-  const [formAlias, setFormAlias] = useState("");
   const form = useForm<z.infer<typeof formQuestionSchema>>({
     resolver: zodResolver(formQuestionSchema),
     defaultValues: {
       questions: [],
       isActive: true,
-      eventAlias: eventId,
-      formAlias: generateAlias(),
     },
   });
   const router = useRouter();
-  // const [selectedOption, setSelectedOption] = useState<string>("");
   const [showSelectQuestionType, setShowSelectQuestionType] =
     useState<boolean>(false);
 
@@ -129,13 +285,13 @@ function CreateInteractionFormComp({
       questionId: nanoid(),
       question: "",
       questionImage: "",
+      questionDescription: "",
       selectedType:
         optionsType.find((option) => option.name === selected)?.type || "",
       optionFields: null,
       isRequired: false,
     });
     setShowSelectQuestionType(false);
-    // setSelectedOption("");
   }
 
   function copyQuestion(index: number) {
@@ -146,21 +302,13 @@ function CreateInteractionFormComp({
   }
 
   async function onSubmit(values: z.infer<typeof formQuestionSchema>) {
-    if (!values?.coverImage) return toast.error("Cover Image is required");
     if (
       !values?.questions ||
       (Array.isArray(values?.questions) && values?.questions?.length === 0)
     )
       return toast.error("Add Questions");
     setLoading(true);
-    const image = await new Promise(async (resolve) => {
-      if (typeof values?.coverImage === "string") {
-        resolve(values?.coverImage);
-      } else {
-        const img = await uploadFile(values?.coverImage[0], "image");
-        resolve(img);
-      }
-    });
+
     // Process questions
     const processedQuestions = await Promise.all(
       values.questions.map(async (question) => {
@@ -203,12 +351,10 @@ function CreateInteractionFormComp({
       ? {
           ...data,
           ...values,
-          coverImage: image as string,
           questions: processedQuestions,
         }
       : {
           ...values,
-          coverImage: image as string,
           questions: processedQuestions,
         };
 
@@ -216,19 +362,14 @@ function CreateInteractionFormComp({
       payload: payload,
     });
     setLoading(false);
-    setFormAlias(values?.formAlias);
-    setIsCreated(true);
   }
 
   useEffect(() => {
     if (data) {
       form.reset({
         title: data?.title,
-        coverImage: data?.coverImage,
         description: data?.description,
-        isActive: data?.isActive,
-        formAlias: data?.formAlias,
-        eventAlias: data?.eventAlias,
+        isActive: data?.isActive == null ? true : data?.isActive,
         questions: data?.questions,
       });
     }
@@ -241,13 +382,103 @@ function CreateInteractionFormComp({
   function onToggleShare() {
     setShowShare((p) => !p);
   }
+
+  function onClosePreview() {
+    setIsOpenPreview((p) => !p);
+  }
+  const formattedResponses = useMemo(() => {
+    const responseGroup: { [key: string]: TFormattedEngagementFormAnswer[] } =
+      {};
+
+    if (Array.isArray(formResponses) && formResponses?.length > 0 && data) {
+      const newData: TFormattedEngagementFormAnswer[] = formResponses?.flatMap(
+        (v) => {
+          return v?.responses?.map((item) => {
+            const { responses, ...restData } = v;
+            return {
+              ...item,
+              ...restData,
+              question:
+                data?.questions?.find((q) => q.questionId === item?.questionId)
+                  ?.question || "",
+              questionImage:
+                data?.questions?.find((q) => q?.questionId === item?.questionId)
+                  ?.questionImage || null,
+              optionFields:
+                data?.questions?.find((q) => q?.questionId === item?.questionId)
+                  ?.optionFields || null,
+            };
+          });
+        }
+      );
+      
+setFlattenedResponse(newData)
+
+      newData?.forEach((quest) => {
+        const key = quest?.questionId;
+        if (!responseGroup[key]) {
+          responseGroup[key] = [] as TFormattedEngagementFormAnswer[];
+        }
+        responseGroup[key].push(quest);
+      });
+
+      return responseGroup;
+    }
+  }, [data, formResponses]);
+
+
+  // Block DnD event propagation if element have "data-no-dnd" attribute
+const handler = ({ nativeEvent: event }: MouseEvent | TouchEvent) => {
+  let cur = event.target as HTMLElement;
+
+  while (cur) {
+      if (cur.dataset && cur.dataset.noDnd) {
+          return false;
+      }
+      cur = cur.parentElement as HTMLElement;
+  }
+
+  return true;
+};
+
+
+
+  // const sensors = useSensors(
+  //   useSensor(PointerSensor, {
+  //     activationConstraint: {
+  //       distance: 0.01,
+  //     },
+  //   }),
+  //   useSensor(TouchSensor),
+  //   useSensor(MouseSensor),
+  //   useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  // );
+
+  // //get position
+  // const getPosition = (id: string): number | undefined =>
+  //   fields.findIndex((item) => item?.id === id);
+  // async function handleDrop(e: DragEndEvent) {
+  //   if (!fields) return;
+  //   const { active, over } = e;
+
+  //   if (active?.id === over?.id) return;
+  //   const originPos = getPosition(active?.id as string)!;
+  //   const destPos = getPosition(over?.id as string)!;
+  //   const updatedFields = arrayMove(fields, originPos, destPos);
+
+  //   form.setValue("questions", updatedFields);
+  // }
   return (
     <InteractionLayout eventId={eventId}>
-      <div className="w-full px-4 text-mobile sm:text-sm sm:px-6 mt-6 sm:mt-10">
+      <div
+        className={cn(
+          "w-full px-4 mx-auto  max-w-[1300px] text-mobile sm:text-sm sm:px-6 mt-6 sm:mt-10"
+        )}
+      >
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="w-full flex flex-col items-start justify-start sm:gap-y-6 gap-y-8 2xl:gap-y-10"
+            className="w-full flex flex-col items-start justify-start  sm:gap-y-8 gap-y-8 2xl:gap-y-10"
           >
             <div className="w-full flex items-center justify-between">
               <Button
@@ -261,16 +492,58 @@ function CreateInteractionFormComp({
                 <ArrowBack size={20} />
                 <p>Back</p>
               </Button>
-              <div className=" flex items-center gap-x-2">
-                <Button
-                  className="gap-x-2"
+              <div className="w-fit rounded-xl p-1 border">
+                <button
+                  className={cn(
+                    "px-3 py-2 font-medium rounded-xl",
+                    active == 0 && "bg-basePrimary text-white"
+                  )}
                   onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
-                    onToggleShare();
+                    setActive(0);
+                  }}
+                >
+                  <p>Questions</p>
+                </button>
+                <button
+                  className={cn(
+                    "px-3 py-2 font-medium rounded-xl",
+                    active == 1 && "bg-basePrimary text-white"
+                  )}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    setActive(1);
                   }}
                 >
                   <p>Responses</p>
+                </button>
+              </div>
+              <div className=" flex items-center gap-x-2">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    router.push(`/event/${eventId}/engagements/interactions/form/create?form=${formId}`)
+                  }}
+                  className="flex items-center justify-center rounded-full hover:bg-gray-100 p-1"
+                >
+                  <Settings size={22} />
+                </button>
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    onClosePreview()
+                  
+                  }}
+                  className=" h-11 flex border border-basePrimary  items-center gap-x-2"
+                >
+                  <InlineIcon color="#001fcc" icon="mdi:eye" fontSize={20} />
+                  <p className="gradient-text bg-basePrimary font-medium">
+                    Preview
+                  </p>
                 </Button>
                 <Button
                   disabled={loading}
@@ -281,124 +554,100 @@ function CreateInteractionFormComp({
                   )}
                   <p>Save</p>
                 </Button>
-                {isCreated && (
+
+                <Button
+                  className="gap-x-2"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    onToggleShare();
+                  }}
+                >
+                  <CiShare2 size={22} />
+                  <p>Share</p>
+                </Button>
+              </div>
+            </div>
+            {active === 0 && (
+              <>
+                <div className="w-full  flex flex-col items-start justify-start gap-y-1 rounded-lg border p-3 sm:p-4">
+                  <FormField
+                    control={form.control}
+                    name="title"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormControl className="w-full">
+                          <Input
+                            {...form.register("title")}
+                            className="bg-transparent w-full border-none h-14 text-2xl placeholder:text-gray-500 placeholder:text-2xl"
+                            placeholder="Form Title"
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field }) => (
+                      <FormItem  className="w-full">
+                        <FormControl className="w-full">
+                          <Input
+                            {...form.register("description")}
+                            className="bg-transparent border-none h-11 w-full placeholder:text-gray-500"
+                            placeholder="Form Description"
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="w-full flex flex-col items-start justify-start gap-y-6 sm:gap-y-8">
+                  {/* <DndContext
+                    collisionDetection={closestCorners}
+                    sensors={sensors}
+                    onDragEnd={handleDrop}
+                  >
+                    <SortableContext
+                      items={fields}
+                      strategy={verticalListSortingStrategy}
+                    > */}
+                      {fields.map((field, index) => (
+                        <Fields
+                          key={field.id}
+                          index={index}
+                          remove={remove}
+                          field={field}
+                          copyQuestion={copyQuestion}
+                          form={form}
+                        />
+                      ))}
+                    {/* </SortableContext>
+                  </DndContext> */}
+                </div>
+
+                <div className="w-full flex items-center justify-center ">
                   <Button
-                    className="gap-x-2"
                     onClick={(e) => {
                       e.stopPropagation();
                       e.preventDefault();
-                      onToggleShare();
+                      handleToggleSelectQuestionType();
                     }}
+                    className="w-fit text-basePrimary h-fit px-0 gap-x-2"
                   >
-                    <CiShare2 size={22} />
-                    <p>Share</p>
+                    <AddCircle className="text-basePrimary" size={40} />
                   </Button>
-                )}
-              </div>
-            </div>
-
-            <AddCoverImage form={form} />
-
-            <div className="w-full from-custom-bg-gradient-start flex flex-col items-start justify-start gap-y-1 to-custom-bg-gradient-end bg-gradient-to-tr rounded-lg border p-3 sm:p-4">
-              <FormField
-                control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        {...form.register("title")}
-                        className="bg-transparent border-none h-14 text-2xl placeholder:text-gray-500 placeholder:text-2xl"
-                        placeholder="Form Title"
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        {...form.register("description")}
-                        className="bg-transparent border-none h-11  placeholder:text-gray-500"
-                        placeholder="Form Description"
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <div className="w-full flex flex-col items-start justify-start gap-y-6 sm:gap-y-8">
-              {fields.map((field, index) => (
-                <div key={field.id} className="w-full">
-                  {field.selectedType === "INPUT_TEXT" && (
-                    <TextType
-                      form={form}
-                      index={index}
-                      remove={remove}
-                      append={copyQuestion}
-                    />
-                  )}
-                  {field.selectedType === "INPUT_DATE" && (
-                    <DateType
-                      form={form}
-                      index={index}
-                      remove={remove}
-                      append={copyQuestion}
-                    />
-                  )}
-                  {field.selectedType === "INPUT_CHECKBOX" && (
-                    <CheckBoxType
-                      form={form}
-                      index={index}
-                      remove={remove}
-                      append={copyQuestion}
-                    />
-                  )}
-                  {field.selectedType === "INPUT_MULTIPLE_CHOICE" && (
-                    <CheckBoxType
-                      form={form}
-                      index={index}
-                      remove={remove}
-                      append={copyQuestion}
-                    />
-                  )}
-                  {field.selectedType === "INPUT_RATING" && (
-                    <RatingType
-                      form={form}
-                      index={index}
-                      remove={remove}
-                      append={copyQuestion}
-                    />
-                  )}
                 </div>
-              ))}
-            </div>
 
-            <div className="w-full flex items-center justify-center ">
-              <Button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  e.preventDefault();
-                  handleToggleSelectQuestionType();
-                }}
-                className="w-fit text-basePrimary h-fit px-0 gap-x-2"
-              >
-                <AddCircle className="text-basePrimary" size={24} />
-                <p className="underline">Add Question</p>
-              </Button>
-            </div>
-
-            {showSelectQuestionType && (
-              <SelectQuestionType
-                onClose={handleToggleSelectQuestionType}
-                //selectedOption={selectedOption}
-                setSelectedOption={appendToQuestion}
-              />
+                {showSelectQuestionType && (
+                  <SelectQuestionType
+                    onClose={handleToggleSelectQuestionType}
+                    //selectedOption={selectedOption}
+                    setSelectedOption={appendToQuestion}
+                  />
+                )}
+              </>
             )}
           </form>
         </Form>
@@ -406,22 +655,33 @@ function CreateInteractionFormComp({
         {isShare && (
           <ShareModal
             close={onToggleShare}
-            link={`${window.location.origin}/engagements/${eventId}/form/${formAlias}`}
+            link={`${window.location.origin}/engagements/${eventId}/form/${formId}`}
           />
         )}
       </div>
+      {active === 1 && <FormResponses data={formattedResponses}  flattenedResponse={flattenedResponse} questions={data}/>}
+      {isOpenPreview && (
+        <PreviewModal
+          url={`/engagements/${eventId}/form/${formId}`}
+          close={onClosePreview}
+          type="Preview"
+          title={data?.title}
+        />
+      )}
     </InteractionLayout>
   );
 }
 
 export default function CreateInteractionForm({
   eventId,
+  formId,
 }: {
   eventId: string;
+  formId: string;
 }) {
   return (
     <Suspense>
-      <CreateInteractionFormComp eventId={eventId} />
+      <CreateInteractionFormComp eventId={eventId} formId={formId} />
     </Suspense>
   );
 }

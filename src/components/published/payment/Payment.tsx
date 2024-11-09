@@ -159,6 +159,8 @@ export function Payment({
     await sendTransactionDetail(toggleSuccessModal, payload);
   }
 
+ // console.log("parsedData", parsedData, "data", data)
+
   return (
     <>
       <div className="w-full h-full z-[200] bg-[#F9FAFF] fixed inset-0">
@@ -307,7 +309,7 @@ function PaymentSuccess({
 
         <div className="w-full px-4 flex flex-col gap-y-2 items-center justify-center">
           <p className="font-medium text-center max-w-sm">
-          Check your mailbox <span className="text-red-500">(or your spam)</span> to view it and  for further information from the event organiser
+          Check your mailbox <span className="text-red-500">(or your spam)</span> for confirmation mail and  for further information from the event organiser
            
           </p>
           <button

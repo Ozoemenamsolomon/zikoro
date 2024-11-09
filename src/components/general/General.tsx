@@ -507,9 +507,9 @@ export default function General() {
   return (
     <>
       {organization ? (
-        <div className="">
+        <div className="w-full pb-32 ">
           <form action="" onSubmit={(e) => updateSetting(e)}>
-            <div className="mt-[60px] mb-8 ml-0 lg:ml-[12px] mr-0 lg:mr-[47px] pl-3 lg:pl-[24px] pr-3 lg:pr-[114px] ">
+            <div className="w-full ">
               <div className="flex justify-between items-center pt-[32px] ">
                 <div className="flex items-center gap-x-3 ">
                   <GeometryIcon />

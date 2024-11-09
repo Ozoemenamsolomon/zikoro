@@ -25,15 +25,31 @@ export interface TEngagementFormQuestion {
   isActive: boolean;
   expirationDate: string;
   questions: {
-question: string;
-questionImage?: string | any;
-selectedType: string;
-isRequired: boolean;
-questionId: string;
-optionFields?: any;
+    question: string;
+    questionImage?: string | any;
+    selectedType: string;
+    isRequired: boolean;
+    questionId: string;
+    optionFields?: any;
   }[];
   formAlias: string;
   eventAlias: string;
+  formSettings: {
+    isConnectedToEngagement: boolean;
+    showForm: string;
+    connectedEngagementId?: string;
+    isCollectUserEmail: boolean;
+    isCoverScreen: boolean;
+    displayType: string;
+    questionPerSlides?: string;
+    titleFontSize: string;
+    headingFontSize: string;
+    backgroundColor: string;
+    textColor: string;
+    buttonColor: string;
+    textFontSize: string;
+    isCoverImage: boolean;
+  };
 }
 
 export interface TEngagementFormAnswer {
@@ -42,8 +58,32 @@ export interface TEngagementFormAnswer {
   formAlias: string;
   userId: string | null;
   submittedAt: string;
-  responses: any;
+  responses: {
+    type: string;
+    questionId: string;
+    response?: any;
+  }[];
   formResponseAlias: string;
   eventAlias: string;
-  attendeeAlias: string;
+  attendeeAlias: string | null;
+  attendeeEmail?: string;
+  attendeeId: number | null;
+  formEngagementPoints: number | null;
+}
+
+export interface TFormattedEngagementFormAnswer {
+  id: number;
+  created_at: string;
+  formAlias: string;
+  userId: string | null;
+  submittedAt: string;
+  type: string;
+  questionId: string;
+  response?: any;
+  formResponseAlias: string;
+  eventAlias: string;
+  attendeeAlias: string | null;
+  question: string;
+  questionImage?: string | any;
+  optionFields: any;
 }

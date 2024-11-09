@@ -6,7 +6,7 @@ import Image from "next/image"
 import {useMemo, useState} from "react"
 import { cn } from "@/lib";
 
-export function AddCoverImage({form}: {form: UseFormReturn<z.infer<typeof formQuestionSchema>, any, any>, }) {
+export function AddCoverImage({form}: {form: UseFormReturn<any, any, any>, }) {
     const [isDragOver, setIsDragOver] = useState(false);
    
   
@@ -76,7 +76,7 @@ export function AddCoverImage({form}: {form: UseFormReturn<z.infer<typeof formQu
             setIsDragOver(false);
           }}
         htmlFor="form-image"
-        className={cn("w-full gap-y-2 bg-gradient-to-tr h-[10rem] flex flex-col items-center justify-center relative sm:h-[15rem] border 2xl:h-[20rem] from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-lg", isDragOver && " border-red-500")}
+        className={cn("w-full gap-y-2 bg-white h-[10rem] flex flex-col items-center justify-center relative sm:h-[15rem] border 2xl:h-[20rem]  rounded-lg", isDragOver && " border-red-500")}
       >
         <input
           type="file"
@@ -107,9 +107,11 @@ export function AddCoverImage({form}: {form: UseFormReturn<z.infer<typeof formQu
               <p>or</p>
               <span className="h-[1px] w-[46%] bg-gray-500"></span>
             </div>
-            <button className="text-basePrimary underline">
+            <p
+           
+            className="text-basePrimary cursor-pointer underline">
               Click to Upload
-            </button>
+            </p>
           </div>
         )}
       </label>

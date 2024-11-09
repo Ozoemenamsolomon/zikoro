@@ -53,25 +53,14 @@ type SearchParams = {
   showFilter: string;
   showCategories: string;
   logo: string;
-  logoLink: string;
   orgLogo: string;
-  isOrgLogo: string;
   zikoroLogo: string;
-  isZikoroLogo: string;
 };
 export default function WorkspaceComponent({
-  searchParams: {
-    name,
-    showFilter,
-    showCategories,
-    logo,
-    logoLink,
-    orgLogo,
-    isOrgLogo,
-    zikoroLogo,
-    isZikoroLogo,
-  },
-}: {searchParams:SearchParams}) {
+  searchParams: { name, showFilter, showCategories, logo, orgLogo, zikoroLogo },
+}: {
+  searchParams: SearchParams;
+}) {
   const [showMore, setShowMore] = useState(false);
   const [selectedButtons, setSelectedButtons] = useState<string[]>([]);
   const [isEventDateUp, setEventDateUp] = useState(false);
@@ -148,10 +137,19 @@ export default function WorkspaceComponent({
 
   useEffect(() => {
     //fetching event categories
-    if (eventData) {
-      const categories: string[] = eventData
+    // if (eventData) {
+    //   const categories: string[] = eventData
+    //     .map((event) => event.eventCategory)
+    //     .filter((category) => category !== null && category !== undefined);
+    //   setFilterCategories(categories);
+    // }
+
+    if (eventData && searchQuery) {
+      const categories = eventData
+        .filter((event) => event.organization.organizationName === searchQuery) // Filter by the name
         .map((event) => event.eventCategory)
         .filter((category) => category !== null && category !== undefined);
+  
       setFilterCategories(categories);
     }
     //fetching event location type
@@ -171,7 +169,7 @@ export default function WorkspaceComponent({
       const cities: string[] = eventData.map((event) => event.eventCity);
       setFilterCity(cities);
     }
-  }, [eventData]);
+  }, [eventData, searchQuery]);
 
   const categorizeButtons = (buttons: string[]): CategorizedButtons => {
     const categories: CategorizedButtons = {
@@ -267,9 +265,9 @@ export default function WorkspaceComponent({
           {!isFilterOpen && (
             <div>
               <OrganizationNavbar
-                logoUrl={logoLink ?? ""}
-                isZikoroLogo={isZikoroLogo ?? ""}
-                isOrgLogo={isOrgLogo ?? ""}
+                logoUrl={logo ? logo : ""}
+                isZikoroLogo={zikoroLogo ? zikoroLogo : ""}
+                isOrgLogo={orgLogo ? orgLogo : ""}
               />
               {/* header */}
               <div>
@@ -823,4 +821,3 @@ export default function WorkspaceComponent({
     </>
   );
 }
-

@@ -17,7 +17,6 @@ import { useForm } from "react-hook-form";
 import { useCreateLeads } from "@/hooks";
 import { TLead } from "@/types";
 import { EngagementsSettings } from "@/types/engagements";
-import toast from "react-hot-toast";
 import { Edit } from "styled-icons/material";
 import { AddJob } from "@/components/partners/_components";
 export function JobWidget({
@@ -94,10 +93,7 @@ export function JobWidget({
 
           <div className="flex items-center gap-x-2">
             {isOrganizer && (
-              <Button
-                onClick={toggleEdit}
-                className="px-0 w-fit h-fit"
-              >
+              <Button onClick={toggleEdit} className="px-0 w-fit h-fit">
                 <Edit size={22} className="text-gray-500" />
               </Button>
             )}
@@ -108,11 +104,19 @@ export function JobWidget({
         </div>
 
         {/* <p className="text-[#717171] uppercase">{job.companyName}</p> */}
-        <p>{`${currency || "₦"}${Number(job.minSalary)?.toLocaleString()} - ${
-          currency || "₦"
-        }${Number(job.maxSalary)?.toLocaleString()} ${job.salaryDuration}`}</p>
+        {
+          <p className="flex items-center">
+            <span className={cn("", !job?.minSalary && "hidden")}>{`${
+              currency || "₦"
+            }${Number(job.minSalary)?.toLocaleString()} -`}</span>
+            <span className={cn("", !job?.maxSalary && "hidden")}>
+              {currency || "₦"}${Number(job.maxSalary)?.toLocaleString()}
+            </span>
+            {job.salaryDuration && <span>{job.salaryDuration}</span>}
+          </p>
+        }
 
-        <FlexibilityType flexibility={job.flexibility} />
+        {job?.flexibility && <FlexibilityType flexibility={job.flexibility} />}
 
         <p className="w-4/5 flex flex-wrap line-clamp text-[#717171] items-start justify-start leading-5 text-sm">
           {`${job.description ?? ""}`}
@@ -121,20 +125,31 @@ export function JobWidget({
         <div className="flex text-[#717171] items-start justify-start text-mobile mt-1 flex-wrap gap-3">
           <div className="flex items-center gap-x-2">
             <Location size={16} className="text-[#717171]" />
-            <p>{`${job.city}, ${job.country}`}</p>
+            <span className={cn("", !job?.city && "hidden")}>
+              {`${job.city},`}{" "}
+            </span>
+            <span className={cn("", !job?.country && "hidden")}>
+              {job.country}
+            </span>
           </div>
-          <div className="flex items-center gap-x-2">
-            <Bag size={16} className="text-[#717171]" />
-            <p>{job.employmentType}</p>
-          </div>
-          <div className="flex capitalize items-center gap-x-2">
-            <User size={16} className="text-[#717171]" />
-            <p>{`${job.experienceLevel} Experience`}</p>
-          </div>
-          <div className="flex  items-center gap-x-2">
-            <BoxSeam size={16} className="text-[#717171]" />
-            <p>{job.qualification}</p>
-          </div>
+          {job.employmentType && (
+            <div className="flex items-center gap-x-2">
+              <Bag size={16} className="text-[#717171]" />
+              <p>{job.employmentType}</p>
+            </div>
+          )}
+          {job.experienceLevel && (
+            <div className="flex capitalize items-center gap-x-2">
+              <User size={16} className="text-[#717171]" />
+              <p>{`${job.experienceLevel} Experience`}</p>
+            </div>
+          )}
+          {job.qualification && (
+            <div className="flex  items-center gap-x-2">
+              <BoxSeam size={16} className="text-[#717171]" />
+              <p>{job.qualification}</p>
+            </div>
+          )}
         </div>
 
         <Button

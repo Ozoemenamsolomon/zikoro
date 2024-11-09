@@ -33,7 +33,7 @@ import {
   locationType,
   pricingCurrency,
 } from "../_components/utils";
-import { TOrgEvent } from "@/types";
+import { Event, TOrgEvent } from "@/types";
 import useUserStore from "@/store/globalUserStore";
 import { timezones } from "@/constants/timezones";
 import { Switch } from "@/components/ui/switch";
@@ -200,9 +200,11 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
       }
     });
 
-    const payload: any = {
+    const payload: Partial<Event> = {
       ...values,
-      eventPoster: promise as String,
+      eventPoster: promise as string,
+      explore:
+        values?.eventVisibility?.toLowerCase() === "public" ? true : false,
       expectedParticipants: Number(values?.expectedParticipants),
     };
 
@@ -305,11 +307,21 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
 
   function toggleAccessibility(id: number) {
     const currentValue = form.getValues(`pricing.${id}.accessibility` as const);
-   // console.log("currentValue", currentValue);
+    // console.log("currentValue", currentValue);
     form.setValue(`pricing.${id}.accessibility` as const, !currentValue, {
       shouldValidate: true,
     });
   }
+
+  const location = form.watch("locationType");
+
+  useEffect(() => {
+    if (location === "Virtual") {
+      form.setValue('eventAddress', undefined)
+      form.setValue('eventCity', undefined)
+      form.setValue('eventCountry', undefined)
+    }
+  },[location, form])
 
   return (
     <DateAndTimeAdapter>
@@ -318,7 +330,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className="w-full px-4 pb-20 h-full "
+              className="w-full  px-4 mx-auto  max-w-[1300px] text-mobile sm:text-sm sm:px-6 mt-6 sm:mt-10 pb-20 h-full "
               id="form"
             >
               <div className="w-full py-4 flex items-center  justify-between">
@@ -552,24 +564,26 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
 
                 {/**"col-span-1 sm:col-span-2 " */}
 
-                <FormField
-                  control={form.control}
-                  name="eventAddress"
-                  render={({ field }) => (
-                    <InputOffsetLabel
-                      className="col-span-1 sm:col-span-2 "
-                      label="Event Address"
-                    >
-                      <Input
-                        type="text"
-                        placeholder="Enter Event Address"
-                        defaultValue={data?.eventAddress}
-                        {...form.register("eventAddress")}
-                        className=" placeholder:text-sm h-11 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
-                      />
-                    </InputOffsetLabel>
-                  )}
-                />
+                {location !== "Virtual" && (
+                  <FormField
+                    control={form.control}
+                    name="eventAddress"
+                    render={({ field }) => (
+                      <InputOffsetLabel
+                        className="col-span-1 sm:col-span-2 "
+                        label="Event Address"
+                      >
+                        <Input
+                          type="text"
+                          placeholder="Enter Event Address"
+                          defaultValue={data?.eventAddress}
+                          {...form.register("eventAddress")}
+                          className=" placeholder:text-sm h-11 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                        />
+                      </InputOffsetLabel>
+                    )}
+                  />
+                )}
                 <FormField
                   control={form.control}
                   name="expectedParticipants"
@@ -586,39 +600,43 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                   )}
                 />
 
-                <FormField
-                  control={form.control}
-                  name="eventCity"
-                  render={({ field }) => (
-                    <InputOffsetLabel label="Event City">
-                      <Input
-                        type="text"
-                        placeholder="Enter Event City"
-                        defaultValue={data?.eventCity}
-                        {...form.register("eventCity")}
-                        className=" placeholder:text-sm h-11 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
-                      />
-                    </InputOffsetLabel>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="eventCountry"
-                  render={({ field }) => (
-                    <InputOffsetLabel label="Event Country">
-                      <ReactSelect
-                        {...field}
-                        placeHolder="Select the Country"
-                        defaultValue={{
-                          value: data?.eventCountry,
-                          label: data?.eventCountry,
-                        }}
-                        options={countriesList}
-                      />
-                    </InputOffsetLabel>
-                  )}
-                />
+                {location !== "Virtual" && (
+                  <>
+                    {" "}
+                    <FormField
+                      control={form.control}
+                      name="eventCity"
+                      render={({ field }) => (
+                        <InputOffsetLabel label="Event City">
+                          <Input
+                            type="text"
+                            placeholder="Enter Event City"
+                            defaultValue={data?.eventCity}
+                            {...form.register("eventCity")}
+                            className=" placeholder:text-sm h-11 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                          />
+                        </InputOffsetLabel>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="eventCountry"
+                      render={({ field }) => (
+                        <InputOffsetLabel label="Event Country">
+                          <ReactSelect
+                            {...field}
+                            placeHolder="Select the Country"
+                            defaultValue={{
+                              value: data?.eventCountry,
+                              label: data?.eventCountry,
+                            }}
+                            options={countriesList}
+                          />
+                        </InputOffsetLabel>
+                      )}
+                    />
+                  </>
+                )}
                 <FormField
                   control={form.control}
                   name="locationType"
@@ -865,10 +883,13 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
             }
           />
         )}
-        {isOpen && (
+        {isOpen && data && (
           <PreviewModal
             close={onClose}
-            eventDetail={data}
+            type={data?.published ? "Event Registration": "Preview"}
+            title={data?.eventTitle}
+
+            
             url={
               data?.published
                 ? `/live-events/${data?.eventAlias}`

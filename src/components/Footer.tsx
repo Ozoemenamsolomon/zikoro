@@ -173,7 +173,7 @@ export default function Footer() {
       {/* <div className="flex items-center">
 
        </div> */}
-      <div className="px-5 lg:px-0 mt-12 lg:mt-12 grid grid-cols-2 lg:grid-cols-4 gap-x-1 gap-y-4 w-full max-w-full lg:max-w-5xl text-left lg:text-center mx-auto ">
+      <div className="px-5 lg:px-0 mt-12 lg:mt-12 grid grid-cols-2 lg:grid-cols-5 gap-x-1 gap-y-4 w-full max-w-full lg:max-w-5xl text-left lg:text-center mx-auto ">
         <p
           onClick={() => router.push("/contact")}
           className="font-light cursor-pointer text-[13px] lg:text-base"
@@ -197,6 +197,13 @@ export default function Footer() {
           className="font-light cursor-pointer text-[13px] lg:text-base"
         >
           Pricing{" "}
+        </p>
+
+        <p
+          onClick={() => router.push("/blog/all")}
+          className="font-light cursor-pointer text-[13px] lg:text-base"
+        >
+          Blog{" "}
         </p>
       </div>
 

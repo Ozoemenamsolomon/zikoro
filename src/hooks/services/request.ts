@@ -52,8 +52,10 @@ export const useGetData = <TData>(
   };
 
   useEffect(() => {
+    console.log("endpoint changed");
     fetchInitial && getData();
-  }, [endpoint]);
+    // }, [endpoint]);
+  }, []);
 
   return {
     data,
@@ -111,16 +113,10 @@ export const useMutateData = <TData, TReturnData = any>(
   return { isLoading, error, mutateData };
 };
 
-
-
 export const usePostRequest = <T>(endpoint: string) => {
   const [isLoading, setLoading] = useState<boolean>(false);
 
-  const postData = async ({
-    payload,
-  }: {
-    payload: T;
-  }) => {
+  const postData = async ({ payload }: { payload: T }) => {
     setLoading(true);
 
     try {
@@ -147,7 +143,6 @@ export const usePostRequest = <T>(endpoint: string) => {
   return { postData, isLoading };
 };
 
-
 export const useDeleteRequest = <T>(endpoint: string) => {
   const [isLoading, setLoading] = useState<boolean>(false);
 
@@ -156,7 +151,7 @@ export const useDeleteRequest = <T>(endpoint: string) => {
 
     try {
       const { data, status } = await deleteRequest<T>({
-        endpoint:endpoint,
+        endpoint: endpoint,
       });
 
       if (status !== 201) throw data.data;

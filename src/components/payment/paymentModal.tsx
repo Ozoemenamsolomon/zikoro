@@ -80,21 +80,24 @@ export default function SubscriptionPaymentModal({
   const [haveCoupon, setHaveCoupon] = useState<boolean>(false);
   const [isDiscount, setIsDiscount] = useState<boolean>(false);
   const [isRedeemed, setIsRedeemed] = useState<boolean>(false);
+  const [discount, setDiscount] = useState<number>(0);
   const [orgName, setOrgName] = useState<string>("");
   const [orgAlias, setOrgAlias] = useState<string>("");
   const [orgId, setOrgId] = useState<any>("");
-  const [totalPrice, setTotalprice] = useState<number>(0);
+  const [totalPrice, setTotalPrice] = useState<number>(0);
+  const [newTotalPrice, setNewTotalPrice] = useState<number>(0);
   const [isCouponValid, setIsCouponValid] = useState<boolean>(false);
   const [closeForm, setCloseForm] = useState<boolean>(false);
+  const [couponText, setCouponText] = useState<string>("");
   const [showMoreLite, setShowMoreLite] = useState<boolean>(false);
   const [showMoreProfessional, setShowMoreProfessional] =
     useState<boolean>(false);
   const [showMoreEnterprise, setShowMoreEnterprise] = useState<boolean>(false);
+  const [isContButton, setIsContButton] = useState<boolean>(false);
 
   const [coupons, setCoupons] = useState<DBDiscountsType[] | undefined>(
     undefined
   );
-  const [couponText, setCouponText] = useState<string>("");
   const router = useRouter();
   const pathname = usePathname();
   const userId = user?.id ?? 0;
@@ -114,7 +117,7 @@ export default function SubscriptionPaymentModal({
       const url = `/payment?name=${encodeURIComponent(user?.firstName || "")}
   &id=${encodeURIComponent(user?.id || "")}
   &plan=${encodeURIComponent(chosenPlan || "")}
-  &isMonthly=${encodeURIComponent(isChosenMonthly)}
+  &monthly=${encodeURIComponent(isChosenMonthly)}
   &total=${encodeURIComponent(totalPrice)}
   &currency=${encodeURIComponent(chosenCurrency)}
   &coupon=${encodeURIComponent(couponText)}
@@ -144,10 +147,16 @@ export default function SubscriptionPaymentModal({
     if (couponCode === "") return null;
     const coupon = coupons?.find((c) => c.discountCode === couponCode);
     if (coupon) {
-      // Additional checks can be added here, such as validity period
-      setIsCouponValid(true);
-    } else {
-      setIsCouponValid(false);
+      // Check if the coupon is valid (validUntil is today or earlier)
+      const today = new Date();
+      const validUntilDate = coupon.validUntil
+        ? new Date(coupon.validUntil)
+        : null;
+      if (!validUntilDate || validUntilDate >= today) {
+        setIsCouponValid(true);
+      } else {
+        setIsCouponValid(false);
+      }
     }
   };
 
@@ -156,6 +165,7 @@ export default function SubscriptionPaymentModal({
     checkCoupon(couponText);
     toast.success("Congratulation, Coupon Redeemed Successfully");
     setIsRedeemed(true);
+    setIsDiscount(true);
   };
 
   //select organization function
@@ -163,6 +173,7 @@ export default function SubscriptionPaymentModal({
     const selectedOption = e.target.selectedOptions[0];
     const orgId = selectedOption.value;
     const organizationAlias = selectedOption.getAttribute("data-alias");
+    setIsContButton(true);
     if (orgId) {
       setOrgId(orgId);
     }
@@ -178,7 +189,6 @@ export default function SubscriptionPaymentModal({
     checkCoupon(code);
   };
 
-  //useEffect
   useEffect(() => {
     if (!user) {
       router.push(`/login?redirectedFrom=${encodeURIComponent(pathname)}`);
@@ -188,7 +198,7 @@ export default function SubscriptionPaymentModal({
     }
 
     if (chosenPrice !== null) {
-      setTotalprice(chosenPrice * (isChosenMonthly ? 1 : 12));
+      setTotalPrice(chosenPrice * (isChosenMonthly ? 1 : 12));
     }
   }, [user, chosenPrice, isChosenMonthly, router]);
 
@@ -211,6 +221,47 @@ export default function SubscriptionPaymentModal({
     fetchAllCouponCodes();
   }, []);
 
+  useEffect(() => {
+    const updateTotalPrice = () => {
+      let calculatedTotalPrice = Number(totalPrice);
+      let discountValue = 0;
+
+      if (coupons && couponText) {
+        const trimmedCoupon = couponText.trim();
+        const coupon = coupons.find((c) => c.discountCode === trimmedCoupon);
+
+        if (coupon) {
+          // Check if the coupon is valid (validUntil is today or earlier)
+          const today = new Date();
+          const validUntilDate = coupon.validUntil
+            ? new Date(coupon.validUntil)
+            : null;
+
+          if (!validUntilDate || validUntilDate >= today) {
+            if (coupon.discountAmount !== null) {
+              discountValue = Number(coupon.discountAmount);
+              calculatedTotalPrice = Math.max(
+                calculatedTotalPrice - discountValue,
+                0
+              );
+            } else if (coupon.discountPercentage !== null) {
+              const discountPercentage = Number(coupon.discountPercentage);
+              discountValue = (calculatedTotalPrice * discountPercentage) / 100;
+              calculatedTotalPrice = Math.max(
+                calculatedTotalPrice - discountValue,
+                0
+              );
+            }
+          }
+        }
+      }
+
+      setDiscount(discountValue);
+      setNewTotalPrice(calculatedTotalPrice);
+    };
+
+    updateTotalPrice();
+  }, [couponText, totalPrice]);
 
   return (
     <div className="w-full h-full fixed z-[100] inset-0 bg-black/50 overflow-y-auto ">
@@ -226,11 +277,11 @@ export default function SubscriptionPaymentModal({
             <p className="text-xl font-medium">Selected Plan</p>
             <div className="mt-8 flex gap-x-1 items-center">
               <p className="text-2xl font-semibold ">{chosenPlan}</p>{" "}
-              {isDiscount && (
+              {/* {isDiscount && (
                 <p className="rounded-[37px] text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end uppercase text-[10px] py-1 px-[10px] ">
                   Discount
                 </p>
-              )}
+              )} */}
             </div>
 
             <div className="mt-1 flex gap-x-2 items-center">
@@ -392,14 +443,17 @@ export default function SubscriptionPaymentModal({
                 </p>
               </div>
 
-              {/* Individual Product */}
-              {/* <div className="mt-5">
-                <div className=" flex justify-between ">
-                  <p className="text-xl font-medium">Certificate</p>
-                  <p className="text-xl font-normal">₦ 24000</p>
+              {/* Discount */}
+              {isDiscount && (
+                <div className=" flex justify-between mt-5 ">
+                  <p className="text-xl font-medium">Discount</p>
+                  <p className="text-lg font-normal">
+                    {" "}
+                    {convertCurrencyCodeToSymbol(chosenCurrency)}
+                    {discount}
+                  </p>
                 </div>
-                <p className="text-base font-normal mt-2">xx credits </p>
-              </div> */}
+              )}
             </div>
           </div>
 
@@ -408,7 +462,7 @@ export default function SubscriptionPaymentModal({
             <p className="text-xl font-medium">Total Cost</p>
             <p className="text-xl font-normal">
               {convertCurrencyCodeToSymbol(chosenCurrency)}
-              {totalPrice}
+              {newTotalPrice}
             </p>
           </div>
         </div>
@@ -576,8 +630,13 @@ export default function SubscriptionPaymentModal({
             )}
 
             <button
-              className="text-base mt-3 w-full text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end  rounded-lg py-3 font-medium"
+              className={`first-letter:text-base mt-3 w-full text-white ${
+                !isContButton
+                  ? "bg-gray-500"
+                  : "bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end"
+              }  rounded-lg py-3 font-medium`}
               onClick={(e) => submitForm(e)}
+              disabled={!isContButton}
             >
               Continue
             </button>

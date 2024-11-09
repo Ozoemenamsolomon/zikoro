@@ -30,7 +30,7 @@ export const links: TLink[] = [
   {
     name: "Marketing",
     icon: ({ ...props }) => <MegaphoneLoud {...props} />,
-    href: "/marketing",
+    href: "/marketing/email",
   },
   {
     name: "Published Events",

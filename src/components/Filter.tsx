@@ -288,19 +288,19 @@ function Filter<T>({
 }: FilterProps<T>) {
   return (
     <div className={className}>
-      <Menubar className="flex justify-between px-1 border-0">
+      <Menubar className="flex justify-between px-1 border-0 !bg-transparent">
         {filters.map((filter, index) => {
           const { label, accessor, options, icon } = filter;
           return (
             <MenubarMenu key={accessor as unknown as string}>
               <MenubarTrigger
                 className={cn(
-                  "flex gap-0.5 items-center w-full min-w-fit justify-center px-0.5",
+                  "flex gap-0.5 items-center w-full min-w-fit justify-center px-0.5 !bg-transparent",
                   index > 0 && "border-l-[1px]"
                 )}
               >
                 {icon}
-                <span className="text-xs font-medium text-ticketColor capitalize">
+                <span className="text-xs font-medium text-gray-700 capitalize">
                   {label}
                 </span>
               </MenubarTrigger>

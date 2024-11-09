@@ -48,44 +48,22 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
   } = useDisclose();
   console.log(attendees.map(({ attendeeAlias }) => attendeeAlias));
   const { user, setUser } = useUserStore();
+
+  console.log(user, "user");
   // const user = getCookie("user");
   const event = useEventStore((state) => state.event);
   const { eventId } = useParams();
+  const searchParams = useSearchParams();
 
   const [selectedAttendee, setSelectedAttendee] = useState<TAttendee>(null);
 
   const selectAttendee = (attendee: TAttendee) => setSelectedAttendee(attendee);
-
-  const onGetAttendees = async () => {
-    await getAttendees();
-  };
 
   const router = useRouter();
   const pathname = usePathname() || "/";
 
   const [initialSelectionMade, setInitialSelectionMade] =
     useState<boolean>(false);
-
-  useEffect(() => {
-    if (isLoading) return;
-
-    if (!initialSelectionMade && attendeeAlias) {
-      console.log("here");
-      const attendeeFromUrl = attendees.find(
-        (attendee) => attendee.attendeeAlias === attendeeAlias
-      );
-      if (attendeeFromUrl) {
-        selectAttendee(attendeeFromUrl);
-        setInitialSelectionMade(true);
-        return;
-      }
-    }
-
-    const updatedAttendee = attendees.find(
-      ({ id }) => selectedAttendee && selectedAttendee.id === id
-    );
-    selectAttendee(updatedAttendee);
-  }, [attendees, isLoading, attendeeAlias]);
 
   // useEffect(() => {
   //   if (selectedAttendee) {
@@ -148,14 +126,43 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
     userContactRequests,
     isLoading: contactRequestIsLoading,
     getContactRequests,
-  } = useGetContactRequests({ userEmail: user.userEmail });
+  } = useGetContactRequests({ userEmail: user.userEmail, eventAlias: eventId });
+
+  useEffect(() => {
+    if (isLoading) return;
+
+    if (!initialSelectionMade && attendeeAlias) {
+      console.log("here");
+      const attendeeFromUrl = attendees.find(
+        (attendee) => attendee.attendeeAlias === attendeeAlias
+      );
+      if (attendeeFromUrl) {
+        selectAttendee(attendeeFromUrl);
+        setInitialSelectionMade(true);
+        return;
+      }
+    }
+
+    const updatedAttendee = attendees.find(
+      ({ id }) => selectedAttendee && selectedAttendee.id === id
+    );
+    selectAttendee(updatedAttendee);
+  }, [attendees, isLoading, attendeeAlias]);
+
+  const onGetAttendees = async () => {
+    await getAttendees();
+    await getContactRequests();
+    if (selectedAttendee) {
+      selectAttendee((prev) => attendees.find(({ id }) => prev.id === id));
+    }
+  };
 
   return (
     <section
       className="relative h-fit md:border-t w-full grid md:grid-cols-10 overflow-hidden pb-12"
       ref={divRef}
     >
-      <section className="md:col-span-3 border-r-[1px] border-[#F3F3F3] md:pt-2">
+      <section className="md:col-span-3 border-r-[1px] border-[#F3F3F3] md:pt-2 bg-white">
         <FirstSection
           onOpen={onOpenAttendeeForm}
           onSelectAttendee={selectAttendee}
@@ -164,12 +171,13 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
           isLoading={isLoading}
           getAttendees={onGetAttendees}
           event={event}
+          contactRequests={userContactRequests}
         />
       </section>
       <div className="hidden md:contents">
         {selectedAttendee ? (
           <>
-            <section className="md:col-span-4 space-y-4 border-r-[1px] overflow-auto no-scrollbar max-h-full">
+            <section className="md:col-span-4 border-r-[1px]" ref={divRef}>
               <SecondSection
                 attendee={selectedAttendee}
                 getAttendees={onGetAttendees}
@@ -180,6 +188,7 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
                 userContactRequests={userContactRequests}
                 isLoading={contactRequestIsLoading}
                 getContactRequests={getContactRequests}
+                onGetAttendees={onGetAttendees}
               />
             </section>
             <section className="flex flex-col md:col-span-3 pt-2">
@@ -188,6 +197,9 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
                 event={event}
                 sponsors={sponsors}
                 loading={loading}
+                userContactRequests={userContactRequests}
+                isLoading={contactRequestIsLoading}
+                getContactRequests={getContactRequests}
               />
             </section>
           </>

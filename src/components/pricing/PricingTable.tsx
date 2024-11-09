@@ -105,7 +105,7 @@ export default function PricingTable({
     otherCurrenciesData: DBOtherCurrienciesType[] | undefined
   ): number | null => {
     if (!defaultPriceData) return null;
-    const planData = defaultPriceData.find(
+    const planData = defaultPriceData?.find(
       (data) => data.plan === plan && data.currency === "USD" // Assuming default price data is in USD
     );
     if (!planData) return null;
@@ -449,7 +449,9 @@ export default function PricingTable({
             ) : (
               <div>
                 <ul>
-                  <li className="text-base font-semibold text-zikoroBlue">Features</li>
+                  <li className="text-base font-semibold text-zikoroBlue">
+                    Features
+                  </li>
                   <li className="text-base font-normal">
                     Everything in Professional Plus
                   </li>

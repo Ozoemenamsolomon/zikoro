@@ -16,6 +16,7 @@ import Slider from "react-slick";
 import { TSessionAgenda, TAgenda, TMyAgenda, Event, TAttendee } from "@/types";
 import { useRouter } from "next/navigation";
 import { EngagementsSettings } from "@/types/engagements";
+import { EventAttendeeWidget } from "@/components/published";
 export function Custom({
   sessionAgenda,
   className,
@@ -29,6 +30,7 @@ export function Custom({
   isReception,
   myAgendas,
   engagementsSettings,
+  isEventDetail
 }: {
   className?: string;
   sessionAgenda: TSessionAgenda;
@@ -42,6 +44,7 @@ export function Custom({
   isReception?: boolean;
   myAgendas?: TMyAgenda[];
   engagementsSettings?: EngagementsSettings | null;
+  isEventDetail?:boolean;
 }) {
   const settings = {
     dots: true,
@@ -73,6 +76,7 @@ export function Custom({
               attendeeId={attendeeId}
               refetchEvent={refetchEvent}
               isReception={isReception}
+              isEventDetail={isEventDetail}
               refetchSession={refetchSession}
               isIdPresent={isIdPresent}
               isOrganizer={isOrganizer}
@@ -98,7 +102,8 @@ function Widget({
   isFullScreen,
   myAgendas,
   engagementsSettings,
-  isReception
+  isReception,
+  isEventDetail
 }: {
   session: TAgenda;
   event?: Event | null;
@@ -111,6 +116,7 @@ function Widget({
   myAgendas?: TMyAgenda[];
   engagementsSettings?: EngagementsSettings | null;
   isReception?:boolean;
+  isEventDetail?:boolean;
 }) {
   const router = useRouter();
   const [otherStaffsCount, setOtherStaffsCount] = useState(0);
@@ -163,7 +169,7 @@ function Widget({
         ref={divRef}
         role="button"
         onClick={() => {
-          if (session?.description) {
+          if (session?.description && !isEventDetail) {
             router.push(
               `/event/${event?.eventAlias}/agenda/${session?.sessionAlias}`
             );
@@ -177,27 +183,7 @@ function Widget({
         <h2 className="text-base w-full mb-2 text-ellipsis whitespace-nowrap overflow-hidden sm:text-xl font-medium">
           {session?.sessionTitle ?? ""}
         </h2>
-        {isAddedAttendee && (
-          <div className="w-full relative flex items-center mb-2  gap-1">
-            {Array.isArray(staffs) &&
-              staffs.map((attendee, index) => (
-                <BoothStaffWidget
-                  company={""}
-                  image={attendee?.profilePicture || null}
-                  name={`${attendee?.firstName} ${attendee?.lastName}`}
-                  profession={attendee?.jobTitle ?? ""}
-                  email={attendee?.email ?? ""}
-                  key={index}
-                  className="grid grid-cols-7 w-[180px] items-center "
-                />
-              ))}
-            {otherStaffsCount > 0 && (
-              <div className="flex absolute top-[8%] right-[0.3rem] from-custom-bg-gradient-start bg-gradient-to-tr to-custom-bg-gradient-end items-center text-lg justify-center w-[3rem] h-[3rem] rounded-full border border-basePrimary ">
-                {otherStaffsCount}+
-              </div>
-            )}
-          </div>
-        )}
+       
         <div className="flex items-center gap-x-3 mb-2 ">
           {session?.sessionType && (
             <div className="w-fit px-2 py-2 bg-gradient-to-tr border rounded-2xl border-[#001fcc] from-custom-bg-gradient-start to-custom-bg-gradient-end">
@@ -235,6 +221,33 @@ function Widget({
             />
           </div>
         </div>
+        {isAddedAttendee && (
+          <>
+          <div className="w-full hidden relative md:flex items-center mb-2  gap-1">
+            {Array.isArray(staffs) &&
+              staffs.map((attendee, index) => (
+                <BoothStaffWidget
+                  company={""}
+                  image={attendee?.profilePicture || null}
+                  name={`${attendee?.firstName} ${attendee?.lastName}`}
+                  profession={attendee?.jobTitle ?? ""}
+                  email={attendee?.email ?? ""}
+                  key={index}
+                  className="grid grid-cols-7 w-[180px] items-center "
+                />
+              ))}
+            {otherStaffsCount > 0 && (
+              <div className="flex absolute top-[8%] right-[0.3rem] from-custom-bg-gradient-start bg-gradient-to-tr to-custom-bg-gradient-end items-center text-lg justify-center w-[3rem] h-[3rem] rounded-full border border-basePrimary ">
+                {otherStaffsCount}+
+              </div>
+            )}
+          </div>
+          <div className="block my-2 md:hidden">
+            <EventAttendeeWidget attendees={mergedSM}/>
+          </div>
+          
+          </>
+        )}
         {!isFullScreen && (isIdPresent || isOrganizer) && !isReception &&  (
           <div
             onClick={(e) => {

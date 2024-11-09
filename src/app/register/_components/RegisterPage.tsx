@@ -22,8 +22,8 @@ export default function RegisterPage({ emailParam }: { emailParam: string }) {
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: emailParam || "", // Set initial value of email field if emailParam is available
-      password: "", // Default value for password field
+      email: emailParam || "",
+      password: "",
     },
   });
 

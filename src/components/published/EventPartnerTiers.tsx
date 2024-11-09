@@ -7,7 +7,6 @@ import Image from "next/image";
 import { useFetchSingleEvent } from "@/hooks";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { useMemo, useState } from "react";
-import { partnerDetails } from "@/schemas";
 import { formatDate } from "@/utils";
 import { AddPartners } from "../partners/_components";
 
@@ -88,7 +87,7 @@ function PartnerTierCard({
   }
   return (
     <>
-      <div className="w-full mt-10">
+      <div className="w-full sm:w-[320px] h-fit mt-10">
         <div className="w-full bg-white rounded-lg relative pt-16 pb-6 border px-4">
           <div
             style={{ backgroundColor: tier?.color || "#001ffc" }}
@@ -252,7 +251,7 @@ export default function EventPartnerTiers({
                     )}
                     <div
                       key={Math.random()}
-                      className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5"
+                      className="w-full flex flex-wrap items-center justify-center gap-5"
                     >
                       {Array.isArray(data) &&
                         data?.map((tier) => (

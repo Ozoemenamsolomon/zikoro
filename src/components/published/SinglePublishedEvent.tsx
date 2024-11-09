@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  EventDetail,
-  SinglePublishedEventAttendeeWidget,
-} from "@/components/published";
+import { EventDetail, EventAttendeeWidget } from "@/components/published";
 import Link from "next/link";
 import { Button } from "@/components";
 import {
@@ -175,27 +172,37 @@ function AboutEvent({
       <div className="w-full flex items-center gap-x-3">
         <IconifyPublishedEventLocationIcon />
         <div className="flex flex-col items-start justify-start">
-          <p className=" flex items-center">
-            {event?.eventAddress ?? ""}{" "}
-            {coordinates && (
-              <Link
-                target="_blank"
-                href={`https://www.google.com/maps/dir//${event?.eventAddress}/@${coordinates?.lat},${coordinates?.lng},15z?hl=en-US&entry=ttu`}
-                title="View Direction"
-              >
-                <InlineIcon
-                  icon={"material-symbols-light:arrow-insert"}
-                  fontSize={18}
-                  className="rotate-90"
-                />
-              </Link>
-            )}
-          </p>
-          <p className="text-xs sm:text-mobile">
-            {`${event?.eventCity ?? ""}`}
-            {!removeComma && <span>,</span>}
-            {` ${event?.eventCountry ?? ""}`}
-          </p>
+          {event?.locationType?.toLowerCase() !== "virtual" ? (
+            <p className=" flex items-center">
+              {event?.eventAddress ?? ""}{" "}
+              {coordinates && (
+                <Link
+                  target="_blank"
+                  href={`https://www.google.com/maps/dir//${event?.eventAddress}/@${coordinates?.lat},${coordinates?.lng},15z?hl=en-US&entry=ttu`}
+                  title="View Direction"
+                >
+                  <InlineIcon
+                    icon={"material-symbols-light:arrow-insert"}
+                    fontSize={18}
+                    className="rotate-90"
+                  />
+                </Link>
+              )}
+            </p>
+          ) : (
+            <p>Virtual</p>
+          )}
+          {event?.locationType?.toLowerCase() !== "virtual" ? (
+            <p className="text-xs sm:text-mobile">
+              {`${event?.eventCity ?? ""}`}
+              {!removeComma && <span>,</span>}
+              {` ${event?.eventCountry ?? ""}`}
+            </p>
+          ) : (
+            <p className="text-xs sm:text-mobile">
+              Meeting link will be shared with registered attendees
+            </p>
+          )}
         </div>
       </div>
     </>
@@ -410,9 +417,7 @@ export default function SinglePublishedEvent({
 
                   <div className="flex w-full items-center justify-between">
                     {eventAttendees?.length > 0 && (
-                      <SinglePublishedEventAttendeeWidget
-                        attendees={eventAttendees}
-                      />
+                      <EventAttendeeWidget attendees={eventAttendees} />
                     )}
                     <button
                       onClick={() => setOpen((p) => !p)}
@@ -442,7 +447,7 @@ export default function SinglePublishedEvent({
                   {eventDetail && (
                     <AboutEvent event={eventDetail} coordinates={coordinates} />
                   )}
-                  {eventDetail?.locationType?.toLowerCase() !== "remote" ? (
+                  {eventDetail?.locationType?.toLowerCase() !== "virtual" ? (
                     <iframe
                       style={{ border: "none", borderRadius: "12px" }}
                       width="100%"
@@ -452,7 +457,7 @@ export default function SinglePublishedEvent({
                       )}&z=15&ie=UTF8&iwloc=B&width=100%25&height=150&hl=en&output=embed`}
                     ></iframe>
                   ) : (
-                    <div>Loading...</div>
+                    <div></div>
                   )}
                 </div>
 
@@ -489,12 +494,18 @@ export default function SinglePublishedEvent({
                     </div>
 
                     <div className="w-full z-10 fixed sm:relative bg-white bottom-0 inset-x-0 sm:p-0 p-3 sm:w-fit">
-                      <Button
-                        onClick={onClose}
-                        className="rounded-lg w-full h-12 sm:h-11 sm:w-fit font-medium bg-basePrimary text-white"
-                      >
-                        Get Ticket
-                      </Button>
+                      {eventDetail?.published ? (
+                        <Button
+                          onClick={onClose}
+                          className="rounded-lg w-full h-12 sm:h-11 sm:w-fit font-medium bg-basePrimary text-white"
+                        >
+                          Get Ticket
+                        </Button>
+                      ) : (
+                        <p className="font-semibold text-base sm:text-xl text-red-600">
+                          Event is not yet Published
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -503,24 +514,25 @@ export default function SinglePublishedEvent({
                     About the Organizer
                   </h3>
                   <div className="flex w-full flex-col items-center py-4 justify-center gap-3">
-                    {eventDetail?.organization?.organizationLogo &&
-                    eventDetail?.organization?.organizationLogo?.startsWith(
-                      "https"
-                    ) ? (
-                      <Image
-                        src={eventDetail?.organization?.organizationLogo}
-                        className="max-h-[40px] max-w-[100px]"
-                        alt=""
-                        width={200}
-                        height={200}
-                      />
-                    ) : (null
+                    {
+                      eventDetail?.organization?.organizationLogo &&
+                      eventDetail?.organization?.organizationLogo?.startsWith(
+                        "https"
+                      ) ? (
+                        <Image
+                          src={eventDetail?.organization?.organizationLogo}
+                          className="max-h-[40px] max-w-[100px]"
+                          alt=""
+                          width={200}
+                          height={200}
+                        />
+                      ) : null
                       // <div className="w-[60px] h-[60px] bg-gray-200 rounded-full flex items-center justify-center">
                       //   <p className="text-sm gradient-text bg-basePrimary font-medium">
                       //     Logo
                       //   </p>
                       // </div>
-                    )}
+                    }
                     <p>{eventDetail?.organization?.organizationName ?? ""}</p>
 
                     <div className="w-full flex items-center justify-center gap-x-3">

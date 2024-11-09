@@ -1,5 +1,5 @@
 import { partnerDetails } from "@/schemas";
-import { TAffiliateLink, TOrganization } from ".";
+import { TAffiliateLink, TAttendee, TOrganization } from ".";
 import * as z from "zod";
 export interface Attendees {
   firstName: string;
@@ -26,7 +26,7 @@ export enum EventDetailTab {
 interface PricingType {
   ticketQuantity: string;
   attendeeType: string;
-  description: string;
+  description?: string;
   price: string;
   validity: string;
   accessibility: boolean;
@@ -137,6 +137,7 @@ export interface Organization {
 
 export type TOrgEvent = Event & {
   organization: TOrganization;
+  attendees: TAttendee[];
 };
 
 export interface Reward {

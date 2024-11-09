@@ -40,7 +40,7 @@ import {
 
 function EmptyState() {
   return (
-    <div className="w-full flex flex-col gap-y-3 items-center justify-center h-[24rem]">
+    <div className="w-full mt-16 flex flex-col gap-y-3 items-center justify-center h-[24rem]">
       <Image
         className="w-fit h-fit"
         src="/emptyquiz.png"
@@ -130,13 +130,17 @@ export default function QuizQuestion({
 
   return (
     <InteractionLayout eventId={eventId}>
+      <div className="mx-auto  max-w-[1300px] text-mobile sm:text-sm sm:px-6 mt-6 sm:mt-10 px-4">
+
+
+     
       {isLoading ? (
         <div className="w-full flex items-center justify-center h-[20rem]">
           <LoaderAlt size={30} className="animate-spin" />
         </div>
       ) : (
         <>
-          <div className="w-full border-b p-4 flex items-center justify-between">
+          <div className="w-full border-b  flex items-center justify-between">
             <Button
               onClick={() => router.back()}
               className="px-0 w-fit h-fit gap-x-2 text-sm"
@@ -237,6 +241,7 @@ export default function QuizQuestion({
               </>
             )}
           </div>
+          
         </>
       )}
 
@@ -255,6 +260,8 @@ export default function QuizQuestion({
           interactionType={quiz?.interactionType || "quiz"}
         />
       )}
+
+</div>
     </InteractionLayout>
   );
 }

@@ -20,6 +20,8 @@ export default function RootLayout({
     email,
     isPasswordless,
   });
+
+  console.log(userData, user);
   const divRef = useRef<HTMLDivElement>(null);
 
   const { event } = useEventStore();
