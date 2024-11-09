@@ -9,14 +9,12 @@ export async function GET(req: NextRequest) {
     try {
       const { searchParams } = new URL(req.url);
       const eventId = searchParams.get("eventId");
-      
 
       const query = supabase.from("certificate").select("*");
 
       if (eventId) query.eq("eventId", eventId);
 
       const { data, error, status } = await query;
-      
 
       if (error) throw error;
 
@@ -50,7 +48,7 @@ export async function POST(req: NextRequest) {
 
       const { data, error } = await supabase
         .from("certificate")
-        .insert({certificateAlias})
+        .insert({ certificateAlias })
         .select()
         .maybeSingle();
       if (error) throw error;

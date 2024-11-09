@@ -14,7 +14,7 @@ export async function GET(
   if (req.method === "GET") {
     try {
       const { data, error, status } = await supabase
-        .from("certificateNew")
+        .from("certificate")
         .select("*")
         .eq(isAlias === "true" ? "certificateAlias" : "id", certificateAlias)
         .maybeSingle();

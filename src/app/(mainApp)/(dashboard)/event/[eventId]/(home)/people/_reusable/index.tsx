@@ -31,6 +31,7 @@ interface ReusablePeopleComponentProps {
   getAttendees: () => Promise<void>;
   isLoading: boolean;
   error: boolean;
+  attendeeAlias: string;
 }
 
 const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
@@ -38,6 +39,7 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
   getAttendees,
   isLoading,
   error,
+  attendeeAlias,
 }) => {
   const {
     isOpen: attendeeFormIsOpen,
@@ -57,11 +59,10 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
   const onGetAttendees = async () => {
     await getAttendees();
   };
-  
+
   const router = useRouter();
   const pathname = usePathname() || "/";
 
-  const attendeeAlias = searchParams.get("attendeeAlias");
   const [initialSelectionMade, setInitialSelectionMade] =
     useState<boolean>(false);
 

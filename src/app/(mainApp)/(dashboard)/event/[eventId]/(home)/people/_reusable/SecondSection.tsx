@@ -858,8 +858,7 @@ export default function SecondSection({
                         (attendeecertificate) =>
                           eventCertificate.id ===
                           attendeecertificate.CertificateGroupId
-                      ) &&
-                      isPast(eventCertificate.certificateSettings.publishOn)
+                      )
                   )
                   .map((eventCertificate) => (
                     <DropdownMenuItem key={eventCertificate.id}>

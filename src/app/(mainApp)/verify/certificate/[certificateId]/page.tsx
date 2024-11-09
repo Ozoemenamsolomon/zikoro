@@ -71,29 +71,46 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
     verifyAttendeeCertificate,
   } = useVerifyAttendeeCertificate({ certificateId });
 
-  const handleDownloadPdf = async () => {
-    const element = certificateRef.current;
-    if (!element) return;
-    const canvas = await html2canvas(element);
-    const data = canvas.toDataURL("image/png");
+  // const handleDownloadPdf = async () => {
+  //   const element = certificateRef.current;
+  //   if (!element) return;
+  //   const canvas = await html2canvas(element);
+  //   const data = canvas.toDataURL("image/png");
 
-    const pdf = new jsPDF();
-    const imgProperties = pdf.getImageProperties(data);
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (imgProperties.height * pdfWidth) / imgProperties.width;
+  //   const pdf = new jsPDF();
+  //   const imgProperties = pdf.getImageProperties(data);
+  //   const pdfWidth = pdf.internal.pageSize.getWidth();
+  //   const pdfHeight = (imgProperties.height * pdfWidth) / imgProperties.width;
 
-    pdf.addImage(data, "PNG", 0, 0, pdfWidth, pdfHeight);
-    pdf.save(
-      `${
-        certificate?.attendee.firstName + "_" + certificate?.attendee.lastName
-      }_${certificate?.CertificateName}.pdf`
-    );
-  };
+  //   pdf.addImage(data, "PNG", 0, 0, pdfWidth, pdfHeight);
+  //   pdf.save(
+  //     `${
+  //       certificate?.attendee.firstName + "_" + certificate?.attendee.lastName
+  //     }_${certificate?.CertificateName}.pdf`
+  //   );
+  // };
+
+  const [data2, handleDownloadPdf] = useToPng<HTMLDivElement>({
+    selector: "#certificate",
+    onSuccess: (data) => {
+      if (!certificate) return;
+      const pdf = new jsPDF();
+      const imgProperties = pdf.getImageProperties(data);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (imgProperties.height * pdfWidth) / imgProperties.width;
+
+      pdf.addImage(data, "PNG", 0, 0, pdfWidth, pdfHeight);
+      pdf.save(
+        `${
+          certificate?.attendee.firstName + "_" + certificate?.attendee.lastName
+        }_${certificate?.CertificateName}.pdf`
+      );
+    },
+  });
 
   const [data, download] = useToPng<HTMLDivElement>({
     selector: "#certificate",
     onSuccess: (data) => {
-      
       if (!certificate) return;
       const link = document.createElement("a");
       link.download = `${
@@ -104,15 +121,15 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
     },
   });
 
+  console.log(data, "data");
+
   const hashRef = useRef<string | undefined>();
 
   useEffect(() => {
     if (isLoading) {
-      
       return;
     }
 
-    
     if (!certificate) {
       toast({
         variant: "destructive",
@@ -148,13 +165,10 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
     //   return; // Exit early after showing the toast
     // }
 
-    
-
     if (
       certificate?.originalCertificate.certficateDetails &&
       certificate?.originalCertificate.certficateDetails.craftHash
     ) {
-      
       const initData = lz.decompress(
         lz.decodeBase64(
           certificate?.originalCertificate.certficateDetails.craftHash
@@ -169,15 +183,16 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
           organization: certificate.originalCertificate.event.organization,
         })
       );
-      
     }
   }, [isLoading]);
+
+  const shareText = `Excited to share my ${certificate?.CertificateName} certificate from ${certificate?.originalCertificate.event.eventTitle} with you! Check it out here: ${window.location.href}`;
 
   return (
     <section className="min-h-screen flex flex-col-reverse md:flex-row justify-center gap-6 pt-20 pb-8">
       {!isLoading ? (
         <>
-          <div className="flex-1 flex flex-col-reverse md:flex-col items-center gap-4">
+          <div className="flex-[60%] flex flex-col-reverse md:flex-col items-center gap-4 px-8">
             <div className="flex gap-2 w-3/4">
               <Button onClick={handleDownloadPdf} className="bg-basePrimary">
                 Download PDF
@@ -185,39 +200,42 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
               <Button
                 // onClick={() => exportComponentAsPNG(certificateRef)}
                 onClick={download}
-                className="border-basePrimary border-2 text-basePrimary bg-transparent"
+                className="border-basePrimary border-2 text-basePrimary bg-transparent hover:bg-basePrimary/20"
               >
                 Download PNG
               </Button>
-              <Button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggleShareDropDown();
-                }}
-                className="border-basePrimary border-2 text-basePrimary bg-transparent"
-              >
-                <svg
-                  stroke="currentColor"
-                  fill="currentColor"
-                  strokeWidth={0}
-                  viewBox="0 0 24 24"
-                  height="1em"
-                  width="1em"
-                  xmlns="http://www.w3.org/2000/svg"
+              <div className="relative">
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleShareDropDown();
+                  }}
+                  className="border-basePrimary border-2 text-basePrimary bg-transparent hover:bg-basePrimary/20"
                 >
-                  <circle fill="none" cx="17.5" cy="18.5" r="1.5" />
-                  <circle fill="none" cx="5.5" cy="11.5" r="1.5" />
-                  <circle fill="none" cx="17.5" cy="5.5" r="1.5" />
-                  <path d="M5.5,15c0.91,0,1.733-0.358,2.357-0.93l6.26,3.577C14.048,17.922,14,18.204,14,18.5c0,1.93,1.57,3.5,3.5,3.5 s3.5-1.57,3.5-3.5S19.43,15,17.5,15c-0.91,0-1.733,0.358-2.357,0.93l-6.26-3.577c0.063-0.247,0.103-0.502,0.108-0.768l6.151-3.515 C15.767,8.642,16.59,9,17.5,9C19.43,9,21,7.43,21,5.5S19.43,2,17.5,2S14,3.57,14,5.5c0,0.296,0.048,0.578,0.117,0.853L8.433,9.602 C7.808,8.64,6.729,8,5.5,8C3.57,8,2,9.57,2,11.5S3.57,15,5.5,15z M17.5,17c0.827,0,1.5,0.673,1.5,1.5S18.327,20,17.5,20 S16,19.327,16,18.5S16.673,17,17.5,17z M17.5,4C18.327,4,19,4.673,19,5.5S18.327,7,17.5,7S16,6.327,16,5.5S16.673,4,17.5,4z M5.5,10C6.327,10,7,10.673,7,11.5S6.327,13,5.5,13S4,12.327,4,11.5S4.673,10,5.5,10z" />
-                </svg>
-                <h3 className="font-medium ">Share this Event</h3>
-                {isShareDropDown && (
-                  <ActionModal
-                    close={toggleShareDropDown}
-                    url={certificate?.certificateURL}
-                  />
-                )}
-              </Button>
+                  <svg
+                    stroke="currentColor"
+                    fill="currentColor"
+                    strokeWidth={0}
+                    viewBox="0 0 24 24"
+                    height="1em"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle fill="none" cx="17.5" cy="18.5" r="1.5" />
+                    <circle fill="none" cx="5.5" cy="11.5" r="1.5" />
+                    <circle fill="none" cx="17.5" cy="5.5" r="1.5" />
+                    <path d="M5.5,15c0.91,0,1.733-0.358,2.357-0.93l6.26,3.577C14.048,17.922,14,18.204,14,18.5c0,1.93,1.57,3.5,3.5,3.5 s3.5-1.57,3.5-3.5S19.43,15,17.5,15c-0.91,0-1.733,0.358-2.357,0.93l-6.26-3.577c0.063-0.247,0.103-0.502,0.108-0.768l6.151-3.515 C15.767,8.642,16.59,9,17.5,9C19.43,9,21,7.43,21,5.5S19.43,2,17.5,2S14,3.57,14,5.5c0,0.296,0.048,0.578,0.117,0.853L8.433,9.602 C7.808,8.64,6.729,8,5.5,8C3.57,8,2,9.57,2,11.5S3.57,15,5.5,15z M17.5,17c0.827,0,1.5,0.673,1.5,1.5S18.327,20,17.5,20 S16,19.327,16,18.5S16.673,17,17.5,17z M17.5,4C18.327,4,19,4.673,19,5.5S18.327,7,17.5,7S16,6.327,16,5.5S16.673,4,17.5,4z M5.5,10C6.327,10,7,10.673,7,11.5S6.327,13,5.5,13S4,12.327,4,11.5S4.673,10,5.5,10z" />
+                  </svg>
+                  <h3 className="font-medium ">Share this Certificate</h3>
+                  {isShareDropDown && (
+                    <ActionModal
+                      close={toggleShareDropDown}
+                      url={certificate?.certificateURL}
+                      shareText={shareText}
+                    />
+                  )}
+                </Button>
+              </div>
               {/* <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button className="border-basePrimary border-2 text-basePrimary bg-transparent flex gap-2 items-center">
@@ -262,8 +280,8 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
                 CertificateQRCode,
               }}
             >
-              <div className="relative px-4">
-                <div className="w-full h-full absolute bg-transparent z-[100]" />
+              <div className="relative px-4 w-full" ref={certificateRef}>
+                <div className="inset-0 absolute bg-transparent z-[100]" />
                 <div
                   className="relative h-fit space-y-6 text-black bg-no-repeat"
                   style={{
@@ -274,7 +292,7 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
                       ? `url(${certificate?.originalCertificate?.certficateDetails?.background})`
                       : "",
                     backgroundColor: "#fff",
-                    height: "750px",
+                    height: "11.69in",
                   }}
                   id="certificate"
                 >
@@ -305,7 +323,7 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
               </div>
             </Editor>
           </div>
-          <div className="flex-1 flex flex-col justify-around gap-12 px-2">
+          <div className="flex-[40%] flex flex-col justify-around gap-12 px-2">
             <div className="flex flex-col gap-4">
               <div>
                 <svg
@@ -373,15 +391,11 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
               <h2 className="text-gray-800 text-xl font-medium">
                 About Zikoro
               </h2>
+
               <p className="text-gray-700 text-sm md:text-base">
-                Our platform aims to make event organization easy for event
-                organizers, regardless of the event's size, while providing
-                attendees with a smooth experience beyond just attending.{" "}
-              </p>
-              <p className="text-gray-700 text-sm md:text-base">
-                At Zikoro, we empower event organizers to create and distribute
-                certificates to attendees of conferences, workshops, and
-                seminars, enabling them to define their award criteria.
+                Zikoro credentials empower event organizers to create and
+                distribute certificates to attendees of conferences, workshops,
+                and seminars, enabling them to define their award criteria.
               </p>
             </div>
             <div className="space-y-4 w-3/4">
@@ -424,15 +438,18 @@ export default Page;
 function ActionModal({
   close,
   url,
+  shareText,
 }: {
   url?: string;
   instagram?: string;
   close: () => void;
+  shareText: string;
 }) {
+  const linkToCertificate = window.location.href;
   return (
     <>
-      <div className="absolute left-0 top-10  w-48">
-        <Button className="fixed inset-0 bg-none h-full w-full z-[100"></Button>
+      <div className="absolute left-0 top-10 w-48 z-[1000]">
+        {/* <Button className="fixed inset-0 bg-none h-full w-full z-[100]"></Button> */}
         <div
           role="button"
           onClick={(e) => {
@@ -443,20 +460,26 @@ function ActionModal({
           <button
             onClick={() =>
               window.open(
-                `https://twitter.com/intent/tweet?url=${url}`,
+                `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+                  shareText
+                )}`,
                 "_blank"
               )
             }
-            className="items-center flex px-2  h-10 w-full gap-x-2 justify-start text-xs"
+            className="items-center flex px-2 h-10 w-full gap-x-2 justify-start text-xs"
           >
             <TwitterIcon />
             <span>X</span>
           </button>
 
-          <LinkedinShareButton url={url}>
+          <LinkedinShareButton
+            url={`https://www.linkedin.com/shareArticle?mini=true&title=${encodeURIComponent(
+              shareText
+            )}`}
+          >
             <button
               className={
-                "items-center h-10 gap-x-2 px-2 flex justify-start w-full  text-xs"
+                "items-center h-10 gap-x-2 px-2 flex justify-start w-full text-xs"
               }
             >
               <LinkedinIcon />
@@ -466,27 +489,19 @@ function ActionModal({
           <button
             onClick={() =>
               window.open(
-                `https://www.facebook.com/sharer/sharer.php?u=${url}`,
+                `https://www.facebook.com/sharer/sharer.php?quote=${encodeURIComponent(
+                  shareText
+                )}`,
                 "_blank"
               )
             }
             className={
-              "items-center h-10 gap-x-2 px-2 flex justify-start w-full  text-xs"
+              "items-center h-10 gap-x-2 px-2 flex justify-start w-full text-xs"
             }
           >
             <FacebookIcon />
             <span>Facebook</span>
           </button>
-          <Link
-            target="_blank"
-            href={""}
-            className={
-              "items-center hidden h-10 gap-x-2 px-2  justify-start w-full  text-xs"
-            }
-          >
-            <InstagramIcon />
-            <span>Instagram</span>
-          </Link>
         </div>
       </div>
     </>
