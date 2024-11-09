@@ -3,9 +3,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 const supabase = createClientComponentClient();
 
-export const config = {
-  runtime: "edge",
-};
+export const runtime = "edge"
 
 export default async function handler(req: NextRequest) {
   downgradeExpiredSubscriptions();
