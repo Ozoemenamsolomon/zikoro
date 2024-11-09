@@ -386,7 +386,7 @@ const Create = () => {
           render={({ field }) => (
             <FormItem className="flex flex-row items-center gap-4 space-y-0">
               <FormLabel className="text-gray-700">
-                Enable Call to Action Buttons
+                Enable Call to Action Buttons (available to paid plans only)
               </FormLabel>
               <FormControl>
                 <Switch

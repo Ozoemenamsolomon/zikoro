@@ -271,7 +271,7 @@ export default function ThirdSection({
     isLoading: engagementsSettingsIsLoading,
     getData: getEngagementsSettings,
   } = useGetData<EngagementsSettings>(
-    `engagements/${event.eventAlias}/settings`
+    `engagements/${event.eventAlias}/settings222`
   );
 
   const totalMaxPoints = engagementsSettings?.pointsAllocation

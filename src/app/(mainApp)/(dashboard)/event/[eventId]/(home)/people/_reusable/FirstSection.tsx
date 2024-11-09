@@ -44,6 +44,9 @@ import { eachDayOfInterval, format, isSameDay } from "date-fns";
 import useUserStore from "@/store/globalUserStore";
 import ArchiveAttendee from "@/components/moreOptionDialog/archiveAttendee";
 import { ContactRequest } from "@/types/contacts";
+import { createClient } from "@/utils/supabase/client";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { create } from "lodash";
 
 type TSortorder = "asc" | "desc" | "none";
 
@@ -169,6 +172,8 @@ const moreOptions: TMoreOptions[] = [
   },
 ];
 
+const supabase = createClientComponentClient();
+
 export default function FirstSection({
   onOpen,
   attendees,
@@ -250,6 +255,51 @@ export default function FirstSection({
   useEffect(() => {
     calculateAndSetMaxHeight(divRef);
   }, [mappedAttendees]);
+
+  const [pendingContacts, setPendingContacts] = useState<ContactRequest[]>(
+    contactRequests.filter(
+      ({ status, receiverUserEmail }) =>
+        status === "pending" && receiverUserEmail === user?.userEmail
+    )
+  );
+
+  function createBeep() {
+    if (typeof window !== "undefined") {
+      const audio = new Audio("/audio/beep.wav");
+      //  audio.src = "audio/AylexCinematic.mp3";
+
+      audio.volume = 0.2;
+
+      audio.play();
+    }
+  }
+
+  useEffect(() => {
+    const notificationChannel = supabase
+      .channel("contactRequest")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "contactRequest",
+          filter: `receiverUserEmail=eq.${user?.userEmail}`,
+        },
+        (payload) => {
+          const contactRequest = payload.new as ContactRequest;
+
+          console.log(contactRequest, "new contact request");
+
+          setPendingContacts([...pendingContacts, contactRequest]);
+          createBeep();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(notificationChannel);
+    };
+  }, []);
 
   // useEffect(() => {
   //   if (isLoading) return;
@@ -381,16 +431,10 @@ export default function FirstSection({
           </h1>
           {contactRequests.length > 0 && (
             <>
-              {contactRequests.filter(
-                (contactRequest) => contactRequest.status === "pending"
-              ).length > 0 && (
+              {pendingContacts.length > 0 && (
                 <div className="relative inline-block">
                   <span className="absolute top-0 right-0 bg-red-500 text-white text-xs font-semibold w-5 h-5 rounded-full flex items-center justify-center">
-                    {
-                      contactRequests.filter(
-                        (contactRequest) => contactRequest.status === "pending"
-                      ).length
-                    }
+                    {pendingContacts.length}
                   </span>
                   <span className="bg-basePrimary/20 text-basePrimary text-sm p-1.5 rounded-xl">
                     Pending Contacts
