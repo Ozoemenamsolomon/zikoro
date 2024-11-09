@@ -102,10 +102,34 @@ export default function FormResponses({
     );
   }
 
+  type Response = {
+    attendeeEmail: string;
+    attendeeAlias: string; // NB: not all user registered
+    [question: string]: string | undefined;
+  };
+
   async function downloadCsv() {
     try {
- 
-      const csv = json2csv(flattenedResponse);
+      function transformData(data: TFormattedEngagementFormAnswer[]) {
+        const result: { [email: string]: Response } = {};
+
+        data.forEach((entry) => {
+          const alias = entry.attendeeAlias;
+          if (!alias) return;
+
+          if (!result[alias]) {
+            result[alias] = {
+              attendeeAlias: alias,
+              attendeeEmail: entry?.attendeeEmail || "NIL",
+            };
+          }
+          result[alias][entry.question] = entry.response;
+        });
+
+        return Object.values(result);
+      }
+      const tranformedData = transformData(flattenedResponse);
+      const csv = json2csv(tranformedData);
       const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
 
       saveAs(blob, "response.csv");
