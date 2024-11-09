@@ -483,8 +483,8 @@ const page = () => {
     canExpire: false,
     expiryDate: new Date(),
     publishOn: event?.endDateTime
-      ? new Date(event?.endDateTime)
-      : addMonths(new Date(), 1),
+      ? event?.endDateTime
+      : addMonths(new Date(), 1).toISOString(),
     skills: [],
   });
 

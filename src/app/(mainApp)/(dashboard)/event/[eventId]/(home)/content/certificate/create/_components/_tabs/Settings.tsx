@@ -311,14 +311,14 @@ const Settings = ({ settings, editSettings }: TabProps) => {
       <div className="pt-4 pb-2">
         <div className="relative">
           <label className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
-            Publish Date
+            Availability Date
           </label>
           <Input
             placeholder="Enter event title"
             type="datetime-local"
-            value={new Date(settings.publishOn).toISOString()}
+            value={settings.publishOn}
             className="placeholder:text-sm h-12 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700 accent-basePrimary"
-            onInput={(date) => editSettings("publishOn", date)}
+            onInput={(e) => editSettings("publishOn", e.currentTarget.value)}
           />
         </div>
       </div>
@@ -416,7 +416,7 @@ const Settings = ({ settings, editSettings }: TabProps) => {
                 <path d="M696 480H544V328c0-4.4-3.6-8-8-8h-48c-4.4 0-8 3.6-8 8v152H328c-4.4 0-8 3.6-8 8v48c0 4.4 3.6 8 8 8h152v152c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8V544h152c4.4 0 8-3.6 8-8v-48c0-4.4-3.6-8-8-8z" />
                 <path d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372 372 166.6 372 372-166.6 372-372 372z" />
               </svg>
-              <span>Skills</span>
+              <span>Earned Skills</span>
             </Button>
           </DialogTrigger>
           <DialogContent className="px-3">
@@ -458,12 +458,14 @@ const Settings = ({ settings, editSettings }: TabProps) => {
                   !color ||
                   settings.skills.some(({ value }) => newSkill === value)
                 }
-                onClick={() =>
+                onClick={() => {
+                  setSkill("");
+                  setColor("");
                   editSettings("skills", [
                     ...settings.skills,
                     { value: newSkill, color },
-                  ])
-                }
+                  ]);
+                }}
                 className="bg-basePrimary"
               >
                 Add Skill

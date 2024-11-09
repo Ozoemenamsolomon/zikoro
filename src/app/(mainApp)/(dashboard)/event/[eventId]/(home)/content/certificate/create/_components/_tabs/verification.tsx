@@ -43,6 +43,42 @@ const Verification = ({ details, setValue }: TabProps) => {
             connectors.create(
               ref,
               <Text
+                text={"#{first_name#}"}
+                isBold
+                isItalic
+                isNotEditable
+              />
+            )
+          }
+          className={"bg-gray-50 py-3 px-2 rounded text-gray-800 w-full border"}
+          data-cy="toolbox-qr-code"
+        >
+          Drag to add Attendee First Name
+        </button>
+        <button
+          ref={(ref) =>
+            ref &&
+            connectors.create(
+              ref,
+              <Text
+                text={"#{last_name#}"}
+                isBold
+                isItalic
+                isNotEditable
+              />
+            )
+          }
+          className={"bg-gray-50 py-3 px-2 rounded text-gray-800 w-full border"}
+          data-cy="toolbox-qr-code"
+        >
+          Drag to add Attendee Last Name
+        </button>
+        <button
+          ref={(ref) =>
+            ref &&
+            connectors.create(
+              ref,
+              <Text
                 text={"#{first_name#} #{last_name#}"}
                 isBold
                 isItalic
