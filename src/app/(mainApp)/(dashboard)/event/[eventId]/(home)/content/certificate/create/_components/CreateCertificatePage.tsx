@@ -573,7 +573,7 @@ const page = () => {
       if (newCertificate) {
         console.log(newCertificate, "certificate");
         setCertificate(newCertificate);
-        router.push("create/redirect/?certificateId=" + newCertificate.id);
+        router.push("create/redirect?certificateId=" + newCertificate.id);
       }
     },
   });

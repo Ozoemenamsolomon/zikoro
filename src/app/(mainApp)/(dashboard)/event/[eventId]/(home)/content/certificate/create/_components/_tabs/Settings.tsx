@@ -38,12 +38,13 @@ import "react-datetime-picker/dist/DateTimePicker.css";
 import "react-calendar/dist/Calendar.css";
 import "react-clock/dist/Clock.css";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
+import { useParams } from "next/navigation";
 
 const Settings = ({ settings, editSettings }: TabProps) => {
+  const { eventId } = useParams();
   const [newSkill, setSkill] = React.useState<string>("");
   const [color, setColor] = React.useState<string>("");
-
-  const { attendees, isLoading } = useGetAttendees({});
+  const { attendees, isLoading } = useGetAttendees({ eventId });
 
   const [selectedAttendees, setSelectedAttendees] = useState<TAttendee[]>(
     settings.canReceive.exceptions
@@ -52,8 +53,6 @@ const Settings = ({ settings, editSettings }: TabProps) => {
         )
       : []
   );
-
-  
 
   type ValueType = TAttendee | TAttendee[];
 
@@ -75,8 +74,6 @@ const Settings = ({ settings, editSettings }: TabProps) => {
   };
 
   const divRef = useRef<HTMLDivElement>(null);
-
-  
 
   useEffect(() => {
     if (!divRef) return;
@@ -184,7 +181,7 @@ const Settings = ({ settings, editSettings }: TabProps) => {
                     </DialogTitle>
                   </DialogHeader>
                   <ViewAttendeesSection
-                    attendees={attendees}
+                    attendees={attendees.filter(({ archive }) => !archive)}
                     selectedAttendees={selectedAttendees}
                     toggleValue={toggleValue}
                   />
@@ -204,6 +201,7 @@ const Settings = ({ settings, editSettings }: TabProps) => {
           <div className="flex justify-between">
             <span>Track Attendees</span>
             <Switch
+              disabled
               className="data-[state=checked]:bg-basePrimary"
               checked={settings.canReceive.trackAttendees}
               onCheckedChange={(status) =>
@@ -217,6 +215,7 @@ const Settings = ({ settings, editSettings }: TabProps) => {
           <div className="flex justify-between">
             <span>Session Attendees</span>
             <Switch
+              disabled
               className="data-[state=checked]:bg-basePrimary"
               checked={settings.canReceive.sessionAttendees}
               onCheckedChange={(status) =>
@@ -230,6 +229,7 @@ const Settings = ({ settings, editSettings }: TabProps) => {
           <div className="flex justify-between">
             <span>Quiz Participants</span>
             <Switch
+              disabled
               className="data-[state=checked]:bg-basePrimary"
               checked={settings.canReceive.quizParticipants}
               onCheckedChange={(status) =>
@@ -248,6 +248,7 @@ const Settings = ({ settings, editSettings }: TabProps) => {
             </span>
             <div className="flex items-center gap-2">
               <button
+                disabled
                 type="button"
                 onClick={() =>
                   editSettings(
@@ -277,6 +278,7 @@ const Settings = ({ settings, editSettings }: TabProps) => {
                 {settings.criteria}%
               </span>
               <button
+                disabled
                 onClick={() =>
                   editSettings(
                     "criteria",
@@ -401,7 +403,7 @@ const Settings = ({ settings, editSettings }: TabProps) => {
       <div className="space-y-4 pt-4  pb-12">
         <Dialog>
           <DialogTrigger asChild>
-            <Button className="border-basePrimary border-2 text-basePrimary bg-transparent flex gap-2">
+            <Button className="border-basePrimary border-2 text-basePrimary bg-transparent flex gap-2 hover:bg-basePrimary/20">
               <svg
                 stroke="currentColor"
                 fill="currentColor"

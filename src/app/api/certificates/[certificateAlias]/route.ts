@@ -54,7 +54,7 @@ export async function PATCH(req: NextRequest) {
       console.log(params);
 
       const { data, error } = await supabase
-        .from("certificateNew")
+        .from("certificate")
         .update(params)
         .select()
         .maybeSingle();
