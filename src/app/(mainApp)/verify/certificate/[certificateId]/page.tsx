@@ -283,7 +283,7 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
                   }}
                   id="certificate"
                 >
-                  {!isLoading && hashRef.current ? (
+                  {hashRef.current ? (
                     <>
                       <Frame data={hashRef.current}></Frame>
                     </>
