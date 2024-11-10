@@ -217,13 +217,13 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
               >
                 Download PNG
               </Button>
-              <Button
+              {/* <Button
                 // onClick={() => exportComponentAsPNG(certificateRef)}
                 onClick={downloadSVG}
                 className="border-basePrimary border-2 text-basePrimary bg-transparent hover:bg-basePrimary/20"
               >
                 Download SVG
-              </Button>
+              </Button> */}
               <div className="relative">
                 <Button
                   onClick={(e) => {
