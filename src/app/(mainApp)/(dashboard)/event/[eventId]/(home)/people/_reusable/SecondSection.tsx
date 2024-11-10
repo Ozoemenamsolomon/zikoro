@@ -849,7 +849,9 @@ export default function SecondSection({
             (eventCertificate) =>
               !attendeeCertificates.some(
                 (attendeecertificate) =>
-                  eventCertificate.id === attendeecertificate.CertificateGroupId
+                  eventCertificate.id ===
+                    attendeecertificate.CertificateGroupId &&
+                  isPast(eventCertificate.publishOn)
               )
           ) && (
             <DropdownMenu>
