@@ -603,7 +603,9 @@ const Certificates = () => {
                 onClick={(e) => {
                   e.stopPropagation();
                   eventId &&
-                    router.push(`certificate/create?eventId=${eventId}`);
+                    router.push(
+                      `/event/${eventId}/content/certificate/create?eventId=${eventId}`
+                    );
                 }}
                 className="bg-basePrimary w-full"
               >
@@ -719,7 +721,7 @@ const Certificates = () => {
           onClick={(e) => {
             e.stopPropagation();
 
-            router.push(`certificate/create`);
+            router.push(`/event/${eventId}/content/certificate/create`);
           }}
           className="bg-basePrimary flex gap-4 items-center w-fit py-2"
         >
@@ -746,7 +748,7 @@ const Certificates = () => {
         onClick={(e) => {
           e.stopPropagation();
 
-          router.push(`certificate/create`);
+          router.push(`/event/${eventId}/content/certificate/create`);
         }}
         className="bg-basePrimary flex gap-4 items-center w-fit py-2 self-end"
       >
@@ -834,7 +836,9 @@ const Certificates = () => {
                     : "border-gray-200"
                 }`}
                 onClick={() =>
-                  router.push(`certificate/create?certificateId=${id}`)
+                  router.push(
+                    `/event/${eventId}/content/certificate/create?certificateId=${id}`
+                  )
                 }
               >
                 <div className="w-full h-[250px] overflow-hidden">
