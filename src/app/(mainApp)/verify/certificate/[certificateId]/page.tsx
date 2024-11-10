@@ -21,7 +21,7 @@ import { replaceSpecialText } from "@/utils/helpers";
 import { Editor, Frame } from "@craftjs/core";
 import { toast } from "@/components/ui/use-toast";
 import lz from "lzutf8";
-import { useToPng } from "@hugocxl/react-to-image";
+import { useToPng, useToSvg } from "@hugocxl/react-to-image";
 import {
   FacebookIcon,
   InstagramIcon,
@@ -121,6 +121,19 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
     },
   });
 
+  const [data3, downloadSVG] = useToSvg<HTMLDivElement>({
+    selector: "#certificate",
+    onSuccess: (data) => {
+      if (!certificate) return;
+      const link = document.createElement("a");
+      link.download = `${
+        certificate?.attendee.firstName + "_" + certificate?.attendee.lastName
+      }_${certificate?.CertificateName}.svg`;
+      link.href = data;
+      link.click();
+    },
+  });
+
   console.log(data, "data");
 
   const hashRef = useRef<string | undefined>();
@@ -203,6 +216,13 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
                 className="border-basePrimary border-2 text-basePrimary bg-transparent hover:bg-basePrimary/20"
               >
                 Download PNG
+              </Button>
+              <Button
+                // onClick={() => exportComponentAsPNG(certificateRef)}
+                onClick={downloadSVG}
+                className="border-basePrimary border-2 text-basePrimary bg-transparent hover:bg-basePrimary/20"
+              >
+                Download SVG
               </Button>
               <div className="relative">
                 <Button
