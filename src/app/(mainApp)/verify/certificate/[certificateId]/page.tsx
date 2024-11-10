@@ -296,11 +296,9 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
                   }}
                   id="certificate"
                 >
-                  {!isLoading ? (
+                  {!isLoading && hashRef.current ? (
                     <>
-                      {hashRef.current && (
-                        <Frame data={hashRef.current}></Frame>
-                      )}
+                      <Frame data={hashRef.current}></Frame>
                     </>
                   ) : (
                     <div className="h-full w-full flex items-center justify-center">
