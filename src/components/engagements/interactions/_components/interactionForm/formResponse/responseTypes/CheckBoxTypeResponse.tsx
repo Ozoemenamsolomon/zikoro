@@ -31,7 +31,7 @@ export function CheckBoxTypeResponse({
   const [active, setActive] = useState(0);
   const flattenedResponse = responses;
   const optionArray = flattenedResponse[0]?.optionFields;
-  console.log("responses data ", flattenedResponse);
+//  console.log("responses data ", flattenedResponse);
 
   const reformedArray: { name: string; value: number; option: string }[] =
     useMemo(() => {
@@ -54,7 +54,7 @@ export function CheckBoxTypeResponse({
       return mappedArray;
     }, [responses]);
 
-  console.log("dddd", reformedArray);
+ // console.log("dddd", reformedArray);
 
   const sum = useMemo(() => {
     return reformedArray.reduce((acc, curr) => acc + curr?.value, 0) || 0;

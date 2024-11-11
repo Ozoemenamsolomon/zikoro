@@ -111,10 +111,11 @@ export default function FormResponses({
   async function downloadCsv() {
     try {
       function transformData(data: TFormattedEngagementFormAnswer[]) {
-        const result: { [email: string]: Response } = {};
+        const result: { [alias: string]: Response } = {};
 
         data.forEach((entry) => {
           const alias = entry.attendeeAlias;
+        //  console.log("alias", alias);
           if (!alias) return;
 
           if (!result[alias]) {
@@ -123,13 +124,21 @@ export default function FormResponses({
               attendeeEmail: entry?.attendeeEmail || "NIL",
             };
           }
-          result[alias][entry.question] = entry.response;
+          result[alias][entry.question] =
+            Array.isArray(entry.response) 
+              ? entry.response?.map((v) => v?.selectedOption).toString()
+              : entry?.response?.selectedOption
+              ? entry?.response?.selectedOption
+              : entry?.response;
         });
+
+       
 
         return Object.values(result);
       }
-      const tranformedData = transformData(flattenedResponse);
-      const csv = json2csv(tranformedData);
+      const transformedData = transformData(flattenedResponse);
+     
+      const csv = json2csv(transformedData);
       const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
 
       saveAs(blob, "response.csv");

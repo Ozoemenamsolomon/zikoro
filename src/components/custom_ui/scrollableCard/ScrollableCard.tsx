@@ -6,17 +6,17 @@ import { cn } from "@/lib";
 import { useScrollCard } from "@/hooks";
 import { NavigateBefore, NavigateNext } from "styled-icons/material";
 
-export function ScrollableCards({ children }: { children: React.ReactNode }) {
+export function ScrollableCards({ children, parentClassName, className }: { children: React.ReactNode, parentClassName?:string, className?:string }) {
   const scroll = useRef<HTMLDivElement>(null);
   const { next, previous, isPrevious, isNext } = useScrollCard(scroll);
   return (
-    <div className="relative w-full overflow-x-hidden">
+    <div className={cn("relative w-full overflow-x-hidden", parentClassName)}>
       <button
         type="button"
         className={cn(
           "hidden",
           isPrevious &&
-            "absolute left-[15px] top-[45%] z-[20] hidden h-8 w-8 text-center  cursor-pointer select-none rounded-full bg-white p-1 text-[#1aa3a1] transition-all duration-700 ease-in sm:block"
+            "absolute left-[-1px] top-[45%] z-[20] border  h-8 w-8 text-center  cursor-pointer select-none rounded-full bg-white p-1  transition-all duration-700 ease-in flex items-center justify-center"
         )}
         onClick={previous}
       >
@@ -27,7 +27,7 @@ export function ScrollableCards({ children }: { children: React.ReactNode }) {
         className={cn(
           "hidden",
           isNext &&
-            "absolute right-[7px] top-[45%] z-[20] hidden h-8 w-8 text-center cursor-pointer select-none rounded-full bg-white p-1 text-[#1aa3a1] transition-all duration-700 ease-in sm:block"
+            "absolute right-[-1px] top-[45%] z-[20] border flex items-center justify-center h-8 w-8 text-center cursor-pointer select-none rounded-full bg-white p-1  transition-all duration-700 ease-in "
         )}
         onClick={next}
       >
@@ -35,9 +35,9 @@ export function ScrollableCards({ children }: { children: React.ReactNode }) {
       </button>
       <div
         ref={scroll}
-        className="no-scrollbar flex w-[105%] gap-4 overflow-x-auto pl-[0em] pr-[4em] sm:pl-[1em]"
+        className={cn("no-scrollbar flex  w-[105%] gap-4 overflow-x-auto pl-[0em] pr-[4em] sm:pl-[1em]", className)}
       >
-        <div className="flex min-w-max gap-2 sm:gap-4 ">{children}</div>
+        <div className={"flex min-w-max  gap-2 sm:gap-4 "}>{children}</div>
       </div>
     </div>
   );

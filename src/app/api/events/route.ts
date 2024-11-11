@@ -11,17 +11,31 @@ export async function GET(req: NextRequest) {
       const userId = searchParams.get("userId");
       const organisationId = searchParams.get("organisationId");
 
-      const query = supabase.from("events").select("*, organization!inner(*), attendees!inner(*)");
-
+      const query = supabase.from("events").select("*, organization!inner(*)");
+      let eventData: any[] = [];
       if (userId) query.eq("createdBy", userId);
       if (organisationId) query.eq("organisationId", organisationId);
 
       const { data, error, status } = await query;
 
       if (data) {
-        data.forEach(event => {
+        for (let event of data) {
+          const { data: fetchedAttendees, error: errorFetchingAttendee } =
+            await supabase
+              .from("attendees")
+              .select("*")
+              .eq("eventAlias", event?.eventAlias);
+
+          eventData = [...eventData, { ...event, attendees: fetchedAttendees }];
+        }
+      } else {
+        eventData = [];
+      }
+
+      if (eventData) {
+        eventData.forEach((event) => {
           if (event.attendees && !Array.isArray(event.attendees)) {
-            event.attendees = [event.attendees]; 
+            event.attendees = [event.attendees];
           }
         });
       }
@@ -41,7 +55,7 @@ export async function GET(req: NextRequest) {
 
       return NextResponse.json(
         {
-          data,
+          data: eventData,
         },
         {
           status: 200,

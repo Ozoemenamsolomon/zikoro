@@ -17,6 +17,7 @@ import { TSessionAgenda, TAgenda, TMyAgenda, Event, TAttendee } from "@/types";
 import { useRouter } from "next/navigation";
 import { EngagementsSettings } from "@/types/engagements";
 import { EventAttendeeWidget } from "@/components/published";
+import { isEventLive } from "@/utils";
 export function Custom({
   sessionAgenda,
   className,
@@ -30,7 +31,7 @@ export function Custom({
   isReception,
   myAgendas,
   engagementsSettings,
-  isEventDetail
+  isEventDetail,
 }: {
   className?: string;
   sessionAgenda: TSessionAgenda;
@@ -44,7 +45,7 @@ export function Custom({
   isReception?: boolean;
   myAgendas?: TMyAgenda[];
   engagementsSettings?: EngagementsSettings | null;
-  isEventDetail?:boolean;
+  isEventDetail?: boolean;
 }) {
   const settings = {
     dots: true,
@@ -82,6 +83,7 @@ export function Custom({
               isOrganizer={isOrganizer}
               isFullScreen={isFullScreen}
               myAgendas={myAgendas}
+              timeStamp={sessionAgenda?.timeStamp}
               engagementsSettings={engagementsSettings}
             />
           ))}
@@ -103,7 +105,8 @@ function Widget({
   myAgendas,
   engagementsSettings,
   isReception,
-  isEventDetail
+  timeStamp,
+  isEventDetail,
 }: {
   session: TAgenda;
   event?: Event | null;
@@ -115,8 +118,9 @@ function Widget({
   isFullScreen?: boolean;
   myAgendas?: TMyAgenda[];
   engagementsSettings?: EngagementsSettings | null;
-  isReception?:boolean;
-  isEventDetail?:boolean;
+  isReception?: boolean;
+  isEventDetail?: boolean;
+  timeStamp: { start: string; end: string };
 }) {
   const router = useRouter();
   const [otherStaffsCount, setOtherStaffsCount] = useState(0);
@@ -145,15 +149,17 @@ function Widget({
     }
   }, [session]);
 
+  const isLive = useMemo(() => {
+    return isEventLive(timeStamp?.start, timeStamp?.end);
+  }, [timeStamp?.start, timeStamp?.end]);
+
   useEffect(() => {
     if (divRef && divRef?.current && mergedSM) {
       const width = divRef?.current?.offsetWidth;
       const staffLength = mergedSM?.length * 200;
       if (staffLength >= width) {
-        const x = (staffLength - width) /200
-        const willInclude = parseInt(
-          Math.round(x).toFixed(0)
-        );
+        const x = (staffLength - width) / 200;
+        const willInclude = parseInt(Math.round(x).toFixed(0));
         console.log(staffLength, width);
         setStaffs(mergedSM.slice(0, willInclude));
         setOtherStaffsCount(mergedSM?.length - willInclude);
@@ -170,6 +176,7 @@ function Widget({
         role="button"
         onClick={() => {
           if (session?.description && !isEventDetail) {
+            if (isReception && !isLive) return;
             router.push(
               `/event/${event?.eventAlias}/agenda/${session?.sessionAlias}`
             );
@@ -183,10 +190,11 @@ function Widget({
         <h2 className="text-base w-full mb-2 text-ellipsis whitespace-nowrap overflow-hidden sm:text-xl font-medium">
           {session?.sessionTitle ?? ""}
         </h2>
-       
-        <div className="flex items-center gap-x-3 mb-2 ">
+
+        <div className="w-full flex items-center justify-between mt-4 sm:mt-6 mb-2 ">
+          <div className="flex items-center gap-x-3">
           {session?.sessionType && (
-            <div className="w-fit px-2 py-2 bg-gradient-to-tr border rounded-2xl border-[#001fcc] from-custom-bg-gradient-start to-custom-bg-gradient-end">
+            <div className="w-fit px-2 py-1 bg-gradient-to-tr border rounded-2xl border-[#001fcc] from-custom-bg-gradient-start to-custom-bg-gradient-end">
               <p className="gradient-text bg-basePrimary text-xs">
                 {session?.sessionType ?? ""}
               </p>
@@ -194,14 +202,14 @@ function Widget({
           )}
 
           {session?.Track && (
-            <button className="bg-[#F44444]/10 text-xs border text-[#F44444] border-[#F44444] px-2 py-2 rounded-2xl">
+            <button className="bg-[#F44444]/10 text-xs border text-[#F44444] border-[#F44444] px-2 py-1 rounded-2xl">
               {session?.Track ?? ""}
             </button>
           )}
           {session?.sessionVenue && (
             <div className="flex items-center gap-x-1">
               <LocationPin size={20} />
-              <p>{session?.sessionVenue ?? ""}</p>
+              <p className={cn("w-full", isReception && "max-w-[100px] line-clamp-1")}>{session?.sessionVenue ?? ""}</p>
             </div>
           )}
           <div
@@ -220,35 +228,52 @@ function Widget({
               eventAlias={event?.eventAlias!}
             />
           </div>
+          </div>
+  
+          {isReception && isLive && (
+                <Button className="bg-basePrimary text-white font-medium rounded-lg h-11 ">
+                  Join
+                </Button>
+              )}
         </div>
         {isAddedAttendee && (
           <>
-          <div className="w-full hidden relative md:flex items-center mb-2  gap-1">
-            {Array.isArray(staffs) &&
-              staffs.map((attendee, index) => (
-                <BoothStaffWidget
-                  company={""}
-                  image={attendee?.profilePicture || null}
-                  name={`${attendee?.firstName} ${attendee?.lastName}`}
-                  profession={attendee?.jobTitle ?? ""}
-                  email={attendee?.email ?? ""}
-                  key={index}
-                  className="grid grid-cols-7 w-[180px] items-center "
-                />
-              ))}
-            {otherStaffsCount > 0 && (
-              <div className="flex absolute top-[8%] right-[0.3rem] from-custom-bg-gradient-start bg-gradient-to-tr to-custom-bg-gradient-end items-center text-lg justify-center w-[3rem] h-[3rem] rounded-full border border-basePrimary ">
-                {otherStaffsCount}+
-              </div>
-            )}
-          </div>
-          <div className="block my-2 md:hidden">
-            <EventAttendeeWidget attendees={mergedSM}/>
-          </div>
-          
+            <div
+              className={cn(
+                "w-full hidden relative md:flex items-center mb-2  gap-1",
+                isReception && "md:hidden"
+              )}
+            >
+              {Array.isArray(staffs) &&
+                staffs.map((attendee, index) => (
+                  <BoothStaffWidget
+                    company={""}
+                    image={attendee?.profilePicture || null}
+                    name={`${attendee?.firstName} ${attendee?.lastName}`}
+                    profession={attendee?.jobTitle ?? ""}
+                    email={attendee?.email ?? ""}
+                    key={index}
+                    className="grid grid-cols-7 w-[180px] items-center "
+                  />
+                ))}
+              {otherStaffsCount > 0 && (
+                <div className="flex absolute top-[8%] right-[0.3rem] from-custom-bg-gradient-start bg-gradient-to-tr to-custom-bg-gradient-end items-center text-lg justify-center w-[3rem] h-[3rem] rounded-full border border-basePrimary ">
+                  {otherStaffsCount}+
+                </div>
+              )}
+            </div>
+            <div
+              className={cn(
+                "w-full block my-2 md:hidden",
+                isReception && "md:block"
+              )}
+            >
+              <EventAttendeeWidget attendees={mergedSM} />
+             
+            </div>
           </>
         )}
-        {!isFullScreen && (isIdPresent || isOrganizer) && !isReception &&  (
+        {!isFullScreen && (isIdPresent || isOrganizer) && !isReception && (
           <div
             onClick={(e) => {
               e.stopPropagation();
@@ -287,7 +312,8 @@ function Widget({
             </div>
           </div>
         )}
-        {!isReception && Array.isArray(session?.sessionSponsors) &&
+        {!isReception &&
+          Array.isArray(session?.sessionSponsors) &&
           session?.sessionSponsors?.length > 0 && (
             <div className="w-full flex flex-col mb-2  items-start justify-start gap-y-2">
               <p>Sponsors</p>

@@ -3,7 +3,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 const supabase = createClientComponentClient();
 
-export const runtime = "edge";
+export const runtime = "edge"
 
 export default async function handler(req: NextRequest) {
   downgradeExpiredSubscriptions();
@@ -15,7 +15,7 @@ async function downgradeExpiredSubscriptions() {
   // Fetch subscriptions where expirationDate is in the past
   const { data: expiredSubscriptions, error } = await supabase
     .from("subscription")
-    .select("id, subscriptionType, expirationDate")
+    .select("organizationAlias, subscriptionType, expirationDate")
     .lt("expirationDate", currentDate)
     .neq("subscriptionType", "free"); // Avoid updating free subscriptions
 
@@ -29,10 +29,23 @@ async function downgradeExpiredSubscriptions() {
     return supabase
       .from("subscription")
       .update({ subscriptionType: "free" })
-      .eq("id", subscription.id);
+      .eq("organizationAlias", subscription.organizationAlias);
   });
 
   // Execute all updates
   await Promise.all(updates);
+
+  // update the associated organizations subscription plans
+  const updateOrganization = expiredSubscriptions.map(async (subscription) => {
+    return supabase
+      .from("organization")
+      .update({ subscriptionPlan: "Free" })
+      .eq("organizationAlias", subscription.organizationAlias);
+  });
+
+  // Execute all updateOrganization
+  await Promise.all(updateOrganization);
+  
+
   console.log("Expired subscriptions downgraded to free.");
 }

@@ -82,7 +82,7 @@ export function InteractionCard({
             height={400}
           />
         ) : (
-          <div className="w-full rounded-t-md h-48 2xl:h-56 animate-pulse bg-gray-200">
+          <div className="w-full rounded-t-md h-48 2xl:h-56 bg-gray-200">
             {" "}
           </div>
         )}

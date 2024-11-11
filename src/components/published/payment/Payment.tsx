@@ -100,8 +100,6 @@ export function Payment({
       eventPrice: data?.eventPrice,
     };
 
-    //
-
     /// change to priceCategory after validity date has been adjusted
     await sendTransactionDetail(toggleSuccessModal, payload);
   }

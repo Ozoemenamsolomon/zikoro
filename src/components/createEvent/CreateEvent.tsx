@@ -111,6 +111,7 @@ export default function CreateEvent() {
       eventAppAccess: formatDate(
         new Date(today.getTime() - 24 * 60 * 60 * 1000)
       ),
+      attendeeAppAccess: org?.subscriptionPlan !== "Free" ? true : false,
       eventStatusDetails: [
         {
           createdAt: today.toISOString(),
