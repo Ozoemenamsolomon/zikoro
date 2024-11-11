@@ -9,6 +9,8 @@ import {
 import SelectCertificateModal from "@/components/selectCertificateModal";
 
 export default function AttendeeCredentials(props) {
+  console.log(props);
+  
   return (
     <section className="flex justify-between items-center border-y-[1px] border-gray-200 p-2">
       <h3 className="text-lg text-greyBlack font-semibold">Credentials</h3>

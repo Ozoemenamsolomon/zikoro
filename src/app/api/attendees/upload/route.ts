@@ -36,9 +36,7 @@ export async function POST(req: NextRequest) {
           params
             .filter(
               (user) =>
-                !oldUsers.find(
-                  (oldUser) => oldUser.userEmail === user.email
-                )
+                !oldUsers.find((oldUser) => oldUser.userEmail === user.email)
             )
             .map((user) => ({
               firstName: user.firstName || null,
@@ -233,19 +231,24 @@ export async function POST(req: NextRequest) {
                 attendee.firstName + " " + attendee.lastName
               }</p>
             
-              <a
-              href="https://www.zikoro.com/event/${
-                currentEvent.eventAlias
-              }/people/info/${attendee.attendeeAlias}?email=${
-              attendee?.email
-            }&createdAt=${new Date().toISOString()}&isPasswordless=${true}&alias=${
-              attendee?.attendeeAlias
-            }"
-               
-              style="display: block; color: #001fcc; font-size: 12px; text-decoration: none;"
-              >
-              Update Profile</a>
-             
+              ${
+                event.organization.subscriptionPlan === "free" &&
+                `
+                <a
+                href="https://www.zikoro.com/event/${
+                  currentEvent.eventAlias
+                }/people/info/${attendee.attendeeAlias}?email=${
+                  attendee?.email
+                }&createdAt=${new Date().toISOString()}&isPasswordless=${true}&alias=${
+                  attendee?.attendeeAlias
+                }"
+                 
+                style="display: block; color: #001fcc; font-size: 12px; text-decoration: none;"
+                >
+                  Update Profile
+              </a>
+              `
+              } 
             </div>
           </div>
           <!---registration-->
@@ -323,7 +326,10 @@ export async function POST(req: NextRequest) {
             </div>
           </div>
           <!--end-->
-            <a
+
+          ${
+            event.organization.subscriptionPlan === "free" &&
+            `<a
             href="https://www.zikoro.com/event/${
               currentEvent.eventAlias
             }/reception?email=${
@@ -353,8 +359,8 @@ export async function POST(req: NextRequest) {
           >
             <p style="margin:0; width:100%; text-align:center; color:white">Join Event</p>
           </button>
-            </a>
-           
+            </a>`
+          }
       
             <div
               style="

@@ -159,6 +159,7 @@ export async function GET(req: NextRequest) {
     try {
       const { searchParams } = new URL(req.url);
       const userEmail = searchParams.get("userEmail");
+      const eventAlias = searchParams.get("eventAlias");
 
       const query = supabase
         .from("contactRequest")
@@ -166,6 +167,8 @@ export async function GET(req: NextRequest) {
         .or(
           `receiverUserEmail.eq.${userEmail},senderUserEmail.eq.${userEmail}`
         );
+
+        if(eventAlias) query.eq("eventAlias", eventAlias)
       // .eq("status", "pending");
 
       const { data, error, status } = await query;

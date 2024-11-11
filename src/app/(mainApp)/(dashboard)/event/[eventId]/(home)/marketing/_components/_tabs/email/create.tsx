@@ -55,6 +55,7 @@ import { ReactSelect } from "@/components";
 import Editor from "./custom_editor/Editor";
 import { ArrowBack } from "@styled-icons/boxicons-regular/ArrowBack";
 import { useRouter } from "next/navigation";
+import useOrganizationStore from "@/store/globalOrganizationStore";
 
 const CreateEmailSchema = z
   .object({
@@ -106,6 +107,7 @@ type TCreateEmail = z.infer<typeof CreateEmailSchema>;
 
 const Create = () => {
   const currentEvent = useEventStore((state) => state.event);
+  const organization = useOrganizationStore((state) => state.organization);
   const router = useRouter();
   const { user, setUser } = useUserStore();
 
@@ -384,10 +386,11 @@ const Create = () => {
           render={({ field }) => (
             <FormItem className="flex flex-row items-center gap-4 space-y-0">
               <FormLabel className="text-gray-700">
-                Enable Call to Action Buttons
+                Enable Call to Action Buttons (available to paid plans only)
               </FormLabel>
               <FormControl>
                 <Switch
+                  disabled={organization?.subscriptionPlan === "free"}
                   checked={field.value}
                   onCheckedChange={field.onChange}
                   className="data-[state=checked]:bg-basePrimary    "

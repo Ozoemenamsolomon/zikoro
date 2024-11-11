@@ -25,7 +25,7 @@ import { InlineIcon } from "@iconify/react";
 import { FaWhatsapp } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { RxLink2 } from "react-icons/rx";
-import { SlSocialLinkedin } from "react-icons/sl";
+import { SlSocialLinkedin, SlSocialFacebook } from "react-icons/sl";
 import copy from "copy-to-clipboard";
 export function SendMailModal<T>({
   close,
@@ -62,6 +62,16 @@ export function SendMailModal<T>({
     setTimeout(() => showSuccess(false), 2000);
   }
 
+  const attendeePoint = useMemo(() => {
+    if (answers && Array.isArray(answers) && answers?.length > 0) {
+      return answers
+        ?.filter((ans) => ans.quizParticipantId === id)
+        ?.reduce((acc, curr) => acc + Number(curr?.attendeePoints), 0);
+    } else {
+      return 0;
+    }
+  }, [quiz]);
+
   async function onSubmit(values: z.infer<typeof sendMailQuizSchema>) {
     // console.log(values);
     const updatedQuiz: Partial<TQuiz<TQuestion[]>> = {
@@ -82,7 +92,10 @@ export function SendMailModal<T>({
       quiz: updatedQuiz,
       mailto: {
         email: values?.email,
-        url:
+        createQuiz: `/event/${actualQuiz?.eventAlias}/engagements/interactions`,
+        attendeePoint,
+        url,
+        leaderboard:
           quiz?.interactionType !== "poll"
             ? `/interaction/quiz/scoreboard/${actualQuiz?.quizAlias}?id=${id}`
             : `/interaction/poll/sheet/${actualQuiz?.quizAlias}?id=${id}`,
@@ -91,16 +104,6 @@ export function SendMailModal<T>({
     await updateQuiz({ payload });
     close();
   }
-
-  const attendeePoint = useMemo(() => {
-    if (answers && Array.isArray(answers) && answers?.length > 0) {
-      return answers
-        ?.filter((ans) => ans.quizParticipantId === id)
-        ?.reduce((acc, curr) => acc + Number(curr?.attendeePoints), 0);
-    } else {
-      return 0;
-    }
-  }, [quiz]);
 
   const socials = [
     {
@@ -112,7 +115,10 @@ export function SendMailModal<T>({
       Icon: FaXTwitter,
       link: `https://x.com/intent/tweet?url=${url}`,
     },
-
+    {
+      Icon: SlSocialFacebook,
+      link: `https://www.facebook.com/sharer/sharer.php?u=${url}`,
+    },
     {
       Icon: SlSocialLinkedin,
       link: `https://www.linkedin.com/shareArticle?url=${url}`,

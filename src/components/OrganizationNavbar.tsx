@@ -36,10 +36,6 @@ const OrganizationNavbar: React.FC<OrganizationNavbarProps> = ({
     ? (logoUrl as string)
     : "/zikoro.png"; // Fallback to Zikoro logo if no valid logoUrl or conditions are met
 
-
-    console.log('isZikoroLogo,',isZikoroLogo)
-    console.log('logoUrl,',logoUrl)
-    console.log('isOrgLogo,',isOrgLogo)
   return (
     <div className="fixed w-full transition-all duration-300 top-0 z-50">
       <nav className="p-4 bg-white text-base">

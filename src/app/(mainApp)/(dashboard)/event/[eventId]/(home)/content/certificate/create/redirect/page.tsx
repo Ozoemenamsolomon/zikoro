@@ -1,7 +1,9 @@
 import { redirect } from "next/navigation";
 
-const page = ({ searchParams: { certificateId } }) => {
-  return redirect("create?certificateId=" + certificateId);
+const page = ({ params: { eventId }, searchParams: { certificateId } }) => {
+  return redirect(
+    `/event/${eventId}/content/certificate/create?certificateId=${certificateId}`
+  );
 };
 
 export default page;

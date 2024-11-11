@@ -330,7 +330,7 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
 
                 <div
                   ref={contentRef}
-                  className={` w-full  flex-col  pb-0 lg:pb-[50px] ${
+                  className={` w-full min-h-[50%]  flex-col  pb-0 lg:pb-[50px] blogPost ${
                     ""
                       ? "lg:ml-[30%] lg:w-9/12 lg:overflow-y-auto"
                       : "lg:w-9/12"

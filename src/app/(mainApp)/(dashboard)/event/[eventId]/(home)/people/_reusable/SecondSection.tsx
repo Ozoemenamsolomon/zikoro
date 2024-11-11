@@ -531,32 +531,34 @@ export default function SecondSection({
       />
       <section className="space-y-6 p-4 pt-0">
         <div className="space-y-2">
-          {/* {attendeeAlias && attendeeIsUser && (
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-medium text-gray-700">
-                Attendee Code: {attendeeAlias}
-              </span>
-              <span className="bg-white h-full flex items-center px-2">
-                {hasCopiedText ? (
-                  <svg
-                    stroke="currentColor"
-                    fill="currentColor"
-                    strokeWidth={0}
-                    viewBox="0 0 24 24"
-                    height="1.25em"
-                    width="1.25em"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M2.394 13.742L7.137 17.362 14.753 8.658 13.247 7.342 6.863 14.638 3.606 12.152zM21.753 8.658L20.247 7.342 13.878 14.621 13.125 14.019 11.875 15.581 14.122 17.379z" />
-                  </svg>
-                ) : (
-                  <button onClick={() => copyToClipboard(attendeeAlias)}>
-                    <Copy className="w-5 h-5 text-gray-700" />
-                  </button>
-                )}
-              </span>
-            </div>
-          )} */}
+          {attendeeAlias &&
+            (attendeeIsUser ||
+              (String(event?.createdBy) === String(user.id) && (
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-medium text-gray-700">
+                    Attendee Code: {attendeeAlias}
+                  </span>
+                  <span className="bg-white h-full flex items-center px-2">
+                    {hasCopiedText ? (
+                      <svg
+                        stroke="currentColor"
+                        fill="currentColor"
+                        strokeWidth={0}
+                        viewBox="0 0 24 24"
+                        height="1.25em"
+                        width="1.25em"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path d="M2.394 13.742L7.137 17.362 14.753 8.658 13.247 7.342 6.863 14.638 3.606 12.152zM21.753 8.658L20.247 7.342 13.878 14.621 13.125 14.019 11.875 15.581 14.122 17.379z" />
+                      </svg>
+                    ) : (
+                      <button onClick={() => copyToClipboard(attendeeAlias)}>
+                        <Copy className="w-5 h-5 text-gray-700" />
+                      </button>
+                    )}
+                  </span>
+                </div>
+              )))}
           {user &&
             (String(event?.createdBy) === String(user.id) ||
               email === user.userEmail) && (
@@ -761,7 +763,7 @@ export default function SecondSection({
           )}
         </div>
       </section>
-      {/* {user &&
+      {user &&
         (String(event?.createdBy) === String(user.id) ||
           email === user.userEmail) && (
           <AttendeeCredentials
@@ -772,9 +774,9 @@ export default function SecondSection({
             attendeeCertificatesIsLoading={attendeeCertificatesIsLoading}
             getAttendeeCertificates={getAttendeeCertificates}
           />
-        )} */}
-      {/* <section className="flex justify-between items-center px-2">
-        {!badgeIsLoading &&
+        )}
+      <section className="flex justify-between items-center px-2">
+        {/* {!badgeIsLoading &&
           !attendeeBadge &&
           user &&
           (String(event?.createdBy) === String(user.id) ||
@@ -838,7 +840,7 @@ export default function SecondSection({
                 </span>
               </div>
             </Link>
-          )}
+          )} */}
         {!getEventCertificatesIsLoading &&
           eventCertificates &&
           user &&
@@ -847,7 +849,9 @@ export default function SecondSection({
             (eventCertificate) =>
               !attendeeCertificates.some(
                 (attendeecertificate) =>
-                  eventCertificate.id === attendeecertificate.CertificateGroupId
+                  eventCertificate.id ===
+                    attendeecertificate.CertificateGroupId &&
+                  isPast(eventCertificate.publishOn)
               )
           ) && (
             <DropdownMenu>
@@ -880,8 +884,7 @@ export default function SecondSection({
                         (attendeecertificate) =>
                           eventCertificate.id ===
                           attendeecertificate.CertificateGroupId
-                      ) &&
-                      isPast(eventCertificate.certificateSettings.publishOn)
+                      )
                   )
                   .map((eventCertificate) => (
                     <DropdownMenuItem key={eventCertificate.id}>
@@ -903,7 +906,7 @@ export default function SecondSection({
             <DropdownMenu>
               <DropdownMenuTrigger>
                 <div className=" flex flex-col items-center gap-2 w-fit">
-                  <div className=" w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex items-center justify-center">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"
@@ -941,7 +944,7 @@ export default function SecondSection({
               </DropdownMenuContent>
             </DropdownMenu>
           )}
-      </section> */}
+      </section>
       <AttendeeAbout
         city={city}
         country={country}

@@ -20,7 +20,7 @@ export function useCreateOrgSubscription(
   async function createOrgSubscription() {
     try {
       const totalPriceNum = Number(totalPrice);
-      const isMonthlyValue = isMonthly === "true" ? "month" : "year";
+      const isMonthlyValue = isMonthly.trim() === "true" ? "month" : "year";
       const initialTotalNum = initialTotal ? Number(initialTotal) : null;
       const discountAmountNum = discountAmount ? Number(discountAmount) : null;
 
@@ -30,12 +30,13 @@ export function useCreateOrgSubscription(
 
       // Calculate the expiration date
       const expirationDate = new Date(startDate);
-      if (isMonthly === "true") {
+      if (isMonthly.trim() === "true") {
         expirationDate.setMonth(expirationDate.getMonth() + 1);
       } else {
         expirationDate.setFullYear(expirationDate.getFullYear() + 1);
       }
       const formattedExpirationDate = expirationDate.toISOString().split("T")[0];
+
 
       //convert orgId to int data type
       const orgIdConvert = Number(orgId)
@@ -48,15 +49,15 @@ export function useCreateOrgSubscription(
         .from("subscription")
         .insert({
           userId: userId,
-          subscriptionType: plan,
+          5: plan.trim(),
           amountPayed: totalPriceNum,
           startDate: formattedStartDate,
           expirationDate: formattedExpirationDate,
-          currency: currency,
+          currency: currency.trim(),
           monthYear: isMonthlyValue,
           planPrice: initialTotalNum,
           discountValue: discountAmountNum,
-          discountCode: couponCode,
+          discountCode: couponCode?.trim(),
 
           // Insert organizationId if orgId exists
           ...(orgId && { organizationId: orgIdConvert }),
@@ -72,6 +73,7 @@ export function useCreateOrgSubscription(
       }
 
       toast.success("Your Subscription has been updated");
+
     } catch (error) {
       toast.error("An error occurred while creating the subscription");
     }
@@ -122,3 +124,37 @@ export function useGetWorkspaceSubscriptionPlan(userId: number | undefined, orgI
     isLoading,
   };
 }
+
+
+
+//downgradeExpiredSubscriptions
+async function downgradeExpiredSubscriptions() {
+  const currentDate = new Date().toISOString();
+
+  // Fetch subscriptions where expirationDate is in the past
+  const { data: expiredSubscriptions, error } = await supabase
+    .from('subscription')
+    .select('organizationId, subscriptionType, expirationDate')
+    .lt('expirationDate', currentDate)
+    .neq('subscriptionType', 'free'); // Avoid updating free subscriptions
+
+  if (error) {
+    console.error('Error fetching expired subscriptions:', error);
+    return;
+  }
+
+  // Loop over expired subscriptions and update their subscriptionType
+  const updates = expiredSubscriptions.map(async (subscription) => {
+    return supabase
+      .from('subscription')
+      .update({ subscriptionType: 'free' })
+      .eq('userId', subscription.organizationId);
+  });
+
+  // Execute all updates
+  await Promise.all(updates);
+  console.log('Expired subscriptions downgraded to free.');
+}
+
+// Run the function
+downgradeExpiredSubscriptions();

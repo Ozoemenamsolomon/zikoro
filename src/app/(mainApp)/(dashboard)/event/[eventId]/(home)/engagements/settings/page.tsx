@@ -66,7 +66,7 @@ const DEFAULT_POINTS_ALLOCATION: TPointsAllocation = {
     maxPoints: 5,
     status: false,
   },
-  "Engagement Form": {
+  "participate in survey": {
     maxOccurrence: 5,
     points: 5,
     maxPoints: 5,

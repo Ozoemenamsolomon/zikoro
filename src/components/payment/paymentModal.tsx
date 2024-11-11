@@ -117,7 +117,7 @@ export default function SubscriptionPaymentModal({
       const url = `/payment?name=${encodeURIComponent(user?.firstName || "")}
   &id=${encodeURIComponent(user?.id || "")}
   &plan=${encodeURIComponent(chosenPlan || "")}
-  &isMonthly=${encodeURIComponent(isChosenMonthly)}
+  &monthly=${encodeURIComponent(isChosenMonthly)}
   &total=${encodeURIComponent(totalPrice)}
   &currency=${encodeURIComponent(chosenCurrency)}
   &coupon=${encodeURIComponent(couponText)}

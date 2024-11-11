@@ -453,7 +453,7 @@ export function useFetchSingleOrganization(id?: number) {
 
 export function useFetchOrganizationEvents(id?: string | string[]) {
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<TOrgEvent[]>([]);
 
   useEffect(() => {
     fetchOrganizationEvents();
@@ -464,7 +464,7 @@ export function useFetchOrganizationEvents(id?: string | string[]) {
     try {
       const { data, error } = await supabase
         .from("events")
-        .select("*")
+        .select("*, organization!inner(*), attendees!inner(*)")
         .eq("organisationId", id);
 
       if (error) {

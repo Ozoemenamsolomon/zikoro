@@ -18,6 +18,14 @@ import {
   uploadFile,
 } from "@/utils/helpers";
 import { Container, SettingsPanel, Text } from "@/components/certificate";
+import Designs from "./_tabs/Designs";
+import ElementTab from "./_tabs/Element";
+import TextTab from "./_tabs/Text";
+import Verification from "./_tabs/verification";
+import Settings from "./_tabs/Settings";
+import QRCode from "react-qr-code";
+import { formatDateToHumanReadable } from "@/utils/date";
+import Background from "./_tabs/Background";
 import {
   TCertificate,
   TCertificateDetails,
@@ -43,13 +51,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { addDays, addMonths } from "date-fns";
-import QRCode from "react-qr-code";
-import Designs from "./_tabs/Designs";
-import Background from "./_tabs/Background";
-import { default as TextTab } from "./_tabs/Text";
-import { default as ElementTab } from "./_tabs/Element";
-import Verification from "./_tabs/verification";
-import Settings from "./_tabs/Settings";
 
 const tabs = [
   {
@@ -405,10 +406,14 @@ export interface TabProps {
   editSettings: (key: keyof TCertificateSettings, value: any) => void;
 }
 
-const CreateCertificate = ({ certificateId }) => {
+const page = () => {
   const divRef = useRef<HTMLDivElement>(null);
   const certificateDivRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+
+  const searchParams = useSearchParams();
+
+  const certificateId = searchParams.get("certificateId");
 
   const { eventId } = useParams();
   const { certificate, isLoading: certificateIsLoading } = useGetCertificate({
@@ -478,8 +483,8 @@ const CreateCertificate = ({ certificateId }) => {
     canExpire: false,
     expiryDate: new Date(),
     publishOn: event?.endDateTime
-      ? new Date(event?.endDateTime)
-      : addMonths(new Date(), 1),
+      ? event?.endDateTime
+      : addMonths(new Date(), 1).toISOString(),
     skills: [],
   });
 
@@ -566,8 +571,9 @@ const CreateCertificate = ({ certificateId }) => {
       setUploading(false);
 
       if (newCertificate) {
+        console.log(newCertificate, "certificate");
         setCertificate(newCertificate);
-        router.push("create/redirect/?certificateId=" + newCertificate.id);
+        router.push("create/redirect?certificateId=" + newCertificate.id);
       }
     },
   });
@@ -851,8 +857,8 @@ const CreateCertificate = ({ certificateId }) => {
                     ? `url(${details.background})`
                     : "",
                   backgroundColor: "#fff",
-                  width: "90%",
-                  height: "750px",
+                  width: "8.27in",
+                  height: "11.69in",
                 }}
                 ref={certificateRef}
                 id="certificate"
@@ -887,4 +893,4 @@ const CreateCertificate = ({ certificateId }) => {
   );
 };
 
-export default CreateCertificate;
+export default page;

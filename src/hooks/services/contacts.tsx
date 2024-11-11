@@ -53,8 +53,10 @@ export const useRequestContact = ({
 
 export const useGetContactRequests = ({
   userEmail,
+  eventAlias,
 }: {
   userEmail?: string;
+  eventAlias?: string;
 }): UseGetResult<
   ContactRequest[],
   "userContactRequests",
@@ -73,7 +75,7 @@ export const useGetContactRequests = ({
       const { data, status } = await getRequest<ContactRequest[]>({
         endpoint: `/contacts/request?${
           userEmail ? `&userEmail=${userEmail}` : ""
-        }`,
+        }&${eventAlias ? `eventAlias=${eventAlias}` : ""}`,
       });
 
       if (status !== 200) {

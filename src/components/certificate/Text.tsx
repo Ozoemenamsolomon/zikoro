@@ -284,7 +284,7 @@ const TextSettings = () => {
               value={[fontSize]}
               step={2}
               min={8}
-              max={24}
+              max={200}
               onValueChange={(value) => {
                 setProp(
                   (props: Textprops) => (props.fontSize = value[0]),

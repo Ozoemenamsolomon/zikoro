@@ -97,166 +97,193 @@ export function Engagement({
         </section>
       )}
 
-     { active === 2 &&  <div
-        className=
-          "p-2 lg:p-4 w-full  h-fit bg-gray-100 "
-      >
-        {rating > 0 || isSent ? (
-          <ReviewComment
-            rating={rating}
-            sessionAlias={agenda?.sessionAlias}
-            attendeeId={attendeeId}
-            eventId={id}
-            reviews={reviews}
-            engagementsSettings={engagementsSettings}
-            isSent={isSent}
-            setSent={setSent}
-          />
-        ) : (
-          <div className="w-full flex flex-col p-6 items-start justify-start gap-y-2">
-            <h3 className="text-base sm:text-lg font-semibold">
-              How would you rate this session?
-            </h3>
-            <div className="w-[80%] mx-auto space-y-2">
-              <div className="grid text-gray-500 grid-cols-5 gap-3 w-full">
-                {[1, 2, 3, 4, 5]?.map((v, index) => (
-                  <button
-                    onClick={() => setRating(index + 1)}
-                    key={v}
-                    className={cn(index + 1 <= rating && "text-basePrimary")}
-                  >
-                    {index + 1 <= rating ? (
-                      <StarFullOutline size={40} />
-                    ) : (
-                      <Star size={40} />
-                    )}
-                  </button>
-                ))}
-              </div>
-              <div className="w-full grid grid-cols-2 items-center text-gray-500">
-                <p className="text-xs flex item-start justify-start">Bad</p>
-                <p className="text-xs flex items-end justify-end">Excellent</p>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>}
-      {/** collapsible widgets */}
-      <CollapsibleWidget
-        title="Speakers"
-        session={agenda}
-        isNotAttendee={isIdPresent || isOrganizer}
-        event={event}
-        refetch={refetch}
-      >
-        <div className="w-full px-3 py-4 grid  grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 items-center gap-4">
-          {Array.isArray(agenda?.sessionSpeakers) &&
-            agenda?.sessionSpeakers?.length === 0 && (
-              <div className="w-full col-span-full h-[200px] flex items-center justify-center">
-                <p className="font-semibold">No Speaker</p>
-              </div>
-            )}
-          {Array.isArray(agenda?.sessionSpeakers) &&
-            agenda?.sessionSpeakers.map((attendee, index) => (
-              <BoothStaffWidget
-                company={attendee?.organization ?? ""}
-                image={attendee?.profilePicture || null}
-                name={`${attendee?.firstName} ${attendee?.lastName}`}
-                profession={attendee?.jobTitle ?? ""}
-                email={attendee?.email ?? ""}
-                key={index}
-              />
-            ))}
-        </div>
-      </CollapsibleWidget>
-      <CollapsibleWidget
-        title="Moderator"
-        session={agenda}
-        isNotAttendee={isIdPresent || isOrganizer}
-        event={event}
-        refetch={refetch}
-      >
-        <div className="w-full px-3 py-4 grid  grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 items-center gap-4">
-          {Array.isArray(agenda?.sessionModerators) &&
-            agenda?.sessionModerators?.length === 0 && (
-              <div className="w-full col-span-full h-[200px] flex items-center justify-center">
-                <p className="font-semibold">No Moderator</p>
-              </div>
-            )}
-          {Array.isArray(agenda?.sessionModerators) &&
-            agenda?.sessionModerators.map((attendee, index) => (
-              <BoothStaffWidget
-                company={attendee?.organization ?? ""}
-                image={attendee?.profilePicture || null}
-                name={`${attendee?.firstName} ${attendee?.lastName}`}
-                profession={attendee?.jobTitle ?? ""}
-                email={attendee?.email ?? ""}
-                key={index}
-              />
-            ))}
-        </div>
-      </CollapsibleWidget>
-      <CollapsibleWidget
-        title="Sponsors"
-        session={agenda}
-        event={event}
-        isNotAttendee={isIdPresent || isOrganizer}
-        refetch={refetch}
-      >
-        <div className="w-full px-3 py-4 grid  grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 items-center gap-4">
-          {Array.isArray(agenda?.sessionSponsors) &&
-            agenda?.sessionSponsors?.length === 0 && (
-              <div className="w-full col-span-full h-[200px] flex items-center justify-center">
-                <p className="font-semibold">No Sponsor</p>
-              </div>
-            )}
-          {Array.isArray(agenda?.sessionSponsors) &&
-            agenda?.sessionSponsors.map((sponsor) => (
-              <Image
-                src={sponsor?.companyLogo ?? ""}
-                alt="sponsor"
-                width={200}
-                height={100}
-                className=" w-[100px] object-contain h-[40px]"
-              />
-            ))}
-        </div>
-      </CollapsibleWidget>
-      <CollapsibleWidget
-        title="File"
-        session={agenda}
-        isNotAttendee={isIdPresent || isOrganizer}
-        event={event}
-        refetch={refetch}
-      >
-        <div className="w-full px-3 py-4 grid  grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 items-center gap-4">
-          {Array.isArray(agenda?.sessionFiles) &&
-            agenda?.sessionFiles?.length === 0 && (
-              <div className="w-full col-span-full h-[200px] flex items-center justify-center">
-                <p className="font-semibold">No File</p>
-              </div>
-            )}
-          {Array.isArray(agenda?.sessionFiles) &&
-            agenda?.sessionFiles.map((item) => (
-              <Link
-                target="_blank"
-                href={item?.file}
-                key={item?.id}
-                className="w-full group border relative rounded-lg p-3 flex items-start justify-start gap-x-2"
-              >
-                <FilePdf size={25} className="text-red-500" />
-                <div className="space-y-1 w-full">
-                  <p className="text-[13px] w-full text-ellipsis whitespace-nowrap overflow-hidden sm:text-sm text-gray-500">
-                    {item?.name}
-                  </p>
-                  <p className="text-[11px] w-full sm:text-xs text-gray-400">
-                    {item?.size}
+      {active === 2 && (
+        <div className="p-2 lg:p-4 w-full  h-fit bg-gray-100 ">
+          {rating > 0 || isSent ? (
+            <ReviewComment
+              rating={rating}
+              sessionAlias={agenda?.sessionAlias}
+              attendeeId={attendeeId}
+              eventId={id}
+              reviews={reviews}
+              engagementsSettings={engagementsSettings}
+              isSent={isSent}
+              setSent={setSent}
+            />
+          ) : (
+            <div className="w-full flex flex-col p-6 items-start justify-start gap-y-2">
+              <h3 className="text-base sm:text-lg font-semibold">
+                How would you rate this session?
+              </h3>
+              <div className="w-[80%] mx-auto space-y-2">
+                <div className="grid text-gray-500 grid-cols-5 gap-3 w-full">
+                  {[1, 2, 3, 4, 5]?.map((v, index) => (
+                    <button
+                      onClick={() => setRating(index + 1)}
+                      key={v}
+                      className={cn(index + 1 <= rating && "text-basePrimary")}
+                    >
+                      {index + 1 <= rating ? (
+                        <StarFullOutline size={40} />
+                      ) : (
+                        <Star size={40} />
+                      )}
+                    </button>
+                  ))}
+                </div>
+                <div className="w-full grid grid-cols-2 items-center text-gray-500">
+                  <p className="text-xs flex item-start justify-start">Bad</p>
+                  <p className="text-xs flex items-end justify-end">
+                    Excellent
                   </p>
                 </div>
-              </Link>
-            ))}
+              </div>
+            </div>
+          )}
         </div>
-      </CollapsibleWidget>
+      )}
+
+      {active === 3 && (
+        <>
+          {agenda?.engagementAlias ? (
+            <iframe
+              width="100%"
+              height="550"
+              style={{ border: "none", borderRadius: "4px" }}
+              src={
+                agenda?.engagementType === "form"
+                  ? `${window.location.origin}/engagements/${agenda?.eventAlias}/form/${agenda?.engagementAlias}`
+                  : `${window.location.origin}/${agenda?.engagementType}/${agenda?.eventAlias}/present/${agenda?.engagementAlias}`
+              }
+              className="w-full h-[550px]"
+            ></iframe>
+          ) : (
+            <div className="my-6 font-semibold">
+              You did not connect any engagement
+            </div>
+          )}
+        </>
+      )}
+      {/** collapsible widgets */}
+      {active === 1 && (
+        <>
+          <CollapsibleWidget
+            title="Speakers"
+            session={agenda}
+            isNotAttendee={isIdPresent || isOrganizer}
+            event={event}
+            refetch={refetch}
+          >
+            <div className="w-full px-3 py-4 grid  grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 items-center gap-4">
+              {Array.isArray(agenda?.sessionSpeakers) &&
+                agenda?.sessionSpeakers?.length === 0 && (
+                  <div className="w-full col-span-full h-[200px] flex items-center justify-center">
+                    <p className="font-semibold">No Speaker</p>
+                  </div>
+                )}
+              {Array.isArray(agenda?.sessionSpeakers) &&
+                agenda?.sessionSpeakers.map((attendee, index) => (
+                  <BoothStaffWidget
+                    company={attendee?.organization ?? ""}
+                    image={attendee?.profilePicture || null}
+                    name={`${attendee?.firstName} ${attendee?.lastName}`}
+                    profession={attendee?.jobTitle ?? ""}
+                    email={attendee?.email ?? ""}
+                    key={index}
+                  />
+                ))}
+            </div>
+          </CollapsibleWidget>
+          <CollapsibleWidget
+            title="Moderator"
+            session={agenda}
+            isNotAttendee={isIdPresent || isOrganizer}
+            event={event}
+            refetch={refetch}
+          >
+            <div className="w-full px-3 py-4 grid  grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 items-center gap-4">
+              {Array.isArray(agenda?.sessionModerators) &&
+                agenda?.sessionModerators?.length === 0 && (
+                  <div className="w-full col-span-full h-[200px] flex items-center justify-center">
+                    <p className="font-semibold">No Moderator</p>
+                  </div>
+                )}
+              {Array.isArray(agenda?.sessionModerators) &&
+                agenda?.sessionModerators.map((attendee, index) => (
+                  <BoothStaffWidget
+                    company={attendee?.organization ?? ""}
+                    image={attendee?.profilePicture || null}
+                    name={`${attendee?.firstName} ${attendee?.lastName}`}
+                    profession={attendee?.jobTitle ?? ""}
+                    email={attendee?.email ?? ""}
+                    key={index}
+                  />
+                ))}
+            </div>
+          </CollapsibleWidget>
+          <CollapsibleWidget
+            title="Sponsors"
+            session={agenda}
+            event={event}
+            isNotAttendee={isIdPresent || isOrganizer}
+            refetch={refetch}
+          >
+            <div className="w-full px-3 py-4 grid  grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 items-center gap-4">
+              {Array.isArray(agenda?.sessionSponsors) &&
+                agenda?.sessionSponsors?.length === 0 && (
+                  <div className="w-full col-span-full h-[200px] flex items-center justify-center">
+                    <p className="font-semibold">No Sponsor</p>
+                  </div>
+                )}
+              {Array.isArray(agenda?.sessionSponsors) &&
+                agenda?.sessionSponsors.map((sponsor) => (
+                  <Image
+                    src={sponsor?.companyLogo ?? ""}
+                    alt="sponsor"
+                    width={200}
+                    height={100}
+                    className=" w-[100px] object-contain h-[40px]"
+                  />
+                ))}
+            </div>
+          </CollapsibleWidget>
+          <CollapsibleWidget
+            title="File"
+            session={agenda}
+            isNotAttendee={isIdPresent || isOrganizer}
+            event={event}
+            refetch={refetch}
+          >
+            <div className="w-full px-3 py-4 grid  grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 items-center gap-4">
+              {Array.isArray(agenda?.sessionFiles) &&
+                agenda?.sessionFiles?.length === 0 && (
+                  <div className="w-full col-span-full h-[200px] flex items-center justify-center">
+                    <p className="font-semibold">No File</p>
+                  </div>
+                )}
+              {Array.isArray(agenda?.sessionFiles) &&
+                agenda?.sessionFiles.map((item) => (
+                  <Link
+                    target="_blank"
+                    href={item?.file}
+                    key={item?.id}
+                    className="w-full group border relative rounded-lg p-3 flex items-start justify-start gap-x-2"
+                  >
+                    <FilePdf size={25} className="text-red-500" />
+                    <div className="space-y-1 w-full">
+                      <p className="text-[13px] w-full text-ellipsis whitespace-nowrap overflow-hidden sm:text-sm text-gray-500">
+                        {item?.name}
+                      </p>
+                      <p className="text-[11px] w-full sm:text-xs text-gray-400">
+                        {item?.size}
+                      </p>
+                    </div>
+                  </Link>
+                ))}
+            </div>
+          </CollapsibleWidget>
+        </>
+      )}
     </div>
   );
 }

@@ -82,6 +82,7 @@ export default function PaymentComponent({
     orgId
   );
 
+
   async function handleSuccess(reference: any) {
     const isCreating = decodeURIComponent(isCreate!);
     const redirect = decodeURIComponent(redirectUrl!);
@@ -123,7 +124,7 @@ export default function PaymentComponent({
   }
 
   function removeWhitespace(currency: string): string {
-    return currency.trim(); // Removes leading and trailing whitespace
+    return currency?.trim(); // Removes leading and trailing whitespace
   }
   //paystack props
   const config = paymentConfig({

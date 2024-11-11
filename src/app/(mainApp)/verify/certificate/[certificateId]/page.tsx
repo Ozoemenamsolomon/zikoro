@@ -21,7 +21,7 @@ import { replaceSpecialText } from "@/utils/helpers";
 import { Editor, Frame } from "@craftjs/core";
 import { toast } from "@/components/ui/use-toast";
 import lz from "lzutf8";
-import { useToPng } from "@hugocxl/react-to-image";
+import { useToPng, useToSvg } from "@hugocxl/react-to-image";
 import {
   FacebookIcon,
   InstagramIcon,
@@ -52,6 +52,22 @@ const style = {
 };
 
 const Page = ({ params }: { params: { certificateId: string } }) => {
+  function enforceDesktopView() {
+    if (window.innerWidth < 1024) {
+      document
+        .querySelector("meta[name=viewport]")
+        .setAttribute("content", "width=1024");
+    }
+  }
+
+  useEffect(() => {
+    enforceDesktopView();
+    window.addEventListener("resize", enforceDesktopView);
+
+    return () => {
+      window.removeEventListener("resize", enforceDesktopView);
+    };
+  }, []);
   const certificateRef = useRef<HTMLDivElement | null>(null);
 
   const [isShareDropDown, showShareDropDown] = useState(false);
@@ -71,29 +87,46 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
     verifyAttendeeCertificate,
   } = useVerifyAttendeeCertificate({ certificateId });
 
-  const handleDownloadPdf = async () => {
-    const element = certificateRef.current;
-    if (!element) return;
-    const canvas = await html2canvas(element);
-    const data = canvas.toDataURL("image/png");
+  // const handleDownloadPdf = async () => {
+  //   const element = certificateRef.current;
+  //   if (!element) return;
+  //   const canvas = await html2canvas(element);
+  //   const data = canvas.toDataURL("image/png");
 
-    const pdf = new jsPDF();
-    const imgProperties = pdf.getImageProperties(data);
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (imgProperties.height * pdfWidth) / imgProperties.width;
+  //   const pdf = new jsPDF();
+  //   const imgProperties = pdf.getImageProperties(data);
+  //   const pdfWidth = pdf.internal.pageSize.getWidth();
+  //   const pdfHeight = (imgProperties.height * pdfWidth) / imgProperties.width;
 
-    pdf.addImage(data, "PNG", 0, 0, pdfWidth, pdfHeight);
-    pdf.save(
-      `${
-        certificate?.attendee.firstName + "_" + certificate?.attendee.lastName
-      }_${certificate?.CertificateName}.pdf`
-    );
-  };
+  //   pdf.addImage(data, "PNG", 0, 0, pdfWidth, pdfHeight);
+  //   pdf.save(
+  //     `${
+  //       certificate?.attendee.firstName + "_" + certificate?.attendee.lastName
+  //     }_${certificate?.CertificateName}.pdf`
+  //   );
+  // };
+
+  const [data2, handleDownloadPdf] = useToPng<HTMLDivElement>({
+    selector: "#certificate",
+    onSuccess: (data) => {
+      if (!certificate) return;
+      const pdf = new jsPDF();
+      const imgProperties = pdf.getImageProperties(data);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (imgProperties.height * pdfWidth) / imgProperties.width;
+
+      pdf.addImage(data, "PNG", 0, 0, pdfWidth, pdfHeight);
+      pdf.save(
+        `${
+          certificate?.attendee.firstName + "_" + certificate?.attendee.lastName
+        }_${certificate?.CertificateName}.pdf`
+      );
+    },
+  });
 
   const [data, download] = useToPng<HTMLDivElement>({
     selector: "#certificate",
     onSuccess: (data) => {
-      
       if (!certificate) return;
       const link = document.createElement("a");
       link.download = `${
@@ -104,15 +137,28 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
     },
   });
 
+  const [data3, downloadSVG] = useToSvg<HTMLDivElement>({
+    selector: "#certificate",
+    onSuccess: (data) => {
+      if (!certificate) return;
+      const link = document.createElement("a");
+      link.download = `${
+        certificate?.attendee.firstName + "_" + certificate?.attendee.lastName
+      }_${certificate?.CertificateName}.svg`;
+      link.href = data;
+      link.click();
+    },
+  });
+
+  console.log(data, "data");
+
   const hashRef = useRef<string | undefined>();
 
   useEffect(() => {
     if (isLoading) {
-      
       return;
     }
 
-    
     if (!certificate) {
       toast({
         variant: "destructive",
@@ -148,13 +194,10 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
     //   return; // Exit early after showing the toast
     // }
 
-    
-
     if (
       certificate?.originalCertificate.certficateDetails &&
       certificate?.originalCertificate.certficateDetails.craftHash
     ) {
-      
       const initData = lz.decompress(
         lz.decodeBase64(
           certificate?.originalCertificate.certficateDetails.craftHash
@@ -169,15 +212,16 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
           organization: certificate.originalCertificate.event.organization,
         })
       );
-      
     }
-  }, [isLoading]);
+  }, [isLoading, certificate]);
+
+  const shareText = `Excited to share my ${certificate?.CertificateName} certificate from ${certificate?.originalCertificate.event.eventTitle} with you! Check it out here: ${window.location.href}`;
 
   return (
-    <section className="min-h-screen flex flex-col-reverse md:flex-row justify-center gap-6 pt-20 pb-8">
+    <section className="min-h-screen flex flex-col-reverse md:flex-row justify-center gap-6 pt-20 pb-8 bg-[#F9FAFF]">
       {!isLoading ? (
         <>
-          <div className="flex-1 flex flex-col-reverse md:flex-col items-center gap-4">
+          <div className="flex-[60%] flex flex-col-reverse md:flex-col items-center gap-4 px-8">
             <div className="flex gap-2 w-3/4">
               <Button onClick={handleDownloadPdf} className="bg-basePrimary">
                 Download PDF
@@ -185,127 +229,101 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
               <Button
                 // onClick={() => exportComponentAsPNG(certificateRef)}
                 onClick={download}
-                className="border-basePrimary border-2 text-basePrimary bg-transparent"
+                className="border-basePrimary border-2 text-basePrimary bg-transparent hover:bg-basePrimary/20"
               >
                 Download PNG
               </Button>
-              <Button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggleShareDropDown();
-                }}
-                className="border-basePrimary border-2 text-basePrimary bg-transparent"
+              {/* <Button
+                // onClick={() => exportComponentAsPNG(certificateRef)}
+                onClick={downloadSVG}
+                className="border-basePrimary border-2 text-basePrimary bg-transparent hover:bg-basePrimary/20"
               >
-                <svg
-                  stroke="currentColor"
-                  fill="currentColor"
-                  strokeWidth={0}
-                  viewBox="0 0 24 24"
-                  height="1em"
-                  width="1em"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <circle fill="none" cx="17.5" cy="18.5" r="1.5" />
-                  <circle fill="none" cx="5.5" cy="11.5" r="1.5" />
-                  <circle fill="none" cx="17.5" cy="5.5" r="1.5" />
-                  <path d="M5.5,15c0.91,0,1.733-0.358,2.357-0.93l6.26,3.577C14.048,17.922,14,18.204,14,18.5c0,1.93,1.57,3.5,3.5,3.5 s3.5-1.57,3.5-3.5S19.43,15,17.5,15c-0.91,0-1.733,0.358-2.357,0.93l-6.26-3.577c0.063-0.247,0.103-0.502,0.108-0.768l6.151-3.515 C15.767,8.642,16.59,9,17.5,9C19.43,9,21,7.43,21,5.5S19.43,2,17.5,2S14,3.57,14,5.5c0,0.296,0.048,0.578,0.117,0.853L8.433,9.602 C7.808,8.64,6.729,8,5.5,8C3.57,8,2,9.57,2,11.5S3.57,15,5.5,15z M17.5,17c0.827,0,1.5,0.673,1.5,1.5S18.327,20,17.5,20 S16,19.327,16,18.5S16.673,17,17.5,17z M17.5,4C18.327,4,19,4.673,19,5.5S18.327,7,17.5,7S16,6.327,16,5.5S16.673,4,17.5,4z M5.5,10C6.327,10,7,10.673,7,11.5S6.327,13,5.5,13S4,12.327,4,11.5S4.673,10,5.5,10z" />
-                </svg>
-                <h3 className="font-medium ">Share this Event</h3>
-                {isShareDropDown && (
-                  <ActionModal
-                    close={toggleShareDropDown}
-                    url={certificate?.certificateURL}
-                  />
-                )}
-              </Button>
-              {/* <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button className="border-basePrimary border-2 text-basePrimary bg-transparent flex gap-2 items-center">
-                    <svg
-                      stroke="currentColor"
-                      fill="currentColor"
-                      strokeWidth={0}
-                      viewBox="0 0 24 24"
-                      height="1em"
-                      width="1em"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <circle fill="none" cx="17.5" cy="18.5" r="1.5" />
-                      <circle fill="none" cx="5.5" cy="11.5" r="1.5" />
-                      <circle fill="none" cx="17.5" cy="5.5" r="1.5" />
-                      <path d="M5.5,15c0.91,0,1.733-0.358,2.357-0.93l6.26,3.577C14.048,17.922,14,18.204,14,18.5c0,1.93,1.57,3.5,3.5,3.5 s3.5-1.57,3.5-3.5S19.43,15,17.5,15c-0.91,0-1.733,0.358-2.357,0.93l-6.26-3.577c0.063-0.247,0.103-0.502,0.108-0.768l6.151-3.515 C15.767,8.642,16.59,9,17.5,9C19.43,9,21,7.43,21,5.5S19.43,2,17.5,2S14,3.57,14,5.5c0,0.296,0.048,0.578,0.117,0.853L8.433,9.602 C7.808,8.64,6.729,8,5.5,8C3.57,8,2,9.57,2,11.5S3.57,15,5.5,15z M17.5,17c0.827,0,1.5,0.673,1.5,1.5S18.327,20,17.5,20 S16,19.327,16,18.5S16.673,17,17.5,17z M17.5,4C18.327,4,19,4.673,19,5.5S18.327,7,17.5,7S16,6.327,16,5.5S16.673,4,17.5,4z M5.5,10C6.327,10,7,10.673,7,11.5S6.327,13,5.5,13S4,12.327,4,11.5S4.673,10,5.5,10z" />
-                    </svg>
-                    <span>Share</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <ShareSocial
-                    url={`http:localhost:3000/verify/${certificateId}`}
-                    socialTypes={[
-                      "facebook",
-                      "twitter",
-                      "whatsapp",
-                      "linkedin",
-                    ]}
-                    style={style}
-                  />
-                </DropdownMenuContent>
-              </DropdownMenu> */}
-            </div>
-            <Editor
-              enabled={false}
-              resolver={{
-                Text,
-                Container,
-                ImageElement,
-                QRCode,
-                CertificateQRCode,
-              }}
-            >
-              <div className="relative px-4">
-                <div className="w-full h-full absolute bg-transparent z-[100]" />
-                <div
-                  className="relative h-fit space-y-6 text-black bg-no-repeat"
-                  style={{
-                    backgroundRepeat: "no-repeat",
-                    backgroundSize: "100% 100%",
-                    backgroundImage: !!certificate?.originalCertificate
-                      ?.certficateDetails?.background
-                      ? `url(${certificate?.originalCertificate?.certficateDetails?.background})`
-                      : "",
-                    backgroundColor: "#fff",
-                    height: "750px",
+                Download SVG
+              </Button> */}
+              <div className="relative">
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleShareDropDown();
                   }}
-                  id="certificate"
+                  className="border-basePrimary border-2 text-basePrimary bg-transparent hover:bg-basePrimary/20"
                 >
-                  {!isLoading ? (
-                    <>
-                      {hashRef.current && (
-                        <Frame data={hashRef.current}></Frame>
-                      )}
-                    </>
-                  ) : (
-                    <div className="h-full w-full flex items-center justify-center">
-                      <div className="animate-spin">
-                        <svg
-                          stroke="currentColor"
-                          fill="currentColor"
-                          strokeWidth={0}
-                          viewBox="0 0 1024 1024"
-                          height="2.5em"
-                          width="2.5em"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path d="M512 1024c-69.1 0-136.2-13.5-199.3-40.2C251.7 958 197 921 150 874c-47-47-84-101.7-109.8-162.7C13.5 648.2 0 581.1 0 512c0-19.9 16.1-36 36-36s36 16.1 36 36c0 59.4 11.6 117 34.6 171.3 22.2 52.4 53.9 99.5 94.3 139.9 40.4 40.4 87.5 72.2 139.9 94.3C395 940.4 452.6 952 512 952c59.4 0 117-11.6 171.3-34.6 52.4-22.2 99.5-53.9 139.9-94.3 40.4-40.4 72.2-87.5 94.3-139.9C940.4 629 952 571.4 952 512c0-59.4-11.6-117-34.6-171.3a440.45 440.45 0 0 0-94.3-139.9 437.71 437.71 0 0 0-139.9-94.3C629 83.6 571.4 72 512 72c-19.9 0-36-16.1-36-36s16.1-36 36-36c69.1 0 136.2 13.5 199.3 40.2C772.3 66 827 103 874 150c47 47 83.9 101.8 109.7 162.7 26.7 63.1 40.2 130.2 40.2 199.3s-13.5 136.2-40.2 199.3C958 772.3 921 827 874 874c-47 47-101.8 83.9-162.7 109.7-63.1 26.8-130.2 40.3-199.3 40.3z" />
-                        </svg>
-                      </div>
-                    </div>
+                  <svg
+                    stroke="currentColor"
+                    fill="currentColor"
+                    strokeWidth={0}
+                    viewBox="0 0 24 24"
+                    height="1em"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle fill="none" cx="17.5" cy="18.5" r="1.5" />
+                    <circle fill="none" cx="5.5" cy="11.5" r="1.5" />
+                    <circle fill="none" cx="17.5" cy="5.5" r="1.5" />
+                    <path d="M5.5,15c0.91,0,1.733-0.358,2.357-0.93l6.26,3.577C14.048,17.922,14,18.204,14,18.5c0,1.93,1.57,3.5,3.5,3.5 s3.5-1.57,3.5-3.5S19.43,15,17.5,15c-0.91,0-1.733,0.358-2.357,0.93l-6.26-3.577c0.063-0.247,0.103-0.502,0.108-0.768l6.151-3.515 C15.767,8.642,16.59,9,17.5,9C19.43,9,21,7.43,21,5.5S19.43,2,17.5,2S14,3.57,14,5.5c0,0.296,0.048,0.578,0.117,0.853L8.433,9.602 C7.808,8.64,6.729,8,5.5,8C3.57,8,2,9.57,2,11.5S3.57,15,5.5,15z M17.5,17c0.827,0,1.5,0.673,1.5,1.5S18.327,20,17.5,20 S16,19.327,16,18.5S16.673,17,17.5,17z M17.5,4C18.327,4,19,4.673,19,5.5S18.327,7,17.5,7S16,6.327,16,5.5S16.673,4,17.5,4z M5.5,10C6.327,10,7,10.673,7,11.5S6.327,13,5.5,13S4,12.327,4,11.5S4.673,10,5.5,10z" />
+                  </svg>
+                  <h3 className="font-medium ">Share this Certificate</h3>
+                  {isShareDropDown && (
+                    <ActionModal
+                      close={toggleShareDropDown}
+                      url={certificate?.certificateURL}
+                      shareText={shareText}
+                    />
                   )}
+                </Button>
+              </div>
+            </div>
+            {hashRef.current ? (
+              <Editor
+                enabled={false}
+                resolver={{
+                  Text,
+                  Container,
+                  ImageElement,
+                  QRCode,
+                  CertificateQRCode,
+                }}
+              >
+                <div className="relative px-4 w-full" ref={certificateRef}>
+                  <div className="inset-0 absolute bg-transparent z-[100]" />
+                  <div
+                    className="relative space-y-6 text-black bg-no-repeat mx-auto"
+                    style={{
+                      backgroundRepeat: "no-repeat",
+                      backgroundSize: "100% 100%",
+                      backgroundImage: !!certificate?.originalCertificate
+                        ?.certficateDetails?.background
+                        ? `url(${certificate?.originalCertificate?.certficateDetails?.background})`
+                        : "",
+                      backgroundColor: "#fff",
+                      height: "11.69in",
+                      width: "8.27in",
+                    }}
+                    id="certificate"
+                  >
+                    <Frame data={hashRef.current}></Frame>
+                  </div>
+                </div>
+              </Editor>
+            ) : (
+              <div className="h-full w-full flex items-center justify-center">
+                <div className="animate-spin">
+                  <svg
+                    stroke="currentColor"
+                    fill="currentColor"
+                    strokeWidth={0}
+                    viewBox="0 0 1024 1024"
+                    height="2.5em"
+                    width="2.5em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M512 1024c-69.1 0-136.2-13.5-199.3-40.2C251.7 958 197 921 150 874c-47-47-84-101.7-109.8-162.7C13.5 648.2 0 581.1 0 512c0-19.9 16.1-36 36-36s36 16.1 36 36c0 59.4 11.6 117 34.6 171.3 22.2 52.4 53.9 99.5 94.3 139.9 40.4 40.4 87.5 72.2 139.9 94.3C395 940.4 452.6 952 512 952c59.4 0 117-11.6 171.3-34.6 52.4-22.2 99.5-53.9 139.9-94.3 40.4-40.4 72.2-87.5 94.3-139.9C940.4 629 952 571.4 952 512c0-59.4-11.6-117-34.6-171.3a440.45 440.45 0 0 0-94.3-139.9 437.71 437.71 0 0 0-139.9-94.3C629 83.6 571.4 72 512 72c-19.9 0-36-16.1-36-36s16.1-36 36-36c69.1 0 136.2 13.5 199.3 40.2C772.3 66 827 103 874 150c47 47 83.9 101.8 109.7 162.7 26.7 63.1 40.2 130.2 40.2 199.3s-13.5 136.2-40.2 199.3C958 772.3 921 827 874 874c-47 47-101.8 83.9-162.7 109.7-63.1 26.8-130.2 40.3-199.3 40.3z" />
+                  </svg>
                 </div>
               </div>
-            </Editor>
+            )}
           </div>
-          <div className="flex-1 flex flex-col justify-around gap-12 px-2">
+          <div className="flex-[40%] flex flex-col gap-8 px-2">
             <div className="flex flex-col gap-4">
               <div>
                 <svg
@@ -373,15 +391,11 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
               <h2 className="text-gray-800 text-xl font-medium">
                 About Zikoro
               </h2>
+
               <p className="text-gray-700 text-sm md:text-base">
-                Our platform aims to make event organization easy for event
-                organizers, regardless of the event's size, while providing
-                attendees with a smooth experience beyond just attending.{" "}
-              </p>
-              <p className="text-gray-700 text-sm md:text-base">
-                At Zikoro, we empower event organizers to create and distribute
-                certificates to attendees of conferences, workshops, and
-                seminars, enabling them to define their award criteria.
+                Zikoro credentials empower event organizers to create and
+                distribute certificates to attendees of conferences, workshops,
+                and seminars, enabling them to define their award criteria.
               </p>
             </div>
             <div className="space-y-4 w-3/4">
@@ -424,15 +438,18 @@ export default Page;
 function ActionModal({
   close,
   url,
+  shareText,
 }: {
   url?: string;
   instagram?: string;
   close: () => void;
+  shareText: string;
 }) {
+  const linkToCertificate = window.location.href;
   return (
     <>
-      <div className="absolute left-0 top-10  w-48">
-        <Button className="fixed inset-0 bg-none h-full w-full z-[100"></Button>
+      <div className="absolute left-0 top-10 w-48 z-[1000]">
+        {/* <Button className="fixed inset-0 bg-none h-full w-full z-[100]"></Button> */}
         <div
           role="button"
           onClick={(e) => {
@@ -443,20 +460,26 @@ function ActionModal({
           <button
             onClick={() =>
               window.open(
-                `https://twitter.com/intent/tweet?url=${url}`,
+                `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+                  shareText
+                )}`,
                 "_blank"
               )
             }
-            className="items-center flex px-2  h-10 w-full gap-x-2 justify-start text-xs"
+            className="items-center flex px-2 h-10 w-full gap-x-2 justify-start text-xs"
           >
             <TwitterIcon />
             <span>X</span>
           </button>
 
-          <LinkedinShareButton url={url}>
+          <LinkedinShareButton
+            url={`https://www.linkedin.com/shareArticle?mini=true&title=${encodeURIComponent(
+              shareText
+            )}`}
+          >
             <button
               className={
-                "items-center h-10 gap-x-2 px-2 flex justify-start w-full  text-xs"
+                "items-center h-10 gap-x-2 px-2 flex justify-start w-full text-xs"
               }
             >
               <LinkedinIcon />
@@ -466,27 +489,19 @@ function ActionModal({
           <button
             onClick={() =>
               window.open(
-                `https://www.facebook.com/sharer/sharer.php?u=${url}`,
+                `https://www.facebook.com/sharer/sharer.php?quote=${encodeURIComponent(
+                  shareText
+                )}`,
                 "_blank"
               )
             }
             className={
-              "items-center h-10 gap-x-2 px-2 flex justify-start w-full  text-xs"
+              "items-center h-10 gap-x-2 px-2 flex justify-start w-full text-xs"
             }
           >
             <FacebookIcon />
             <span>Facebook</span>
           </button>
-          <Link
-            target="_blank"
-            href={""}
-            className={
-              "items-center hidden h-10 gap-x-2 px-2  justify-start w-full  text-xs"
-            }
-          >
-            <InstagramIcon />
-            <span>Instagram</span>
-          </Link>
         </div>
       </div>
     </>

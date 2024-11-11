@@ -1,11 +1,9 @@
 "use client";
 import Attendee from "@/components/Attendee";
 import Filter from "@/components/Filter";
-import CertificateDialog from "@/components/moreOptionDialog/certificateDialog";
 import ChangeAttendeeType from "@/components/moreOptionDialog/changeAttendeeType";
 import CheckinMultiple from "@/components/moreOptionDialog/checkinMultiple";
 import ImportAttendees from "@/components/moreOptionDialog/importAttendees";
-import PrintBadges from "@/components/moreOptionDialog/printBadges";
 import {
   Dialog,
   DialogContent,
@@ -39,11 +37,13 @@ import * as XLSX from "xlsx";
 import { TAttendeeTags } from "@/types/tags";
 import { TFavouriteContact } from "@/types/favourites";
 import { TFilter } from "@/types/filter";
-import { Event, TUser } from "@/types";
+import { Event } from "@/types";
 import { eachDayOfInterval, format, isSameDay } from "date-fns";
 import useUserStore from "@/store/globalUserStore";
 import ArchiveAttendee from "@/components/moreOptionDialog/archiveAttendee";
 import { ContactRequest } from "@/types/contacts";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import CertificateDialog from "@/components/moreOptionDialog/certificateDialog";
 
 type TSortorder = "asc" | "desc" | "none";
 
@@ -155,10 +155,10 @@ const moreOptions: TMoreOptions[] = [
   //   label: "Print Badges",
   //   Component: PrintBadges,
   // },
-  // {
-  //   label: "Certificates",
-  //   Component: CertificateDialog,
-  // },
+  {
+    label: "Certificates",
+    Component: CertificateDialog,
+  },
   {
     label: "Import Attendees",
     Component: ImportAttendees,
@@ -168,6 +168,8 @@ const moreOptions: TMoreOptions[] = [
     Component: ArchiveAttendee,
   },
 ];
+
+const supabase = createClientComponentClient();
 
 export default function FirstSection({
   onOpen,
@@ -250,6 +252,51 @@ export default function FirstSection({
   useEffect(() => {
     calculateAndSetMaxHeight(divRef);
   }, [mappedAttendees]);
+
+  const [pendingContacts, setPendingContacts] = useState<ContactRequest[]>(
+    contactRequests.filter(
+      ({ status, receiverUserEmail }) =>
+        status === "pending" && receiverUserEmail === user?.userEmail
+    )
+  );
+
+  function createBeep() {
+    if (typeof window !== "undefined") {
+      const audio = new Audio("/audio/beep.wav");
+      //  audio.src = "audio/AylexCinematic.mp3";
+
+      audio.volume = 0.2;
+
+      audio.play();
+    }
+  }
+
+  useEffect(() => {
+    const notificationChannel = supabase
+      .channel("contactRequest")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "contactRequest",
+          filter: `receiverUserEmail=eq.${user?.userEmail}`,
+        },
+        (payload) => {
+          const contactRequest = payload.new as ContactRequest;
+
+          console.log(contactRequest, "new contact request");
+
+          setPendingContacts([...pendingContacts, contactRequest]);
+          createBeep();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(notificationChannel);
+    };
+  }, []);
 
   // useEffect(() => {
   //   if (isLoading) return;
@@ -380,15 +427,30 @@ export default function FirstSection({
             Attendees{" "}
           </h1>
           {contactRequests.length > 0 && (
-            <span className="bg-basePrimary/20 text-basePrimary text-sm p-1.5 flex items-center justify-center rounded-xl">
-              {contactRequests.filter(
-                (contactRequest) => contactRequest.status === "accepted"
-              ).length > 0
-                ? contactRequests.filter(
-                    (contactRequest) => contactRequest.status === "accepted"
-                  ).length + "  contacts exchanged"
-                : ""}
-            </span>
+            <>
+              {pendingContacts.length > 0 && (
+                <div className="relative inline-block">
+                  <span className="absolute top-0 right-0 bg-red-500 text-white text-xs font-semibold w-5 h-5 rounded-full flex items-center justify-center">
+                    {pendingContacts.length}
+                  </span>
+                  <span className="bg-basePrimary/20 text-basePrimary text-sm p-1.5 rounded-xl">
+                    Pending Contacts
+                  </span>
+                </div>
+              )}
+
+              <span className="bg-basePrimary/20 text-basePrimary text-sm p-1.5 flex items-center justify-center rounded-xl">
+                {contactRequests.filter(
+                  (contactRequest) => contactRequest.status === "accepted"
+                ).length > 0
+                  ? `${
+                      contactRequests.filter(
+                        (contactRequest) => contactRequest.status === "accepted"
+                      ).length
+                    } contacts exchanged`
+                  : ""}
+              </span>
+            </>
           )}
         </div>
         {user && String(event?.createdBy) === String(user.id) && (
@@ -641,6 +703,7 @@ export default function FirstSection({
                 toggleFavourites={toggleFavourites}
                 event={event}
                 user={user}
+                contactRequests={contactRequests}
               />
             ))}
           {!isLoading && (

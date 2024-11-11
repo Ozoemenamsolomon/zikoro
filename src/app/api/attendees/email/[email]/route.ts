@@ -1,7 +1,7 @@
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
-import { convertToICSFormat, generateQRCode } from "../payment/route";
+// import { convertToICSFormat, generateQRCode } from "../payment/route";
 import { Event, TOrganization } from "@/types";
 import { uploadFile } from "@/utils";
 import { format } from "date-fns";
