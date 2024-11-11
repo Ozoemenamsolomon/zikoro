@@ -37,6 +37,8 @@ export default function AdminEvents({searchParams:{e}}) {
     }
   }, [events, e]);
 
+  console.log(e, events?.length)
+
   return (
     <EventLayout query={e}>
       {loading && (
@@ -100,7 +102,7 @@ function EventCard({
       user: userData?.userEmail,
     };
 
-    const { organization, attendees, ...remainingData }: any = event;
+    const { organization, ...remainingData }: any = event;
     await update({
       payload: {
         ...remainingData,
