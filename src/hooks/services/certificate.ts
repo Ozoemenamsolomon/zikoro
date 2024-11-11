@@ -501,7 +501,7 @@ export const useVerifyAttendeeCertificate = ({
 
   useEffect(() => {
     verifyAttendeeCertificate();
-  }, []);
+  }, [certificateId]);
 
   return { attendeeCertificate, isLoading, error, verifyAttendeeCertificate };
 };
