@@ -30,11 +30,12 @@ export const AttendeeSchema = z.object({
       );
 
       return (
-        value &&
-        !!COUNTRY_CODE.find(
-          ({ dial_code }) =>
-            dial_code === "+" + value.substring(0, dial_code.length - 1)
-        )
+        !value ||
+        (value &&
+          !!COUNTRY_CODE.find(
+            ({ dial_code }) =>
+              dial_code === "+" + value.substring(0, dial_code.length - 1)
+          ))
       );
     },
     {
@@ -54,11 +55,12 @@ export const AttendeeSchema = z.object({
         );
 
         return (
-          value &&
-          !!COUNTRY_CODE.find(
-            ({ dial_code }) =>
-              dial_code === "+" + value.substring(0, dial_code.length - 1)
-          )
+          !value ||
+          (value &&
+            !!COUNTRY_CODE.find(
+              ({ dial_code }) =>
+                dial_code === "+" + value.substring(0, dial_code.length - 1)
+            ))
         );
       },
       {
