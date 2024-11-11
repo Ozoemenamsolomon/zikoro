@@ -158,8 +158,8 @@ return generateAlias()
               control={form.control}
               name="title"
               render={({ field }) => (
-                <FormItem>
-                  <FormControl>
+                <FormItem className="w-full">
+                  <FormControl className="w-full">
                     <Input
                       {...form.register("title")}
                       className="bg-transparent border-none h-14 text-2xl placeholder:text-gray-500 placeholder:text-2xl"
@@ -173,8 +173,8 @@ return generateAlias()
               control={form.control}
               name="description"
               render={({ field }) => (
-                <FormItem>
-                  <FormControl>
+                <FormItem className="w-full">
+                  <FormControl className="w-full">
                     <Input
                       {...form.register("description")}
                       className="bg-transparent border-none h-11  placeholder:text-gray-500"
