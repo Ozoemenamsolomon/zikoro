@@ -65,7 +65,7 @@ export interface TEngagementFormAnswer {
   }[];
   formResponseAlias: string;
   eventAlias: string;
-  attendeeAlias: string | null;
+  attendeeAlias: string;
   attendeeEmail?: string;
   attendeeId: number | null;
   formEngagementPoints: number | null;
@@ -82,7 +82,9 @@ export interface TFormattedEngagementFormAnswer {
   response?: any;
   formResponseAlias: string;
   eventAlias: string;
-  attendeeAlias: string | null;
+  attendeeAlias: string;
+  attendeeEmail?: string;
+  attendeeId: number | null;
   question: string;
   questionImage?: string | any;
   optionFields: any;
