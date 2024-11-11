@@ -49,7 +49,7 @@ export function useCreateOrgSubscription(
         .from("subscription")
         .insert({
           userId: userId,
-          subscriptionType: plan.trim(),
+          5: plan.trim(),
           amountPayed: totalPriceNum,
           startDate: formattedStartDate,
           expirationDate: formattedExpirationDate,

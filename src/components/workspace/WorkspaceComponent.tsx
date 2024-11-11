@@ -136,37 +136,51 @@ export default function WorkspaceComponent({
   };
 
   useEffect(() => {
-    //fetching event categories
-    // if (eventData) {
-    //   const categories: string[] = eventData
-    //     .map((event) => event.eventCategory)
-    //     .filter((category) => category !== null && category !== undefined);
-    //   setFilterCategories(categories);
-    // }
-
-    if (eventData && searchQuery) {
+    if (eventData) {
       const categories = eventData
-        .filter((event) => event.organization.organizationName === searchQuery) // Filter by the name
+        .filter(
+          (event) =>
+            event.organization.organizationName.toLowerCase() ===
+            searchQuery.toLowerCase()
+        ) // Filter by the name
         .map((event) => event.eventCategory)
         .filter((category) => category !== null && category !== undefined);
-  
+
       setFilterCategories(categories);
     }
     //fetching event location type
     if (eventData) {
-      const filtertype: string[] = eventData.map((event) => event.locationType);
+      const filtertype: string[] = eventData
+        .filter(
+          (event) =>
+            event.organization.organizationName.toLowerCase() ===
+            searchQuery.toLowerCase()
+        ) // Filter by the name
+        .map((event) => event.locationType);
       setFilterLocationType(filtertype);
     }
 
     //fetching event country
     if (eventData) {
-      const country: string[] = eventData.map((event) => event.eventCountry);
+      const country: string[] = eventData
+        .filter(
+          (event) =>
+            event.organization.organizationName.toLowerCase() ===
+            searchQuery.toLowerCase()
+        ) // Filter by the name
+        .map((event) => event.eventCountry);
       setFilterCountry(country);
     }
 
     //fetching event city
     if (eventData) {
-      const cities: string[] = eventData.map((event) => event.eventCity);
+      const cities: string[] = eventData
+        .filter(
+          (event) =>
+            event.organization.organizationName.toLowerCase() ===
+            searchQuery.toLowerCase()
+        ) // Filter by the name
+        .map((event) => event.eventCity);
       setFilterCity(cities);
     }
   }, [eventData, searchQuery]);
@@ -473,7 +487,7 @@ export default function WorkspaceComponent({
 
                     {/* Right */}
                     <div
-                      className={` border-t-[1px] border-gray-200 border-l-[1px] border-r-[1px] w-full lg:w-9/12 py-[3px] ${
+                      className={` border-t-[1px] border-gray-200 border-l-[1px] border-r-[1px]  w-full lg:w-9/12 py-[3px] ${
                         showCategories == "false"
                           ? "flex mx-auto border-t-0"
                           : ""
@@ -482,7 +496,7 @@ export default function WorkspaceComponent({
                       {/* top */}
                       <div className="flex">
                         {showCategories?.toString() === "true" && (
-                          <div className=" px-4 flex w-[950px] items-center overflow-x-auto no-scrollbar py-[25px] gap-x-[10px]  ">
+                          <div className=" px-4 flex w-[950px] items-center overflow-x-auto no-scrollbar py-[25px] lg:min-h-[110px] gap-x-[10px]  ">
                             {filterCategories
                               .filter(
                                 (category, i, self) =>
