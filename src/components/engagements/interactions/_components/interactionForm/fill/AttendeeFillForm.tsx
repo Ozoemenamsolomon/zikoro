@@ -9,7 +9,7 @@ import { useGetData, usePostRequest } from "@/hooks/services/request";
 import {
   TEngagementFormAnswer,
   TEngagementFormQuestion,
-  EngagementsSettings
+  EngagementsSettings,
 } from "@/types/engagements";
 import {
   CheckboxTypeAnswer,
@@ -71,7 +71,7 @@ function AttendeeFillFormComp({
   const { data, isLoading } = useGetData<TEngagementFormQuestion>(
     `/engagements/form/${formId}`
   );
-  const { data: formAnswers} = useGetData<TEngagementFormAnswer[]>(
+  const { data: formAnswers } = useGetData<TEngagementFormAnswer[]>(
     `/engagements/form/answer/${formId}`
   );
   const { data: engagementsSettings } = useGetData<EngagementsSettings>(
@@ -86,7 +86,7 @@ function AttendeeFillFormComp({
     defaultValues: {
       eventAlias: eventId,
       attendeeEmail: attendee?.email,
-     
+
       formResponseAlias: generateAlias(),
       formAlias: formId,
       questions: data?.questions,
@@ -100,9 +100,9 @@ function AttendeeFillFormComp({
   const [currentQuestions, setCurrentQuestion] = useState(fields);
 
   async function onSubmit(values: z.infer<typeof formAnswerSchema>) {
-    //  console.log(values); formEngagementPoints 
+    //  console.log(values); formEngagementPoints
     const formpointsAllocation =
-    engagementsSettings?.pointsAllocation["participate in survey"];
+      engagementsSettings?.pointsAllocation["participate in survey"];
     const { questions, ...restData } = values;
 
     const responses = await Promise.all(
@@ -128,16 +128,19 @@ function AttendeeFillFormComp({
         return item;
       })
     );
-  let payload: Partial<TEngagementFormAnswer> = {
+    let payload: Partial<TEngagementFormAnswer> = {
       ...restData,
-      attendeeAlias:
-      attendeeId || attendee?.attendeeAlias || null,
+      attendeeAlias: attendeeId || attendee?.attendeeAlias || null,
+      attendeeId: attendee?.id ? attendee?.id : null,
       responses,
-
     };
-    if (formpointsAllocation?.status && (attendeeId|| attendee?.attendeeAlias)) {
+    if (
+      formpointsAllocation?.status &&
+      (attendeeId || attendee?.attendeeAlias)
+    ) {
       const filtered = formAnswers?.filter(
-        (answer) => answer?.attendeeAlias === (attendeeId || attendee?.attendeeAlias)
+        (answer) =>
+          answer?.attendeeAlias === (attendeeId || attendee?.attendeeAlias)
       );
       if (filtered && filtered?.length > 0) {
         const sum = filtered?.reduce(
@@ -146,8 +149,7 @@ function AttendeeFillFormComp({
         );
         if (
           sum >=
-          formpointsAllocation?.points *
-          formpointsAllocation?.maxOccurrence
+          formpointsAllocation?.points * formpointsAllocation?.maxOccurrence
         ) {
           payload = payload;
           return;
@@ -192,7 +194,7 @@ function AttendeeFillFormComp({
   }, [data, fields, currentIndexes]);
 
   // console.log(form.getValues());
- // console.log("uiop", currentQuestions);
+  // console.log("uiop", currentQuestions);
 
   useEffect(() => {
     if (data) {
@@ -234,7 +236,9 @@ function AttendeeFillFormComp({
         <h2
           style={{
             fontSize: data?.formSettings?.titleFontSize + "px" || "30px",
-            lineHeight:(1.3 * parseInt(data?.formSettings?.titleFontSize)) + "px" || "40px",
+            lineHeight:
+              1.3 * parseInt(data?.formSettings?.titleFontSize) + "px" ||
+              "40px",
           }}
           className="text-lg mb-3 sm:text-xl lg:text-2xl"
         >
