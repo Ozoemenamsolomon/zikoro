@@ -1,71 +1,59 @@
 "use client";
 
-import { Bag } from "styled-icons/bootstrap";
-import { Handshake } from "styled-icons/fa-regular";
 import { useRouter } from "next/navigation";
-import {
-  MarketingIcon,
-  AttendeesIcon,
-  MobileAgendaIcon,
-  RewardIcon,
-  LeaderBoardIcon,
-  DiscussionIcon,
-  SocialWallIcon,
-  UserPointIcon,
-  ImageIcon,
-  SpeakerIcon,
-  StampCardIcon,
-  MapIcon,
-  FileIcon,
-  ResourcesIcon,
-  PollIcon,
-  QAIcon,
-} from "@/constants";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import Slider from "react-slick";
-import { Quiz } from "styled-icons/material";
+
+import { cn } from "@/lib";
+import { InlineIcon } from "@iconify/react";
+import { useState } from "react";
+import { EventSpeakers } from "@/components/singleEventHome/_components/EventSpeaker";
+import { TAttendee } from "@/types";
 
 export function EventDetailMobileTab({
-  changeActiveState,
   eventId,
+  className,
+  formattedAttendees
 }: {
-  changeActiveState: (n: number) => void;
   eventId: string;
+  className?: string;
+  formattedAttendees: TAttendee[]
 }) {
   const router = useRouter();
+  const [activeState, setActiveState] = useState(1);
 
-  const settings = {
-    dots: true,
-    infinite: true,
-    autoplay: false,
-    fade: false,
-    speed: 400,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-  };
+  function changeMajorActiveState(n: number) {
+    setActiveState(n);
+  }
+
   return (
     <div className="w-full pb-24 block sm:hidden">
-      <div className="sm:hidden w-full mb-8 grid grid-cols-3 gap-8 items-center justify-center">
+      <div
+        className={cn(
+          "sm:hidden w-full mb-8 grid grid-cols-3 gap-8 items-center justify-center",
+          className,
+          activeState === 2 && "hidden"
+        )}
+      >
         <button
           onClick={() => router.push(`/event/${eventId}/partners?p=sponsors`)}
           className="flex flex-col gap-y-2 items-center justify-center"
         >
-          <Handshake size={22} />
+          <InlineIcon fontSize={24} icon="ic:twotone-handshake" />
           <p>Partners</p>
         </button>
         <button
-          onClick={() => changeActiveState(3)}
+          onClick={() => changeMajorActiveState(2)}
           className="flex flex-col gap-y-2 items-center justify-center"
         >
-          <SpeakerIcon />
+          <InlineIcon icon="game-icons:public-speaker" fontSize={24} />
           <p>Speakers</p>
         </button>
         <button
           onClick={() => router.push(`/event/${eventId}/market-place/jobs`)}
           className="flex flex-col gap-y-2 items-center justify-center"
         >
-          <Bag size={22} />
+          <InlineIcon icon="line-md:briefcase-twotone" fontSize={24} />
           <p>Jobs</p>
         </button>
 
@@ -73,7 +61,7 @@ export function EventDetailMobileTab({
           onClick={() => router.push(`/event/${eventId}/market-place/offers`)}
           className="flex flex-col gap-y-2 items-center justify-center"
         >
-          <MarketingIcon color="#000000" />
+          <InlineIcon icon="iconamoon:gift-duotone" fontSize={24} />
           <p>Offers</p>
         </button>
 
@@ -81,14 +69,14 @@ export function EventDetailMobileTab({
           onClick={() => router.push(`/event/${eventId}/people/all`)}
           className="flex flex-col gap-y-2 items-center justify-center"
         >
-          <AttendeesIcon />
+          <InlineIcon icon="ph:users-duotone" fontSize={24} />
           <p>Attendees</p>
         </button>
         <button
           onClick={() => router.push(`/event/${eventId}/agenda`)}
           className="flex flex-col gap-y-2 items-center justify-center"
         >
-          <MobileAgendaIcon />
+          <InlineIcon icon="solar:calendar-mark-bold-duotone" fontSize={24} />
           <p>Agenda</p>
         </button>
 
@@ -98,7 +86,7 @@ export function EventDetailMobileTab({
           }
           className="flex flex-col gap-y-2 items-center justify-center"
         >
-          <Quiz size={20} />
+          <InlineIcon icon="ic:twotone-quiz" fontSize={24} />
           <p>Quiz</p>
         </button>
 
@@ -108,7 +96,7 @@ export function EventDetailMobileTab({
           }
           className="flex flex-col gap-y-2 items-center justify-center"
         >
-          <UserPointIcon />
+          <InlineIcon icon="ph:coins-duotone" fontSize={24} />
           <p>My Points</p>
         </button>
         <button
@@ -117,7 +105,7 @@ export function EventDetailMobileTab({
           }
           className="flex flex-col gap-y-2 items-center justify-center"
         >
-          <LeaderBoardIcon />
+          <InlineIcon icon="ic:twotone-leaderboard" fontSize={24} />
           <p>LeaderBoard</p>
         </button>
 
@@ -125,7 +113,7 @@ export function EventDetailMobileTab({
           onClick={() => router.push(`/event/${eventId}/market-place/rewards`)}
           className="flex flex-col gap-y-2 items-center justify-center"
         >
-          <RewardIcon />
+          <InlineIcon icon="solar:cup-bold-duotone" fontSize={24} />
           <p>Reward</p>
         </button>
         <button
@@ -134,15 +122,14 @@ export function EventDetailMobileTab({
           }
           className="flex flex-col gap-y-2 items-center justify-center"
         >
-          <StampCardIcon />
+          <InlineIcon icon="ph:stamp-duotone" fontSize={24} />
           <p>StampCard</p>
         </button>
       </div>
-
+      {activeState === 2 && <EventSpeakers formattedAttendees={formattedAttendees} changeMajorActiveState={changeMajorActiveState} eventId={eventId}/>}
     </div>
   );
 }
-
 
 /**
  * 

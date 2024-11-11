@@ -51,7 +51,6 @@ export async function POST(req: NextRequest) {
         options
       ).format(date);
 
-      console.log(affiliateCode);
       const {
         error: firstError,
         status: firstStatus,
@@ -61,8 +60,6 @@ export async function POST(req: NextRequest) {
         .update({ ...restItem, affiliateCode: affiliateCode })
         .eq("eventRegistrationRef", params.eventRegistrationRef)
         .select();
-
-      console.log(data);
 
       if (firstError) {
         console.log(firstError);
@@ -201,7 +198,7 @@ export async function POST(req: NextRequest) {
         ticketType: string;
         attendeeAlias: string;
       }[] = await Promise.all(resolveAttendees);
-      
+
       // sending email
       var { SendMailClient } = require("zeptomail");
 
@@ -311,21 +308,23 @@ export async function POST(req: NextRequest) {
               }</p>
             
               ${
-                originalEvent.organization.subscriptionPlan === "free" &&
-                `
+                originalEvent.organization.subscriptionPlan === "Free"
+                  ? `
                 <a
                   href="https://www.zikoro.com/event/${eventAlias}/people/info/${
-                  attendee?.attendeeAlias
-                }?email=${
-                  attendee?.email
-                }&createdAt=${new Date().toISOString()}&isPasswordless=${true}&alias=${
-                  attendee?.attendeeAlias
-                }" 
+                      attendee?.attendeeAlias
+                    }?email=${
+                      attendee?.email
+                    }&createdAt=${new Date().toISOString()}&isPasswordless=${true}&alias=${
+                      attendee?.attendeeAlias
+                    }" 
                   style="display: block; color: #001fcc; font-size: 12px; text-decoration: none;"
                   >
                     Update Profile
                 </a>
+                
                 `
+                  : `<p></p>`
               }
             </div>
           </div>
@@ -414,13 +413,13 @@ export async function POST(req: NextRequest) {
             alt="qrcode" />
           </div>
    ${
-     originalEvent.organization.subscriptionPlan === "free" &&
-     `         <a
+     originalEvent.organization.subscriptionPlan === "Free"
+       ? `         <a
             href="https://www.zikoro.com/event/${eventAlias}/reception?email=${
-       attendee?.email
-     }&createdAt=${new Date().toISOString()}&isPasswordless=${true}&alias=${
-       attendee?.attendeeAlias
-     }"
+           attendee?.email
+         }&createdAt=${new Date().toISOString()}&isPasswordless=${true}&alias=${
+           attendee?.attendeeAlias
+         }"
             style="max-width:600px; margin:0 auto;"
             >
             <button
@@ -445,6 +444,7 @@ export async function POST(req: NextRequest) {
           </button>
             </a>
            `
+       : `<p></p>`
    }
       
             <div
@@ -641,8 +641,6 @@ export async function POST(req: NextRequest) {
           });
         }
       });
-
-
 
       return NextResponse.json(
         { msg: "Transaction details updated successfully", check },

@@ -55,7 +55,7 @@ export function PartnerCard({
           ? ""
           : `/event/${event?.eventAlias}/partner/${sponsor.partnerAlias}`
       }
-      className=" border shadow  h-full border-gray-100 pb-4 relative rounded-lg overflow-hidden bg-white flex flex-col gap-y-2 items-start justify-start"
+      className=" border  h-full border-gray-100 pb-4 relative rounded-lg overflow-hidden bg-white flex flex-col gap-y-2 items-start justify-start"
     >
       <div className="flex items-center  justify-between w-full p-4">
         {image ? (
