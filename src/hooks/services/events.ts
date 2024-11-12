@@ -123,6 +123,52 @@ export const useGetUserEvents = ({
   };
 };
 
+
+
+export const useGetCreatedEvents = (): UseGetResult<
+  TOrgEvent[],
+  "events",
+  "getCreatedEvents"
+> => {
+  const [events, setEvents] = useState<TOrgEvent[]>([]);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+  const { user } = useUserStore();
+
+  const getCreatedEvents = async () => {
+    setLoading(true);
+
+    try {
+      const { data, status } = await getRequest<TOrgEvent[]>({
+        endpoint: `/events/created/${user?.id}`,
+      });
+
+      if (status !== 200) {
+        throw data;
+      }
+
+      setEvents(data.data);
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getCreatedEvents();
+  }, []);
+
+  return {
+    events,
+    isLoading,
+    error,
+    getCreatedEvents,
+  };
+};
+
+
+
 export const useGetEvents = (): UseGetResult<
   TOrgEvent[],
   "events",
