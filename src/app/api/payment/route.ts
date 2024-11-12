@@ -91,9 +91,10 @@ export async function POST(req: NextRequest) {
         originalEvent.registered === null
           ? params.attendees
           : Number(originalEvent?.registered) + params.attendees;
+      const { organization: org, ...restData } = originalEvent;
       const { error, status } = await supabase
         .from("events")
-        .update({ ...originalEvent, registered })
+        .update({ ...restData, registered })
         .eq("id", params.eventId);
 
       if (error) {

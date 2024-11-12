@@ -1,5 +1,5 @@
 "use client";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, Suspense } from "react";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { Download } from "styled-icons/bootstrap";
 import { Eye } from "styled-icons/feather";
@@ -39,7 +39,7 @@ import { timezones } from "@/constants/timezones";
 import { Switch } from "@/components/ui/switch";
 import { CiBookmark } from "react-icons/ci";
 
-export default function UpdateEvent({ eventId }: { eventId: string }) {
+function UpdateEventComp({ eventId }: { eventId: string }) {
   const {
     data,
     loading,
@@ -142,6 +142,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
         locationType: data?.locationType,
         eventCountry: data?.eventCountry,
         eventPoster: data?.eventPoster,
+        pricingCurrency: data?.pricingCurrency,
         pricing: data?.pricing
           ? data?.pricing?.map((p) => {
               return {
@@ -167,6 +168,8 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
     }
   }, [data]);
 
+  console.log("form errors", form.formState.errors);
+
   //
   async function onSubmit(values: z.infer<typeof updateEventSchema>) {
     //
@@ -187,6 +190,18 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
         return;
       }
     }
+    if (
+      values?.locationType !== "Virtual" &&
+      (!values?.eventCity ||
+      !values?.eventAddress ||
+      !values?.eventCountry)
+    ) {
+      toast({
+        variant: "destructive",
+        description: "Event address, city, and country are required",
+      });
+      return;
+    }
 
     setLoading(true);
     const promise = await new Promise(async (resolve) => {
@@ -203,6 +218,11 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
     const payload: Partial<Event> = {
       ...values,
       eventPoster: promise as string,
+      eventCity: values?.locationType === "Virtual" ? "" : values?.eventCity,
+      eventAddress:
+        values?.locationType === "Virtual" ? "" : values?.eventAddress,
+      eventCountry:
+        values?.locationType === "Virtual" ? "" : values?.eventCountry,
       explore:
         values?.eventVisibility?.toLowerCase() === "public" ? true : false,
       expectedParticipants: Number(values?.expectedParticipants),
@@ -315,13 +335,13 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
 
   const location = form.watch("locationType");
 
-  useEffect(() => {
-    if (location === "Virtual") {
-      form.setValue('eventAddress', undefined)
-      form.setValue('eventCity', undefined)
-      form.setValue('eventCountry', undefined)
-    }
-  },[location, form])
+  // useEffect(() => {
+  //   if (location === "Virtual") {
+  //     form.setValue('eventAddress', 'NIL')
+  //     form.setValue('eventCity', 'NIL')
+  //     form.setValue('eventCountry', 'NIL')
+  //   }
+  // },[location, form])
 
   return (
     <DateAndTimeAdapter>
@@ -564,7 +584,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
 
                 {/**"col-span-1 sm:col-span-2 " */}
 
-                {location !== "Virtual" && (
+                {/* {location !== "Virtual" && ( */}
                   <FormField
                     control={form.control}
                     name="eventAddress"
@@ -583,7 +603,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                       </InputOffsetLabel>
                     )}
                   />
-                )}
+                {/* )} */}
                 <FormField
                   control={form.control}
                   name="expectedParticipants"
@@ -600,7 +620,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                   )}
                 />
 
-                {location !== "Virtual" && (
+                {/* {location !== "Virtual" && ( */}
                   <>
                     {" "}
                     <FormField
@@ -636,7 +656,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                       )}
                     />
                   </>
-                )}
+                {/* )} */}
                 <FormField
                   control={form.control}
                   name="locationType"
@@ -886,10 +906,8 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
         {isOpen && data && (
           <PreviewModal
             close={onClose}
-            type={data?.published ? "Event Registration": "Preview"}
+            type={data?.published ? "Event Registration" : "Preview"}
             title={data?.eventTitle}
-
-            
             url={
               data?.published
                 ? `/live-events/${data?.eventAlias}`
@@ -925,6 +943,8 @@ function PriceValidityDate({
       return formateJSDate(new Date());
     }
   }, [value]);
+
+  console.log("form get values", form.getValues());
   return (
     <FormField
       control={form.control}
@@ -1016,5 +1036,13 @@ function SelectDate({
         />
       </div>
     </div>
+  );
+}
+
+export default function UpdateEvent({ eventId }: { eventId: string }) {
+  return (
+    <Suspense>
+      <UpdateEventComp eventId={eventId} />
+    </Suspense>
   );
 }

@@ -48,14 +48,7 @@ export const newEventSchema = z.object({
   eventCountry: z.string().min(2, { message: "Country is required" }).optional(),
   organisationId: z.string().min(2, { message: "Organization is required" }),
   eventPoster: z.any(),
-}).refine((data) => {
-  if (data.locationType === "Virtual") {
-    return !data.eventCity && !data.eventAddress && !data.eventCountry;
-  }
-  return true;
-}, {
-  path: ["eventCity", "eventAddress", "eventCountry"], 
-});
+})
 
 const eventPricing = z.array(
   z.object({
@@ -74,11 +67,11 @@ export const updateEventSchema = z.object({
   startDateTime: z.any(),
   endDateTime: z.any(),
   eventTitle: z.string().min(3, { message: "Title is required" }),
-  eventAddress: z.string().min(3, { message: "Address is required" }).optional(),
+  eventAddress: z.any(),
   locationType: z.string().min(1, { message: "Location is required" }),
   expectedParticipants: z.string(),
-  eventCity: z.string().min(1, { message: "City is required" }).optional(),
-  eventCountry: z.string().min(2, { message: "Country is required" }).optional(),
+  eventCity: z.any(),
+  eventCountry: z.any(),
   eventVisibility: z.any(),
   industry: z.any(),
   eventCategory: z.any(),
@@ -87,14 +80,7 @@ export const updateEventSchema = z.object({
   description: z.any(),
   pricing: eventPricing,
   eventTimeZone: z.any(),
-}).refine((data) => {
-  if (data.locationType === "Virtual") {
-    return !data.eventCity && !data.eventAddress && !data.eventCountry;
-  }
-  return true;
-}, {
-  path: ["eventCity", "eventAddress", "eventCountry"], 
-});
+})
 
 export const rewardSchema = z.object({
   rewardTitle: z.string().min(3, { message: "Title is required" }),
