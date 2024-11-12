@@ -11,19 +11,16 @@ import {
   useGetEventReviews,
 } from "@/hooks";
 
-import { EventDetailTabs, SpeakerWidget } from "../composables";
+import { SpeakerWidget } from "../composables";
 import { useMemo, useState } from "react";
 import { cn } from "@/lib";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import Slider from "react-slick";
 import Image from "next/image";
-import { RedeemPoint, Reward } from "@/types";
+import { Event, RedeemPoint, Reward, TOrgEvent } from "@/types";
 import { useGetData } from "@/hooks/services/request";
-import { Offers } from "../partners/_components";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { InlineIcon } from "@iconify/react";
-import { ScrollableCards } from "../custom_ui/scrollableCard/ScrollableCard";
 import { ScrollWrapper } from "./_components/ScrollWrapper";
 import { PartnerCard } from "../partners/sponsors/_components";
 import { EngagementsSettings, TLead, TLeadsInterest } from "@/types";
@@ -31,9 +28,9 @@ import { OfferCard } from "../partners/_components/offers/OfferCard";
 import { RewardCard } from "../marketPlace/rewards/_components";
 import { FeedBackCard } from "../published";
 import { useRouter } from "next/navigation";
-import { IconifyAgendaCalendarIcon } from "@/constants";
 import { ReceptionAgenda } from "./_components/ReceptionAgenda";
 import { EventDetailMobileTab } from "../composables/eventDetailTabs/EventDetailMobileTab";
+import { AboutEvent } from "../published/SinglePublishedEvent";
 
 export function SingleEventHome({ eventId }: { eventId: string }) {
   const { data, loading, refetch: refetchEvent } = useFetchSingleEvent(eventId);
@@ -47,6 +44,7 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
   const { attendees, isLoading: loadingAttendees } =
     useGetEventAttendees(eventId);
   const [active, setActive] = useState<"sponsors" | "exhibitors">("sponsors");
+  const [isOpen, setIsOpen] = useState(false);
   const { totalPoints } = useGetUserPoint(eventId);
   const { attendee, isOrganizer, attendeeId } = useVerifyUserAccess(eventId);
   const { isIdPresent } = useCheckTeamMember({ eventId });
@@ -75,15 +73,15 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
   //   setActive(active);
   // }
 
-  const settings = {
-    dots: true,
-    infinite: true,
-    autoplay: true,
-    fade: false,
-    speed: 400,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-  };
+  // const settings = {
+  //   dots: true,
+  //   infinite: true,
+  //   autoplay: true,
+  //   fade: false,
+  //   speed: 400,
+  //   slidesToShow: 1,
+  //   slidesToScroll: 1,
+  // };
 
   const formattedAttendees = useMemo(() => {
     return attendees?.filter(({ attendeeType, speakingAt, archive }) => {
@@ -94,9 +92,9 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
     });
   }, [attendees]);
 
-  const nonArchiveAttendees = useMemo(() => {
-    return attendees?.filter((attendee) => !attendee?.archive);
-  }, [attendees]);
+  // const nonArchiveAttendees = useMemo(() => {
+  //   return attendees?.filter((attendee) => !attendee?.archive);
+  // }, [attendees]);
 
   const approvedPartners = useMemo(() => {
     return (
@@ -117,6 +115,10 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
       return newData;
     }
   }, [approvedPartners]);
+
+  function onClose() {
+    setIsOpen((p) => !p);
+  }
 
   // const Comp =
   //   Array.isArray(partnersData) && partnersData?.length > 1 ? Slider : "div";
@@ -153,7 +155,9 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
             <h2 className="font-semibold text-lg sm:text-2xl">
               {data?.eventTitle ?? ""}
             </h2>
-            <button className="flex items-center gap-x-1">
+            <button 
+            onClick={onClose}
+            className="flex items-center gap-x-1">
               <InlineIcon icon="line-md:alert-circle-twotone" fontSize={18} />
               <span className="text-xs sm:text-mobile">About Event</span>
             </button>
@@ -331,7 +335,48 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
           />
         </div>
       </div>
+      {isOpen && <AboutModal close={onClose} event={data} />}
     </>
+  );
+}
+
+function AboutModal({ close, event }: { event: Event; close: () => void }) {
+  return (
+    <div className="fixed inset-0 w-full h-full z-[100] ">
+      <div className="py-6 px-5 max-w-md rounded-lg bg-white absolute inset-0 m-auto max-h-[85%]">
+        <div className="w-full pb-2 mb-6 border-b flex items-center justify-between">
+          <h2 className="text-lg sm:text-2xl font-semibold">About Event</h2>
+
+          <button onClick={close}>
+            <InlineIcon icon="line-md:close-circle-filled" fontSize={24} />
+          </button>
+        </div>
+        <div className="w-full flex flex-col items-start gap-y-2 justify-start">
+          <h2 className="font-semibold text-lg sm:text-2xl ">
+            {event?.eventTitle ?? ""}
+          </h2>
+          {event && <AboutEvent event={event as TOrgEvent} />}
+          {event?.locationType?.toLowerCase() !== "virtual" ? (
+            <iframe
+              style={{ border: "none", borderRadius: "12px" }}
+              width="100%"
+              height="150"
+              src={`https://maps.google.com/maps?q=${encodeURIComponent(
+                event?.eventAddress
+              )}&z=15&ie=UTF8&iwloc=B&width=100%25&height=150&hl=en&output=embed`}
+            ></iframe>
+          ) : (
+            <div></div>
+          )}
+        </div>
+        <div className="w-full flex flex-col justify-start items-start mt-6 sm:mt-8">
+          <h2 className="font-semibold mb-4 sm:mb-6 text-lg sm:text-2xl ">
+            Event Description
+          </h2>
+          {event?.description ?? ""}
+        </div>
+      </div>
+    </div>
   );
 }
 
