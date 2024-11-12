@@ -456,52 +456,56 @@ export function useFetchOrganizationEvents(id?: string | string[]) {
   const [data, setData] = useState<TOrgEvent[]>([]);
 
   useEffect(() => {
-    fetchOrganizationEvents();
-  }, []);
+    if (id) fetchOrganizationEvents();
+  }, [id]);
 
   async function fetchOrganizationEvents() {
     setLoading(true);
     try {
-      let eventData: any[] = [];
-      const { data, error } = await supabase
+      const { data: eventData, error } = await supabase
         .from("events")
         .select("*, organization!inner(*)")
         .eq("organisationId", id)
-        .range(0,1000)
-      
-   if (data) {
-    for (let event of data) {
-      const { data: fetchedAttendees, error: errorFetchingAttendee } = await supabase
-      .from("attendees")
-      .select("*")
-      .eq("eventAlias", event?.eventAlias);
-
-      eventData = [...eventData, { ...event, attendees: fetchedAttendees }];
-     }
-    
-   
-
-
-   }
-   else {
-    eventData = []
-   }
-
-
-
+        .range(0, 1000);
 
       if (error) {
         toast.error(error.message);
         setLoading(false);
-        return null;
+        return;
       }
-      setData(eventData);
-      setLoading(false);
+
+      if (eventData) {
+        const eventsWithAttendees = await Promise.all(
+          eventData.map(async (event) => {
+            const { data: fetchedAttendees, error: errorFetchingAttendee } =
+              await supabase
+                .from("attendees")
+                .select("*")
+                .eq("eventAlias", event?.eventAlias);
+
+            if (errorFetchingAttendee) {
+              console.error(
+                `Failed to fetch attendees for event ${event.eventAlias}: ${errorFetchingAttendee.message}`
+              );
+              return { ...event, attendees: [] }; 
+            }
+
+            return { ...event, attendees: fetchedAttendees };
+          })
+        );
+
+        setData(eventsWithAttendees);
+      } else {
+        setData([]);
+      }
     } catch (error) {
+      console.error("An unexpected error occurred:", error);
+      toast.error("An unexpected error occurred while fetching events.");
+    } finally {
       setLoading(false);
-      return null;
     }
   }
+
   return {
     refetch: fetchOrganizationEvents,
     loading,
@@ -732,8 +736,8 @@ export function useBookingEvent() {
           userEmail: userData?.userEmail,
         };
       });
-     
-setLoading(true)
+
+      setLoading(true);
       const { error, status } = await supabase
         .from("attendees")
         .upsert([...attendees]);
@@ -763,9 +767,8 @@ setLoading(true)
       }
     } catch (error) {
       setLoading(false);
-    }
-    finally {
-      setLoading(false)
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -1338,7 +1341,7 @@ export function useVerifyUserAccess(eventId: string) {
     isOrganizer,
     loading,
     isLoading,
-    eventAttendees
+    eventAttendees,
   };
 }
 
