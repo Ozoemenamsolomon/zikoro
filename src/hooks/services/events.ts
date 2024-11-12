@@ -880,25 +880,25 @@ export function useUpdateTransactionDetail() {
       });
 
       if (status === 204 || status === 200) {
-        const { data: attendees, status } = await getRequest<TAttendee[]>({
-          endpoint: `/attendees/event/${payload?.eventAlias}`,
-        });
+        // const { data: attendees, status } = await getRequest<TAttendee[]>({
+        //   endpoint: `/attendees/event/${payload?.eventAlias}`,
+        // });
 
-        const registeredAttendee = attendees?.data
-          ?.filter((attendee) => {
-            return (
-              attendee?.eventRegistrationRef === payload?.eventRegistrationRef
-            );
-          })
-          .map((value) => {
-            return {
-              ...value,
-              registrationCompleted: true,
-              attendeeType: payload.role ?? ["attendee"],
-            };
-          });
+        // const registeredAttendee = attendees?.data
+        //   ?.filter((attendee) => {
+        //     return (
+        //       attendee?.eventRegistrationRef === payload?.eventRegistrationRef
+        //     );
+        //   })
+        //   .map((value) => {
+        //     return {
+        //       ...value,
+        //       registrationCompleted: true,
+        //       attendeeType: payload.role ?? ["attendee"],
+        //     };
+        //   });
 
-        await updateAttendees({ payload: registeredAttendee });
+        // await updateAttendees({ payload: registeredAttendee });
 
         setLoading(false);
         toggleSuccessModal(true);

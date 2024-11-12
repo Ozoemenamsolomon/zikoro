@@ -643,6 +643,35 @@ export async function POST(req: NextRequest) {
         }
       });
 
+      const { data: attendees } = await supabase
+        .from("attendees")
+        .select("*")
+        .eq("eventAlias", eventAlias)
+        .range(0, 1000);
+
+      if (attendees) {
+        const allregisteredAttendees = attendees
+          ?.filter((attendee) => {
+            return attendee?.eventRegistrationRef === eventRegistrationRef;
+          })
+          .map((value) => {
+            return {
+              ...value,
+              registrationCompleted: true,
+              attendeeType: role ?? ["attendee"],
+            };
+          });
+
+        const { error } = await supabase
+          .from("attendees")
+          .upsert(allregisteredAttendees, { onConflict: "id" });
+
+        if (error) {
+          return NextResponse.json({ error: error?.message }, { status: 400 });
+        }
+        if (error) throw error;
+      }
+
       return NextResponse.json(
         { msg: "Transaction details updated successfully", check },
         {
