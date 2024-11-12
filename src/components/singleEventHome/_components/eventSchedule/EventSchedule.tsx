@@ -1,3 +1,8 @@
+/// 
+ 
+/// THIS COMPONENT IS DEPRECATED
+
+///////
 "use client";
 
 import { useFormatEventData } from "@/hooks";
@@ -8,7 +13,12 @@ import { AboutWidget } from "@/components/composables";
 import { CalendarDateFill } from "styled-icons/bootstrap";
 import { LocationDot } from "styled-icons/fa-solid";
 import { Event } from "@/types";
-import { CountDown } from "..";
+
+/// 
+ 
+/// THIS COMPONENT IS DEPRECATED
+
+///////
 export function EventSchedule({
   event,
   loading,
@@ -19,6 +29,11 @@ export function EventSchedule({
   const { removeComma, startDate, endDate, startTime } =
     useFormatEventData(event);
 
+    /// 
+ 
+/// THIS COMPONENT IS DEPRECATED
+
+///////
   return (
     <>
       {loading ? (
@@ -85,9 +100,9 @@ export function EventSchedule({
             </div>
           )}
 
-          {event?.startDateTime && (
+          {/* {event?.startDateTime && (
             <CountDown startDate={event?.startDateTime} />
-          )}
+          )} */}
         </div>
       )}
     </>

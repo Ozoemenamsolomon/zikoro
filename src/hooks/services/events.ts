@@ -462,17 +462,39 @@ export function useFetchOrganizationEvents(id?: string | string[]) {
   async function fetchOrganizationEvents() {
     setLoading(true);
     try {
+      let eventData: any[] = [];
       const { data, error } = await supabase
         .from("events")
-        .select("*, organization!inner(*), attendees!inner(*)")
+        .select("*, organization!inner(*)")
         .eq("organisationId", id);
+      
+   if (data) {
+    for (let event of data) {
+      const { data: fetchedAttendees, error: errorFetchingAttendee } = await supabase
+      .from("attendees")
+      .select("*")
+      .eq("eventAlias", event?.eventAlias);
+
+      eventData = [...eventData, { ...event, attendees: fetchedAttendees }];
+     }
+    
+   
+
+
+   }
+   else {
+    eventData = []
+   }
+
+
+
 
       if (error) {
         toast.error(error.message);
         setLoading(false);
         return null;
       }
-      setData(data);
+      setData(eventData);
       setLoading(false);
     } catch (error) {
       setLoading(false);

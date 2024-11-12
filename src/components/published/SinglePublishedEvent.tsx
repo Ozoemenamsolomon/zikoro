@@ -126,12 +126,12 @@ function ShareEvent({
   );
 }
 
-function AboutEvent({
+export function AboutEvent({
   event,
-  coordinates,
+
 }: {
   event: TOrgEvent;
-  coordinates: { lat: number; lng: number } | null;
+ 
 }) {
   const timeDifference = useMemo(
     () => calculateTimeDifference(event?.startDateTime, event?.endDateTime),
@@ -175,10 +175,12 @@ function AboutEvent({
           {event?.locationType?.toLowerCase() !== "virtual" ? (
             <p className=" flex items-center">
               {event?.eventAddress ?? ""}{" "}
-              {coordinates && (
+             
                 <Link
                   target="_blank"
-                  href={`https://www.google.com/maps/dir//${event?.eventAddress}/@${coordinates?.lat},${coordinates?.lng},15z?hl=en-US&entry=ttu`}
+                  href={`https://maps.google.com/maps?q=${encodeURIComponent(
+                        event?.eventAddress
+                      )}&z=15&ie=UTF8&iwloc=B&width=100%25&height=150&hl=en&output=embed`}
                   title="View Direction"
                 >
                   <InlineIcon
@@ -187,7 +189,7 @@ function AboutEvent({
                     className="rotate-90"
                   />
                 </Link>
-              )}
+              
             </p>
           ) : (
             <p>Virtual</p>
@@ -445,7 +447,7 @@ export default function SinglePublishedEvent({
                     {eventDetail?.eventTitle ?? ""}
                   </h2>
                   {eventDetail && (
-                    <AboutEvent event={eventDetail} coordinates={coordinates} />
+                    <AboutEvent event={eventDetail} />
                   )}
                   {eventDetail?.locationType?.toLowerCase() !== "virtual" ? (
                     <iframe

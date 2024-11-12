@@ -11,6 +11,7 @@ import { Edit } from "styled-icons/material";
 import { CreateReward } from "./CreateReward";
 import { useRedeemReward } from "@/hooks";
 import {usePathname} from "next/navigation"
+import { cn } from "@/lib";
 export function RewardCard({
   reward,
   isOrganizer,
@@ -19,6 +20,7 @@ export function RewardCard({
   attendeeId,
   attendeePoints,
   refetchRedeemed,
+  className
 }: {
   refetch: () => Promise<any>;
   isOrganizer: boolean;
@@ -27,6 +29,7 @@ export function RewardCard({
   attendeeId?: number;
   redeemedRewards: RedeemPoint[] | null;
   refetchRedeemed: () => Promise<any>;
+  className?:string;
 }) {
   const pathname = usePathname()
   const [isAlert, setAlert] = useState(false);
@@ -108,7 +111,7 @@ export function RewardCard({
   }
   return (
     <>
-      <div className="w-full bg-white b text-sm h-fit pb-3 flex flex-col border rounded-md  gap-y-2 items-start">
+      <div className={cn("w-full bg-white  text-sm h-fit pb-3 flex flex-col border rounded-md  gap-y-2 items-start", className)}>
         <div className="relative w-full h-40 sm:h-56 xl:h-60 rounded-t-md overflow-hidden">
           <Image
             src={reward?.image}

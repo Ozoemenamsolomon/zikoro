@@ -130,7 +130,7 @@ function AttendeeFillFormComp({
     );
     let payload: Partial<TEngagementFormAnswer> = {
       ...restData,
-      attendeeAlias: attendeeId || attendee?.attendeeAlias || null,
+      attendeeAlias: attendeeId || attendee?.attendeeAlias || generateAlias(),
       attendeeId: attendee?.id ? attendee?.id : null,
       responses,
     };
