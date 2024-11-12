@@ -17,20 +17,20 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import useOrganizationStore from "@/store/globalOrganizationStore";
 
 const Element = ({}: TabProps) => {
+  const { organization: currentOrg } = useOrganizationStore();
   const {
     organization,
     isLoading: fetching,
     getOrganization,
   } = useGetOrganization({
-    organizationId: 5,
+    organizationId: currentOrg?.id,
   });
   const { updateOrganization, isLoading: updating } = useUpdateOrganization({
-    organizationId: 5,
+    organizationId: currentOrg?.id,
   });
-
-  
 
   const [elementUploading, setElementUploading] = useState<boolean>(false);
   const uploadElement = async (file: File | null) => {
@@ -70,7 +70,6 @@ const Element = ({}: TabProps) => {
       });
 
       await getOrganization();
-      
     } catch (error) {
       alert("error uploading profile picture");
       console.error("Error uploading file:", error);
@@ -188,7 +187,7 @@ const Element = ({}: TabProps) => {
         <Button
           disabled={elementUploading}
           onClick={() => document.getElementById("file-input")?.click()}
-          className="border-basePrimary border-2 text-basePrimary bg-transparent flex gap-4 justify-center items-center rounded-md py-2 px-3"
+          className="border-basePrimary border-2 text-basePrimary bg-transparent flex gap-4 justify-center items-center rounded-md py-2 px-3 hover:bg-basePrimary/20"
         >
           {elementUploading ? (
             <div className="animate-spin">

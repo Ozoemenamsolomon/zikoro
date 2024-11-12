@@ -22,14 +22,14 @@ export function ContentTopNav({ eventId }: { eventId: string | string[] }) {
       name: "Discount",
       href: `discount`,
     },
-    // {
-    //   name: "Badge",
-    //   href: `badge`,
-    // },
-    // {
-    //   name: "Certificate",
-    //   href: `certificate`,
-    // },
+    {
+      name: "Badge",
+      href: `badge`,
+    },
+    {
+      name: "Certificate",
+      href: `certificate`,
+    },
     {
       name: "Partners",
       href: `partners`,
