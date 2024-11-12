@@ -90,7 +90,7 @@ export interface Event {
   eventWebsiteSettings: { title: string; status: boolean }[];
   sessionTrack: { name: string; color: string }[];
   partnerDetails: z.infer<typeof partnerDetails>;
-  attendeeAppAccess: boolean;
+  includeJoinEventLink: boolean;
 }
 
 export interface PaymentConfigProps {
