@@ -268,7 +268,7 @@ function Widget({
                 isReception && "md:block"
               )}
             >
-              <EventAttendeeWidget attendees={mergedSM} />
+              <EventAttendeeWidget attendees={mergedSM} isReception={isReception} />
              
             </div>
           </>
