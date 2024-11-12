@@ -9,19 +9,21 @@ import Link from "next/link";
 function ImageWidget({
   attendee,
   className,
+  isReception
 }: {
   className?: string;
   attendee: TAttendee;
+  isReception?:boolean;
 }) {
-  const [clickMobile, setClickMobile] = useState(false)
+  const [clickMobile, setClickMobile] = useState(false);
   return (
     <div
-    onClick={() => {
-      setClickMobile(true)
-      setTimeout(() => {
-          setClickMobile(false)
-      },1000)
-    }}
+      onClick={() => {
+        setClickMobile(true);
+        setTimeout(() => {
+          setClickMobile(false);
+        }, 1000);
+      }}
       className={cn(
         "relative h-[50px] w-[50px] rounded-full group border-4 border-[#F7F8FF] flex items-center bg-gray-200 uppercase font-medium text-lg justify-center",
         className
@@ -43,18 +45,22 @@ function ImageWidget({
         </p>
       )}
       <div
-      onClick={(e) => e.stopPropagation()}
-      className={cn("w-fit min-w-[230px] hidden absolute -bottom-14 items-start flex-col  left-1 group-hover:flex border-gradient p-1 ", clickMobile && "block")}>
+        onClick={(e) => e.stopPropagation()}
+        className={cn(
+          "w-fit min-w-[230px] hidden absolute -bottom-14 items-start flex-col  left-1 group-hover:flex border-gradient p-1 ",
+          clickMobile && "block"
+        )}
+      >
         <p className="gradient-text flex  bg-basePrimary text-sm capitalize gap-x-1">
           <span>{attendee?.firstName}</span>{" "}
           <span>{attendee?.lastName?.charAt(0)}.</span>
         </p>
-        <Link
+       {!isReception && <Link
           className="text-sm capitalize gradient-text bg-basePrimary"
           href=""
         >
           Register to see all participants
-        </Link>
+        </Link>}
       </div>
     </div>
   );
@@ -62,8 +68,10 @@ function ImageWidget({
 
 export function EventAttendeeWidget({
   attendees,
+  isReception,
 }: {
   attendees: TAttendee[];
+  isReception?: boolean;
 }) {
   const [otherAttendeeCount, setOtherAttendeeCount] = useState(0);
 
@@ -78,20 +86,22 @@ export function EventAttendeeWidget({
 
   const formattedCount = useMemo(() => {
     if (otherAttendeeCount >= 1000) {
-      return (otherAttendeeCount / 1000).toFixed(otherAttendeeCount % 1000 === 0 ? 0 : 1) + 'K';
-      
-      
-    }
-    else {
+      return (
+        (otherAttendeeCount / 1000).toFixed(
+          otherAttendeeCount % 1000 === 0 ? 0 : 1
+        ) + "K"
+      );
+    } else {
       return otherAttendeeCount.toString();
     }
-  },[otherAttendeeCount])
+  }, [otherAttendeeCount]);
   return (
     <div className="flex w-[250px] flex-col items-start justify-start gap-y-2">
       <div className="flex w-full items-center">
         {slicedArray?.map((attendee, index) => (
           <ImageWidget
             key={index}
+            isReception={isReception}
             attendee={attendee}
             className={
               index === 0

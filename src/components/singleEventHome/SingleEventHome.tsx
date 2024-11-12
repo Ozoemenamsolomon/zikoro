@@ -132,17 +132,17 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
   return (
     <>
       <div className="w-full px-4 mx-auto  max-w-[1300px] text-mobile sm:text-sm sm:px-6 mt-6 sm:mt-10 ">
-        <div className="w-full flex mb-6 sm:mb-10 items-center gap-x-3">
+        <div className="w-full flex mt-5 sm:mt-0 mb-6 sm:mb-10 items-center gap-x-3">
           {data?.eventPoster ? (
             <Image
               src={data?.eventPoster}
-              className="w-24 h-24 rounded-lg object-cover sm:w-48  sm:h-48"
+              className="w-24 h-24 rounded-lg object-cover sm:w-80  sm:h-80"
               alt={data?.eventTitle}
               width={300}
               height={300}
             />
           ) : (
-            <div className=" w-24 h-24 rounded-lg sm:w-36  sm:h-36  animate-pulse">
+            <div className=" w-24 h-24 rounded-lg sm:w-80  sm:h-80  animate-pulse">
               <div className="w-full h-full bg-gray-200"></div>
             </div>
           )}
@@ -193,7 +193,7 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
           attendeeId={attendeeId}
           refetchEvent={refetchEvent}
         />
-        {!loadingAttendees && Array.isArray(formattedAttendees) && (
+        {!loadingAttendees && Array.isArray(formattedAttendees) && formattedAttendees?.length > 0 && (
           <ScrollWrapper
             header="Speakers"
             onclick={() => {}}
@@ -213,7 +213,7 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
         )}
 
         <div className="w-full hidden h-full my-10 sm:grid sm:grid-cols-1 md:grid-cols-2 gap-6">
-          {!partnersLoading && (
+          {!partnersLoading && restructureData && (restructureData?.sponsors || restructureData?.exhibitors)?.length > 0  &&(
             <ScrollWrapper
               header="Partners"
               onclick={() =>
@@ -249,7 +249,7 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
               }
             />
           )}
-          {!isLoading && Array.isArray(offers) && (
+          {!isLoading && Array.isArray(offers) && offers?.length > 0 &&(
             <ScrollWrapper
               header="Offers"
               onclick={() =>
@@ -276,7 +276,7 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
           )}
         </div>
 
-        {!loadingRewards && Array.isArray(rewards) && (
+        {!loadingRewards && Array.isArray(rewards) && rewards?.length > 0 && (
           <ScrollWrapper
             header="Offers"
             onclick={() =>
@@ -303,7 +303,7 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
         )}
 
         <div className="w-full mt-10">
-          {!loadingReview && Array.isArray(reviews) && (
+          {!loadingReview && Array.isArray(reviews) && reviews?.length > 0 &&(
             <ScrollWrapper
               header="Reviews"
               onclick={() => {}}

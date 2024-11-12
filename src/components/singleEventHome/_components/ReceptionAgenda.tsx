@@ -8,6 +8,7 @@ import { useGetData } from "@/hooks/services/request";
 import { Custom } from "@/components/agenda/_components";
 import { useMemo } from "react";
 import { formatDate, isEventLive } from "@/utils";
+import { useRouter } from "next/navigation";
 
 
 export function ReceptionAgenda({
@@ -26,7 +27,7 @@ export function ReceptionAgenda({
   attendeeId?: number;
 }) {
   const { myAgendas } = useGetMyAgendas({ eventId });
-
+  const router = useRouter()
   const getEffectiveDate = (startDateISO: string, endDateISO: string): Date => {
     const today = new Date();
     const startDate = new Date(startDateISO);
@@ -80,7 +81,7 @@ export function ReceptionAgenda({
               </p>
             </div>
             <button
-              onClick={() => {}}
+              onClick={() => router.push(`/event/${eventId}/agenda`)}
               className="text-mobile sm:text-sm gradient-text bg-basePrimary font-medium"
             >
               See All
