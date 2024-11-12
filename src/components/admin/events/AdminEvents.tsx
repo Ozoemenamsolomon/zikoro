@@ -37,7 +37,6 @@ export default function AdminEvents({searchParams:{e}}) {
     }
   }, [events, e]);
 
-  console.log(e, events?.length)
 
   return (
     <EventLayout query={e}>
