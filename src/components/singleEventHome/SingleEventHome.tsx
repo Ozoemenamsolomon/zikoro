@@ -155,9 +155,7 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
             <h2 className="font-semibold text-lg sm:text-2xl">
               {data?.eventTitle ?? ""}
             </h2>
-            <button 
-            onClick={onClose}
-            className="flex items-center gap-x-1">
+            <button onClick={onClose} className="flex items-center gap-x-1">
               <InlineIcon icon="line-md:alert-circle-twotone" fontSize={18} />
               <span className="text-xs sm:text-mobile">About Event</span>
             </button>
@@ -342,8 +340,13 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
 
 function AboutModal({ close, event }: { event: Event; close: () => void }) {
   return (
-    <div className="fixed inset-0 w-full h-full z-[100] ">
-      <div className="py-6 px-5 max-w-md rounded-lg bg-white absolute inset-0 m-auto max-h-[85%]">
+    <div
+    role="button"
+    onClick={close}
+    className="fixed inset-0 w-full h-full z-[100] ">
+      <div
+      onClick={(e) => e.stopPropagation()}
+      className="py-6 px-5 max-w-2xl rounded-lg bg-white absolute inset-0 m-auto max-h-[85%]">
         <div className="w-full pb-2 mb-6 border-b flex items-center justify-between">
           <h2 className="text-lg sm:text-2xl font-semibold">About Event</h2>
 
@@ -373,7 +376,7 @@ function AboutModal({ close, event }: { event: Event; close: () => void }) {
           <h2 className="font-semibold mb-4 sm:mb-6 text-lg sm:text-2xl ">
             Event Description
           </h2>
-          {event?.description ?? ""}
+          <div dangerouslySetInnerHTML={{ __html: event?.description ?? "" }} />
         </div>
       </div>
     </div>

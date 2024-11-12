@@ -466,7 +466,8 @@ export function useFetchOrganizationEvents(id?: string | string[]) {
       const { data, error } = await supabase
         .from("events")
         .select("*, organization!inner(*)")
-        .eq("organisationId", id);
+        .eq("organisationId", id)
+        .range(0,1000)
       
    if (data) {
     for (let event of data) {
