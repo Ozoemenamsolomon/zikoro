@@ -60,6 +60,7 @@ type FormValue = {
   affiliateSettings: Omit<TAffiliateLink, "affiliateId"> & { enabled: boolean };
   includeJoinEventLink: boolean;
 };
+
 export function ContentSetting({
   onClose,
   eventId,

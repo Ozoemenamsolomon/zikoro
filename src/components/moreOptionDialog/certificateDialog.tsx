@@ -188,8 +188,10 @@ const CertificateDialog: React.FC<MoreOptionsProps> = ({
       <ViewAttendeesSection
         attendeesTags={attendeesTags}
         favourites={favourites}
-        attendees={mappedAttendees.filter((attendee) =>
-          selectedCertificate.canReceive.exceptions.includes(attendee.id)
+        attendees={mappedAttendees.filter(
+          (attendee) =>
+            selectedCertificate &&
+            selectedCertificate?.canReceive?.exceptions?.includes(attendee.id)
         )}
         selectedAttendees={selectedAttendees}
         toggleValue={toggleValue}

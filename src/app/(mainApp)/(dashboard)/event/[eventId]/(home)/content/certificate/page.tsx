@@ -6,7 +6,7 @@ import {
   useGetCertificates,
   useSaveCertificate,
 } from "@/hooks";
-import { compareAsc, format, isPast } from "date-fns";
+import { compareAsc, format, isPast, subDays } from "date-fns";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -487,7 +487,7 @@ const Certificates = () => {
                       ...certificate,
                       certificateSettings: {
                         ...certificate.certificateSettings,
-                        publishOn: new Date().toISOString(),
+                        publishOn: subDays(new Date().toISOString(), 1),
                       },
                     },
                   });
@@ -817,9 +817,11 @@ const Certificates = () => {
                     <li className="w-full">
                       <MakeACopy certificateId={id} />
                     </li>
-                    <li>
-                      <Publish certificate={certificate} />
-                    </li>
+                    {!isPast(certificateSettings?.publishOn) && (
+                      <li>
+                        <Publish certificate={certificate} />
+                      </li>
+                    )}
                   </ul>
                 </DropdownMenuContent>
               </DropdownMenu>
