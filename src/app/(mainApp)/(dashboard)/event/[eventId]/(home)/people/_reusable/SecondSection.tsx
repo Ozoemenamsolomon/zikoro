@@ -30,6 +30,7 @@ import {
   useGetCertificates,
   useReleaseAttendeeCertificate,
   useUpdateAttendeeCertificates,
+  useGetEventCertificates,
 } from "@/hooks/services/certificate";
 import { format, isPast } from "date-fns";
 import { TCertificate } from "@/types/certificates";
@@ -232,7 +233,7 @@ export default function SecondSection({
   const {
     certificates: eventCertificates,
     isLoading: getEventCertificatesIsLoading,
-  } = useGetCertificates({
+  } = useGetEventCertificates({
     eventId,
   });
 
@@ -428,6 +429,8 @@ export default function SecondSection({
   useEffect(() => {
     calculateAndSetMaxHeight(divRef);
   }, [attendee]);
+
+  console.log(eventCertificates, "eventCertificates");
 
   return (
     <div className="overflow-auto no-scrollbar space-y-4 pb-48" ref={divRef}>

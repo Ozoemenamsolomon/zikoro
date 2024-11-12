@@ -15,6 +15,8 @@ export async function GET(req: NextRequest) {
 
       const { data, error, status } = await query;
 
+      console.log(data, "certificates");
+
       if (error) throw error;
 
       return NextResponse.json(
