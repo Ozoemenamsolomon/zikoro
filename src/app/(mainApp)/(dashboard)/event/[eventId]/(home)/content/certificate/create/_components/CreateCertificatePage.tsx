@@ -849,12 +849,12 @@ const page = () => {
               ref={certificateDivRef}
             >
               <div
-                className="relative w-4/5 h-fit space-y-6 text-black bg-no-repeat"
+                className="relative h-fit space-y-6 text-black bg-no-repeat"
                 style={{
                   backgroundRepeat: "no-repeat",
                   backgroundSize: "100% 100%",
                   backgroundImage: !!details.background
-                    ? `url(${details.background})`
+                  ? `url(${details.background})`
                     : "",
                   backgroundColor: "#fff",
                   width: "8.27in",
