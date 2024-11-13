@@ -123,8 +123,6 @@ export const useGetUserEvents = ({
   };
 };
 
-
-
 export const useGetCreatedEvents = (): UseGetResult<
   TOrgEvent[],
   "events",
@@ -166,8 +164,6 @@ export const useGetCreatedEvents = (): UseGetResult<
     getCreatedEvents,
   };
 };
-
-
 
 export const useGetEvents = (): UseGetResult<
   TOrgEvent[],
@@ -533,7 +529,7 @@ export function useFetchOrganizationEvents(id?: string | string[]) {
               console.error(
                 `Failed to fetch attendees for event ${event.eventAlias}: ${errorFetchingAttendee.message}`
               );
-              return { ...event, attendees: [] }; 
+              return { ...event, attendees: [] };
             }
 
             return { ...event, attendees: fetchedAttendees };
@@ -1525,3 +1521,60 @@ export function useRedeemPartnerDiscountCode() {
     discountPercentage,
   };
 }
+
+export const useGetAdminEvents = ({
+  eventStatus,
+  from,
+  to,
+  initialLoading,
+}: {
+  eventStatus: string;
+  from: number;
+  to: number;
+  initialLoading: boolean;
+}) => {
+  const [events, setEvents] = useState<Event[]>([]);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+  const [hasReachedLastPage, setHasReachedLastPage] = useState(false);
+
+  const getEvents = async () => {
+    if (initialLoading) setLoading(true);
+
+    try {
+      const { data, status } = await getRequest<Event[]>({
+        endpoint: `/events/admin/${eventStatus}?from=${from}&to=${to}`,
+      });
+
+      if (status !== 200) {
+        throw data;
+      }
+      if (
+        data.data === null ||
+        (Array.isArray(data.data) && data.data.length === 0)
+      )
+        return setHasReachedLastPage(true);
+      setEvents((prev) => [...prev, ...data.data]);
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    setEvents([]);
+  },[eventStatus])
+
+  useEffect(() => {
+    getEvents();
+  }, [eventStatus, from, to]);
+
+  return {
+    events,
+    isLoading,
+    error,
+    getEvents,
+    hasReachedLastPage
+  };
+};

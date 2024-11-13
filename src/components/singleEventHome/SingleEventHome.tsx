@@ -132,7 +132,7 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
   return (
     <>
       <div className="w-full px-4 mx-auto  max-w-[1300px] text-mobile sm:text-sm sm:px-6 mt-6 sm:mt-10 ">
-        <div className="w-full flex mt-5 sm:mt-0 mb-6 sm:mb-10 items-center gap-x-3">
+        <div className="w-full flex mt-8 sm:mt-0 mb-6 sm:mb-10 items-center gap-x-3">
           {data?.eventPoster ? (
             <Image
               src={data?.eventPoster}

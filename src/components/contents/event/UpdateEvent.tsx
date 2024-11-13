@@ -168,8 +168,6 @@ function UpdateEventComp({ eventId }: { eventId: string }) {
     }
   }, [data]);
 
-  console.log("form errors", form.formState.errors);
-
   //
   async function onSubmit(values: z.infer<typeof updateEventSchema>) {
     //
