@@ -5,7 +5,6 @@ import { Event } from "@/types/events";
 import { TOrganization } from "@/types/organization";
 import * as crypto from "crypto";
 
-
 export function extractUniqueTypes<T>(
   arr: T[],
   ppty: keyof T
@@ -205,17 +204,13 @@ type Context = {
 };
 
 export function replaceSpecialText(input: string, context: Context): string {
-  
   const pattern = /#{(.*?)#}/g;
 
   if (pattern.test(input)) {
-    
   } else {
-    
   }
 
   return input.replaceAll(/#{(.*?)#}/g, (match, value) => {
-    
     switch (value.trim()) {
       case "first_name":
         return context.attendee.firstName;
@@ -251,5 +246,8 @@ export function replaceSpecialText(input: string, context: Context): string {
   });
 }
 
-
-
+export function maskAccountNumber(accountNumber: string): string {
+  const visibleDigits = accountNumber.slice(-4); // Get the last 4 digits
+  const maskedDigits = accountNumber.slice(0, -4).replace(/\d/g, "*"); // Replace all other digits with '*'
+  return `${maskedDigits}${visibleDigits}`;
+}

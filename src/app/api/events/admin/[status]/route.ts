@@ -17,7 +17,7 @@ export async function GET(
 
       const { data, error, status } = await supabase
         .from("events")
-        .select("*")
+        .select("* , organization!inner(*)")
         .eq("eventStatus", eventStatus)
         .range(Number(from || 0), Number(to || 20));
 
