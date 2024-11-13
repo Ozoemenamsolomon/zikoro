@@ -123,6 +123,48 @@ export const useGetUserEvents = ({
   };
 };
 
+export const useGetCreatedEvents = (): UseGetResult<
+  TOrgEvent[],
+  "events",
+  "getCreatedEvents"
+> => {
+  const [events, setEvents] = useState<TOrgEvent[]>([]);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+  const { user } = useUserStore();
+
+  const getCreatedEvents = async () => {
+    setLoading(true);
+
+    try {
+      const { data, status } = await getRequest<TOrgEvent[]>({
+        endpoint: `/events/created/${user?.id}`,
+      });
+
+      if (status !== 200) {
+        throw data;
+      }
+
+      setEvents(data.data);
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getCreatedEvents();
+  }, []);
+
+  return {
+    events,
+    isLoading,
+    error,
+    getCreatedEvents,
+  };
+};
+
 export const useGetEvents = (): UseGetResult<
   TOrgEvent[],
   "events",
@@ -456,51 +498,56 @@ export function useFetchOrganizationEvents(id?: string | string[]) {
   const [data, setData] = useState<TOrgEvent[]>([]);
 
   useEffect(() => {
-    fetchOrganizationEvents();
-  }, []);
+    if (id) fetchOrganizationEvents();
+  }, [id]);
 
   async function fetchOrganizationEvents() {
     setLoading(true);
     try {
-      let eventData: any[] = [];
-      const { data, error } = await supabase
+      const { data: eventData, error } = await supabase
         .from("events")
         .select("*, organization!inner(*)")
-        .eq("organisationId", id);
-      
-   if (data) {
-    for (let event of data) {
-      const { data: fetchedAttendees, error: errorFetchingAttendee } = await supabase
-      .from("attendees")
-      .select("*")
-      .eq("eventAlias", event?.eventAlias);
-
-      eventData = [...eventData, { ...event, attendees: fetchedAttendees }];
-     }
-    
-   
-
-
-   }
-   else {
-    eventData = []
-   }
-
-
-
+        .eq("organisationId", id)
+        .range(0, 1000);
 
       if (error) {
         toast.error(error.message);
         setLoading(false);
-        return null;
+        return;
       }
-      setData(eventData);
-      setLoading(false);
+
+      if (eventData) {
+        const eventsWithAttendees = await Promise.all(
+          eventData.map(async (event) => {
+            const { data: fetchedAttendees, error: errorFetchingAttendee } =
+              await supabase
+                .from("attendees")
+                .select("*")
+                .eq("eventAlias", event?.eventAlias);
+
+            if (errorFetchingAttendee) {
+              console.error(
+                `Failed to fetch attendees for event ${event.eventAlias}: ${errorFetchingAttendee.message}`
+              );
+              return { ...event, attendees: [] };
+            }
+
+            return { ...event, attendees: fetchedAttendees };
+          })
+        );
+
+        setData(eventsWithAttendees);
+      } else {
+        setData([]);
+      }
     } catch (error) {
+      console.error("An unexpected error occurred:", error);
+      toast.error("An unexpected error occurred while fetching events.");
+    } finally {
       setLoading(false);
-      return null;
     }
   }
+
   return {
     refetch: fetchOrganizationEvents,
     loading,
@@ -731,8 +778,8 @@ export function useBookingEvent() {
           userEmail: userData?.userEmail,
         };
       });
-     
-setLoading(true)
+
+      setLoading(true);
       const { error, status } = await supabase
         .from("attendees")
         .upsert([...attendees]);
@@ -762,9 +809,8 @@ setLoading(true)
       }
     } catch (error) {
       setLoading(false);
-    }
-    finally {
-      setLoading(false)
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -876,25 +922,25 @@ export function useUpdateTransactionDetail() {
       });
 
       if (status === 204 || status === 200) {
-        const { data: attendees, status } = await getRequest<TAttendee[]>({
-          endpoint: `/attendees/event/${payload?.eventAlias}`,
-        });
+        // const { data: attendees, status } = await getRequest<TAttendee[]>({
+        //   endpoint: `/attendees/event/${payload?.eventAlias}`,
+        // });
 
-        const registeredAttendee = attendees?.data
-          ?.filter((attendee) => {
-            return (
-              attendee?.eventRegistrationRef === payload?.eventRegistrationRef
-            );
-          })
-          .map((value) => {
-            return {
-              ...value,
-              registrationCompleted: true,
-              attendeeType: payload.role ?? ["attendee"],
-            };
-          });
+        // const registeredAttendee = attendees?.data
+        //   ?.filter((attendee) => {
+        //     return (
+        //       attendee?.eventRegistrationRef === payload?.eventRegistrationRef
+        //     );
+        //   })
+        //   .map((value) => {
+        //     return {
+        //       ...value,
+        //       registrationCompleted: true,
+        //       attendeeType: payload.role ?? ["attendee"],
+        //     };
+        //   });
 
-        await updateAttendees({ payload: registeredAttendee });
+        // await updateAttendees({ payload: registeredAttendee });
 
         setLoading(false);
         toggleSuccessModal(true);
@@ -1337,7 +1383,7 @@ export function useVerifyUserAccess(eventId: string) {
     isOrganizer,
     loading,
     isLoading,
-    eventAttendees
+    eventAttendees,
   };
 }
 
@@ -1475,3 +1521,60 @@ export function useRedeemPartnerDiscountCode() {
     discountPercentage,
   };
 }
+
+export const useGetAdminEvents = ({
+  eventStatus,
+  from,
+  to,
+  initialLoading,
+}: {
+  eventStatus: string;
+  from: number;
+  to: number;
+  initialLoading: boolean;
+}) => {
+  const [events, setEvents] = useState<Event[]>([]);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+  const [hasReachedLastPage, setHasReachedLastPage] = useState(false);
+
+  const getEvents = async () => {
+    if (initialLoading) setLoading(true);
+
+    try {
+      const { data, status } = await getRequest<Event[]>({
+        endpoint: `/events/admin/${eventStatus}?from=${from}&to=${to}`,
+      });
+
+      if (status !== 200) {
+        throw data;
+      }
+      if (
+        data.data === null ||
+        (Array.isArray(data.data) && data.data.length === 0)
+      )
+        return setHasReachedLastPage(true);
+      setEvents((prev) => [...prev, ...data.data]);
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    setEvents([]);
+  },[eventStatus])
+
+  useEffect(() => {
+    getEvents();
+  }, [eventStatus, from, to]);
+
+  return {
+    events,
+    isLoading,
+    error,
+    getEvents,
+    hasReachedLastPage
+  };
+};

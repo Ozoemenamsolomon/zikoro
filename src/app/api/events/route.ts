@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
       const userId = searchParams.get("userId");
       const organisationId = searchParams.get("organisationId");
 
-      const query = supabase.from("events").select("*, organization!inner(*), attendees!inner(*)");
+      const query = supabase.from("events").select("*, organization!inner(*), attendees!inner(*)").range(0,10000);
 
       if (userId) query.eq("createdBy", userId);
       if (organisationId) query.eq("organisationId", organisationId);

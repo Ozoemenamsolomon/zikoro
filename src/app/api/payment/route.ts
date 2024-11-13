@@ -91,9 +91,10 @@ export async function POST(req: NextRequest) {
         originalEvent.registered === null
           ? params.attendees
           : Number(originalEvent?.registered) + params.attendees;
+      const { organization: org, ...restData } = originalEvent;
       const { error, status } = await supabase
         .from("events")
-        .update({ ...originalEvent, registered })
+        .update({ ...restData, registered })
         .eq("id", params.eventId);
 
       if (error) {
@@ -308,7 +309,7 @@ export async function POST(req: NextRequest) {
               }</p>
             
               ${
-                originalEvent.organization.subscriptionPlan === "Free"
+                originalEvent.organization.subscriptionPlan !== "Free"
                   ? `
                 <a
                   href="https://www.zikoro.com/event/${eventAlias}/people/info/${
@@ -413,7 +414,7 @@ export async function POST(req: NextRequest) {
             alt="qrcode" />
           </div>
    ${
-     originalEvent.organization.subscriptionPlan === "Free"
+     originalEvent.organization.subscriptionPlan !== "Free"
        ? `         <a
             href="https://www.zikoro.com/event/${eventAlias}/reception?email=${
            attendee?.email
@@ -641,6 +642,35 @@ export async function POST(req: NextRequest) {
           });
         }
       });
+
+      const { data: attendees } = await supabase
+        .from("attendees")
+        .select("*")
+        .eq("eventAlias", eventAlias)
+        .range(0, 1000);
+
+      if (attendees) {
+        const allregisteredAttendees = attendees
+          ?.filter((attendee) => {
+            return attendee?.eventRegistrationRef === eventRegistrationRef;
+          })
+          .map((value) => {
+            return {
+              ...value,
+              registrationCompleted: true,
+              attendeeType: role ?? ["attendee"],
+            };
+          });
+
+        const { error } = await supabase
+          .from("attendees")
+          .upsert(allregisteredAttendees, { onConflict: "id" });
+
+        if (error) {
+          return NextResponse.json({ error: error?.message }, { status: 400 });
+        }
+        if (error) throw error;
+      }
 
       return NextResponse.json(
         { msg: "Transaction details updated successfully", check },
