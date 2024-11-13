@@ -232,7 +232,7 @@ export async function POST(req: NextRequest) {
               }</p>
             
               ${
-                event.organization?.includeJoinEventLink &&
+                event?.includeJoinEventLink &&
                 event.organization?.subscriptionPlan !== "Free" &&
                 `
                 <a
@@ -329,7 +329,7 @@ export async function POST(req: NextRequest) {
           <!--end-->
 
           ${
-            event.organization?.includeJoinEventLink &&
+            event?.includeJoinEventLink &&
             event.organization?.subscriptionPlan !== "Free" &&
             `<a
             href="https://www.zikoro.com/event/${

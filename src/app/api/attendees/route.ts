@@ -239,7 +239,7 @@ function generateEmailContent(attendee, event, formattedDate) {
           }</p>
 
           ${
-            event.organization?.includeJoinEventLink &&
+            event?.includeJoinEventLink &&
             event.organization?.subscriptionPlan !== "Free" &&
             `
             <a href="https://www.zikoro.com/event/${
@@ -328,7 +328,7 @@ function generateEmailContent(attendee, event, formattedDate) {
       </div>
       <!--end-->
       ${
-        event.organization?.includeJoinEventLink &&
+        event?.includeJoinEventLink &&
         event.organization?.subscriptionPlan !== "Free" &&
         `
         <a
