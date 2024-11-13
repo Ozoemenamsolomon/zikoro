@@ -1,27 +1,41 @@
-import { NextRequest, NextResponse } from "next/server";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { eventId: string } }
+  { params }: { params: { status: string } }
 ) {
+  const { status: eventStatus } = params;
   const supabase = createRouteHandlerClient({ cookies });
+
   if (req.method === "GET") {
     try {
-      const { eventId } = params;
+      const searchParams = new URLSearchParams(req.url);
+      const from = searchParams.get("from");
+      const to = searchParams.get("to");
 
       const { data, error, status } = await supabase
-        .from("certificate")
+        .from("events")
         .select("*")
-        .eq("eventId", eventId);
+        .eq("eventStatus", eventStatus)
+        .range(Number(from || 0), Number(to || 20));
 
-      console.log(data, "certificate");
+
+        if (error) {
+          return NextResponse.json({
+            error: error?.message
+          },
+        {status: 400}
+        )
+        }
 
       if (error) throw error;
 
       return NextResponse.json(
-        { data },
+        {
+          data,
+        },
         {
           status: 200,
         }

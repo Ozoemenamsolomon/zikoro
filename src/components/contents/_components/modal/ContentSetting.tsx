@@ -76,6 +76,7 @@ export function ContentSetting({
     useState<{ title: string; status: boolean }[]>(eventWebsiteSettings);
   const { data }: { data: Event | null; loading: boolean } =
     useFetchSingleEvent(eventId);
+    
   const form = useForm<FormValue>({
     defaultValues: {
       affiliateSettings: {

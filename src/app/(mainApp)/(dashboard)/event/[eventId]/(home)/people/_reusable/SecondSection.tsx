@@ -30,10 +30,11 @@ import {
   useGetCertificates,
   useReleaseAttendeeCertificate,
   useUpdateAttendeeCertificates,
+  useGetEventCertificates,
 } from "@/hooks/services/certificate";
 import { format, isPast } from "date-fns";
 import { TCertificate } from "@/types/certificates";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import AddAttendeeForm from "@/components/forms/AddAttendeeForm";
 import useDisclose from "@/hooks/common/useDisclose";
 import {
@@ -157,7 +158,6 @@ export default function SecondSection({
     certificate,
     profilePicture,
     attendeeType,
-    eventId,
     checkin,
     id,
     ticketType,
@@ -169,6 +169,7 @@ export default function SecondSection({
 
   console.log(attendeeAlias);
   const { user, setUser } = useUserStore();
+  const { eventId } = useParams();
   // const user = getCookie("user");
 
   const attendeeModeratingAt = eventAgendas?.filter(
@@ -230,9 +231,9 @@ export default function SecondSection({
   });
 
   const {
-    certificates: eventCertificates,
+    eventCertificates,
     isLoading: getEventCertificatesIsLoading,
-  } = useGetCertificates({
+  } = useGetEventCertificates({
     eventId,
   });
 
@@ -428,6 +429,8 @@ export default function SecondSection({
   useEffect(() => {
     calculateAndSetMaxHeight(divRef);
   }, [attendee]);
+
+  console.log(eventCertificates, "eventCertificates");
 
   return (
     <div className="overflow-auto no-scrollbar space-y-4 pb-48" ref={divRef}>
@@ -850,8 +853,7 @@ export default function SecondSection({
               !attendeeCertificates.some(
                 (attendeecertificate) =>
                   eventCertificate.id ===
-                    attendeecertificate.CertificateGroupId &&
-                  isPast(eventCertificate.publishOn)
+                    attendeecertificate.CertificateGroupId
               )
           ) && (
             <DropdownMenu>

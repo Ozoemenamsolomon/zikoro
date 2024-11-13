@@ -45,7 +45,7 @@ const Attendee: React.FC<AttendeeProps> = ({
     isLoading: engagementsSettingsIsLoading,
     getData: getEngagementsSettings,
   } = useGetData<EngagementsSettings>(
-    `engagements/${event.eventAlias}/settings333`
+    `engagements/${event.eventAlias}/settings`
   );
   const {
     id,
