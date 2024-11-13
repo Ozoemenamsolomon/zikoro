@@ -182,6 +182,8 @@ export function ContentSetting({
     }
   }, [data, form]);
 
+  console.log(organization?.subscriptionPlan, "subscription plan")
+
   return (
     <div
       onClick={onClose}
@@ -611,14 +613,14 @@ export function ContentSetting({
                 checked={includeJoinEventLink}
                 disabled={
                   getWorkspaceSubscriptionIsLoading ||
-                  organization?.subscriptionPlan === "free"
+                  organization?.subscriptionPlan === "Free"
                 }
                 className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary "
               />
               <div className="flex flex-col items-start w-full col-span-11 justify-start gap-y-1">
                 <h2 className="text-base sm:text-xl">
                   Include Join Event Link
-                  {organization?.subscriptionPlan === "free" &&
+                  {organization?.subscriptionPlan === "Free" &&
                     "(Not available for free plan)"}
                 </h2>
                 <p className="text-gray-500 text-start text-xs sm:text-sm">
