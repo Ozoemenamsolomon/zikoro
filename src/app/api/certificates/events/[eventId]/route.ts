@@ -16,6 +16,8 @@ export async function GET(
         .select("*")
         .eq("eventId", eventId);
 
+      console.log(data, "certificate");
+
       if (error) throw error;
 
       return NextResponse.json(
