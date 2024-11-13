@@ -309,7 +309,7 @@ export async function POST(req: NextRequest) {
               }</p>
             
               ${
-                originalEvent.organization.subscriptionPlan === "Free"
+                originalEvent.organization.subscriptionPlan !== "Free"
                   ? `
                 <a
                   href="https://www.zikoro.com/event/${eventAlias}/people/info/${
@@ -414,7 +414,7 @@ export async function POST(req: NextRequest) {
             alt="qrcode" />
           </div>
    ${
-     originalEvent.organization.subscriptionPlan === "Free"
+     originalEvent.organization.subscriptionPlan !== "Free"
        ? `         <a
             href="https://www.zikoro.com/event/${eventAlias}/reception?email=${
            attendee?.email
