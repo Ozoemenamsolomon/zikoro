@@ -595,7 +595,7 @@ export function ContentSetting({
                         </FormControl>
                         <FormDescription className="text-tiny">
                           Your affiliate earns their commission when the
-                          selected goal is reached by the attende
+                          selected goal is reached by the attendee
                         </FormDescription>
                         <FormMessage />
                       </FormItem>
