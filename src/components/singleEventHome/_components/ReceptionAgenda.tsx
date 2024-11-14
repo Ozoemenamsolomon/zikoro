@@ -102,7 +102,7 @@ export function ReceptionAgenda({
                   refetchEvent={refetchEvent}
                   attendeeId={attendeeId}
                   myAgendas={myAgendas}
-                  className="w-[400px] bg-white sm:w-[420px] h-[230px] sm:h-[250px]"
+                  className="w-[375px] bg-white sm:w-[420px] h-[230px] sm:h-[250px]"
                   engagementsSettings={engagementsSettings}
                 />
               );
