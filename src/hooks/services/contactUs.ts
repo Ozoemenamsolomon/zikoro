@@ -8,12 +8,15 @@ type UpdateContactRequestBody = {
         firstName: string;
         lastName: string;
         email: string;
+        city:string;
+        country:string;
         phoneNumber?: string;
         annualEvents?: string;
         attendees?: string;
         industry?: string;
         comments: string;
         source: string;
+        
     };
 };
 
@@ -30,6 +33,8 @@ export function useContactUs() {
                 .insert({
                     firstName: values.firstName,
                     lastName: values.lastName,
+                    city: values.city,
+                    country:values.country,
                     email: values.email,
                     source: values.source,
                     phoneNumber: values.phoneNumber,
