@@ -45,7 +45,7 @@ useEffect(() => {
 
   const {
     events: eventData,
-    getEvents: refetch,
+    getEvents,
     isLoading: loading,
     hasReachedLastPage,
   } = useGetAdminEvents({
@@ -61,6 +61,14 @@ useEffect(() => {
     setTo,
     setInitialLoading
   );
+
+  async function refetch() {
+    setInitialLoading(false)
+    setFrom(0)
+    setTo(50)
+    getEvents();
+    
+  }
 
   return (
     <EventLayout query={e}>
@@ -145,6 +153,7 @@ function EventCard({
       email: event?.organization?.eventContactEmail,
     });
     refetch();
+    showPublishModal()
   }
 
   function showPublishModal() {

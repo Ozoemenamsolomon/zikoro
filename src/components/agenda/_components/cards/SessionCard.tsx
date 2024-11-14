@@ -55,7 +55,7 @@ export function SessionCard({
           {startTime} - {endTime}
         </p>
         {isLive && (
-        <p className="text-[8px]  sm:text-[11px] text-red-500 border border-red-500 bg-red-200 absolute top-[0.1px] rounded-xl px-2 py-1 ">
+        <p className="text-[8px]  sm:text-[11px] text-red-500 border border-red-500 bg-red-200 rounded-xl px-2 py-1 ">
           Live
         </p>
       )}

@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation";
 import { EngagementsSettings } from "@/types/engagements";
 import { EventAttendeeWidget } from "@/components/published";
 import { isEventLive } from "@/utils";
+
 export function Custom({
   sessionAgenda,
   className,
