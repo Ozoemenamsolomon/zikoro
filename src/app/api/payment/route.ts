@@ -310,7 +310,9 @@ export async function POST(req: NextRequest) {
             
               ${
                 originalEvent?.includeJoinEventLink &&
-                originalEvent.organization?.subscriptionPlan !== "Free"
+                (originalEvent.organization?.subscriptionPlan !==
+                  "Enterprise" ||
+                  originalEvent.organization?.subscriptionPlan !== "Lite")
                   ? `
                 <a
                   href="https://www.zikoro.com/event/${eventAlias}/people/info/${
