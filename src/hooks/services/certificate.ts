@@ -175,6 +175,8 @@ export const useGetEventCertificates = ({
       if (status !== 200) {
         throw data;
       }
+
+      console.log(data, "event certificates");
       setEventCertificates(data.data);
     } catch (error) {
       setError(true);

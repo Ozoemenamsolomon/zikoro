@@ -76,12 +76,12 @@ export function ContentSetting({
     useState<{ title: string; status: boolean }[]>(eventWebsiteSettings);
   const { data }: { data: Event | null; loading: boolean } =
     useFetchSingleEvent(eventId);
+
   const form = useForm<FormValue>({
     defaultValues: {
       affiliateSettings: {
         commissionType: "percentage",
         commissionValue: 5,
-        
       },
       includeJoinEventLink: false,
     },
@@ -171,6 +171,7 @@ export function ContentSetting({
         explore: data?.explore ? data?.explore : false,
         affiliateSettings: data.affiliateSettings,
         selfCheckInAllowed: data.selfCheckInAllowed,
+        includeJoinEventLink: data.includeJoinEventLink,
       });
 
       if (data?.eventWebsiteSettings === null) {
@@ -518,7 +519,6 @@ export function ContentSetting({
                             <PopoverTrigger asChild>
                               <FormControl>
                                 <Button
-                                  
                                   className={cn(
                                     "flex gap-4 items-center w-full px-4 justify-start font-normal py-4",
                                     !field.value && "text-muted-foreground"
