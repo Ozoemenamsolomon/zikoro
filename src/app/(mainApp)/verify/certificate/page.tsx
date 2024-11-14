@@ -17,7 +17,7 @@ const Page = () => {
 
     
 
-    if (!!certificate) router.push(`/verify/${certificateId}`);
+    if (!!certificate) router.push(`/verify/cerificate/${certificateId}`);
   };
 
   return (

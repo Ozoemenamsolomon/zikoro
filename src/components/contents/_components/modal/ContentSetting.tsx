@@ -182,6 +182,8 @@ export function ContentSetting({
     }
   }, [data, form]);
 
+  console.log(organization?.subscriptionPlan, "subscription plan")
+
   return (
     <div
       onClick={onClose}
