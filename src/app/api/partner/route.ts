@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
             },
           },
         ],
-        subject: `Profile update notification`,
+        subject: `Confirmation to exhibit at ${event?.eventName}`,
         htmlbody: `
         <div>
         <div

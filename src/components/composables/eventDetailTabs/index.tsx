@@ -8,6 +8,7 @@ import { EventDetailMobileTab } from "./EventDetailMobileTab";
 import { useEffect, useState } from "react";
 import { Rewards } from "./Rewards";
 import { Reviews } from "./Reviews";
+import { useGetEventAttendees } from "@/hooks";
 
 const eventWebsiteSettings = [
   { title: "Logo", status: false },
@@ -36,6 +37,7 @@ export function EventDetailTabs({
   setActiveTab: (n: number) => void;
   isEventHome?: boolean;
 }) {
+  const { attendees, isLoading } = useGetEventAttendees(event?.eventAlias!);
   const [selectedTabs, setSelectedTabs] = useState<
     { title: string; status: boolean }[]
   >([]);
@@ -105,10 +107,10 @@ export function EventDetailTabs({
 
   return (
     <>
-      {!isEventDetailPage && active === 1 && event && (
+      {!isEventDetailPage && active === 1 && event && !isLoading && (
         <EventDetailMobileTab
           eventId={String(event.eventAlias)}
-          changeActiveState={changeActiveState}
+          formattedAttendees={attendees}
         />
       )}
       <div

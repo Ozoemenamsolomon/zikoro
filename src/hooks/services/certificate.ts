@@ -10,58 +10,23 @@ import {
   TIssuedCertificate,
 } from "@/types/certificates";
 import { RequestStatus, UseGetResult, usePostResult } from "@/types/request";
-import { deleteRequest, getRequest, patchRequest, postRequest } from "@/utils/api";
+import { deleteRequest, getRequest, postRequest } from "@/utils/api";
 import { useEffect, useState } from "react";
+import { getCookie } from "@/hooks";
 import useUserStore from "@/store/globalUserStore";
-
-export const useCreateCertificate = () => {
-  const [isLoading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<boolean>(false);
-
-  const createCertificate = async () => {
-    setLoading(true);
-    toast({
-      description: "creating certificate...",
-    });
-    try {
-      const { data, status } = await postRequest<TCertificate>({
-        endpoint: "/certificates",
-        payload: {},
-      });
-
-      if (status !== 201) throw data.data;
-      toast({
-        description: "Certificate Saved Successfully",
-      });
-      return data.data;
-    } catch (error) {
-      setError(true);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return { createCertificate, isLoading, error };
-};
 
 export const useSaveCertificate = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
-  const saveCertificate = async ({
-    payload,
-    certificateAlias,
-  }: {
-    payload: TCertificate;
-    certificateAlias: string;
-  }) => {
+  const saveCertificate = async ({ payload }: { payload: TCertificate }) => {
     setLoading(true);
     toast({
       description: "saving certificate...",
     });
     try {
-      const { data, status } = await patchRequest<TCertificate>({
-        endpoint: "/certificates/" + certificateAlias,
+      const { data, status } = await postRequest<TCertificate>({
+        endpoint: "/certificates",
         payload,
       });
 
@@ -210,6 +175,8 @@ export const useGetEventCertificates = ({
       if (status !== 200) {
         throw data;
       }
+
+      console.log(data, "event certificates");
       setEventCertificates(data.data);
     } catch (error) {
       setError(true);
@@ -536,7 +503,7 @@ export const useVerifyAttendeeCertificate = ({
 
   useEffect(() => {
     verifyAttendeeCertificate();
-  }, []);
+  }, [certificateId]);
 
   return { attendeeCertificate, isLoading, error, verifyAttendeeCertificate };
 };

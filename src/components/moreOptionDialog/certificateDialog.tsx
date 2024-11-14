@@ -54,10 +54,7 @@ const CertificateDialog: React.FC<MoreOptionsProps> = ({
     eventId,
   });
 
-  
-
   useEffect(() => {
-    
     if (!selectedCertificate || attendeesCertificateisLoading) return;
 
     const attendeesId = attendeesCertificates
@@ -101,7 +98,6 @@ const CertificateDialog: React.FC<MoreOptionsProps> = ({
   };
 
   const onSubmit = async () => {
-    
     if (!selectedCertificate) return;
 
     if (selectedAttendees.some(({ id }) => !id)) return;
@@ -192,7 +188,9 @@ const CertificateDialog: React.FC<MoreOptionsProps> = ({
       <ViewAttendeesSection
         attendeesTags={attendeesTags}
         favourites={favourites}
-        attendees={mappedAttendees}
+        attendees={mappedAttendees.filter(
+          (attendee) => selectedCertificate && attendee.id
+        )}
         selectedAttendees={selectedAttendees}
         toggleValue={toggleValue}
       />

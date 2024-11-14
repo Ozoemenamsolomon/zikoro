@@ -287,9 +287,9 @@ export function Partners({ eventId }: { eventId: string }) {
   // }, [event]);
 
   return (
-    <div className="w-full pb-24">
+    <div className="w-full  pb-24">
       <HeaderTab eventId={eventId} refetch={refetch} query={query} />
-
+      <div className="px-4 mx-auto  max-w-[1300px] text-mobile sm:text-sm sm:px-6 mt-6 sm:mt-10">
       <div
         className={cn(
           "w-full flex flex-col justify-start items-start ",
@@ -330,6 +330,7 @@ export function Partners({ eventId }: { eventId: string }) {
       {query === "exhibitors" && event && (
         <Exhibitors event={event} exhibitors={exhibitors} loading={loading} />
       )}
+      </div>
     </div>
   );
 }

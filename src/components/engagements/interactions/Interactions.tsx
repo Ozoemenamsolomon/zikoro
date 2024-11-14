@@ -104,7 +104,7 @@ export default function Interactions({ eventId }: { eventId: string }) {
     if (pollCount >= 3) {
       verifyingAccess({
         textContent:
-          "You have reached the maximum limit of 3 polls. You can delete some polls to create a new one.",
+          "You have reached the maximum limit of 3 polls. ",
         isNotUpgrading: true,
       });
       return;

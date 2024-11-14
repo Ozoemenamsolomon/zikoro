@@ -20,6 +20,7 @@ import { EngagementsSettings } from "@/types/engagements";
 import { cn } from "@/lib";
 import { CreatePromo } from "../modals/CreatePromo";
 import { Edit } from "styled-icons/material";
+import { InlineIcon } from "@iconify/react";
 export function OfferCard({
   offer,
   isOrganizer,
@@ -28,6 +29,7 @@ export function OfferCard({
   engagementsSettings,
   leads,
   refetch,
+  className,
 }: {
   isOrganizer?: boolean;
   attendee?: TAttendee;
@@ -36,6 +38,7 @@ export function OfferCard({
   engagementsSettings?: EngagementsSettings | null;
   leads?: TLead[] | null;
   refetch: () => Promise<any>;
+  className?: string;
 }) {
   const [isOpen, setOpen] = useState(false);
   const [isApply, setApply] = useState(false);
@@ -77,7 +80,12 @@ export function OfferCard({
   }
   return (
     <>
-      <div className="w-full h-fit pb-3 flex flex-col bg-white shadow border rounded-md  gap-y-2 items-start">
+      <div
+        className={cn(
+          "w-full h-fit pb-3 flex flex-col bg-white shadow border rounded-md  gap-y-2 items-start",
+          className
+        )}
+      >
         <div className="relative w-full h-40 sm:h-56 xl:h-60 rounded-t-md overflow-hidden">
           {offer?.productImage ? (
             <Image
@@ -108,7 +116,7 @@ export function OfferCard({
               </button>
             )}
             <button onClick={onClose}>
-              <AlertCircle className="text-gray-600" size={22} />
+              <InlineIcon icon="line-md:alert-circle-twotone" fontSize={22} />
             </button>
           </div>
         </div>
@@ -223,12 +231,16 @@ function OfferCardModal({
             </div>
           </div>
           <div className="flex px-3 items-center gap-x-3">
-           {offer?.productPromo && <p className="font-semibold">{`₦${Number(
-              offer?.productPromo
-            )?.toLocaleString()}`}</p>}
-           {offer?.productPrice && <p className="font-semibold text-gray-400">{`₦${Number(
-              offer?.productPrice
-            )?.toLocaleString()}`}</p>}
+            {offer?.productPromo && (
+              <p className="font-semibold">{`₦${Number(
+                offer?.productPromo
+              )?.toLocaleString()}`}</p>
+            )}
+            {offer?.productPrice && (
+              <p className="font-semibold text-gray-400">{`₦${Number(
+                offer?.productPrice
+              )?.toLocaleString()}`}</p>
+            )}
           </div>
           <p className="px-3 text-gray-600">{`Offer Valid Until ${formatShortDate(
             offer?.endDate
@@ -338,7 +350,7 @@ function ActionWidget({
         eventPartnerAlias: offer?.partnerId,
         title: offer?.serviceTitle,
         note: values?.note,
-        offerAmount: Number(offer?.productPromo)
+        offerAmount: Number(offer?.productPromo),
       },
     };
     if (
@@ -474,8 +486,8 @@ function ActionWidget({
         {!isShow ? (
           <div className="w-full flex gap-y-16 flex-col items-center justify-center h-full">
             <p className="text-center">
-              Do you want to get this offer?. Your details will be shared
-              with <span className="font-semibold">{offer?.companyName}</span>
+              Do you want to get this offer?. Your details will be shared with{" "}
+              <span className="font-semibold">{offer?.companyName}</span>
             </p>
             <div className="w-full flex items-end justify-end gap-x-3">
               <Button onClick={close}>Cancel</Button>

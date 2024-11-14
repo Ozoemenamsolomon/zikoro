@@ -17,23 +17,24 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import useOrganizationStore from "@/store/globalOrganizationStore";
 
 const Background = ({ details, setValue }: TabProps) => {
   const { connectors } = useEditor();
+  const { organization: currentOrg } = useOrganizationStore();
   const {
     organization,
     isLoading: fetching,
     getOrganization,
   } = useGetOrganization({
-    organizationId: 5,
+    organizationId: currentOrg?.id,
   });
   const { updateOrganization, isLoading: updating } = useUpdateOrganization({
-    organizationId: 5,
+    organizationId: currentOrg?.id,
   });
 
   const divRef = useRef<HTMLDivElement>(null);
 
-  
   const [backgroundUploading, setBackgroundUploading] =
     useState<boolean>(false);
 
@@ -74,7 +75,6 @@ const Background = ({ details, setValue }: TabProps) => {
       });
 
       await getOrganization();
-      
     } catch (error) {
       alert("error uploading profile picture");
       console.error("Error uploading file:", error);

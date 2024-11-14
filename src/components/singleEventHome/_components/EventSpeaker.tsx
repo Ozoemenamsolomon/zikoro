@@ -16,13 +16,16 @@ import { TAttendee } from "@/types";
 import Link from "next/link";
 import { cn } from "@/lib";
 
-export function Speakers({
+export function EventSpeakers({
   eventId,
+  formattedAttendees,
+  changeMajorActiveState
 }: {
-  // changeMajorActiveState: (n: number) => void;
+   changeMajorActiveState: (n: number) => void;
   eventId: string;
+  formattedAttendees: TAttendee[]
 }) {
-  const { attendees, isLoading } = useGetEventAttendees(eventId);
+ 
   const [selectedAttendee, setSelectedAttendee] = useState<TAttendee | null>(
     null
   );
@@ -37,11 +40,6 @@ export function Speakers({
     setActive(active);
   }
 
-  const formattedAttendees = useMemo(() => {
-    return attendees?.filter(({ attendeeType, speakingAt }) => {
-      return attendeeType?.includes("speaker") || (Array.isArray(speakingAt) && speakingAt?.length > 0);
-    });
-  }, [attendees]);
 
   /**
     <Button
@@ -53,30 +51,34 @@ export function Speakers({
         </Button>
    */
   return (
-    <div className="w-full p-3 bg-white">
+    <div className="w-full  bg-white">
       <div
         className={cn(
-          "w-full rounded-lg border px-2 hidden",
+          "w-full rounded-lg  px-2 hidden",
           active === 1 && "block"
         )}
       >
+        <Button
+          onClick={() => changeMajorActiveState(1)}
+          className="px-0 mt-2 ml-2 h-fit w-fit  bg-none  "
+        >
+          <ArrowBack className="px-1" size={22} />
+          <span>Back</span>
+        </Button>
+
         <h3 className="pb-2 w-full invisible text-center">Event Speakers</h3>
 
        
           <div className=" w-full grid grid-cols-1 sm:grid-cols-2 sm:flex  gap-4 items-center flex-wrap justify-center p-4 sm:p-6">
-            {isLoading && (
-              <div className="col-span-full h-[200px] flex items-center justify-center">
-                <LoaderAlt size={30} className="animate-spin" />
-              </div>
-            )}
-            {!isLoading && formattedAttendees?.length === 0 && (
+           
+            { formattedAttendees?.length === 0 && (
               <div className="col-span-full h-[200px] flex items-center justify-center">
                 <p className="text-mobile sm:text-sm font-semibold">
                   No Speaker
                 </p>
               </div>
             )}
-            {!isLoading &&
+            {
               Array.isArray(formattedAttendees) &&
               formattedAttendees.map((attendee) => (
                 <SpeakerWidget

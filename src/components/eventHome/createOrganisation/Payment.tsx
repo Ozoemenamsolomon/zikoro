@@ -25,7 +25,11 @@ type TParsedData = {
   organizationType: string;
   subscriptionPlan: string;
 };
-export default function Payment({searchParams: { data }}:{searchParams: any}) {
+export default function Payment({
+  searchParams: { data },
+}: {
+  searchParams: any;
+}) {
   const router = useRouter();
   const { user } = useUserStore();
   const { postData } = usePostRequest<Partial<ISubscription>>(
@@ -143,7 +147,17 @@ export default function Payment({searchParams: { data }}:{searchParams: any}) {
             </div>
           </div>
           <div className="w-full flex items-center justify-center">
-            <PaystackButton {...componentProps} />
+            {parsedData?.total && Number(parsedData?.total) > 0 ? (
+              <PaystackButton {...componentProps} />
+            ) : (
+              <Button
+                onClick={() => handleSuccess("ref")}
+                className="w-full gap-x-2 bg-basePrimary text-gray-50 font-medium"
+              >
+                <Lock size={22} />
+                <span>{`Confirm`}</span>
+              </Button>
+            )}
           </div>
         </div>
       </div>

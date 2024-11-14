@@ -51,7 +51,6 @@ export async function POST(req: NextRequest) {
         options
       ).format(date);
 
-      console.log(affiliateCode);
       const {
         error: firstError,
         status: firstStatus,
@@ -61,8 +60,6 @@ export async function POST(req: NextRequest) {
         .update({ ...restItem, affiliateCode: affiliateCode })
         .eq("eventRegistrationRef", params.eventRegistrationRef)
         .select();
-
-      console.log(data);
 
       if (firstError) {
         console.log(firstError);
@@ -94,9 +91,10 @@ export async function POST(req: NextRequest) {
         originalEvent.registered === null
           ? params.attendees
           : Number(originalEvent?.registered) + params.attendees;
+      const { organization: org, ...restData } = originalEvent;
       const { error, status } = await supabase
         .from("events")
-        .update({ ...originalEvent, registered })
+        .update({ ...restData, registered })
         .eq("id", params.eventId);
 
       if (error) {
@@ -201,7 +199,7 @@ export async function POST(req: NextRequest) {
         ticketType: string;
         attendeeAlias: string;
       }[] = await Promise.all(resolveAttendees);
-      
+
       // sending email
       var { SendMailClient } = require("zeptomail");
 
@@ -311,21 +309,24 @@ export async function POST(req: NextRequest) {
               }</p>
             
               ${
-                originalEvent.organization.subscriptionPlan === "free" &&
-                `
+                originalEvent?.includeJoinEventLink &&
+                originalEvent.organization?.subscriptionPlan !== "Free"
+                  ? `
                 <a
                   href="https://www.zikoro.com/event/${eventAlias}/people/info/${
-                  attendee?.attendeeAlias
-                }?email=${
-                  attendee?.email
-                }&createdAt=${new Date().toISOString()}&isPasswordless=${true}&alias=${
-                  attendee?.attendeeAlias
-                }" 
+                      attendee?.attendeeAlias
+                    }?email=${
+                      attendee?.email
+                    }&createdAt=${new Date().toISOString()}&isPasswordless=${true}&alias=${
+                      attendee?.attendeeAlias
+                    }" 
                   style="display: block; color: #001fcc; font-size: 12px; text-decoration: none;"
                   >
                     Update Profile
                 </a>
+                
                 `
+                  : `<p></p>`
               }
             </div>
           </div>
@@ -414,13 +415,14 @@ export async function POST(req: NextRequest) {
             alt="qrcode" />
           </div>
    ${
-     originalEvent.organization.subscriptionPlan === "free" &&
-     `         <a
+     originalEvent?.includeJoinEventLink &&
+     originalEvent.organization?.subscriptionPlan !== "Free"
+       ? `         <a
             href="https://www.zikoro.com/event/${eventAlias}/reception?email=${
-       attendee?.email
-     }&createdAt=${new Date().toISOString()}&isPasswordless=${true}&alias=${
-       attendee?.attendeeAlias
-     }"
+           attendee?.email
+         }&createdAt=${new Date().toISOString()}&isPasswordless=${true}&alias=${
+           attendee?.attendeeAlias
+         }"
             style="max-width:600px; margin:0 auto;"
             >
             <button
@@ -445,6 +447,7 @@ export async function POST(req: NextRequest) {
           </button>
             </a>
            `
+       : `<p></p>`
    }
       
             <div
@@ -642,7 +645,34 @@ export async function POST(req: NextRequest) {
         }
       });
 
+      const { data: attendees } = await supabase
+        .from("attendees")
+        .select("*")
+        .eq("eventAlias", eventAlias)
+        .range(0, 1000);
 
+      if (attendees) {
+        const allregisteredAttendees = attendees
+          ?.filter((attendee) => {
+            return attendee?.eventRegistrationRef === eventRegistrationRef;
+          })
+          .map((value) => {
+            return {
+              ...value,
+              registrationCompleted: true,
+              attendeeType: role ?? ["attendee"],
+            };
+          });
+
+        const { error } = await supabase
+          .from("attendees")
+          .upsert(allregisteredAttendees, { onConflict: "id" });
+
+        if (error) {
+          return NextResponse.json({ error: error?.message }, { status: 400 });
+        }
+        if (error) throw error;
+      }
 
       return NextResponse.json(
         { msg: "Transaction details updated successfully", check },

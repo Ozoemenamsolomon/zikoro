@@ -495,7 +495,7 @@ export default function AddAttendeeForm({
             <a
               target="_blank"
               rel="noopener noreferrer"
-              href="http://www.zikoro.com/appointments/schedule"
+              href="https://bookings.zikoro.com/workspace/schedule"
             >
               <span className="text-xs font-medium text-basePrimary">
                 create your appointment link with this URL

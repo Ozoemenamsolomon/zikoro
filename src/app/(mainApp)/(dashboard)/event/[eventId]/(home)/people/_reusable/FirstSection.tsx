@@ -1,11 +1,9 @@
 "use client";
 import Attendee from "@/components/Attendee";
 import Filter from "@/components/Filter";
-import CertificateDialog from "@/components/moreOptionDialog/certificateDialog";
 import ChangeAttendeeType from "@/components/moreOptionDialog/changeAttendeeType";
 import CheckinMultiple from "@/components/moreOptionDialog/checkinMultiple";
 import ImportAttendees from "@/components/moreOptionDialog/importAttendees";
-import PrintBadges from "@/components/moreOptionDialog/printBadges";
 import {
   Dialog,
   DialogContent,
@@ -39,14 +37,13 @@ import * as XLSX from "xlsx";
 import { TAttendeeTags } from "@/types/tags";
 import { TFavouriteContact } from "@/types/favourites";
 import { TFilter } from "@/types/filter";
-import { Event, TUser } from "@/types";
+import { Event } from "@/types";
 import { eachDayOfInterval, format, isSameDay } from "date-fns";
 import useUserStore from "@/store/globalUserStore";
 import ArchiveAttendee from "@/components/moreOptionDialog/archiveAttendee";
 import { ContactRequest } from "@/types/contacts";
-import { createClient } from "@/utils/supabase/client";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { create } from "lodash";
+import CertificateDialog from "@/components/moreOptionDialog/certificateDialog";
 
 type TSortorder = "asc" | "desc" | "none";
 
@@ -158,10 +155,10 @@ const moreOptions: TMoreOptions[] = [
   //   label: "Print Badges",
   //   Component: PrintBadges,
   // },
-  // {
-  //   label: "Certificates",
-  //   Component: CertificateDialog,
-  // },
+  {
+    label: "Certificates",
+    Component: CertificateDialog,
+  },
   {
     label: "Import Attendees",
     Component: ImportAttendees,

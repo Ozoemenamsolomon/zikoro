@@ -17,7 +17,7 @@ import {
   ReferralIcon,
   WhatsappIcon,
 } from "@/constants";
-import { useGetEvents, useLogOut, useValidateUser } from "@/hooks";
+import { useGetCreatedEvents, useLogOut, useValidateUser } from "@/hooks";
 import { sendMail, whatsapp } from "@/utils";
 import useUserStore from "@/store/globalUserStore";
 import { useGetUserOrganization } from "@/hooks/services/userOrganization";
@@ -32,18 +32,19 @@ function SideBarLayoutComp({ children }: { children: React.ReactNode }) {
   const router = useRouter();
 
   const [isOpen, setOpen] = useState(false);
-  const { events } = useGetEvents();
+  const { events } = useGetCreatedEvents();
   const { user } = useUserStore();
 
   // console.log(user);
 
   // get events
   const isHaveEvent = useMemo(() => {
-    return (
-      Array.isArray(events) &&
-      events?.filter(({ createdBy }) => Number(createdBy) === Number(user?.id))
-        ?.length > 0
-    );
+    if (Array.isArray(events)) {
+      return events?.some(
+        ({ createdBy }) => Number(createdBy) === Number(user?.id)
+      );
+    }
+    return false;
   }, [events]);
 
   function onOpen() {

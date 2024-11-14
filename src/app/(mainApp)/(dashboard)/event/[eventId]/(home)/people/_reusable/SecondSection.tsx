@@ -30,10 +30,11 @@ import {
   useGetCertificates,
   useReleaseAttendeeCertificate,
   useUpdateAttendeeCertificates,
+  useGetEventCertificates,
 } from "@/hooks/services/certificate";
 import { format, isPast } from "date-fns";
 import { TCertificate } from "@/types/certificates";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import AddAttendeeForm from "@/components/forms/AddAttendeeForm";
 import useDisclose from "@/hooks/common/useDisclose";
 import {
@@ -157,7 +158,6 @@ export default function SecondSection({
     certificate,
     profilePicture,
     attendeeType,
-    eventId,
     checkin,
     id,
     ticketType,
@@ -169,6 +169,7 @@ export default function SecondSection({
 
   console.log(attendeeAlias);
   const { user, setUser } = useUserStore();
+  const { eventId } = useParams();
   // const user = getCookie("user");
 
   const attendeeModeratingAt = eventAgendas?.filter(
@@ -230,9 +231,9 @@ export default function SecondSection({
   });
 
   const {
-    certificates: eventCertificates,
+    eventCertificates,
     isLoading: getEventCertificatesIsLoading,
-  } = useGetCertificates({
+  } = useGetEventCertificates({
     eventId,
   });
 
@@ -428,6 +429,8 @@ export default function SecondSection({
   useEffect(() => {
     calculateAndSetMaxHeight(divRef);
   }, [attendee]);
+
+  console.log(eventCertificates, "eventCertificates");
 
   return (
     <div className="overflow-auto no-scrollbar space-y-4 pb-48" ref={divRef}>
@@ -763,7 +766,7 @@ export default function SecondSection({
           )}
         </div>
       </section>
-      {/* {user &&
+      {user &&
         (String(event?.createdBy) === String(user.id) ||
           email === user.userEmail) && (
           <AttendeeCredentials
@@ -774,9 +777,9 @@ export default function SecondSection({
             attendeeCertificatesIsLoading={attendeeCertificatesIsLoading}
             getAttendeeCertificates={getAttendeeCertificates}
           />
-        )} */}
-      {/* <section className="flex justify-between items-center px-2">
-        {!badgeIsLoading &&
+        )}
+      <section className="flex justify-between items-center px-2">
+        {/* {!badgeIsLoading &&
           !attendeeBadge &&
           user &&
           (String(event?.createdBy) === String(user.id) ||
@@ -840,7 +843,7 @@ export default function SecondSection({
                 </span>
               </div>
             </Link>
-          )}
+          )} */}
         {!getEventCertificatesIsLoading &&
           eventCertificates &&
           user &&
@@ -849,7 +852,8 @@ export default function SecondSection({
             (eventCertificate) =>
               !attendeeCertificates.some(
                 (attendeecertificate) =>
-                  eventCertificate.id === attendeecertificate.CertificateGroupId
+                  eventCertificate.id ===
+                    attendeecertificate.CertificateGroupId
               )
           ) && (
             <DropdownMenu>
@@ -882,8 +886,7 @@ export default function SecondSection({
                         (attendeecertificate) =>
                           eventCertificate.id ===
                           attendeecertificate.CertificateGroupId
-                      ) &&
-                      isPast(eventCertificate.certificateSettings.publishOn)
+                      )
                   )
                   .map((eventCertificate) => (
                     <DropdownMenuItem key={eventCertificate.id}>
@@ -905,7 +908,7 @@ export default function SecondSection({
             <DropdownMenu>
               <DropdownMenuTrigger>
                 <div className=" flex flex-col items-center gap-2 w-fit">
-                  <div className=" w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex items-center justify-center">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"
@@ -943,7 +946,7 @@ export default function SecondSection({
               </DropdownMenuContent>
             </DropdownMenu>
           )}
-      </section> */}
+      </section>
       <AttendeeAbout
         city={city}
         country={country}

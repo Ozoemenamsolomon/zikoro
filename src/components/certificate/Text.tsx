@@ -90,42 +90,50 @@ const Text = ({
   }, [selected]);
 
   return (
-    <Draggable onStop={handleStop} position={startingPos}>
-      <div
-        ref={(ref) => ref && connect(ref)}
-        onClick={() => selected}
-        onDoubleClick={() => !isNotEditable && setEditable(true)}
-        className={cn(
-          editable && !isNotEditable ? "cursor-text" : "cursor-move"
-        )}
-      >
-        <ContentEditable
-          html={text}
-          disabled={!editable || isNotEditable}
-          onChange={(e) =>
-            setProp(
-              (props: Textprops) =>
-                (props.text = e.target.value.replace(/<\/?[^>]+(>|$)/g, "")),
-              500
-            )
-          }
-          tagName={tagName}
-          style={{
-            fontSize: `${fontSize || 16}px`,
-            lineHeight: `${fontSize ? fontSize + 4 : 18}px`,
-            textAlign,
-            color,
-            fontWeight: isBold ? 600 : 400,
-            fontStyle: isItalic ? "italic" : "normal",
-            textDecoration: isUnderline ? "underline" : "none",
-            textTransform,
-            padding: "0px !important",
-            width: "fit-content",
-          }}
+    <Draggable handle="#handle" onStop={handleStop} position={startingPos}>
+      <div className="relative w-fit" ref={(ref) => ref && connect(ref)}>
+        <div
+          onClick={() => selected}
+          onDoubleClick={() => !isNotEditable && setEditable(true)}
           className={cn(
-            fontFamily,
-            selected && "border-2 border-sky-400 !p-0 w-fit"
+            editable && !isNotEditable ? "cursor-text" : "cursor-move"
           )}
+        >
+          <ContentEditable
+            html={text}
+            disabled={!editable || isNotEditable}
+            onChange={(e) =>
+              setProp(
+                (props: Textprops) =>
+                  (props.text = e.target.value.replace(/<\/?[^>]+(>|$)/g, "")),
+                500
+              )
+            }
+            tagName={tagName}
+            style={{
+              fontSize: `${fontSize || 16}px`,
+              lineHeight: `${fontSize ? fontSize + 4 : 18}px`,
+              textAlign,
+              color,
+              fontWeight: isBold ? 600 : 400,
+              fontStyle: isItalic ? "italic" : "normal",
+              textDecoration: isUnderline ? "underline" : "none",
+              textTransform,
+              padding: "0px !important",
+              width: "fit-content",
+            }}
+            className={cn(
+              fontFamily,
+              selected && "border-2 border-sky-400 !p-0 w-fit"
+            )}
+          />
+        </div>
+        <div
+          className={cn(
+            "absolute -translate-x-1/2 left-1/2 -bottom-6  size-2 bg-white ring ring-sky-400 cursor-move",
+            !selected && "hidden"
+          )}
+          id="handle"
         />
       </div>
     </Draggable>
@@ -284,7 +292,7 @@ const TextSettings = () => {
               value={[fontSize]}
               step={2}
               min={8}
-              max={24}
+              max={200}
               onValueChange={(value) => {
                 setProp(
                   (props: Textprops) => (props.fontSize = value[0]),

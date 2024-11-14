@@ -6,6 +6,7 @@ import { useRequestPayOut } from "@/hooks/services/billing";
 import { DialogClose } from "./ui/dialog";
 import useOrganizationStore from "@/store/globalOrganizationStore";
 import useUserStore from "@/store/globalUserStore";
+import { maskAccountNumber } from "@/utils/helpers";
 
 interface RequestPayoutDialogProps {
   selectedRows: TEventTransaction[];
@@ -139,9 +140,13 @@ const RequestPayoutDialog = ({
             <span className="text-gray-700 text-sm">Beneficiary</span>
             <div className="flex flex-col space-y-1">
               <span className="text-gray-700 font-medium text-sm">
-                ACCESS BANK
+                {organization.payoutAccountDetails?.bankName}
               </span>
-              <span className="text-gray-700 text-xs">****9876</span>
+              <span className="text-gray-700 text-xs">
+                {maskAccountNumber(
+                  organization.payoutAccountDetails?.accountNumber
+                )}
+              </span>
             </div>
           </div>
         </div>

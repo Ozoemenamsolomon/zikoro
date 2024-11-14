@@ -47,7 +47,7 @@ export function PartnerDetails({
   }, [ owner,  data, loading]);
 
   return (
-    <>
+    <div className="w-full px-4 mx-auto  max-w-[1300px] text-mobile sm:text-sm sm:px-6 mt-6 sm:mt-10">
       {loading  ? (
         <div className="w-full h-[300px] flex items-center justify-center">
           <LoaderAlt className="animate-spin" size={30} />
@@ -80,6 +80,6 @@ export function PartnerDetails({
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }

@@ -55,11 +55,11 @@ const eventWebsiteSettings = [
 type FormValue = {
   attendeePayProcessingFee: boolean;
   explore: boolean;
-  eventAppAccess: string;
   selfCheckInAllowed: boolean;
   affiliateSettings: Omit<TAffiliateLink, "affiliateId"> & { enabled: boolean };
   includeJoinEventLink: boolean;
 };
+
 export function ContentSetting({
   onClose,
   eventId,
@@ -76,13 +76,14 @@ export function ContentSetting({
     useState<{ title: string; status: boolean }[]>(eventWebsiteSettings);
   const { data }: { data: Event | null; loading: boolean } =
     useFetchSingleEvent(eventId);
+
   const form = useForm<FormValue>({
     defaultValues: {
       affiliateSettings: {
         commissionType: "percentage",
         commissionValue: 5,
-        includeJoinEventLink: false,
       },
+      includeJoinEventLink: false,
     },
   });
 
@@ -104,41 +105,41 @@ export function ContentSetting({
     return date.toISOString();
   }
 
-  const eventAppAccessList = useMemo(() => {
-    if (data?.startDateTime) {
-      const eventDate = new Date(data?.startDateTime);
-      return [
-        { title: "Upon registration", date: "now" },
-        {
-          title: "1 day before the event",
-          date: formatDate(new Date(eventDate.getTime() - 24 * 60 * 60 * 1000)),
-        },
-        {
-          title: "7 days before the event",
-          date: formatDate(
-            new Date(eventDate.getTime() - 7 * 24 * 60 * 60 * 1000)
-          ),
-        },
-        {
-          title: "14 days before the event",
-          date: formatDate(
-            new Date(eventDate.getTime() - 14 * 24 * 60 * 60 * 1000)
-          ),
-        },
-        {
-          title: "30 days before the event",
-          date: formatDate(
-            new Date(eventDate.getTime() - 30 * 24 * 60 * 60 * 1000)
-          ),
-        },
-      ];
-    }
-  }, [data?.startDateTime, data]);
+  // const eventAppAccessList = useMemo(() => {
+  //   if (data?.startDateTime) {
+  //     const eventDate = new Date(data?.startDateTime);
+  //     return [
+  //       { title: "Upon registration", date: "now" },
+  //       {
+  //         title: "1 day before the event",
+  //         date: formatDate(new Date(eventDate.getTime() - 24 * 60 * 60 * 1000)),
+  //       },
+  //       {
+  //         title: "7 days before the event",
+  //         date: formatDate(
+  //           new Date(eventDate.getTime() - 7 * 24 * 60 * 60 * 1000)
+  //         ),
+  //       },
+  //       {
+  //         title: "14 days before the event",
+  //         date: formatDate(
+  //           new Date(eventDate.getTime() - 14 * 24 * 60 * 60 * 1000)
+  //         ),
+  //       },
+  //       {
+  //         title: "30 days before the event",
+  //         date: formatDate(
+  //           new Date(eventDate.getTime() - 30 * 24 * 60 * 60 * 1000)
+  //         ),
+  //       },
+  //     ];
+  //   }
+  // }, [data?.startDateTime, data]);
 
   const includeJoinEventLink = form.watch("includeJoinEventLink");
   const processingFeeStatus = form.watch("attendeePayProcessingFee");
   const exploreStatus = form.watch("explore");
-  const appAccess = form.watch("eventAppAccess");
+  // const appAccess = form.watch("eventAppAccess");
   const selfCheckInAllowed = form.watch("selfCheckInAllowed");
 
   function handleChange(title: string) {
@@ -168,13 +169,9 @@ export function ContentSetting({
           ? data?.attendeePayProcessingFee
           : false,
         explore: data?.explore ? data?.explore : false,
-        eventAppAccess: data?.eventAppAccess
-          ? data?.eventAppAccess
-          : eventAppAccessList
-          ? eventAppAccessList[0]?.date
-          : "",
         affiliateSettings: data.affiliateSettings,
         selfCheckInAllowed: data.selfCheckInAllowed,
+        includeJoinEventLink: data.includeJoinEventLink,
       });
 
       if (data?.eventWebsiteSettings === null) {
@@ -184,6 +181,8 @@ export function ContentSetting({
       }
     }
   }, [data, form]);
+
+  console.log(organization?.subscriptionPlan, "subscription plan")
 
   return (
     <div
@@ -275,7 +274,7 @@ export function ContentSetting({
                 </p>
               </div>
             </div>
-            <div className="flex flex-col w-full items-start justify-start">
+            {/* <div className="flex flex-col w-full items-start justify-start">
               <h2 className="text-base mb-2 sm:text-xl">
                 When should user access your event app
               </h2>
@@ -291,7 +290,7 @@ export function ContentSetting({
                   <span>{title}</span>
                 </label>
               ))}
-            </div>
+            </div> */}
 
             <div className="flex flex-col w-full items-start justify-start">
               <h2 className="text-base mb-2 sm:text-xl">
@@ -522,7 +521,6 @@ export function ContentSetting({
                             <PopoverTrigger asChild>
                               <FormControl>
                                 <Button
-                                  variant={"outline"}
                                   className={cn(
                                     "flex gap-4 items-center w-full px-4 justify-start font-normal py-4",
                                     !field.value && "text-muted-foreground"
@@ -615,14 +613,14 @@ export function ContentSetting({
                 checked={includeJoinEventLink}
                 disabled={
                   getWorkspaceSubscriptionIsLoading ||
-                  organization?.subscriptionPlan === "free"
+                  organization?.subscriptionPlan === "Free"
                 }
                 className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary "
               />
               <div className="flex flex-col items-start w-full col-span-11 justify-start gap-y-1">
                 <h2 className="text-base sm:text-xl">
                   Include Join Event Link
-                  {organization?.subscriptionPlan === "free" &&
+                  {organization?.subscriptionPlan === "Free" &&
                     "(Not available for free plan)"}
                 </h2>
                 <p className="text-gray-500 text-start text-xs sm:text-sm">

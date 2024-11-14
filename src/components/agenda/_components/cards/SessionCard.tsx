@@ -37,27 +37,28 @@ export function SessionCard({
         className
       )}
     >
-      {isLive && (
-        <p className="text-[8px]  sm:text-[11px] text-gray-50 bg-basePrimary absolute top-[0.1px] rounded-tl-xl left-0 p-2 ">
-          Happening Now
-        </p>
-      )}
+     
        {isGreaterThanOne && (
         <p className="text-[8px] sm:text-[11px] text-gray-50 bg-basePrimary absolute top-[0.1px] rounded-tr-xl right-0 p-2 ">
           Multi Track
         </p>
       )}
-      {isLive && (
+      {/* {isLive && (
         <div className="flex items-center gap-x-2 mx-auto absolute inset-x-0 -top-6 px-4 w-fit justify-center h-12 rounded-lg text-[11px] sm:text-xs bg-basePrimary text-gray-50">
           <LiveView />
           <p>Live</p>
         </div>
-      )}
+      )} */}
       <div className="flex items-center gap-x-2">
         <IconifyAgendaClockIcon/>
         <p className=" ">
           {startTime} - {endTime}
         </p>
+        {isLive && (
+        <p className="text-[8px]  sm:text-[11px] text-red-500 border border-red-500 bg-red-200 rounded-xl px-2 py-1 ">
+          Live
+        </p>
+      )}
       
      
       </div>

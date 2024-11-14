@@ -1,6 +1,9 @@
 "use client";
 
-import { useGetEvents } from "@/hooks";
+import {
+  useGetAdminEvents,
+  useInfiniteScrollPagination,
+} from "@/hooks";
 import { EventLayout } from "./_components";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { Button } from "@/components";
@@ -15,7 +18,7 @@ import { AboutWidget, EventLocationType } from "@/components/composables";
 import { TOrgEvent } from "@/types";
 import { PublishCard } from "@/components/composables";
 import { PreviewModal } from "../../contents/_components/modal/PreviewModal";
-import {  useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useFormatEventData, usePublishEvent } from "@/hooks";
 import { Download } from "styled-icons/bootstrap";
 import { Eye } from "styled-icons/feather";
@@ -24,18 +27,48 @@ import useUserStore from "@/store/globalUserStore";
 import { ExternalLink } from "styled-icons/feather";
 import Link from "next/link";
 
-export default function AdminEvents({searchParams:{e}}) {
-  const { events, getEvents: refetch, isLoading: loading } = useGetEvents();
- // const search = useSearchParams();
- // const query = search.get("e");
+export default function AdminEvents({
+  searchParams: { e },
+}: {
+  searchParams: any;
+}) {
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [from, setFrom] = useState(0);
+  const [to, setTo] = useState(50);
 
-  const eventData = useMemo(() => {
-    if (e === "review" || e === null) {
-      return events?.filter(({ eventStatus }) => eventStatus === "review");
-    } else {
-      return events?.filter(({ eventStatus }) => eventStatus === e);
-    }
-  }, [events, e]);
+useEffect(() => {
+  if (e !== null) {
+    setFrom(0)
+    setTo(50)
+  }
+},[e])
+
+  const {
+    events: eventData,
+    getEvents,
+    isLoading: loading,
+    hasReachedLastPage,
+  } = useGetAdminEvents({
+    eventStatus: e,
+    from,
+    to,
+    initialLoading,
+  });
+
+  const { ref: infiniteScrollRef } = useInfiniteScrollPagination(
+    hasReachedLastPage,
+    setFrom,
+    setTo,
+    setInitialLoading
+  );
+
+  async function refetch() {
+    setInitialLoading(false)
+    setFrom(0)
+    setTo(50)
+    getEvents();
+    
+  }
 
   return (
     <EventLayout query={e}>
@@ -51,12 +84,17 @@ export default function AdminEvents({searchParams:{e}}) {
         <div className="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-center w-full h-full xl:grid-cols-3">
           {Array.isArray(eventData) &&
             eventData?.map((event) => (
-              <EventCard
-                key={event?.id}
-                refetch={refetch}
-                event={event}
-                query={e}
-              />
+              <div
+                ref={!hasReachedLastPage ? infiniteScrollRef : null}
+                className="w-full"
+              >
+                <EventCard
+                  key={event?.id}
+                  refetch={refetch}
+                  event={event as TOrgEvent}
+                  query={e}
+                />
+              </div>
             ))}
         </div>
       )}
@@ -100,7 +138,7 @@ function EventCard({
       user: userData?.userEmail,
     };
 
-    const { organization, attendees, ...remainingData }: any = event;
+    const { organization, ...remainingData }: any = event;
     await update({
       payload: {
         ...remainingData,
@@ -115,6 +153,7 @@ function EventCard({
       email: event?.organization?.eventContactEmail,
     });
     refetch();
+    showPublishModal()
   }
 
   function showPublishModal() {
@@ -230,7 +269,7 @@ function EventCard({
               className="text-basePrimary border border-basePrimary gap-x-2"
             >
               <Download size={22} />
-              <p>Publish</p>f
+              <p>Publish</p>
             </Button>
           </div>
         )}
