@@ -1554,7 +1554,7 @@ export const useGetAdminEvents = ({
         (Array.isArray(data.data) && data.data.length === 0)
       )
         return setHasReachedLastPage(true);
-      setEvents((prev) => [...prev, ...data.data]);
+        setEvents((prev) => _.uniqBy([...prev, ...data.data], 'id'));
     } catch (error) {
       setError(true);
     } finally {
