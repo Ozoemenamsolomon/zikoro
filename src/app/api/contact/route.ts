@@ -37,7 +37,8 @@ export async function POST(req: NextRequest) {
     const industry = formData.industry;
     const comments = formData.comments;
     const source = formData.source
-
+    
+    console.log(formData)
 
     try {
       const { data, error } = await supabase
@@ -51,7 +52,7 @@ export async function POST(req: NextRequest) {
           annualEvents: events,
           attendees: attendees,
           industry: industry,
-          comments: comments
+          comments: comments,
         });
 
       if (error) {
@@ -62,6 +63,8 @@ export async function POST(req: NextRequest) {
     } catch (error) {
       toast.error("Error submitting form, try again later");
     }
+  }else {
+    return NextResponse.json({ error: "Method not allowed" });
   }
 }
 
