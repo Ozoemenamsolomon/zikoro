@@ -239,8 +239,8 @@ function generateEmailContent(attendee, event, formattedDate) {
           }</p>
 
           ${
-            event.organization.includeJoinEventLink &&
-            event.organization.subscriptionPlan !== "Free" &&
+            event?.includeJoinEventLink &&
+            event.organization?.subscriptionPlan !== "Free" &&
             `
             <a href="https://www.zikoro.com/event/${
               event.eventAlias
@@ -328,8 +328,8 @@ function generateEmailContent(attendee, event, formattedDate) {
       </div>
       <!--end-->
       ${
-        event.organization.includeJoinEventLink &&
-        event.organization.subscriptionPlan !== "Free" &&
+        event?.includeJoinEventLink &&
+        event.organization?.subscriptionPlan !== "Free" &&
         `
         <a
           href="https://www.zikoro.com/event/${
