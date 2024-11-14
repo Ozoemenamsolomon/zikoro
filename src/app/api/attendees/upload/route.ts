@@ -233,7 +233,8 @@ export async function POST(req: NextRequest) {
             
               ${
                 event?.includeJoinEventLink &&
-                event.organization?.subscriptionPlan !== "Free" &&
+                (event.organization?.subscriptionPlan === "Enterprise" ||
+                  event.organization?.subscriptionPlan === "Lite") &&
                 `
                 <a
                 href="https://www.zikoro.com/event/${
@@ -330,8 +331,8 @@ export async function POST(req: NextRequest) {
 
           ${
             event?.includeJoinEventLink &&
-            (event.organization?.subscriptionPlan !== "Enterprise" ||
-              event.organization?.subscriptionPlan !== "Lite") &&
+            (event.organization?.subscriptionPlan === "Enterprise" ||
+              event.organization?.subscriptionPlan === "Lite") &&
             `<a
             href="https://www.zikoro.com/event/${
               currentEvent.eventAlias
