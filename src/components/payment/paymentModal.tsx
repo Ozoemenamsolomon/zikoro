@@ -479,7 +479,7 @@ export default function SubscriptionPaymentModal({
               type="text"
               name="fullname"
               value={user?.firstName}
-              className="px-4 py-[10px] text-base rounded-lg bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end placeholder-gray-500 outline-none w-full border-[1px] border-indigo-400"
+              className="px-4 py-[10px] text-gray-400 text-base rounded-lg bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end placeholder-gray-500 outline-none w-full border-[1px] border-indigo-400"
               readOnly
             />
 
@@ -487,7 +487,7 @@ export default function SubscriptionPaymentModal({
               type="email"
               name="email"
               value={user?.userEmail}
-              className="mt-4 px-4 py-[10px] text-base rounded-lg bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end placeholder-gray-500 outline-none w-full border-[1px] border-indigo-400"
+              className="mt-4 px-4 py-[10px] text-gray-400 text-base rounded-lg bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end placeholder-gray-500 outline-none w-full border-[1px] border-indigo-400"
               readOnly
             />
 
@@ -495,7 +495,7 @@ export default function SubscriptionPaymentModal({
               type="text"
               name="plan"
               value={chosenPlan || ""}
-              className=" mt-4 px-4 py-[10px] text-base rounded-lg bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end placeholder-gray-500 outline-none w-full border-[1px] border-indigo-400"
+              className=" mt-4 px-4 py-[10px] text-gray-400 text-base rounded-lg bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end placeholder-gray-500 outline-none w-full border-[1px] border-indigo-400"
               readOnly
             />
 
@@ -503,7 +503,7 @@ export default function SubscriptionPaymentModal({
               type="text"
               name="currency"
               value={chosenCurrency}
-              className=" mt-4 px-4 py-[10px] text-base rounded-lg bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end placeholder-gray-500 outline-none w-full border-[1px] border-indigo-400"
+              className=" mt-4 px-4 py-[10px] text-gray-400 text-base rounded-lg bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end placeholder-gray-500 outline-none w-full border-[1px] border-indigo-400"
               readOnly
             />
 
