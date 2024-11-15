@@ -41,6 +41,13 @@ import { Input } from "@/components/ui/input";
 import { format } from "date-fns";
 import { useGetWorkspaceSubscriptionPlan } from "@/hooks/services/subscription";
 import useUserStore from "@/store/globalUserStore";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { ExclamationCircle } from "styled-icons/heroicons-outline";
 
 const eventWebsiteSettings = [
   { title: "Logo", status: false },
@@ -182,7 +189,7 @@ export function ContentSetting({
     }
   }, [data, form]);
 
-  console.log(organization?.subscriptionPlan, "subscription plan")
+  console.log(organization?.subscriptionPlan, "subscription plan");
 
   return (
     <div
@@ -325,14 +332,14 @@ export function ContentSetting({
                   }
                   checked={enableAffiliateSettings}
                   disabled={loading}
-                  className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary "
+                  className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary mt-1"
                 />
                 <div className="flex flex-col items-start w-full col-span-11 justify-start gap-y-1">
                   <h2 className="text-base sm:text-xl">
                     Enable Event Referrals
                   </h2>
                   <p className="text-gray-500 text-start text-xs sm:text-sm">
-                    Allow attendees to themselves as affiliates.
+                    Allow attendees to sign up as affiliates after registration.
                   </p>
                 </div>
               </div>
@@ -613,19 +620,33 @@ export function ContentSetting({
                 checked={includeJoinEventLink}
                 disabled={
                   getWorkspaceSubscriptionIsLoading ||
-                  organization?.subscriptionPlan === "Free"
+                  (organization?.subscriptionPlan !== "Enterprise" &&
+                    organization?.subscriptionPlan !== "Lite" &&
+                    organization?.subscriptionPlan !== "Professional")
                 }
-                className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary "
+                className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary mt-1"
               />
               <div className="flex flex-col items-start w-full col-span-11 justify-start gap-y-1">
-                <h2 className="text-base sm:text-xl">
+                <h2 className="text-base sm:text-xl flex items-center gap-x-1">
                   Include Join Event Link
-                  {organization?.subscriptionPlan === "Free" &&
-                    "(Not available for free plan)"}
+                  {organization?.subscriptionPlan !== "Enterprise" &&
+                    organization?.subscriptionPlan !== "Lite" &&
+                    organization?.subscriptionPlan !== "Professional" && (
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger className="flex items-center">
+                            <ExclamationCircle className="h-5 w-5 text-red-500" />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Not available for free plan</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    )}
                 </h2>
                 <p className="text-gray-500 text-start text-xs sm:text-sm">
-                  When active, a link to join the event will be included in the
-                  event registration email.
+                  When active, a link to access the event app will be included
+                  in the event registration email.
                 </p>
               </div>
             </div>

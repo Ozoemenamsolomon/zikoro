@@ -140,11 +140,11 @@ const RequestPayoutDialog = ({
             <span className="text-gray-700 text-sm">Beneficiary</span>
             <div className="flex flex-col space-y-1">
               <span className="text-gray-700 font-medium text-sm">
-                {organization.payoutAccountDetails?.bankName}
+                {organization?.payoutAccountDetails?.bankName ?? ""}
               </span>
               <span className="text-gray-700 text-xs">
                 {maskAccountNumber(
-                  organization.payoutAccountDetails?.accountNumber
+                  organization?.payoutAccountDetails?.accountNumber ?? ""
                 )}
               </span>
             </div>
