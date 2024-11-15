@@ -1,6 +1,8 @@
 "use client";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
+import { useContactUs } from "@/hooks/services/contactUs";
+import Image from "next/image";
 
 export default function ContactForm() {
   const countryList = [
@@ -256,6 +258,7 @@ export default function ContactForm() {
   ];
 
   const root = "events";
+  const [mailSent, setMailSent] = useState<boolean>(false);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -270,320 +273,353 @@ export default function ContactForm() {
     source: root,
   });
 
+  const { submitForm } = useContactUs();
+
   const handleChange = (e: any) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const submitForm = async (e: any) => {
+  const handSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ formData }),
-      });
-
-      if (response.ok) {
-        toast.success("Submitted Successfully:");
-        // Optionally, reset form fields after successful submission
-        setFormData({
-          firstName: "",
-          lastName: "",
-          city: "",
-          country: "",
-          email: "",
-          phoneNumber: "",
-          annualEvents: "",
-          attendees: "",
-          industry: "",
-          comments: "",
-          source: "",
-        });
-      } else {
-        throw new Error("Message Not Sent ");
-      }
-    } catch (error) {
-      toast.error(`Error submitting contact form: ${error}`);
-    }
+    await submitForm(formData);
+    toast.success("Submitted Successfully:");
+    setFormData({
+      firstName: "",
+      lastName: "",
+      city: "",
+      country: "",
+      email: "",
+      phoneNumber: "",
+      annualEvents: "",
+      attendees: "",
+      industry: "",
+      comments: "",
+      source: "",
+    });
+    setMailSent(true);
   };
 
   return (
     <div className="bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end mt-28">
-      <div className="max-w-5xl mx-auto pt-24 pb-24 ">
-        <div className="border-[1px] border-white mx-3 lg:mx-0 py-7 px-2 lg:px-8 rounded-md lg:rounded-lg ">
-          <form action="" className="pb-24 px-7" onSubmit={submitForm}>
-            <p className=" text-xl lg:text-2xl text-center lg:text-left text-white font-bold">
-              Contact Us
-            </p>
-
-            <div className="flex flex-col gap-y-3 lg:gap-y-0 lg:flex-row space-x-0 lg:space-x-4 mt-8">
-              <div className="w-full lg:w-1/2">
-                <input
-                  required
-                  type="text"
-                  value={formData.firstName}
-                  onChange={handleChange}
-                  name="firstName"
-                  id=""
-                  className="w-full h-12 text-base rounded-md border-[1px] border-white bg-transparent text-white placeholder-white px-4 outline-none"
-                  placeholder="First Name"
-                />
-              </div>
-              <div className="w-full lg:w-1/2">
-                <input
-                  required
-                  value={formData.lastName}
-                  type="text"
-                  onChange={handleChange}
-                  name="lastName"
-                  id=""
-                  className="w-full h-12 rounded-md border-[1px] border-white bg-transparent text-white placeholder-white px-4 outline-none"
-                  placeholder="Last Name"
-                />
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-y-3 lg:gap-y-0 lg:flex-row space-x-0 lg:space-x-4 mt-3 lg:mt-8">
-              <select
-                name="country"
-                value={formData.country}
-                onChange={handleChange}
-                id=""
-                className="w-full lg:w-1/2 h-12 bg-transparent rounded-md border-[1px] text-white text-base border-white px-4 outline-none "
-              >
-                <option
-                  disabled
-                  selected
-                  value=""
-                  className="bg-transparent text-black"
-                >
-                  Select Country
-                </option>
-                {countryList.map((country) => (
-                  <option value={country} className="bg-transparent text-black">
-                    {country}
-                  </option>
-                ))}
-              </select>
-
-              <div className="w-full lg:w-1/2">
-                <input
-                  required
-                  type="text"
-                  onChange={handleChange}
-                  value={formData.city}
-                  name="city"
-                  id=""
-                  className="w-full h-12 rounded-md border-[1px] border-white bg-transparent text-white placeholder-white px-4 outline-none"
-                  placeholder="City"
-                />
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-y-3 lg:gap-y-0 lg:flex-row space-x-0 lg:space-x-4 mt-3 lg:mt-8">
-              <div className="w-full lg:w-1/2">
-                <input
-                  required
-                  type="email"
-                  onChange={handleChange}
-                  value={formData.email}
-                  name="email"
-                  id=""
-                  className="w-full h-12 text-base rounded-md border-[1px] border-white bg-transparent placeholder-white pl-3 outline-none text-white"
-                  placeholder="Email"
-                />
-              </div>
-              <div className="w-full lg:w-1/2">
-                <input
-                  required
-                  type="text"
-                  value={formData.phoneNumber}
-                  onChange={handleChange}
-                  name="phoneNumber"
-                  placeholder="Phone Number"
-                  id=""
-                  className="w-full h-12 rounded-md border-[1px] border-white bg-transparent placeholder-white pl-3 outline-none text-white"
-                />
-              </div>
-            </div>
-
-            <div className="mt-8">
-              <p className="text-[18px] text-white font-medium">
-                How many events do you organize annually
+      {mailSent ? (
+        <div className="flex flex-col items-center h-[50vh] justify-center">
+          <Image
+            src="/message.png"
+            width={82}
+            height={82}
+            alt=""
+            className="w-[82px] h-[82px]"
+          />
+          <div className="mt-4 text-white">
+            <p className=" text-2xl font-bold leading-none ">Message sent</p>
+            <p className="text-[12px] mt-2">we will get back to you soon 🤞</p>
+          </div>
+        </div>
+      ) : (
+        <div className="max-w-5xl mx-auto pt-24 pb-24 ">
+          <div className="border-[1px] border-white mx-3 lg:mx-0 py-7 px-2 lg:px-8 rounded-md lg:rounded-lg ">
+            <form action="" className="pb-24 px-7" onSubmit={handSubmitForm}>
+              <p className=" text-xl lg:text-2xl text-center lg:text-left text-white font-bold">
+                Contact Us
               </p>
 
-              <div className="space-x-3 mt-5">
-                <input
-                  type="radio"
-                  name="annualEvents"
-                  value="Only 1"
-                  onChange={handleChange}
-                  id=""
-                  className="text-[12px]"
-                  required
-                  checked={formData.annualEvents === "Only 1"}
-                />
-                <label htmlFor="" className="text-base text-white font-normal">
-                  Only One
-                </label>
+              <div className="flex flex-col gap-y-3 lg:gap-y-0 lg:flex-row space-x-0 lg:space-x-4 mt-8">
+                <div className="w-full lg:w-1/2">
+                  <input
+                    required
+                    type="text"
+                    value={formData.firstName}
+                    onChange={handleChange}
+                    name="firstName"
+                    id=""
+                    autoComplete="off"
+                    className="w-full h-12 text-base rounded-md border-[1px] border-white bg-transparent text-white placeholder-white px-4 outline-none"
+                    placeholder="First Name"
+                  />
+                </div>
+                <div className="w-full lg:w-1/2">
+                  <input
+                    required
+                    value={formData.lastName}
+                    type="text"
+                    onChange={handleChange}
+                    name="lastName"
+                    id=""
+                    autoComplete="off"
+                    className="w-full h-12 rounded-md border-[1px] border-white bg-transparent text-white placeholder-white px-4 outline-none"
+                    placeholder="Last Name"
+                  />
+                </div>
               </div>
 
-              <div className="space-x-3 mt-5">
-                <input
-                  type="radio"
-                  name="annualEvents"
-                  value="2 - 5"
+              <div className="flex flex-col gap-y-3 lg:gap-y-0 lg:flex-row space-x-0 lg:space-x-4 mt-3 lg:mt-8">
+                <select
+                  name="country"
+                  value={formData.country}
                   onChange={handleChange}
                   id=""
-                  className="text-[12px]"
-                  required
-                  checked={formData.annualEvents === "2 - 5"}
-                />
-                <label htmlFor="" className="text-base text-white font-normal">
-                  2 - 5{" "}
-                </label>
+                  className="w-full lg:w-1/2 h-12 bg-transparent rounded-md border-[1px] text-white text-base border-white px-4 outline-none "
+                >
+                  <option
+                    disabled
+                    selected
+                    value=""
+                    className="bg-transparent text-black"
+                  >
+                    Select Country
+                  </option>
+                  {countryList.map((country) => (
+                    <option
+                      value={country}
+                      className="bg-transparent text-black"
+                    >
+                      {country}
+                    </option>
+                  ))}
+                </select>
+
+                <div className="w-full lg:w-1/2">
+                  <input
+                    required
+                    type="text"
+                    onChange={handleChange}
+                    value={formData.city}
+                    name="city"
+                    id=""
+                    autoComplete="off"
+                    className="w-full h-12 rounded-md border-[1px] border-white bg-transparent text-white placeholder-white px-4 outline-none"
+                    placeholder="City"
+                  />
+                </div>
               </div>
 
-              <div className="space-x-3 mt-5">
-                <input
-                  type="radio"
-                  name="annualEvents"
-                  checked={formData.annualEvents === "6 - 10"}
-                  value="6 - 10"
+              <div className="flex flex-col gap-y-3 lg:gap-y-0 lg:flex-row space-x-0 lg:space-x-4 mt-3 lg:mt-8">
+                <div className="w-full lg:w-1/2">
+                  <input
+                    required
+                    type="email"
+                    onChange={handleChange}
+                    value={formData.email}
+                    name="email"
+                    id=""
+                    autoComplete="off"
+                    className="w-full h-12 text-base rounded-md border-[1px] border-white bg-transparent placeholder-white pl-3 outline-none text-white"
+                    placeholder="Email"
+                  />
+                </div>
+                <div className="w-full lg:w-1/2">
+                  <input
+                    required
+                    type="text"
+                    value={formData.phoneNumber}
+                    onChange={handleChange}
+                    name="phoneNumber"
+                    placeholder="Phone Number"
+                    id=""
+                    autoComplete="off"
+                    className="w-full h-12 rounded-md border-[1px] border-white bg-transparent placeholder-white pl-3 outline-none text-white"
+                  />
+                </div>
+              </div>
+
+              <div className="mt-8">
+                <p className="text-[18px] text-white font-medium">
+                  How many events do you organize annually
+                </p>
+
+                <div className="space-x-3 mt-5">
+                  <input
+                    type="radio"
+                    name="annualEvents"
+                    value="Only 1"
+                    onChange={handleChange}
+                    id=""
+                    className="text-[12px]"
+                    required
+                    checked={formData.annualEvents === "Only 1"}
+                  />
+                  <label
+                    htmlFor=""
+                    className="text-base text-white font-normal"
+                  >
+                    Only One
+                  </label>
+                </div>
+
+                <div className="space-x-3 mt-5">
+                  <input
+                    type="radio"
+                    name="annualEvents"
+                    value="2 - 5"
+                    onChange={handleChange}
+                    id=""
+                    className="text-[12px]"
+                    required
+                    checked={formData.annualEvents === "2 - 5"}
+                  />
+                  <label
+                    htmlFor=""
+                    className="text-base text-white font-normal"
+                  >
+                    2 - 5{" "}
+                  </label>
+                </div>
+
+                <div className="space-x-3 mt-5">
+                  <input
+                    type="radio"
+                    name="annualEvents"
+                    checked={formData.annualEvents === "6 - 10"}
+                    value="6 - 10"
+                    onChange={handleChange}
+                    id=""
+                    className="text-[12px]"
+                    required
+                  />
+                  <label
+                    htmlFor=""
+                    className="text-base text-white font-normal"
+                  >
+                    6-10
+                  </label>
+                </div>
+
+                <div className="space-x-3 mt-5">
+                  <input
+                    type="radio"
+                    name="annualEvents"
+                    checked={formData.annualEvents === "More than 10"}
+                    value="More than 10"
+                    onChange={handleChange}
+                    id=""
+                    className="text-[12px]"
+                    required
+                  />
+                  <label
+                    htmlFor=""
+                    className="text-base text-white font-normal"
+                  >
+                    More than 10
+                  </label>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-y-3 lg:gap-y-0 lg:flex-row space-x-0 lg:space-x-4 mt-8 ">
+                <div className="w-full lg:w-1/2">
+                  <input
+                    required
+                    type="text"
+                    onChange={handleChange}
+                    value={formData.attendees}
+                    name="attendees"
+                    autoComplete="off"
+                    id=""
+                    className="w-full h-12 text-base rounded-md border-[1px] border-white bg-transparent placeholder-white pl-3 outline-none text-white"
+                    placeholder="Number Of Attendees"
+                  />
+                </div>
+                <select
+                  name="industry"
                   onChange={handleChange}
+                  value={formData.industry}
                   id=""
-                  className="text-[12px]"
-                  required
-                />
-                <label htmlFor="" className="text-base text-white font-normal">
-                  6-10
-                </label>
+                  className="w-full lg:w-1/2 h-12 bg-transparent rounded-md border-[1px] text-white text-base border-white px-4 outline-none"
+                >
+                  <option disabled selected value="" className="">
+                    Select Industry
+                  </option>
+                  <option
+                    value="Conferences"
+                    className="bg-transparent text-black"
+                  >
+                    Conferences
+                  </option>
+                  <option
+                    value="Tradeshows & Exhibitions"
+                    className="bg-transparent text-black"
+                  >
+                    Tradeshows & Exhibitions
+                  </option>
+                  <option
+                    value="Seminars & Workshops"
+                    className="bg-transparent text-black"
+                  >
+                    Seminars & Workshops
+                  </option>
+                  <option value="Careers" className="bg-transparent text-black">
+                    Careers
+                  </option>
+                  <option
+                    value="Education"
+                    className="bg-transparent text-black"
+                  >
+                    Education
+                  </option>
+                  <option
+                    value="Culture & Arts"
+                    className="bg-transparent text-black"
+                  >
+                    Culture & Arts
+                  </option>
+                  <option
+                    value="Celebrations"
+                    className="bg-transparent text-black"
+                  >
+                    Celebrations
+                  </option>
+                  <option value="Sports" className="bg-transparent text-black">
+                    Sports
+                  </option>
+                  <option
+                    value="Job Fairs"
+                    className="bg-transparent text-black"
+                  >
+                    Job Fairs
+                  </option>
+                  <option
+                    value="Festivals"
+                    className="bg-transparent text-black"
+                  >
+                    Festivals
+                  </option>
+                  <option value="Charity" className="bg-transparent text-black">
+                    Charity
+                  </option>
+                </select>
               </div>
 
-              <div className="space-x-3 mt-5">
-                <input
-                  type="radio"
-                  name="annualEvents"
-                  checked={formData.annualEvents === "More than 10"}
-                  value="More than 10"
+              <div className="flex space-x-4 mt-3 lg:mt-8">
+                <textarea
+                  name="comments"
+                  value={formData.comments}
                   onChange={handleChange}
-                  id=""
-                  className="text-[12px]"
                   required
-                />
-                <label htmlFor="" className="text-base text-white font-normal">
-                  More than 10
-                </label>
+                  id="message"
+                  rows={9}
+                  className="block p-2.5 w-full text-sm text-white  bg-transparent placeholder-white rounded-md border border-gray-300 focus:outline-none "
+                  placeholder="Message"
+                ></textarea>
               </div>
-            </div>
 
-            <div className="flex flex-col gap-y-3 lg:gap-y-0 lg:flex-row space-x-0 lg:space-x-4 mt-8 ">
-              <div className="w-full lg:w-1/2">
-                <input
-                  required
-                  type="text"
-                  onChange={handleChange}
-                  value={formData.attendees}
-                  name="attendees"
-                  id=""
-                  className="w-full h-12 text-base rounded-md border-[1px] border-white bg-transparent placeholder-white pl-3 outline-none text-white"
-                  placeholder="Number Of Attendees"
-                />
+              {/* Button */}
+
+              <div className="mt-5 flex items-center justify-center mx-auto">
+                <button
+                  type="submit"
+                  className="text-white font-montserrat text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-4 px-5 rounded-lg border-[1px] border-white "
+                >
+                  Submit
+                </button>
               </div>
-              <select
-                name="industry"
-                onChange={handleChange}
-                value={formData.industry}
-                id=""
-                className="w-full lg:w-1/2 h-12 bg-transparent rounded-md border-[1px] text-white text-base border-white px-4 outline-none"
-              >
-                <option disabled selected value="" className="">
-                  Select Industry
-                </option>
-                <option
-                  value="Conferences"
-                  className="bg-transparent text-black"
-                >
-                  Conferences
-                </option>
-                <option
-                  value="Tradeshows & Exhibitions"
-                  className="bg-transparent text-black"
-                >
-                  Tradeshows & Exhibitions
-                </option>
-                <option
-                  value="Seminars & Workshops"
-                  className="bg-transparent text-black"
-                >
-                  Seminars & Workshops
-                </option>
-                <option value="Careers" className="bg-transparent text-black">
-                  Careers
-                </option>
-                <option value="Education" className="bg-transparent text-black">
-                  Education
-                </option>
-                <option
-                  value="Culture & Arts"
-                  className="bg-transparent text-black"
-                >
-                  Culture & Arts
-                </option>
-                <option
-                  value="Celebrations"
-                  className="bg-transparent text-black"
-                >
-                  Celebrations
-                </option>
-                <option value="Sports" className="bg-transparent text-black">
-                  Sports
-                </option>
-                <option value="Job Fairs" className="bg-transparent text-black">
-                  Job Fairs
-                </option>
-                <option value="Festivals" className="bg-transparent text-black">
-                  Festivals
-                </option>
-                <option value="Charity" className="bg-transparent text-black">
-                  Charity
-                </option>
-              </select>
-            </div>
-
-            <div className="flex space-x-4 mt-3 lg:mt-8">
-              <textarea
-                name="comments"
-                value={formData.comments}
-                onChange={handleChange}
-                required
-                id="message"
-                rows={9}
-                className="block p-2.5 w-full text-sm text-white  bg-transparent placeholder-white rounded-md border border-gray-300 focus:outline-none "
-                placeholder="Message"
-              ></textarea>
-            </div>
-
-            {/* Button */}
-
-            <div className="mt-5 flex items-center justify-center mx-auto">
-              <button
-                type="submit"
-                className="text-white font-montserrat text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-4 px-5 rounded-lg border-[1px] border-white "
-              >
-                Submit
-              </button>
-            </div>
-            <p className="text-[10px] mt-2 text-white text-center">
-              By clicking the button below, you consent to allow Zikoro to store
-              and process your information by our Privacy Policy
-            </p>
-          </form>
+              <p className="text-[10px] mt-2 text-white text-center">
+                By clicking the button below, you consent to allow Zikoro to
+                store and process your information by our Privacy Policy
+              </p>
+            </form>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

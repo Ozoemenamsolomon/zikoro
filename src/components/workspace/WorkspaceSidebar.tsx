@@ -45,10 +45,10 @@ const WorkspaceSidebar = () => {
       name: "General",
       href: `/general`,
     },
-    {
-      name: "Domain",
-      href: `/domain`,
-    },
+    // {
+    //   name: "Domain",
+    //   href: `/domain`,
+    // },
     {
       name: "Team",
       href: `/team`,

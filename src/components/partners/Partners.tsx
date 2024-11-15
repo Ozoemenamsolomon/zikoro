@@ -24,6 +24,7 @@ import { cn } from "@/lib";
 
 export function Partners({ eventId }: { eventId: string }) {
   const { data, loading, refetch } = useFetchPartners(eventId);
+  console.log(data, "partners");
   const { data: event } = useFetchSingleEvent(eventId);
   const { isOrganizer } = useVerifyUserAccess(eventId);
   const { isIdPresent } = useCheckTeamMember({ eventId });
@@ -290,46 +291,52 @@ export function Partners({ eventId }: { eventId: string }) {
     <div className="w-full  pb-24">
       <HeaderTab eventId={eventId} refetch={refetch} query={query} />
       <div className="px-4 mx-auto  max-w-[1300px] text-mobile sm:text-sm sm:px-6 mt-6 sm:mt-10">
-      <div
-        className={cn(
-          "w-full flex flex-col justify-start items-start ",
-          Array.isArray(filteredData) && filteredData?.length === 0 && "hidden"
-        )}
-      >
-        <div className="parent-container relative w-full overflow-x-auto no-scrollbar">
-          <div className={`min-w-[950px] flex items-start justify-between p-4`}>
-            <Filter
-              className={"w-[80%] space-y-2 "}
-              filters={filters.sort(
-                (a, b) => (a.order || Infinity) - (b.order || Infinity)
-              )}
-              applyFilter={applyFilter}
-              selectedFilters={selectedFilters}
-            />
+        <div
+          className={cn(
+            "w-full flex flex-col justify-start items-start ",
+            Array.isArray(filteredData) &&
+              filteredData?.length === 0 &&
+              "hidden"
+          )}
+        >
+          <div className="parent-container relative w-full overflow-x-auto no-scrollbar">
+            <div
+              className={`min-w-[950px] flex items-start justify-between p-4`}
+            >
+              <Filter
+                className={"w-[80%] space-y-2 "}
+                filters={filters.sort(
+                  (a, b) => (a.order || Infinity) - (b.order || Infinity)
+                )}
+                applyFilter={applyFilter}
+                selectedFilters={selectedFilters}
+              />
 
-            <div className="flex items-center">
-              <div className="relative w-[18rem] h-12">
-                <Search size={22} className="absolute top-3 left-2" />
-                <Input
-                  type="text"
-                  placeholder="Search"
-                  value={searchTerm}
-                  disabled={loading}
-                  onInput={(event) => setSearchTerm(event.currentTarget.value)}
-                  className=" placeholder:text-sm h-12 pr-4 pl-10 w-80  focus:border-gray-500 placeholder:text-gray-300 text-gray-700"
-                />
+              <div className="flex items-center">
+                <div className="relative w-[18rem] h-12">
+                  <Search size={22} className="absolute top-3 left-2" />
+                  <Input
+                    type="text"
+                    placeholder="Search"
+                    value={searchTerm}
+                    disabled={loading}
+                    onInput={(event) =>
+                      setSearchTerm(event.currentTarget.value)
+                    }
+                    className=" placeholder:text-sm h-12 pr-4 pl-10 w-80  focus:border-gray-500 placeholder:text-gray-300 text-gray-700"
+                  />
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {query === "sponsors" && event && (
-        <Sponsors event={event} sponsors={sponsors} loading={loading} />
-      )}
-      {query === "exhibitors" && event && (
-        <Exhibitors event={event} exhibitors={exhibitors} loading={loading} />
-      )}
+        {query === "sponsors" && event && (
+          <Sponsors event={event} sponsors={sponsors} loading={loading} />
+        )}
+        {query === "exhibitors" && event && (
+          <Exhibitors event={event} exhibitors={exhibitors} loading={loading} />
+        )}
       </div>
     </div>
   );
