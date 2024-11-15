@@ -239,10 +239,10 @@ function generateEmailContent(attendee, event, formattedDate) {
           }</p>
 
           ${
-            event?.includeJoinEventLink &&
-            (event.organization?.subscriptionPlan === "Enterprise" ||
-              event.organization?.subscriptionPlan === "Lite" ||
-              event.organization?.subscriptionPlan === "Professional") &&
+            updatedEvent?.includeJoinEventLink &&
+            (updatedEvent.organization?.subscriptionPlan === "Enterprise" ||
+              updatedEvent.organization?.subscriptionPlan === "Lite" ||
+              updatedEvent.organization?.subscriptionPlan === "Professional") &&
             `
             <a href="https://www.zikoro.com/event/${
               event.eventAlias
@@ -330,10 +330,10 @@ function generateEmailContent(attendee, event, formattedDate) {
       </div>
       <!--end-->
       ${
-        event?.includeJoinEventLink &&
-        (event.organization?.subscriptionPlan === "Enterprise" ||
-          event.organization?.subscriptionPlan === "Lite" ||
-          event.organization?.subscriptionPlan === "Professional") &&
+        updatedEvent?.includeJoinEventLink &&
+        (updatedEvent.organization?.subscriptionPlan === "Enterprise" ||
+          updatedEvent.organization?.subscriptionPlan === "Lite" ||
+          updatedEvent.organization?.subscriptionPlan === "Professional") &&
         `
         <a
           href="https://www.zikoro.com/event/${
