@@ -621,7 +621,8 @@ export function ContentSetting({
                 disabled={
                   getWorkspaceSubscriptionIsLoading ||
                   (organization?.subscriptionPlan !== "Enterprise" &&
-                    organization?.subscriptionPlan !== "Lite")
+                    organization?.subscriptionPlan !== "Lite" &&
+                    organization?.subscriptionPlan !== "Professional")
                 }
                 className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary mt-1"
               />
@@ -629,7 +630,8 @@ export function ContentSetting({
                 <h2 className="text-base sm:text-xl flex items-center gap-x-1">
                   Include Join Event Link
                   {organization?.subscriptionPlan !== "Enterprise" &&
-                    organization?.subscriptionPlan !== "Lite" && (
+                    organization?.subscriptionPlan !== "Lite" &&
+                    organization?.subscriptionPlan !== "Professional" && (
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger className="flex items-center">
@@ -643,8 +645,8 @@ export function ContentSetting({
                     )}
                 </h2>
                 <p className="text-gray-500 text-start text-xs sm:text-sm">
-                  When active, a link to access the event app will be included in the
-                  event registration email.
+                  When active, a link to access the event app will be included
+                  in the event registration email.
                 </p>
               </div>
             </div>
