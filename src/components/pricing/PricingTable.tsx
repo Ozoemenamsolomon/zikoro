@@ -193,18 +193,17 @@ export default function PricingTable({
             <div className="px-1 my-6">
               {/* buttons */}
               <button
+                onClick={() => router.push("/login")}
+                className="rounded-[47px] text-base font-bold w-full text-zikoroBlue mt-1 py-2 cursor-pointer"
+              >
+                Try it
+              </button>
+              <button
                 className="w-full bg-white rounded-[47px] text-base font-bold text-white py-2 cursor-pointe opacity-50"
                 onClick={() => updateModalState()}
                 disabled
               >
                 Buy
-              </button>
-
-              <button
-                onClick={() => router.push("/login")}
-                className="rounded-[47px] text-base font-bold w-full text-zikoroBlue mt-1 py-2 cursor-pointer"
-              >
-                Try it
               </button>
             </div>
 
@@ -264,18 +263,19 @@ export default function PricingTable({
             </p>
             <div className="px-1 my-6">
               {/* buttons */}
-              <button
-                className="w-full bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end rounded-[47px] text-base font-bold text-white py-2 cursor-pointer"
-                onClick={() => handleSelectPlan("Lite")}
-              >
-                Buy
-              </button>
 
               <button
                 onClick={() => router.push("/login")}
                 className="rounded-[47px] text-base font-bold w-full text-zikoroBlue mt-1 py-2 cursor-pointer"
               >
                 Try it
+              </button>
+
+              <button
+                className="w-full bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end rounded-[47px] text-base font-bold text-white py-2 cursor-pointer"
+                onClick={() => handleSelectPlan("Lite")}
+              >
+                Buy
               </button>
             </div>
 
@@ -343,17 +343,16 @@ export default function PricingTable({
             <div className="px-1 my-6">
               {/* buttons */}
               <button
-                className="w-full bg-white rounded-[47px] text-base font-bold text-zikoroBlue py-2 cursor-pointer"
-                onClick={() => handleSelectPlan("Professional")}
-              >
-                Buy
-              </button>
-
-              <button
                 onClick={() => router.push("/login")}
                 className="rounded-[47px] text-base font-bold w-full text-white mt-1 py-2 cursor-pointer"
               >
                 Try it
+              </button>
+              <button
+                className="w-full bg-white rounded-[47px] text-base font-bold text-zikoroBlue py-2 cursor-pointer"
+                onClick={() => handleSelectPlan("Professional")}
+              >
+                Buy
               </button>
             </div>
 
@@ -423,18 +422,18 @@ export default function PricingTable({
             </p>
             <div className="px-1 my-6">
               {/* buttons */}
-              <button
-                className="w-full bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end rounded-[47px] text-base font-bold text-white py-2 cursor-pointer"
-                onClick={() => handleSelectPlan("Enterprise")}
-              >
-                Buy
-              </button>
 
               <button
                 onClick={() => router.push("/login")}
                 className="rounded-[47px] text-base font-bold w-full text-zikoroBlue mt-1 py-2 cursor-pointer"
               >
                 Try it
+              </button>
+              <button
+                className="w-full bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end rounded-[47px] text-base font-bold text-white py-2 cursor-pointer"
+                onClick={() => handleSelectPlan("Enterprise")}
+              >
+                Buy
               </button>
             </div>
 
