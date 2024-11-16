@@ -10,6 +10,7 @@ import { LocationPin } from "styled-icons/entypo";
 import Image from "next/image";
 import { cn } from "@/lib";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Link2Outline } from "styled-icons/evaicons-outline";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
@@ -18,6 +19,8 @@ import { useRouter } from "next/navigation";
 import { EngagementsSettings } from "@/types/engagements";
 import { EventAttendeeWidget } from "@/components/published";
 import { isEventLive } from "@/utils";
+import copy from "copy-to-clipboard";
+import toast from "react-hot-toast";
 
 export function Custom({
   sessionAgenda,
@@ -161,7 +164,7 @@ function Widget({
       if (staffLength >= width) {
         const x = (staffLength - width) / 200;
         const willInclude = parseInt(Math.round(x).toFixed(0));
-        console.log(staffLength, width);
+       // console.log(staffLength, width);
         setStaffs(mergedSM.slice(0, willInclude));
         setOtherStaffsCount(mergedSM?.length - willInclude);
       } else {
@@ -194,48 +197,62 @@ function Widget({
 
         <div className="w-full flex items-center justify-between mt-4 sm:mt-6 mb-2 ">
           <div className="flex items-center gap-x-3">
-          {session?.sessionType && (
-            <div className="w-fit px-2 py-1 bg-gradient-to-tr border rounded-2xl border-[#001fcc] from-custom-bg-gradient-start to-custom-bg-gradient-end">
-              <p className="gradient-text bg-basePrimary text-xs">
-                {session?.sessionType ?? ""}
-              </p>
-            </div>
-          )}
+            {session?.sessionType && (
+              <div className="w-fit px-2 py-1 bg-gradient-to-tr border rounded-2xl border-[#001fcc] from-custom-bg-gradient-start to-custom-bg-gradient-end">
+                <p className="gradient-text bg-basePrimary text-xs">
+                  {session?.sessionType ?? ""}
+                </p>
+              </div>
+            )}
 
-          {session?.Track && (
-            <button className="bg-[#F44444]/10 text-xs border text-[#F44444] border-[#F44444] px-2 py-1 rounded-2xl">
-              {session?.Track ?? ""}
-            </button>
-          )}
-          {session?.sessionVenue && (
-            <div className="flex items-center gap-x-1">
-              <LocationPin size={20} />
-              <p className={cn("w-full", isReception && "max-w-[100px] line-clamp-1")}>{session?.sessionVenue ?? ""}</p>
+            {session?.Track && (
+              <button className="bg-[#F44444]/10 text-xs border text-[#F44444] border-[#F44444] px-2 py-1 rounded-2xl">
+                {session?.Track ?? ""}
+              </button>
+            )}
+            {session?.sessionVenue && (
+              <div className="flex items-center gap-x-1">
+                <LocationPin size={20} />
+                <p
+                  className={cn(
+                    "w-full",
+                    isReception && "max-w-[100px] line-clamp-1"
+                  )}
+                >
+                  {session?.sessionVenue ?? ""}
+                </p>
+              </div>
+            )}
+            <div
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+              className="flex items-center gap-x-3"
+            >
+              <AddToMyAgenda
+                attendeeId={attendeeId}
+                isMyAgenda={session?.isMyAgenda}
+                sessionAlias={session?.sessionAlias}
+                refetch={refetchSession}
+                engagementsSettings={engagementsSettings}
+                myAgendas={myAgendas}
+                eventAlias={event?.eventAlias!}
+              />
             </div>
-          )}
-          <div
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-            className="flex items-center gap-x-3"
-          >
-            <AddToMyAgenda
-              attendeeId={attendeeId}
-              isMyAgenda={session?.isMyAgenda}
-              sessionAlias={session?.sessionAlias}
-              refetch={refetchSession}
-              engagementsSettings={engagementsSettings}
-              myAgendas={myAgendas}
-              eventAlias={event?.eventAlias!}
-            />
           </div>
-          </div>
-  
+
           {isReception && isLive && (
-                <Button className="bg-basePrimary text-white font-medium rounded-lg h-11 ">
-                  Join
-                </Button>
-              )}
+            <Button
+              onClick={() =>
+                router.push(
+                  `/event/${event?.eventAlias}/agenda/${session?.sessionAlias}`
+                )
+              }
+              className="bg-basePrimary text-white font-medium rounded-lg h-11 "
+            >
+              Join
+            </Button>
+          )}
         </div>
         {isAddedAttendee && (
           <>
@@ -265,14 +282,29 @@ function Widget({
             </div>
             <div
               className={cn(
-                "w-full block my-2 md:hidden",
-                isReception && "md:block"
+                "w-full flex items-center gap-x-1  my-2 md:hidden",
+                isReception && "md:flex"
               )}
             >
-              <EventAttendeeWidget attendees={mergedSM} isReception={isReception} />
-             
+              <EventAttendeeWidget
+                attendees={mergedSM}
+                isReception={isReception}
+              />
             </div>
           </>
+        )}
+        {isReception && session?.sessionUrl && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              copy(session?.sessionUrl);
+              toast.success("Link Copied");
+            }}
+            className="flex my-2 items-center gap-x-2"
+          >
+            <Link2Outline size={18} />
+            <p className="text-xs">Join Live Event</p>
+          </button>
         )}
         {!isFullScreen && (isIdPresent || isOrganizer) && !isReception && (
           <div

@@ -8,13 +8,14 @@ import lz from "lzutf8";
 import { useGetQuizAnswer, useGetQuiz } from "@/hooks";
 
 export default function ScoreBoardPage({
-  quizId,
-  searchParams: { id },
+  quizId
 }: {
   quizId: string;
 }) {
   const { answers, getAnswers } = useGetQuizAnswer();
   const { quiz: actualQuiz } = useGetQuiz({ quizId });
+  const params = useSearchParams()
+  const id = params.get("id")
 
   const router = useRouter();
 

@@ -7,6 +7,8 @@ import { useCreateMyAgenda } from "@/hooks";
 import { EngagementsSettings } from "@/types/engagements";
 import { cn } from "@/lib";
 import { TMyAgenda } from "@/types";
+import { IconifyAgendaCalendar } from "@/constants";
+import { BsDot } from "react-icons/bs";
 export function AddToMyAgenda({
   attendeeId,
   sessionAlias,
@@ -21,17 +23,17 @@ export function AddToMyAgenda({
   isMyAgenda: boolean;
   refetch?: () => Promise<any>;
   myAgendas?: TMyAgenda[];
-  eventAlias:string;
+  eventAlias: string;
   engagementsSettings?: EngagementsSettings | null;
 }) {
   const { createMyAgenda, isLoading } = useCreateMyAgenda();
 
   async function add() {
-    console.log("alias",eventAlias)
+    console.log("alias", eventAlias);
     let payload: Partial<TMyAgenda> = {
       sessionAlias,
       attendeeId,
-      eventAlias
+      eventAlias,
     };
     const myAgendapointsAllocation =
       engagementsSettings?.pointsAllocation["add to agenda"];
@@ -85,10 +87,11 @@ export function AddToMyAgenda({
         onClick={add}
         className="h-fit w-fit gap-x-2 px-0"
       >
-        <CalendarCheck
-          className={cn("text-basePrimary", !isMyAgenda && "text-gray-600")}
-          size={20}
-        />
+        <div className="flex items-center gap-x-1">
+        <IconifyAgendaCalendar />
+        {isMyAgenda  && <BsDot size={20} className="text-basePrimary"/>}
+        </div>
+    
         {isLoading && <LoaderAlt className="animate-spin" size={10} />}
       </Button>
     </>

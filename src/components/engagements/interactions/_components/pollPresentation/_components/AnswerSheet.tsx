@@ -16,7 +16,7 @@ export function AnswerSheet({
   close?: () => Promise<void>;
   isAttendee: boolean;
 }) {
-console.log(answers)
+
   const answerSheet = useMemo(() => {
     if (poll && answers) {
     
