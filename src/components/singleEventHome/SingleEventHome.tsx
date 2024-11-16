@@ -346,7 +346,7 @@ function AboutModal({ close, event }: { event: Event; close: () => void }) {
     className="fixed inset-0 w-full h-full z-[100] ">
       <div
       onClick={(e) => e.stopPropagation()}
-      className="py-6 px-5 max-w-2xl rounded-lg bg-white absolute inset-0 overflow-y-auto m-auto max-h-[65%]">
+      className="py-6 px-5 max-w-2xl rounded-lg border bg-white absolute inset-0 overflow-y-auto m-auto max-h-[65%]">
         <div className="w-full pb-2 mb-6 border-b flex items-center justify-between">
           <h2 className="text-lg sm:text-2xl font-semibold">About Event</h2>
 
