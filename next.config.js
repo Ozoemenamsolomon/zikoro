@@ -4,8 +4,14 @@ const nextConfig = {
   images: {
     domains: ["res.cloudinary.com"],
   },
-  webpack: (config) => {
-    config.externals = [...config.externals, { canvas: "canvas" }];
+
+  webpack: (config, { isServer }) => {
+    if (isServer && process.env.NODE_ENV !== "production") {
+      config.externals = [
+        ...config.externals,
+        { canvas: "canvas" }, // Only in development
+      ];
+    }
     return config;
   },
 };
