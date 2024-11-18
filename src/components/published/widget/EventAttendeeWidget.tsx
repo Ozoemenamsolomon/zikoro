@@ -9,11 +9,11 @@ import Link from "next/link";
 function ImageWidget({
   attendee,
   className,
-  isReception
+  isReception,
 }: {
   className?: string;
   attendee: TAttendee;
-  isReception?:boolean;
+  isReception?: boolean;
 }) {
   const [clickMobile, setClickMobile] = useState(false);
   return (
@@ -55,12 +55,14 @@ function ImageWidget({
           <span>{attendee?.firstName}</span>{" "}
           <span>{attendee?.lastName?.charAt(0)}.</span>
         </p>
-       {!isReception && <Link
-          className="text-sm capitalize gradient-text bg-basePrimary"
-          href=""
-        >
-          Register to see all participants
-        </Link>}
+        {!isReception && (
+          <Link
+            className="text-sm capitalize gradient-text bg-basePrimary"
+            href=""
+          >
+            Register to see all participants
+          </Link>
+        )}
       </div>
     </div>
   );
@@ -95,36 +97,61 @@ export function EventAttendeeWidget({
       return otherAttendeeCount.toString();
     }
   }, [otherAttendeeCount]);
+
+  const names = useMemo(() => {
+    const attendeeNames = slicedArray?.map(
+      ({ firstName, lastName }) => `${firstName} ${lastName?.charAt(0)}`
+    );
+    const isGreaterThanZero =
+      attendeeNames.slice(3, attendeeNames?.length)?.length > 0;
+    if (!isGreaterThanZero) {
+      return `${attendeeNames.slice(0, 3)}`;
+    } else if (attendeeNames.slice(3, attendeeNames?.length)?.length === 1) {
+      return `${attendeeNames.slice(0, 3)} and Other`;
+    } else {
+      return `${attendeeNames.slice(0, 3)} and Others`;
+    }
+  }, [slicedArray]);
+
   return (
-    <div className="flex w-[250px] flex-col items-start justify-start gap-y-2">
-      <div className="flex w-full items-center">
-        {slicedArray?.map((attendee, index) => (
-          <ImageWidget
-            key={index}
-            isReception={isReception}
-            attendee={attendee}
-            className={
-              index === 0
-                ? "-left-[3%]"
-                : index === 1
-                ? "-left-[13%]"
-                : index === 2
-                ? "-left-[24%]"
-                : index === 3
-                ? "-left-[35%]"
-                : ""
-            }
-          />
-        ))}
-        {otherAttendeeCount > 0 && (
-          <div className="relative -left-[45%] h-[50px] w-[50px] rounded-full border-4 border-[#F7F8FF] flex items-center bg-gray-400 uppercase font-medium text-lg justify-center">
-            <p className="gradient-text  bg-basePrimary">
-              <span className="text-[22px]">+</span>
-              {formattedCount}
-            </p>
-          </div>
-        )}
+    <div className="flex items-center gap-x-1">
+      <div className="w-fit  ">
+        <div className="flex w-full items-center">
+          {slicedArray?.map((attendee, index) => (
+            <ImageWidget
+              key={index}
+              isReception={isReception}
+              attendee={attendee}
+              className={
+                index === 0
+                  ? "-left-[3%]"
+                  : index === 1
+                  ? "-left-[13%]"
+                  : index === 2
+                  ? "-left-[24%]"
+                  : index === 3
+                  ? "-left-[35%]"
+                  : ""
+              }
+            />
+          ))}
+          {otherAttendeeCount > 0 && (
+            <div className="relative -left-[45%] h-[50px] w-[50px] rounded-full border-4 border-[#F7F8FF] flex items-center bg-gray-400 uppercase font-medium text-lg justify-center">
+              <p className="gradient-text  bg-basePrimary">
+                <span className="text-[22px]">+</span>
+                {formattedCount}
+              </p>
+            </div>
+          )}
+        </div>
       </div>
+      <p className={cn("capitalize relative ",  slicedArray?.length === 1
+                  ? "-left-[3%]"
+                  : slicedArray?.length === 2
+                  ? "ml-[-3%]"
+                  : slicedArray?.length === 3
+                  ? "ml-[-6%]": slicedArray?.length === 4
+                  ? "ml-[-10%]":"")}>{names}</p>
     </div>
   );
 }
