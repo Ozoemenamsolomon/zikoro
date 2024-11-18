@@ -87,6 +87,10 @@ export default function WorkspaceComponent({
     setSelectedButtons([]);
   };
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
   useEffect(() => {
     //fetch events from database
     async function fetchEventFeautured() {
@@ -287,6 +291,28 @@ export default function WorkspaceComponent({
               <div>
                 {/* big screen */}
                 <div className="px-0 max-w-full lg:max-w-7xl mx-auto  lg:mt-28 hidden lg:block ">
+                  <div className="mt-24 text-center">
+                    <p className="text-[40px] gradient-text bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end font-bold">
+                      {name}
+                    </p>
+                    <p className="text-[24px] font-normal">
+                      Our Public Workspace
+                    </p>
+                  </div>
+
+                  {/* mt-12       */}
+                  <div className="h-[48px] flex justify-between gap-x-3 max-w-lg mx-auto items-center mt-6">
+                    <div className=" p-1 border-[1px] border-indigo-800 rounded-xl w-[500px] h-full">
+                      <input
+                        type="text"
+                        value={searchQuery}
+                        name="searchBox"
+                        onChange={handleChange}
+                        placeholder="search by event name, city, category"
+                        className="pl-4 outline-none text-base text-gray-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-xl w-full h-full"
+                      />
+                    </div>
+                  </div>
                   {/* main section */}
                   <div
                     className={`flex flex-col  lg:flex-row  justify-between mt-[50px] ${
@@ -571,6 +597,28 @@ export default function WorkspaceComponent({
                 {/* small screen */}
                 <div className="block lg:hidden px-3 mt-40 ">
                   <div className="mt-12 ">
+                    <p className=" text-center text-[24px] gradient-text bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end font-bold">
+                      {name}
+                    </p>
+                    <p className="text-base text-center font-normal">
+                      Our Public Workspace
+                    </p>
+
+                    <div className="">
+                      <div className="h-[58px] pt-[15px] flex justify-between gap-x-3 items-center">
+                        <div className=" p-1 border-[1px] border-indigo-800 rounded-xl w-full h-full">
+                          <input
+                            type="text"
+                            value={searchQuery}
+                            name="searchBox"
+                            onChange={handleChange}
+                            placeholder="search by event name, city, category"
+                            className="pl-4 outline-none text-base text-gray-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-xl w-full h-full"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
                     <div className="mt-7">
                       {showCategories?.toString() == "true" && (
                         <div className=" px-4 flex w-auto items-center overflow-x-auto no-scrollbar py-7 gap-x-[10px] border-y-[1px] border-gray-200 ">

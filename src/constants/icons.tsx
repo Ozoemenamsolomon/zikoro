@@ -8429,3 +8429,81 @@ export const FormListingType = () => {
     </svg>
   );
 };
+
+export const IconifyAgendaCalendar = () => {
+  return (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect
+        x="0.375"
+        y="0.375"
+        width="23.25"
+        height="23.25"
+        rx="11.625"
+        fill="url(#paint0_linear_1102_10114)"
+        fillOpacity="0.1"
+        stroke="url(#paint1_linear_1102_10114)"
+        strokeWidth="0.75"
+      />
+      <path
+        d="M9.79922 5.59961V7.39961H14.5992V5.59961H15.7992V7.39961H18.1992V18.1996H6.19922V7.39961H8.59922V5.59961H9.79922ZM7.39922 8.59961V10.3996H16.9992V8.59961H7.39922ZM16.9992 11.5996H7.39922V16.9996H16.9992V11.5996Z"
+        fill="url(#paint2_linear_1102_10114)"
+      />
+      <path
+        d="M15.148 12.95L11.7538 16.3442L9.63281 14.2226L10.4812 13.3742L11.7538 14.6468L14.2996 12.1016L15.148 12.95Z"
+        fill="url(#paint3_linear_1102_10114)"
+      />
+      <defs>
+        <linearGradient
+          id="paint0_linear_1102_10114"
+          x1="0"
+          y1="12"
+          x2="24"
+          y2="12"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stop-color="#001FCC" />
+          <stop offset="1" stopColor="#9D00FF" />
+        </linearGradient>
+        <linearGradient
+          id="paint1_linear_1102_10114"
+          x1="0"
+          y1="12"
+          x2="24"
+          y2="12"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stop-color="#001FCC" />
+          <stop offset="1" stopColor="#9D00FF" />
+        </linearGradient>
+        <linearGradient
+          id="paint2_linear_1102_10114"
+          x1="6.19922"
+          y1="11.8996"
+          x2="18.1992"
+          y2="11.8996"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stop-color="#001FCC" />
+          <stop offset="1" stopColor="#9D00FF" />
+        </linearGradient>
+        <linearGradient
+          id="paint3_linear_1102_10114"
+          x1="9.63281"
+          y1="14.2229"
+          x2="15.148"
+          y2="14.2229"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stop-color="#001FCC" />
+          <stop offset="1" stopColor="#9D00FF" />
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+};
