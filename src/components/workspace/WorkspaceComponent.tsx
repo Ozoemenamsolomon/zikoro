@@ -55,9 +55,20 @@ type SearchParams = {
   logo: string;
   orgLogo: string;
   zikoroLogo: string;
+  showSearch: string;
+  showHeader: string;
 };
 export default function WorkspaceComponent({
-  searchParams: { name, showFilter, showCategories, logo, orgLogo, zikoroLogo },
+  searchParams: {
+    name,
+    showFilter,
+    showCategories,
+    logo,
+    orgLogo,
+    zikoroLogo,
+    showSearch,
+    showHeader,
+  },
 }: {
   searchParams: SearchParams;
 }) {
@@ -291,28 +302,32 @@ export default function WorkspaceComponent({
               <div>
                 {/* big screen */}
                 <div className="px-0 max-w-full lg:max-w-7xl mx-auto  lg:mt-28 hidden lg:block ">
-                  <div className="mt-24 text-center">
-                    <p className="text-[40px] gradient-text bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end font-bold">
-                      {name}
-                    </p>
-                    <p className="text-[24px] font-normal">
-                      Our Public Workspace
-                    </p>
-                  </div>
+                  {showHeader.trim() === "true" || showHeader.trim() === "True" && (
+                    <div className="mt-24 text-center">
+                      <p className="text-[40px] gradient-text bg-gradient-to-tr capitalize from-custom-gradient-start to-custom-gradient-end font-bold">
+                        {name}
+                      </p>
+                      <p className="text-[24px] font-normal">
+                        Our Public Workspace
+                      </p>
+                    </div>
+                  )}
 
                   {/* mt-12       */}
-                  <div className="h-[48px] flex justify-between gap-x-3 max-w-lg mx-auto items-center mt-6">
-                    <div className=" p-1 border-[1px] border-indigo-800 rounded-xl w-[500px] h-full">
-                      <input
-                        type="text"
-                        value={searchQuery}
-                        name="searchBox"
-                        onChange={handleChange}
-                        placeholder="search by event name, city, category"
-                        className="pl-4 outline-none text-base text-gray-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-xl w-full h-full"
-                      />
+                  {showSearch.trim() === "true"  && (
+                    <div className="h-[48px] flex justify-between gap-x-3 max-w-lg mx-auto items-center mt-6">
+                      <div className=" p-1 border-[1px] border-indigo-800 rounded-xl w-[500px] h-full">
+                        <input
+                          type="text"
+                          value={searchQuery}
+                          name="searchBox"
+                          onChange={handleChange}
+                          placeholder="search by event name, city, category"
+                          className="pl-4 outline-none text-base text-gray-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-xl w-full h-full"
+                        />
+                      </div>
                     </div>
-                  </div>
+                  )}
                   {/* main section */}
                   <div
                     className={`flex flex-col  lg:flex-row  justify-between mt-[50px] ${
@@ -522,7 +537,7 @@ export default function WorkspaceComponent({
                       {/* top */}
                       <div className="flex">
                         {showCategories?.toString() === "true" && (
-                          <div className=" px-4 flex w-[950px] items-center overflow-x-auto no-scrollbar py-[25px] lg:min-h-[110px] gap-x-[10px]  ">
+                          <div className=" px-4 flex w-[950px] items-center overflow-x-auto no-scrollbar py-[25px] lg:min-h-[108px] gap-x-[10px]  ">
                             {filterCategories
                               .filter(
                                 (category, i, self) =>

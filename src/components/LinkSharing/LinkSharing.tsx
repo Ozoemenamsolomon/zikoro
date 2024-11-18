@@ -28,12 +28,12 @@ export default function LinkSharing() {
 
   //handles show organization toggle
   const handleHeaderToggle = () => {
-    setShowOrgLogo(!showHeader);
+    setShowHeader(!showHeader);
   };
 
   //handles show search toggle
   const handleSearchToggle = () => {
-    setShowOrgLogo(!showSearch);
+    setShowSearch(!showSearch);
   };
 
   //handles show organization logo toggle
@@ -114,7 +114,7 @@ export default function LinkSharing() {
         <div className="mt-6 flex gap-x-3 items-center ">
           <Switch
             className="data-[state=checked]:bg-zikoroBlue"
-            checked={showFilter}
+            checked={showSearch}
             onCheckedChange={handleSearchToggle}
           />
           <p className="text-base font-normal ">Turn off SearchBox</p>
