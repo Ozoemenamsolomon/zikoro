@@ -191,6 +191,21 @@ export function ContentSetting({
 
   console.log(organization?.subscriptionPlan, "subscription plan");
 
+  const subscriptionInfo = organization?.subscriptionPlan !== "Enterprise" &&
+    organization?.subscriptionPlan !== "Lite" &&
+    organization?.subscriptionPlan !== "Professional" && (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger className="flex items-center">
+            <ExclamationCircle className="h-5 w-5 text-red-500" />
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Not available for free plan</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    );
+
   return (
     <div
       onClick={onClose}
@@ -331,12 +346,18 @@ export function ContentSetting({
                     )
                   }
                   checked={enableAffiliateSettings}
-                  disabled={loading}
+                  disabled={
+                    loading ||
+                    getWorkspaceSubscriptionIsLoading ||
+                    (organization?.subscriptionPlan !== "Enterprise" &&
+                      organization?.subscriptionPlan !== "Lite" &&
+                      organization?.subscriptionPlan !== "Professional")
+                  }
                   className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary mt-1"
                 />
                 <div className="flex flex-col items-start w-full col-span-11 justify-start gap-y-1">
-                  <h2 className="text-base sm:text-xl">
-                    Enable Event Referrals
+                  <h2 className="text-base sm:text-xl flex items-center gap-x-1">
+                    Enable Event Referrals {subscriptionInfo}
                   </h2>
                   <p className="text-gray-500 text-start text-xs sm:text-sm">
                     Allow attendees to sign up as affiliates after registration.
@@ -629,20 +650,7 @@ export function ContentSetting({
               <div className="flex flex-col items-start w-full col-span-11 justify-start gap-y-1">
                 <h2 className="text-base sm:text-xl flex items-center gap-x-1">
                   Include Join Event Link
-                  {organization?.subscriptionPlan !== "Enterprise" &&
-                    organization?.subscriptionPlan !== "Lite" &&
-                    organization?.subscriptionPlan !== "Professional" && (
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger className="flex items-center">
-                            <ExclamationCircle className="h-5 w-5 text-red-500" />
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>Not available for free plan</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    )}
+                  {subscriptionInfo}
                 </h2>
                 <p className="text-gray-500 text-start text-xs sm:text-sm">
                   When active, a link to access the event app will be included
