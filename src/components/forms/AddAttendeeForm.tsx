@@ -420,21 +420,23 @@ export default function AddAttendeeForm({
                 Attendee Type
               </span>
               <div className="flex gap-2 flex-wrap justify-between">
-                {attendeeTypeOptions.map(({ label, value }) => (
-                  <button
-                    className={`text-sm p-1.5 mx-auto border-2 rounded font-medium",
+                {attendeeTypeOptions
+                  .filter(({ value }) => value !== "attendee")
+                  .map(({ label, value }) => (
+                    <button
+                      className={`text-sm p-1.5 mx-auto border-2 rounded font-medium",
                     ${
                       attendeeType && attendeeType.includes(value)
                         ? "text-earlyBirdColor border-earlyBirdColor bg-[#EEF0FF]"
                         : "border-gray-600 text-gray-600 bg-white"
                     }
                   `}
-                    type="button"
-                    onClick={() => toggleAttendeeType(value)}
-                  >
-                    {label}
-                  </button>
-                ))}
+                      type="button"
+                      onClick={() => toggleAttendeeType(value)}
+                    >
+                      {label}
+                    </button>
+                  ))}
               </div>
               <span className="text-tiny font-medium text-gray-500">
                 You can assign multiple roles to the attendee
