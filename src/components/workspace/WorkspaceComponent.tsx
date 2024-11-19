@@ -87,6 +87,7 @@ export default function WorkspaceComponent({
   const [filterLocationType, setFilterLocationType] = useState<string[]>([]);
   const [filterCountry, setFilterCountry] = useState<string[]>([]);
   const [filterCity, setFilterCity] = useState<string[]>([]);
+  const [searchText, setSearchText] = useState<string>("");
 
   //see more function
   const handleSeeMoreClick = () => {
@@ -230,13 +231,16 @@ export default function WorkspaceComponent({
   const filteredEvents = eventData
     ?.filter((event) => {
       const lowerSearchQuery = searchQuery?.toLowerCase();
+      return event.organization.organizationName
+        ?.toLowerCase()
+        ?.includes(lowerSearchQuery ?? "");
+    })
+    .filter((event) => {
+      const lowerSearchText = searchText.toLowerCase();
       return (
-        event.organization.organizationName
-          ?.toLowerCase()
-          ?.includes(lowerSearchQuery ?? "") ||
-        event.organization.subDomain
-          ?.toLowerCase()
-          ?.includes(lowerSearchQuery ?? "")
+        event?.eventTitle?.toLowerCase()?.includes(lowerSearchText) ||
+        event?.eventCity?.toLowerCase()?.includes(lowerSearchText) ||
+        event?.eventCategory?.toLowerCase()?.includes(lowerSearchText)
       );
     })
     .filter((event) => {
@@ -302,9 +306,9 @@ export default function WorkspaceComponent({
               <div>
                 {/* big screen */}
                 <div className="px-0 max-w-full lg:max-w-7xl mx-auto  lg:mt-28 hidden lg:block ">
-                  {showHeader.trim() === "true" || showHeader.trim() === "True" && (
+                  {showHeader.trim().toLowerCase() === "true" && (
                     <div className="mt-24 text-center">
-                      <p className="text-[40px] gradient-text bg-gradient-to-tr capitalize from-custom-gradient-start to-custom-gradient-end font-bold">
+                      <p className="text-[40px] gradient-text bg-gradient-to-tr uppercase from-custom-gradient-start to-custom-gradient-end font-bold">
                         {name}
                       </p>
                       <p className="text-[24px] font-normal">
@@ -314,14 +318,14 @@ export default function WorkspaceComponent({
                   )}
 
                   {/* mt-12       */}
-                  {showSearch.trim() === "true"  && (
+                  {showSearch.trim() === "true" && (
                     <div className="h-[48px] flex justify-between gap-x-3 max-w-lg mx-auto items-center mt-6">
                       <div className=" p-1 border-[1px] border-indigo-800 rounded-xl w-[500px] h-full">
                         <input
                           type="text"
-                          value={searchQuery}
+                          value={searchText}
                           name="searchBox"
-                          onChange={handleChange}
+                          onChange={(e) => setSearchText(e.target.value)}
                           placeholder="search by event name, city, category"
                           className="pl-4 outline-none text-base text-gray-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-xl w-full h-full"
                         />
@@ -612,27 +616,33 @@ export default function WorkspaceComponent({
                 {/* small screen */}
                 <div className="block lg:hidden px-3 mt-40 ">
                   <div className="mt-12 ">
-                    <p className=" text-center text-[24px] gradient-text bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end font-bold">
-                      {name}
-                    </p>
-                    <p className="text-base text-center font-normal">
-                      Our Public Workspace
-                    </p>
+                    {showHeader.trim().toLowerCase() === "true" && (
+                      <>
+                        <p className=" text-center text-[24px] uppercase gradient-text bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end font-bold">
+                          {name}
+                        </p>
+                        <p className="text-base text-center font-normal">
+                          Our Public Workspace
+                        </p>
+                      </>
+                    )}
 
-                    <div className="">
-                      <div className="h-[58px] pt-[15px] flex justify-between gap-x-3 items-center">
-                        <div className=" p-1 border-[1px] border-indigo-800 rounded-xl w-full h-full">
-                          <input
-                            type="text"
-                            value={searchQuery}
-                            name="searchBox"
-                            onChange={handleChange}
-                            placeholder="search by event name, city, category"
-                            className="pl-4 outline-none text-base text-gray-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-xl w-full h-full"
-                          />
+                    {showSearch.trim() === "true" && (
+                      <div className="">
+                        <div className="h-[58px] pt-[15px] flex justify-between gap-x-3 items-center">
+                          <div className=" p-1 border-[1px] border-indigo-800 rounded-xl w-full h-full">
+                            <input
+                              type="text"
+                              value={searchText}
+                              name="searchBox"
+                              onChange={(e) => setSearchText(e.target.value)}
+                              placeholder="search by event name, city, category"
+                              className="pl-4 outline-none text-base text-gray-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-xl w-full h-full"
+                            />
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    )}
 
                     <div className="mt-7">
                       {showCategories?.toString() == "true" && (
