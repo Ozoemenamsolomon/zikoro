@@ -46,7 +46,7 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
     onOpen: onOpenAttendeeForm,
     onClose: onCloseAttendeeForm,
   } = useDisclose();
-  console.log(attendees.map(({ attendeeAlias }) => attendeeAlias));
+  // console.log(attendees.map(({ attendeeAlias }) => attendeeAlias));
   const { user, setUser } = useUserStore();
 
   console.log(user, "user");

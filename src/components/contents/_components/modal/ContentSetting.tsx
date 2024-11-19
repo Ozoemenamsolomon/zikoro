@@ -285,11 +285,18 @@ export function ContentSetting({
                   form.setValue("selfCheckInAllowed", !selfCheckInAllowed)
                 }
                 checked={selfCheckInAllowed}
-                disabled={loading}
-                className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary "
+                disabled={
+                  loading ||
+                  (organization?.subscriptionPlan !== "Enterprise" &&
+                    organization?.subscriptionPlan !== "Lite" &&
+                    organization?.subscriptionPlan !== "Professional")
+                }
+                className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
               />
               <div className="flex flex-col items-start w-full col-span-11 justify-start gap-y-1">
-                <h2 className="text-base sm:text-xl">Enable Self Check-in</h2>
+                <h2 className="text-base sm:text-xl flex items-center gap-x-1">
+                  Enable Self Check-in {subscriptionInfo}
+                </h2>
                 <p className="text-gray-500 text-start text-xs sm:text-sm">
                   Allow attendees to check in by themselves everyday of the
                   event.

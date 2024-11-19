@@ -91,7 +91,26 @@ export default function AddAttendeeForm({
   } = form;
 
   useEffect(() => {
-    if (!attendee) return form.reset();
+    if (!attendee)
+      return form.reset({
+        firstName: "",
+        lastName: "",
+        email: "",
+        jobTitle: "",
+        organization: "",
+        city: "",
+        country: "",
+        phoneNumber: "",
+        whatsappNumber: "",
+        bio: "",
+        x: "",
+        linkedin: "",
+        instagram: "",
+        facebook: "",
+        profilePicture: "",
+        attendeeType: ["attendee"],
+        appointmentLink: "",
+      });
 
     form.reset({
       ...attendee,
@@ -207,6 +226,8 @@ export default function AddAttendeeForm({
       setProfilePictureUploading(false);
     }
   };
+
+  console.log(errors, "errors");
 
   return (
     <Overlay

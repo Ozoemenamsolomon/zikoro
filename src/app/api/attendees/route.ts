@@ -239,20 +239,21 @@ function generateEmailContent(attendee, event, formattedDate) {
           }</p>
 
           ${
-            updatedEvent?.includeJoinEventLink &&
-            (updatedEvent.organization?.subscriptionPlan === "Enterprise" ||
-              updatedEvent.organization?.subscriptionPlan === "Lite" ||
-              updatedEvent.organization?.subscriptionPlan === "Professional") &&
-            `
+            event?.includeJoinEventLink &&
+            (event.organization?.subscriptionPlan === "Enterprise" ||
+              event.organization?.subscriptionPlan === "Lite" ||
+              event.organization?.subscriptionPlan === "Professional")
+              ? `
             <a href="https://www.zikoro.com/event/${
               event.eventAlias
             }/people/info/${attendee.attendeeAlias}?email=${
-              attendee?.email
-            }&createdAt=${new Date().toISOString()}&isPasswordless=${true}&alias=${
-              attendee?.attendeeAlias
-            }" style="display: block; color: #001fcc; font-size: 12px; text-decoration: none;">
+                  attendee?.email
+                }&createdAt=${new Date().toISOString()}&isPasswordless=${true}&alias=${
+                  attendee?.attendeeAlias
+                }" style="display: block; color: #001fcc; font-size: 12px; text-decoration: none;">
               Update Profile</a>
             `
+              : ""
           }
 
         </div>
@@ -330,19 +331,19 @@ function generateEmailContent(attendee, event, formattedDate) {
       </div>
       <!--end-->
       ${
-        updatedEvent?.includeJoinEventLink &&
-        (updatedEvent.organization?.subscriptionPlan === "Enterprise" ||
-          updatedEvent.organization?.subscriptionPlan === "Lite" ||
-          updatedEvent.organization?.subscriptionPlan === "Professional") &&
-        `
+        event?.includeJoinEventLink &&
+        (event.organization?.subscriptionPlan === "Enterprise" ||
+          event.organization?.subscriptionPlan === "Lite" ||
+          event.organization?.subscriptionPlan === "Professional")
+          ? `
         <a
           href="https://www.zikoro.com/event/${
             event.eventAlias
           }/reception?email=${
-          attendee?.email
-        }&createdAt=${new Date().toISOString()}&isPasswordless=${true}&alias=${
-          attendee?.attendeeAlias
-        }"
+              attendee?.email
+            }&createdAt=${new Date().toISOString()}&isPasswordless=${true}&alias=${
+              attendee?.attendeeAlias
+            }"
           style="max-width:600px; margin:0 auto;"
         >
           <button
@@ -369,6 +370,7 @@ function generateEmailContent(attendee, event, formattedDate) {
           </button>
         </a>
       `
+          : ""
       }
 
       <div style="
