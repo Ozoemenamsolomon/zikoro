@@ -179,7 +179,7 @@ function Widget({
         ref={divRef}
         role="button"
         onClick={() => {
-          if (session?.description && !isEventDetail) {
+          if (!isEventDetail) {
             if (isReception && !isLive) return;
             router.push(
               `/event/${event?.eventAlias}/agenda/${session?.sessionAlias}`
@@ -258,14 +258,14 @@ function Widget({
           <>
             <div
               className={cn(
-                "w-full hidden relative md:flex items-center mb-2  gap-1",
+                "w-full hidden relative md:flex items-center mb-2  gap-2",
                 isReception && "md:hidden"
               )}
             >
               {Array.isArray(staffs) &&
                 staffs.map((attendee, index) => (
                   <BoothStaffWidget
-                    company={""}
+                    company={attendee?.organization ??""}
                     image={attendee?.profilePicture || null}
                     name={`${attendee?.firstName} ${attendee?.lastName}`}
                     profession={attendee?.jobTitle ?? ""}
@@ -303,7 +303,7 @@ function Widget({
             className="flex my-2 items-center gap-x-2"
           >
             <Link2Outline size={18} />
-            <p className="text-xs">Join Live Event</p>
+            <p className="text-xs">Copy Event Link</p>
           </button>
         )}
         {!isFullScreen && (isIdPresent || isOrganizer) && !isReception && (

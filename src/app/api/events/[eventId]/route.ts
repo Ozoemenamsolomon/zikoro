@@ -94,7 +94,7 @@ export async function PATCH(req: NextRequest) {
 
         <p> Hello,</p>
          
-        <p> Great news! Your event is officially live, and attendees can now register using the following link: ${deploymentUrl}/live-events/${params?.eventAlias} </p>
+        <p> Great news! Your event is live, and attendees can now register using the following link: ${deploymentUrl}/live-events/${params?.eventAlias} </p>
          
          <p>You can track attendee registration and other details in the Zikoro app ${deploymentUrl}/event/${params?.eventAlias}/people/all as they register, ensuring you stay up-to-date with all participant information.</p>
          

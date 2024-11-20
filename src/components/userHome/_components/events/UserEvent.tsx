@@ -25,13 +25,23 @@ export function UserEvents() {
         const eventDate = new Date(val?.startDateTime);
 
         return eventDate < now;
-      });
+      }).sort((a, b) => {
+        
+        const startDateA = new Date(a.startDateTime).getTime();
+        const startDateB = new Date(b.startDateTime).getTime();
+        return startDateA - startDateB;
+      })
     } else {
       return registeredEvents?.filter((val) => {
         const eventDate = new Date(val?.startDateTime);
 
         return eventDate > now;
-      });
+      }).sort((a, b) => {
+       
+        const startDateA = new Date(a.startDateTime).getTime();
+        const startDateB = new Date(b.startDateTime).getTime();
+        return startDateA - startDateB;
+      })
     }
   }, [registeredEvents, active]);
   const tab = [

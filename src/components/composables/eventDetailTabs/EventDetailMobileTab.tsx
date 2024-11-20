@@ -3,21 +3,24 @@
 import { useRouter } from "next/navigation";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-
+import { isToday, isAfter, isBefore } from "date-fns";
 import { cn } from "@/lib";
 import { InlineIcon } from "@iconify/react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { EventSpeakers } from "@/components/singleEventHome/_components/EventSpeaker";
-import { TAttendee } from "@/types";
+import { Event, TAttendee } from "@/types";
+import { getEffectiveDate } from "@/utils";
 
 export function EventDetailMobileTab({
   eventId,
   className,
-  formattedAttendees
+  formattedAttendees,
+  event,
 }: {
   eventId: string;
   className?: string;
-  formattedAttendees: TAttendee[]
+  formattedAttendees: TAttendee[];
+  event: Event;
 }) {
   const router = useRouter();
   const [activeState, setActiveState] = useState(1);
@@ -25,6 +28,10 @@ export function EventDetailMobileTab({
   function changeMajorActiveState(n: number) {
     setActiveState(n);
   }
+
+  const effectiveDate = useMemo(() => {
+    return getEffectiveDate(event.startDateTime, event.endDateTime);
+  }, [event]);
 
   return (
     <div className="w-full pb-24 block sm:hidden">
@@ -73,7 +80,13 @@ export function EventDetailMobileTab({
           <p>Attendees</p>
         </button>
         <button
-          onClick={() => router.push(`/event/${eventId}/agenda`)}
+          onClick={() =>
+            router.push(
+              `/event/${eventId}/agenda?date=${
+                effectiveDate?.toISOString().split(".")[0]
+              }&a=undefined`
+            )
+          }
           className="flex flex-col gap-y-2 items-center justify-center"
         >
           <InlineIcon icon="solar:calendar-mark-bold-duotone" fontSize={24} />
@@ -87,7 +100,7 @@ export function EventDetailMobileTab({
           className="flex flex-col gap-y-2 items-center justify-center"
         >
           <InlineIcon icon="ic:twotone-quiz" fontSize={24} />
-          <p>Quiz</p>
+          <p>Interactions</p>
         </button>
 
         <button
@@ -126,7 +139,13 @@ export function EventDetailMobileTab({
           <p>StampCard</p>
         </button>
       </div>
-      {activeState === 2 && <EventSpeakers formattedAttendees={formattedAttendees} changeMajorActiveState={changeMajorActiveState} eventId={eventId}/>}
+      {activeState === 2 && (
+        <EventSpeakers
+          formattedAttendees={formattedAttendees}
+          changeMajorActiveState={changeMajorActiveState}
+          eventId={eventId}
+        />
+      )}
     </div>
   );
 }

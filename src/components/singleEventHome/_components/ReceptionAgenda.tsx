@@ -1,5 +1,5 @@
 "use client";
-import { isToday, isAfter, isBefore } from "date-fns";
+
 import { IconifyAgendaCalendarIcon } from "@/constants";
 import { ScrollableCards } from "@/components/custom_ui/scrollableCard/ScrollableCard";
 import { EngagementsSettings, Event } from "@/types";
@@ -7,9 +7,8 @@ import { useGetAgendas, useGetMyAgendas } from "@/hooks";
 import { useGetData } from "@/hooks/services/request";
 import { Custom } from "@/components/agenda/_components";
 import { useMemo } from "react";
-import { formatDate, isEventLive } from "@/utils";
+import { formatDate, isEventLive, getEffectiveDate } from "@/utils";
 import { useRouter } from "next/navigation";
-
 
 export function ReceptionAgenda({
   eventId,
@@ -27,20 +26,7 @@ export function ReceptionAgenda({
   attendeeId?: number;
 }) {
   const { myAgendas } = useGetMyAgendas({ eventId });
-  const router = useRouter()
-  const getEffectiveDate = (startDateISO: string, endDateISO: string): Date => {
-    const today = new Date();
-    const startDate = new Date(startDateISO);
-    const endDate = new Date(endDateISO);
-
-    if (
-      isToday(startDate) ||
-      (isAfter(today, startDate) && isBefore(today, endDate))
-    ) {
-      return today;
-    }
-    return startDate;
-  };
+  const router = useRouter();
 
   const effectiveDate = useMemo(() => {
     return getEffectiveDate(event.startDateTime, event.endDateTime);
@@ -62,12 +48,21 @@ export function ReceptionAgenda({
 
   const adjustedAgendas = useMemo(() => {
     if (Array.isArray(sessionAgendas)) {
-        const liveAgendas = sessionAgendas.filter(sessionAgenda => isEventLive(sessionAgenda.timeStamp.start,sessionAgenda.timeStamp.end));
-        const otherAgendas = sessionAgendas.filter(sessionAgenda => !isEventLive(sessionAgenda.timeStamp.start,sessionAgenda.timeStamp.end));
-        return [...liveAgendas, ...otherAgendas];
+      const liveAgendas = sessionAgendas.filter((sessionAgenda) =>
+        isEventLive(sessionAgenda.timeStamp.start, sessionAgenda.timeStamp.end)
+      );
+      const otherAgendas = sessionAgendas.filter(
+        (sessionAgenda) =>
+          !isEventLive(
+            sessionAgenda.timeStamp.start,
+            sessionAgenda.timeStamp.end
+          )
+      );
+      return [...liveAgendas, ...otherAgendas];
     }
-    return []
-  },[sessionAgendas])
+    return [];
+  }, [sessionAgendas]);
+
   return (
     <>
       {!fetching && Array.isArray(sessionAgendas) && (
@@ -81,7 +76,13 @@ export function ReceptionAgenda({
               </p>
             </div>
             <button
-              onClick={() => router.push(`/event/${eventId}/agenda`)}
+              onClick={() =>
+                router.push(
+                  `/event/${eventId}/agenda?date=${
+                    effectiveDate?.toISOString().split(".")[0]
+                  }&a=undefined`
+                )
+              }
               className="text-mobile sm:text-sm gradient-text bg-basePrimary font-medium"
             >
               See All

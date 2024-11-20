@@ -44,7 +44,7 @@ function ImageWidget({
           {attendee?.lastName[0]}
         </p>
       )}
-      <div
+   {!isReception &&   <div
         onClick={(e) => e.stopPropagation()}
         className={cn(
           "w-fit min-w-[230px] hidden absolute -bottom-14 items-start flex-col  left-1 group-hover:flex border-gradient p-1 ",
@@ -55,15 +55,15 @@ function ImageWidget({
           <span>{attendee?.firstName}</span>{" "}
           <span>{attendee?.lastName?.charAt(0)}.</span>
         </p>
-        {!isReception && (
+      
           <Link
             className="text-sm capitalize gradient-text bg-basePrimary"
             href=""
           >
             Register to see all participants
           </Link>
-        )}
-      </div>
+      
+      </div>}
     </div>
   );
 }
