@@ -161,7 +161,7 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
             </button>
           </div>
         </div>
-        <div className="w-full block sm:hidden mb-6">
+      {Array.isArray(partnersData) && partnersData?.length > 0 &&  <div className="w-full block sm:hidden mb-6">
           <h2 className="font-semibold text-desktop sm:text-lg mb-3">
             Partners
           </h2>
@@ -184,7 +184,7 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
               ))}
             </div>
           </div>
-        </div>
+        </div>}
         <ReceptionAgenda
           event={data}
           eventId={eventId}

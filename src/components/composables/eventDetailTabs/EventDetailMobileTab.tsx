@@ -83,7 +83,7 @@ export function EventDetailMobileTab({
           onClick={() =>
             router.push(
               `/event/${eventId}/agenda?date=${
-                effectiveDate?.toISOString().split(".")[0]
+                effectiveDate
               }&a=undefined`
             )
           }

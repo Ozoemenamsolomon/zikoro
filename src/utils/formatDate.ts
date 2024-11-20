@@ -218,7 +218,7 @@ export const parseFormattedDate = (dateString: string): Date => {
 
 
   // get the current date if falls btw the event date else, current date is event start date
-export   const getEffectiveDate = (startDateISO: string, endDateISO: string): Date => {
+export   const getEffectiveDate = (startDateISO: string, endDateISO: string): string => {
     const today = new Date();
     const startDate = new Date(startDateISO);
     const endDate = new Date(endDateISO);
@@ -227,7 +227,7 @@ export   const getEffectiveDate = (startDateISO: string, endDateISO: string): Da
       isToday(startDate) ||
       (isAfter(today, startDate) && isBefore(today, endDate))
     ) {
-      return today;
+      return today.toISOString().split(".")[0];
     }
-    return startDate;
+    return startDateISO;
   };

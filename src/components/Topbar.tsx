@@ -106,7 +106,7 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
           return {
             ...d,
             href: `${d.href}?date=${
-              effective?.toISOString().split(".")[0]
+              effective
             }&a=undefined`,
           };
         }
@@ -136,7 +136,7 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
       }
     });
   }, [user, isIdPresent]);
-  // key={pathname}
+
   return (
     <>
       <nav

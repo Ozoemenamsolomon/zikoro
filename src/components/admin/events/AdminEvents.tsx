@@ -63,11 +63,16 @@ useEffect(() => {
   );
 
   async function refetch() {
+    
+    
+    getEvents();
+    
+  }
+
+  function initialToFalse() {
     setInitialLoading(false)
     setFrom(0)
     setTo(50)
-    getEvents();
-    
   }
 
   return (
@@ -91,6 +96,7 @@ useEffect(() => {
                 <EventCard
                   key={event?.id}
                   refetch={refetch}
+                  initialToFalse={initialToFalse}
                   event={event as TOrgEvent}
                   query={e}
                 />
@@ -106,10 +112,12 @@ function EventCard({
   event,
   query,
   refetch,
+  initialToFalse
 }: {
   refetch: () => Promise<any>;
   event: TOrgEvent;
   query: string | null;
+  initialToFalse:() => void;
 }) {
   const { isLoading: updating, publishEvent: update } = usePublishEvent();
   const { user: userData } = useUserStore();
@@ -132,6 +140,7 @@ function EventCard({
 
   async function publishEvent() {
     // const userData = getCookie("user");
+    initialToFalse()
     const statusDetail = {
       createdAt: new Date().toISOString(),
       status: "published",

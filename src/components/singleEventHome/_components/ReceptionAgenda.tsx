@@ -36,13 +36,13 @@ export function ReceptionAgenda({
     agendas: sessionAgendas,
     isLoading: fetching,
     getAgendas: refetchSession,
-  } = useGetAgendas(eventId, effectiveDate?.toISOString(), null);
+  } = useGetAgendas(eventId, effectiveDate, null);
   const { data: engagementsSettings } = useGetData<EngagementsSettings>(
     `engagements/${eventId}/settings`
   );
 
   const agendaDate = useMemo(
-    () => formatDate(effectiveDate?.toISOString()),
+    () => formatDate(effectiveDate),
     [effectiveDate]
   );
 
@@ -65,7 +65,7 @@ export function ReceptionAgenda({
 
   return (
     <>
-      {!fetching && Array.isArray(sessionAgendas) && (
+      {!fetching && Array.isArray(sessionAgendas) && sessionAgendas?.length > 0 && (
         <div className="w-full mb-6 sm:mb-10">
           <div className="w-full flex mb-4 sm:mb-6 items-center justify-between">
             <div className="flex flex-col items-start justify-start gap-y-1">
@@ -79,7 +79,7 @@ export function ReceptionAgenda({
               onClick={() =>
                 router.push(
                   `/event/${eventId}/agenda?date=${
-                    effectiveDate?.toISOString().split(".")[0]
+                    effectiveDate
                   }&a=undefined`
                 )
               }

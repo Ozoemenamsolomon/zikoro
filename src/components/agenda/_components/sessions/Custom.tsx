@@ -289,6 +289,7 @@ function Widget({
               <EventAttendeeWidget
                 attendees={mergedSM}
                 isReception={isReception}
+                isEventDetail={isEventDetail}
               />
             </div>
           </>
