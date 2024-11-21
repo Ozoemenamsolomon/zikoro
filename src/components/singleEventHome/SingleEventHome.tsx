@@ -132,7 +132,7 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
   return (
     <>
       <div className="w-full px-4 mx-auto  max-w-[1300px] text-mobile sm:text-sm sm:px-6 mt-6 sm:mt-10 ">
-        <div className="w-full flex mt-8 sm:mt-0 mb-6 sm:mb-10 items-center gap-x-3">
+        <div className="w-full flex mt-16 sm:mt-0 mb-6 sm:mb-10 items-center gap-x-3">
           {data?.eventPoster ? (
             <Image
               src={data?.eventPoster}
@@ -161,7 +161,7 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
             </button>
           </div>
         </div>
-        <div className="w-full block sm:hidden mb-6">
+      {Array.isArray(partnersData) && partnersData?.length > 0 &&  <div className="w-full block sm:hidden mb-6">
           <h2 className="font-semibold text-desktop sm:text-lg mb-3">
             Partners
           </h2>
@@ -184,7 +184,7 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
               ))}
             </div>
           </div>
-        </div>
+        </div>}
         <ReceptionAgenda
           event={data}
           eventId={eventId}
@@ -330,6 +330,7 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
             className="bg-white w-full px-4 py-6 rounded-lg"
             eventId={eventId}
             formattedAttendees={formattedAttendees}
+            event={data as Event}
           />
         </div>
       </div>

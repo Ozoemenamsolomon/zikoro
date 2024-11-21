@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { cn } from "@/lib";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 
-export function EventTopNav({query}) {
+export function EventTopNav({query}:{query: any}) {
   const pathname = usePathname();
   // const search = useSearchParams();
   // const queryParam = search.get("e");

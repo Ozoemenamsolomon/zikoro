@@ -111,6 +111,7 @@ export function EventDetailTabs({
         <EventDetailMobileTab
           eventId={String(event.eventAlias)}
           formattedAttendees={attendees}
+          event={event}
         />
       )}
       <div
