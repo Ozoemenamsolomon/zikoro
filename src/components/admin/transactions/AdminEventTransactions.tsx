@@ -10,7 +10,12 @@ import { EventTransactionWidget } from "./_components";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { CiSearch } from "react-icons/ci";
 import useSearch from "@/hooks/common/useSearch";
-import { TEventTransactionDetail } from "@/types";
+import { TEventTransactionDetail, TOrgEvent } from "@/types";
+
+
+interface Transactions extends TEventTransactionDetail {
+  eventData: TOrgEvent;
+}
 
 export default function AdminTransactions({
   searchParams: { e },
@@ -43,7 +48,7 @@ export default function AdminTransactions({
     setInitialLoading
   );
 
-  const { searchTerm, searchedData, setSearchTerm } = useSearch<TEventTransactionDetail>({
+  const { searchTerm, searchedData, setSearchTerm } = useSearch<Transactions>({
     data: transactions || [],
     accessorKey: ["eventRegistrationRef", "event", "userEmail"],
   });

@@ -117,6 +117,7 @@ function EventCard({
   const { user: userData } = useUserStore();
   const [isShowPublishModal, setShowPublishModal] = useState(false);
   const [isOpen, setOpen] = useState(false);
+  const [isAction, setAction] = useState(false);
   const {
     startDate,
     endDate,
@@ -133,7 +134,7 @@ function EventCard({
   }
 
   async function publishEvent() {
-    // const userData = getCookie("user");
+  
     initialToFalse();
     const statusDetail = {
       createdAt: new Date().toISOString(),

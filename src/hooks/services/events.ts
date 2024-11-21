@@ -1554,7 +1554,7 @@ export const useGetAdminEvents = ({
         (Array.isArray(data.data) && data.data.length === 0)
       )
         return setHasReachedLastPage(true);
-        setEvents((prev) => _.uniqBy([...prev, ...data.data], 'id'));
+      setEvents((prev) => _.uniqBy([...prev, ...data.data], "id"));
     } catch (error) {
       setError(true);
     } finally {
@@ -1564,7 +1564,7 @@ export const useGetAdminEvents = ({
 
   useEffect(() => {
     setEvents([]);
-  },[eventStatus])
+  }, [eventStatus]);
 
   useEffect(() => {
     getEvents();
@@ -1575,10 +1575,13 @@ export const useGetAdminEvents = ({
     isLoading,
     error,
     getEvents,
-    hasReachedLastPage
+    hasReachedLastPage,
   };
 };
 
+interface Transactions extends TEventTransactionDetail {
+  eventData: TOrgEvent;
+}
 
 export const useGetAdminEventTransactions = ({
   eventAlias,
@@ -1591,7 +1594,7 @@ export const useGetAdminEventTransactions = ({
   to: number;
   initialLoading: boolean;
 }) => {
-  const [transactions, setTransactions] = useState<TEventTransactionDetail[]>([]);
+  const [transactions, setTransactions] = useState<Transactions[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
   const [hasReachedLastPage, setHasReachedLastPage] = useState(false);
@@ -1600,8 +1603,10 @@ export const useGetAdminEventTransactions = ({
     if (initialLoading) setLoading(true);
 
     try {
-      const { data, status } = await getRequest<TEventTransactionDetail[]>({
-        endpoint: `/events/admin/attendees?from=${from}&to=${to}&eventAlias=${eventAlias ?? ""}`,
+      const { data, status } = await getRequest<Transactions[]>({
+        endpoint: `/events/admin/attendees?from=${from}&to=${to}&eventAlias=${
+          eventAlias ?? ""
+        }`,
       });
 
       if (status !== 200) {
@@ -1612,7 +1617,7 @@ export const useGetAdminEventTransactions = ({
         (Array.isArray(data.data) && data.data.length === 0)
       )
         return setHasReachedLastPage(true);
-        setTransactions((prev) => _.uniqBy([...prev, ...data.data], 'id'));
+      setTransactions((prev) => _.uniqBy([...prev, ...data.data], "id"));
     } catch (error) {
       setError(true);
     } finally {
@@ -1622,7 +1627,7 @@ export const useGetAdminEventTransactions = ({
 
   useEffect(() => {
     setTransactions([]);
-  },[eventAlias])
+  }, [eventAlias]);
 
   useEffect(() => {
     getTransactions();
@@ -1633,6 +1638,6 @@ export const useGetAdminEventTransactions = ({
     isLoading,
     error,
     getTransactions,
-    hasReachedLastPage
+    hasReachedLastPage,
   };
 };
