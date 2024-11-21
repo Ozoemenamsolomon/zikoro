@@ -5,10 +5,9 @@ import { attendeeTypeOptions } from "@/data/attendee";
 import { useUpdateAttendees } from "@/hooks/services/attendee";
 import { TAttendee } from "@/types/attendee";
 import React, { useEffect, useState } from "react";
-// import { DialogClose } from "../ui/dialog";
 import ViewAttendeesSection from "./viewAttendeesSection";
-import { MoreOptionsProps } from "@/app/(mainApp)/people/_reusable/FirstSection";
 import { DialogClose } from "../ui/dialog";
+import { MoreOptionsProps } from "@/app/(mainApp)/(dashboard)/event/[eventId]/(home)/people/_reusable/FirstSection";
 
 const ChangeAttendeeType: React.FC<MoreOptionsProps> = ({
   attendees,
@@ -27,7 +26,7 @@ const ChangeAttendeeType: React.FC<MoreOptionsProps> = ({
         ({ attendeeType }) =>
           selectedAttendeeType === "" ||
           (action === "assign"
-            ? !attendeeType?.includes(selectedAttendeeType) || attendeeType
+            ? !attendeeType?.includes(selectedAttendeeType)
             : attendeeType?.includes(selectedAttendeeType))
       )
     );

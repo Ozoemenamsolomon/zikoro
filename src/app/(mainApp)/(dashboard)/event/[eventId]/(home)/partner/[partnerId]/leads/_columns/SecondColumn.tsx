@@ -193,6 +193,7 @@ export default function SecondColumn({
     ticketType,
     registrationDate,
     websiteUrl,
+    attendeeAlias,
   } = lead;
 
   const { user, setUser } = useUserStore();
@@ -295,7 +296,9 @@ export default function SecondColumn({
 
   const clsBtnRef = useRef<HTMLButtonElement>(null);
 
-  const { requestContact, isLoading: requestingContact } = useRequestContact();
+  const { requestContact, isLoading: requestingContact } = useRequestContact({
+    receiverAlias: attendeeAlias ?? 0,
+  });
 
   return (
     <div className="h-fit space-y-4">
