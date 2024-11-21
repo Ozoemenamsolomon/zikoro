@@ -35,7 +35,7 @@ const Attendance = () => {
     isLoading: eventAgendasIsLoading,
     getEventAgendas,
   } = useGetEventAgendas({
-    eventId: event?.id,
+    eventId,
   });
 
   const attendeesWithAtLeastOneCheckIn = attendees.filter(
@@ -114,7 +114,7 @@ const Attendance = () => {
         />
         <AnalyticsInfoCard
           label={"Tracks"}
-          value={sessions}
+          value={event?.sessionTrack.length}
           Icon={() => (
             <img className="h-10 w-10" src={schedules.src} alt={"track"} />
           )}

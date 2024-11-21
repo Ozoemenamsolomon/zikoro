@@ -58,7 +58,7 @@ const AnalyticsPage = ({ currentTab }: { currentTab: string }) => {
       shallow: true,
     });
   }
-// 
+  //
   return (
     <Tabs
       onValueChange={(value) => handleTabChange(value)}
@@ -86,19 +86,19 @@ const AnalyticsPage = ({ currentTab }: { currentTab: string }) => {
       </TabsList>
       <TabsContent
         value="registrations"
-        className=" pb-20 w-full px-4 mx-auto  max-w-[1300px] text-mobile sm:text-sm sm:px-6 mt-6 sm:mt-10 space-y-12"
+        className="pb-20 w-full px-6 mx-auto  max-w-[1300px] text-mobile sm:text-sm sm:px-6 mt-6 sm:mt-10 space-y-12"
       >
         <Registrations />
       </TabsContent>
       <TabsContent
         value="attendance"
-        className="w-full px-4 mx-auto  max-w-[1300px] text-mobile sm:text-sm sm:px-6 mt-6 sm:mt-10 pb-20   space-y-12"
+        className="w-full px-6 mx-auto max-w-[1300px] text-mobile sm:text-sm sm:px-6 mt-6 sm:mt-10 pb-20   space-y-12"
       >
         <Attendance />
       </TabsContent>
       <TabsContent
         value="partners"
-        className="w-full px-4 mx-auto  max-w-[1300px] text-mobile sm:text-sm sm:px-6 mt-6 sm:mt-10 pb-20  space-y-12"
+        className="w-full px-6 mx-auto  max-w-[1300px] text-mobile sm:text-sm sm:px-6 mt-6 sm:mt-10 pb-20  space-y-12"
       >
         <Partners />
       </TabsContent>

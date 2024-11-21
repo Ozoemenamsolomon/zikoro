@@ -45,7 +45,7 @@ const page = ({
       {!leadIsLoading && !leadsIsLoading && !partnerIsLoading && lead ? (
         <>
           <div className="border-b-[1px] border-[#F3F3F3] py-4 px-2">
-            <h1 className="font-semibold leading-normal text-greyBlack text-lg pl-14 md:pl-0 text-ellipsis w-full">
+            <h1 className="font-semibold leading-normal text-greyBlack text-lg pl-14 md:pl-0 text-ellipsis w-full px-2">
               {partner?.companyName}
             </h1>
           </div>

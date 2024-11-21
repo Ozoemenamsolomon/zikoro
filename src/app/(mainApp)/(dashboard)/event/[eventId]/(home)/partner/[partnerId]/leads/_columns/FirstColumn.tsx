@@ -548,6 +548,7 @@ export default function FirstColumn({
               event={event}
               user={user}
               isLead={true}
+              contactRequest={[]}
             />
           ))}
       </div>
