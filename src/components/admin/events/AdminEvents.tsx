@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  useGetAdminEvents,
-  useInfiniteScrollPagination,
-} from "@/hooks";
+import { useGetAdminEvents, useInfiniteScrollPagination } from "@/hooks";
 import { EventLayout } from "./_components";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { Button } from "@/components";
@@ -36,12 +33,12 @@ export default function AdminEvents({
   const [from, setFrom] = useState(0);
   const [to, setTo] = useState(50);
 
-useEffect(() => {
-  if (e !== null) {
-    setFrom(0)
-    setTo(50)
-  }
-},[e])
+  useEffect(() => {
+    if (e !== null) {
+      setFrom(0);
+      setTo(50);
+    }
+  }, [e]);
 
   const {
     events: eventData,
@@ -63,16 +60,13 @@ useEffect(() => {
   );
 
   async function refetch() {
-    
-    
     getEvents();
-    
   }
 
   function initialToFalse() {
-    setInitialLoading(false)
-    setFrom(0)
-    setTo(50)
+    setInitialLoading(false);
+    setFrom(0);
+    setTo(50);
   }
 
   return (
@@ -112,12 +106,12 @@ function EventCard({
   event,
   query,
   refetch,
-  initialToFalse
+  initialToFalse,
 }: {
   refetch: () => Promise<any>;
   event: TOrgEvent;
   query: string | null;
-  initialToFalse:() => void;
+  initialToFalse: () => void;
 }) {
   const { isLoading: updating, publishEvent: update } = usePublishEvent();
   const { user: userData } = useUserStore();
@@ -140,7 +134,7 @@ function EventCard({
 
   async function publishEvent() {
     // const userData = getCookie("user");
-    initialToFalse()
+    initialToFalse();
     const statusDetail = {
       createdAt: new Date().toISOString(),
       status: "published",
@@ -162,7 +156,8 @@ function EventCard({
       email: event?.organization?.eventContactEmail,
     });
     refetch();
-    showPublishModal()
+    window.location.reload();
+    showPublishModal();
   }
 
   function showPublishModal() {

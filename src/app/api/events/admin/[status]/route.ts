@@ -19,7 +19,7 @@ export async function GET(
         .from("events")
         .select("* , organization!inner(*)")
         .eq("eventStatus", eventStatus)
-        .range(Number(from || 0), Number(to || 20));
+        .range(Number(from || 0), Number(to || 50));
 
 
         if (error) {

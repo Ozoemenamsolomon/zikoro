@@ -1578,3 +1578,61 @@ export const useGetAdminEvents = ({
     hasReachedLastPage
   };
 };
+
+
+export const useGetAdminEventTransactions = ({
+  eventAlias,
+  from,
+  to,
+  initialLoading,
+}: {
+  eventAlias: string | null;
+  from: number;
+  to: number;
+  initialLoading: boolean;
+}) => {
+  const [transactions, setTransactions] = useState<TEventTransactionDetail[]>([]);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+  const [hasReachedLastPage, setHasReachedLastPage] = useState(false);
+
+  const getTransactions = async () => {
+    if (initialLoading) setLoading(true);
+
+    try {
+      const { data, status } = await getRequest<TEventTransactionDetail[]>({
+        endpoint: `/events/admin/attendees?from=${from}&to=${to}&eventAlias=${eventAlias ?? ""}`,
+      });
+
+      if (status !== 200) {
+        throw data;
+      }
+      if (
+        data.data === null ||
+        (Array.isArray(data.data) && data.data.length === 0)
+      )
+        return setHasReachedLastPage(true);
+        setTransactions((prev) => _.uniqBy([...prev, ...data.data], 'id'));
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    setTransactions([]);
+  },[eventAlias])
+
+  useEffect(() => {
+    getTransactions();
+  }, [eventAlias, from, to]);
+
+  return {
+    transactions,
+    isLoading,
+    error,
+    getTransactions,
+    hasReachedLastPage
+  };
+};

@@ -231,3 +231,9 @@ export   const getEffectiveDate = (startDateISO: string, endDateISO: string): st
     }
     return startDateISO;
   };
+
+
+  export function convertISOToFormattedDate(isoString: string): string {
+    const parsedDate = parseISO(isoString);
+    return format(parsedDate, "MM/dd/yyyy h:mm aa");
+  }
