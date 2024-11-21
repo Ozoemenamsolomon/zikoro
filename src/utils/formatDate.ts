@@ -1,4 +1,5 @@
-import { format, parseISO, parse } from "date-fns";
+import { format, parseISO, parse, isToday, isAfter, isBefore } from "date-fns";
+
 export function formatDate(dateString: string): string {
   const date = new Date(dateString);
 
@@ -213,3 +214,26 @@ export const parseFormattedDate = (dateString: string): Date => {
     return parse(dateString, "MM/dd/yyyy h:mm aa", new Date());
   }
 };
+
+
+
+  // get the current date if falls btw the event date else, current date is event start date
+export   const getEffectiveDate = (startDateISO: string, endDateISO: string): string => {
+    const today = new Date();
+    const startDate = new Date(startDateISO);
+    const endDate = new Date(endDateISO);
+
+    if (
+      isToday(startDate) ||
+      (isAfter(today, startDate) && isBefore(today, endDate))
+    ) {
+      return today.toISOString().split(".")[0];
+    }
+    return startDateISO;
+  };
+
+
+  export function convertISOToFormattedDate(isoString: string): string {
+    const parsedDate = parseISO(isoString);
+    return format(parsedDate, "MM/dd/yyyy h:mm aa");
+  }

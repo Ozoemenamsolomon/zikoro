@@ -8,6 +8,8 @@ type SearchParams = {
   logo: string;
   orgLogo: string;
   zikoroLogo: string;
+  showSearch: string;
+  showHeader: string;
 };
 
 // Define props type for the Payment component

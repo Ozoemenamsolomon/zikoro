@@ -19,29 +19,32 @@ export const AttendeeSchema = z.object({
   city: z.string().optional().nullable(),
   country: z.string().optional().nullable(),
   websiteUrl: z.string().optional().nullable(),
-  phoneNumber: z.string().refine(
-    (value) => {
-      console.log(
-        value,
-        COUNTRY_CODE.find(
-          ({ dial_code }) =>
-            dial_code === "+" + value.substring(0, dial_code.length - 1)
-        )
-      );
-
-      return (
-        !value ||
-        (value &&
-          !!COUNTRY_CODE.find(
+  phoneNumber: z
+    .string()
+    .refine(
+      (value) => {
+        console.log(
+          value,
+          COUNTRY_CODE.find(
             ({ dial_code }) =>
               dial_code === "+" + value.substring(0, dial_code.length - 1)
-          ))
-      );
-    },
-    {
-      message: "Phone number must start with a country code",
-    }
-  ),
+          )
+        );
+
+        return (
+          !value ||
+          (value &&
+            !!COUNTRY_CODE.find(
+              ({ dial_code }) =>
+                dial_code === "+" + value.substring(0, dial_code.length - 1)
+            ))
+        );
+      },
+      {
+        message: "Phone number must start with a country code",
+      }
+    )
+    .optional(),
   whatsappNumber: z
     .string()
     .refine(
@@ -70,11 +73,11 @@ export const AttendeeSchema = z.object({
     .optional()
     .nullable(),
   bio: z.string().optional().nullable(),
-  x: z.string().url().optional().nullable(),
-  linkedin: z.string().url().optional().nullable(),
-  instagram: z.string().url().optional().nullable(),
-  facebook: z.string().url().optional().nullable(),
-  profilePicture: z.string().url().optional().nullable(),
+  x: z.string().optional().nullable(),
+  linkedin: z.string().optional().nullable(),
+  instagram: z.string().optional().nullable(),
+  facebook: z.string().optional().nullable(),
+  profilePicture: z.string().optional().nullable(),
   attendeeType: z.array(z.string()),
   appointmentLink: z.string().optional().nullable(),
 });

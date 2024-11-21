@@ -39,6 +39,126 @@ import { timezones } from "@/constants/timezones";
 import { Switch } from "@/components/ui/switch";
 import { CiBookmark } from "react-icons/ci";
 
+
+function PriceValidityDate({
+  id,
+  value,
+  form,
+}: {
+  id: any;
+  value: string;
+  form: UseFormReturn<z.infer<typeof updateEventSchema>, any, any>;
+}) {
+  const [isOpen, setOpen] = useState(false);
+
+  const validity = useMemo(() => {
+    if (value) {
+      form.setValue(`pricing.${id}.validity` as const, formateJSDate(value));
+      return formateJSDate(value);
+    } else {
+      form.setValue(
+        `pricing.${id}.validity` as const,
+        formateJSDate(new Date())
+      );
+      return formateJSDate(new Date());
+    }
+  }, [value]);
+
+
+  return (
+    <FormField
+      control={form.control}
+      name={`pricing.${id}.validity` as const}
+      render={({ field }) => (
+        <InputOffsetLabel label="Validity">
+          <div
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              setOpen((prev) => !prev);
+            }}
+            role="button"
+            className="w-full relative h-11"
+          >
+            <button className="absolute left-3 top-[0.6rem]">
+              <DateRange size={22} className="text-gray-600" />
+            </button>
+            <Input
+              placeholder="End Date "
+              type="text"
+              {...form.register(`pricing.${id}.validity` as const)}
+              className="placeholder:text-sm pl-10 pr-4 h-11 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700 accent-basePrimary"
+            />
+            {/** */}
+            {isOpen && (
+              <SelectDate
+                value={validity}
+                form={form}
+                name={`pricing.${id}.validity` as const}
+                close={() => setOpen((prev) => !prev)}
+              />
+            )}
+          </div>
+        </InputOffsetLabel>
+      )}
+    />
+  );
+}
+
+function SelectDate({
+  className,
+  form,
+  close,
+  name,
+  value,
+  minimumDate,
+}: {
+  form: UseFormReturn<z.infer<typeof updateEventSchema>, any, any>;
+  close: () => void;
+  className?: string;
+  name: any;
+  value: string;
+  minimumDate?: Date;
+}) {
+  const selectedDate = useMemo(() => {
+    return parseFormattedDate(value);
+  }, [value]);
+
+  return (
+    <div
+      onClick={(e) => {
+        e.stopPropagation();
+        e.preventDefault();
+      }}
+      className={cn(
+        "absolute left-0 sm:left-0 md:left-0 top-[3.0rem]",
+        className
+      )}
+    >
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          close();
+        }}
+        className="w-full h-full inset-0 fixed z-[70]"
+      ></button>
+      <div className="relative z-[80] w-[320px]">
+        <DatePicker
+          selected={selectedDate}
+          showTimeSelect
+          minDate={minimumDate || new Date()}
+          onChange={(date) => {
+            // console.log(formateJSDate(date!));
+            form.setValue(name, formateJSDate(date!));
+          }}
+          inline
+        />
+      </div>
+    </div>
+  );
+}
+
 function UpdateEventComp({ eventId }: { eventId: string }) {
   const {
     data,
@@ -264,16 +384,17 @@ function UpdateEventComp({ eventId }: { eventId: string }) {
   // update event
   async function publishEvent() {
     if (!data) return;
-    setIsPublishing(true);
-
-    // const userData = getCookie("user");
+ 
     if (data?.eventStatus === "review") {
+      showPublishModal();
       toast({
         variant: "destructive",
-        description: "Event Already Published",
+        description: "Publish request already submitted",
       });
+
       return;
     }
+    setIsPublishing(true);
     const statusDetail = {
       createdAt: new Date().toISOString(),
       status: "review",
@@ -918,124 +1039,7 @@ function UpdateEventComp({ eventId }: { eventId: string }) {
   );
 }
 
-function PriceValidityDate({
-  id,
-  value,
-  form,
-}: {
-  id: any;
-  value: string;
-  form: UseFormReturn<z.infer<typeof updateEventSchema>, any, any>;
-}) {
-  const [isOpen, setOpen] = useState(false);
 
-  const validity = useMemo(() => {
-    if (value) {
-      form.setValue(`pricing.${id}.validity` as const, formateJSDate(value));
-      return formateJSDate(value);
-    } else {
-      form.setValue(
-        `pricing.${id}.validity` as const,
-        formateJSDate(new Date())
-      );
-      return formateJSDate(new Date());
-    }
-  }, [value]);
-
-  console.log("form get values", form.getValues());
-  return (
-    <FormField
-      control={form.control}
-      name={`pricing.${id}.validity` as const}
-      render={({ field }) => (
-        <InputOffsetLabel label="Validity">
-          <div
-            onClick={(e) => {
-              e.stopPropagation();
-              e.preventDefault();
-              setOpen((prev) => !prev);
-            }}
-            role="button"
-            className="w-full relative h-11"
-          >
-            <button className="absolute left-3 top-[0.6rem]">
-              <DateRange size={22} className="text-gray-600" />
-            </button>
-            <Input
-              placeholder="End Date "
-              type="text"
-              {...form.register(`pricing.${id}.validity` as const)}
-              className="placeholder:text-sm pl-10 pr-4 h-11 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700 accent-basePrimary"
-            />
-            {/** */}
-            {isOpen && (
-              <SelectDate
-                value={validity}
-                form={form}
-                name={`pricing.${id}.validity` as const}
-                close={() => setOpen((prev) => !prev)}
-              />
-            )}
-          </div>
-        </InputOffsetLabel>
-      )}
-    />
-  );
-}
-
-function SelectDate({
-  className,
-  form,
-  close,
-  name,
-  value,
-  minimumDate,
-}: {
-  form: UseFormReturn<z.infer<typeof updateEventSchema>, any, any>;
-  close: () => void;
-  className?: string;
-  name: any;
-  value: string;
-  minimumDate?: Date;
-}) {
-  const selectedDate = useMemo(() => {
-    return parseFormattedDate(value);
-  }, [value]);
-
-  return (
-    <div
-      onClick={(e) => {
-        e.stopPropagation();
-        e.preventDefault();
-      }}
-      className={cn(
-        "absolute left-0 sm:left-0 md:left-0 top-[3.0rem]",
-        className
-      )}
-    >
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          e.preventDefault();
-          close();
-        }}
-        className="w-full h-full inset-0 fixed z-[70]"
-      ></button>
-      <div className="relative z-[80] w-[320px]">
-        <DatePicker
-          selected={selectedDate}
-          showTimeSelect
-          minDate={minimumDate || new Date()}
-          onChange={(date) => {
-            // console.log(formateJSDate(date!));
-            form.setValue(name, formateJSDate(date!));
-          }}
-          inline
-        />
-      </div>
-    </div>
-  );
-}
 
 export default function UpdateEvent({ eventId }: { eventId: string }) {
   return (

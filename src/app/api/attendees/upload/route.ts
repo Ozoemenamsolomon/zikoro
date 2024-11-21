@@ -236,22 +236,23 @@ export async function POST(req: NextRequest) {
                 (currentEvent.organization?.subscriptionPlan === "Enterprise" ||
                   currentEvent.organization?.subscriptionPlan === "Lite" ||
                   currentEvent.organization?.subscriptionPlan ===
-                    "Professional") &&
-                `
+                    "Professional")
+                  ? `
                 <a
                 href="https://www.zikoro.com/event/${
                   currentEvent.eventAlias
                 }/people/info/${attendee.attendeeAlias}?email=${
-                  attendee?.email
-                }&createdAt=${new Date().toISOString()}&isPasswordless=${true}&alias=${
-                  attendee?.attendeeAlias
-                }"
+                      attendee?.email
+                    }&createdAt=${new Date().toISOString()}&isPasswordless=${true}&alias=${
+                      attendee?.attendeeAlias
+                    }"
                  
                 style="display: block; color: #001fcc; font-size: 12px; text-decoration: none;"
                 >
                   Update Profile
               </a>
               `
+                  : ""
               } 
             </div>
           </div>
@@ -335,15 +336,15 @@ export async function POST(req: NextRequest) {
             currentEvent?.includeJoinEventLink &&
             (currentEvent.organization?.subscriptionPlan === "Enterprise" ||
               currentEvent.organization?.subscriptionPlan === "Lite" ||
-              currentEvent.organization?.subscriptionPlan === "Professional") &&
-            `<a
+              currentEvent.organization?.subscriptionPlan === "Professional")
+              ? `<a
             href="https://www.zikoro.com/event/${
               currentEvent.eventAlias
             }/reception?email=${
-              attendee?.email
-            }&createdAt=${new Date().toISOString()}&isPasswordless=${true}&alias=${
-              attendee?.attendeeAlias
-            }"
+                  attendee?.email
+                }&createdAt=${new Date().toISOString()}&isPasswordless=${true}&alias=${
+                  attendee?.attendeeAlias
+                }"
             style="max-width:600px; margin:0 auto;"
             >
             <button
@@ -367,6 +368,7 @@ export async function POST(req: NextRequest) {
             <p style="margin:0; width:100%; text-align:center; color:white">Join Event</p>
           </button>
             </a>`
+              : ""
           }
       
             <div

@@ -14,7 +14,6 @@ import { useMemo, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getCookie, useGetReviews, useUpdateAgenda } from "@/hooks";
 import { isEventLive, formatTime, formatLongDate } from "@/utils";
-import { BoothStaffWidget } from "@/components/partners/sponsors/_components";
 import useUserStore from "@/store/globalUserStore";
 import { FaStar, FaRegStar } from "react-icons/fa";
 import { formatDistanceToNowStrict } from 'date-fns';

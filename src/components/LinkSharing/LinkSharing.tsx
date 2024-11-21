@@ -9,10 +9,12 @@ export default function LinkSharing() {
   const { organization, setOrganization } = useOrganizationStore();
   const [showCategory, setShowCategory] = useState<boolean>(true);
   const [showFilter, setShowFilter] = useState<boolean>(true);
-  const [showOrgLogo, setshowOrgLogo] = useState<boolean>(true);
+  const [showOrgLogo, setShowOrgLogo] = useState<boolean>(true);
+  const [showSearch, setShowSearch] = useState<boolean>(true);
+  const [showHeader, setShowHeader] = useState<boolean>(true);
   const [showZikoroLogo, setShowZikoroLogo] = useState<boolean>(false);
 
-  const confirmedSubDomainUrl = organization?.organizationName;
+  const orgName = organization?.organizationName;
 
   //handles category toggle
   const handleCategoryToggle = () => {
@@ -24,17 +26,27 @@ export default function LinkSharing() {
     setShowFilter(!showFilter);
   };
 
-  //handles show Organization toggle
-  const handleOrgLogoSelect = () => {
-    setshowOrgLogo(!showOrgLogo);
+  //handles show organization toggle
+  const handleHeaderToggle = () => {
+    setShowHeader(!showHeader);
+  };
+
+  //handles show search toggle
+  const handleSearchToggle = () => {
+    setShowSearch(!showSearch);
+  };
+
+  //handles show organization logo toggle
+  const handleOrgLogoToggle = () => {
+    setShowOrgLogo(!showOrgLogo);
   };
 
   //handles show feature toggle
-  const handleZikoroSelect = () => {
+  const handleZikoroToggle = () => {
     setShowZikoroLogo(!showZikoroLogo);
   };
 
-  const webLink = `https://www.zikoro.com/workspaces?name=${confirmedSubDomainUrl}&orgLogo=${showOrgLogo}&zikoroLogo=${showZikoroLogo}&logo=${organization?.organizationLogo}&showCategories=${showCategory}&showFilter=${showFilter}`; //add showCategory, showFeaturedEvent, showFilter as a query
+  const webLink = `https://www.zikoro.com/workspaces?name=${orgName}&orgLogo=${showOrgLogo}&zikoroLogo=${showZikoroLogo}&logo=${organization?.organizationLogo}&showCategories=${showCategory}&showFilter=${showFilter}&showSearch=${showSearch}&showHeader=${showHeader}`; //add showCategory, showFeaturedEvent, showFilter as a query
 
   const iframeCode = `<iframe
   src=${webLink}
@@ -77,6 +89,7 @@ export default function LinkSharing() {
       <div className="mt-[60px]">
         <p className="text-lg font-medium">Workspace events page settings </p>
 
+        {/* Show Category */}
         <div className="mt-6 flex gap-x-3 items-center ">
           <Switch
             className="data-[state=checked]:bg-zikoroBlue"
@@ -84,34 +97,56 @@ export default function LinkSharing() {
             onCheckedChange={handleCategoryToggle}
           />
 
-          <p className="text-base font-normal ">Show Categories</p>
+          <p className="text-base font-normal ">Turn Off Categories</p>
         </div>
 
+        {/* Show Filters */}
         <div className="mt-6 flex gap-x-3 items-center ">
           <Switch
             className="data-[state=checked]:bg-zikoroBlue"
             checked={showFilter}
             onCheckedChange={handleCategorySelect}
           />
-
           <p className="text-base font-normal ">Turn off filters</p>
         </div>
 
+        {/* Show Search */}
+        <div className="mt-6 flex gap-x-3 items-center ">
+          <Switch
+            className="data-[state=checked]:bg-zikoroBlue"
+            checked={showSearch}
+            onCheckedChange={handleSearchToggle}
+          />
+          <p className="text-base font-normal ">Turn off SearchBox</p>
+        </div>
+
+        {/* Show Header Text */}
+        <div className="mt-6 flex gap-x-3 items-center ">
+          <Switch
+            className="data-[state=checked]:bg-zikoroBlue"
+            checked={showHeader}
+            onCheckedChange={handleHeaderToggle}
+          />
+          <p className="text-base font-normal ">Turn off Header Text</p>
+        </div>
+
+        {/* Show Organization Logo */}
         <div className="mt-6 flex gap-x-3 items-center ">
           <Switch
             className="data-[state=checked]:bg-zikoroBlue"
             checked={showOrgLogo}
-            onCheckedChange={handleOrgLogoSelect}
+            onCheckedChange={handleOrgLogoToggle}
           />
 
-          <p className="text-base font-normal ">Show Organization Logo</p>
+          <p className="text-base font-normal ">Turn Off Organization Logo</p>
         </div>
 
+        {/* Show Zikoro Logo */}
         <div className="mt-6 flex gap-x-3 items-center ">
           <Switch
             className="data-[state=checked]:bg-zikoroBlue"
             checked={showZikoroLogo}
-            onCheckedChange={handleZikoroSelect}
+            onCheckedChange={handleZikoroToggle}
           />
 
           <p className="text-base font-normal ">Show Zikoro Logo</p>

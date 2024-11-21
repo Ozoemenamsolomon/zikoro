@@ -13,7 +13,7 @@ export function BoothStaffWidget({
   remove,
   email,
   isAddingBoothStaff,
-  className
+  className,
 }: {
   image?: string | null;
   name: string;
@@ -22,7 +22,7 @@ export function BoothStaffWidget({
   remove?: (email: string) => void;
   company?: string | null;
   isAddingBoothStaff?: boolean;
- className?:string
+  className?: string;
 }) {
   return (
     <div
@@ -33,25 +33,32 @@ export function BoothStaffWidget({
       )}
     >
       <div className="flex col-span-2  gap-y-1 items-center justify-center">
-       {image ? <Image
-          alt="staff"
-          width={120}
-          height={120}
-          className="w-[3rem] h-[3rem] rounded-full "
-          src={image || "/b92cf7b1b06acc1b9a0759b6f97724c349488816.webp"}
-        />
-        :
-        <div className="w-[3rem] bg-gradient-to-tr border-basePrimary from-custom-bg-gradient-start border to-custom-bg-gradient-end h-[3rem] rounded-full flex items-center justify-center">
-            <p className="gradient-text  bg-basePrimary text-lg uppercase">{`${name?.split(" ")[0].charAt(0)}${name?.split(" ")[1].charAt(0)}`}</p>
-        </div>
-      
-      }
-      
+        {image ? (
+          <Image
+            alt="staff"
+            width={120}
+            height={120}
+            className="w-[3rem] h-[3rem] rounded-full "
+            src={image || "/b92cf7b1b06acc1b9a0759b6f97724c349488816.webp"}
+          />
+        ) : (
+          <div className="w-[3rem] bg-gradient-to-tr border-basePrimary from-custom-bg-gradient-start border to-custom-bg-gradient-end h-[3rem] rounded-full flex items-center justify-center">
+            <p className="gradient-text  bg-basePrimary text-lg uppercase">{`${name
+              ?.split(" ")[0]
+              .charAt(0)}${name?.split(" ")[1].charAt(0)}`}</p>
+          </div>
+        )}
       </div>
-      <div className="flex col-span-5 text-sm flex-col items-start justify-start">
-        <p className="font-medium capitalize text-ellipsis whitespace-nowrap overflow-hidden">{name || ""}</p>
-        <p className="text-tiny text-[#717171] text-ellipsis whitespace-nowrap overflow-hidden">{profession || ""}</p>
-        <p className="text-tiny text-[#717171] text-ellipsis whitespace-nowrap overflow-hidden">{company || ""}</p>
+      <div className="flex w-full col-span-5 text-sm flex-col items-start justify-start">
+        <p className="font-medium w-full capitalize text-ellipsis whitespace-nowrap overflow-hidden">
+          {name || ""}
+        </p>
+        <p className="text-tiny w-full text-[#717171] text-ellipsis whitespace-nowrap overflow-hidden">
+          {profession || ""}
+        </p>
+        <p className="text-tiny w-full text-[#717171] text-ellipsis whitespace-nowrap overflow-hidden">
+          {company || ""}
+        </p>
       </div>
 
       {isAddingBoothStaff && (

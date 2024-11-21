@@ -132,7 +132,7 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
   return (
     <>
       <div className="w-full px-4 mx-auto  max-w-[1300px] text-mobile sm:text-sm sm:px-6 mt-6 sm:mt-10 ">
-        <div className="w-full flex mt-8 sm:mt-0 mb-6 sm:mb-10 items-center gap-x-3">
+        <div className="w-full flex mt-16 sm:mt-0 mb-6 sm:mb-10 items-center gap-x-3">
           {data?.eventPoster ? (
             <Image
               src={data?.eventPoster}
@@ -161,7 +161,7 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
             </button>
           </div>
         </div>
-        <div className="w-full block sm:hidden mb-6">
+      {Array.isArray(partnersData) && partnersData?.length > 0 &&  <div className="w-full block sm:hidden mb-6">
           <h2 className="font-semibold text-desktop sm:text-lg mb-3">
             Partners
           </h2>
@@ -184,7 +184,7 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
               ))}
             </div>
           </div>
-        </div>
+        </div>}
         <ReceptionAgenda
           event={data}
           eventId={eventId}
@@ -330,6 +330,7 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
             className="bg-white w-full px-4 py-6 rounded-lg"
             eventId={eventId}
             formattedAttendees={formattedAttendees}
+            event={data as Event}
           />
         </div>
       </div>
@@ -346,7 +347,7 @@ function AboutModal({ close, event }: { event: Event; close: () => void }) {
     className="fixed inset-0 w-full h-full z-[100] ">
       <div
       onClick={(e) => e.stopPropagation()}
-      className="py-6 px-5 max-w-2xl rounded-lg bg-white absolute inset-0 m-auto max-h-[85%]">
+      className="py-6 px-5 max-w-2xl rounded-lg border bg-white absolute inset-0 overflow-y-auto m-auto max-h-[65%]">
         <div className="w-full pb-2 mb-6 border-b flex items-center justify-between">
           <h2 className="text-lg sm:text-2xl font-semibold">About Event</h2>
 
