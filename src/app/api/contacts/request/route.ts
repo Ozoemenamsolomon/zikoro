@@ -94,42 +94,43 @@ export async function POST(
         ],
         subject,
         htmlbody: `
-<div style="padding: 1rem;">
-  <div style="max-width: 600px; margin: 0 auto; display: block; padding-bottom: 1rem; border-bottom: 1px solid #b4b4b4;">
-    <p style="font-weight: 600; text-transform: uppercase; font-size: 20px; color: white;">
-      ${event.eventTitle} - Contact Request
-    </p>
-    <div style="width: 100%; height: 250px;">
-      <img src="${event.eventPoster}" alt="event-image" style="width: 100%; height: 100%; border-radius: 8px; object-fit: cover;">
-    </div>
+          <div style="padding: 1rem;">
+            <div style="max-width: 600px; margin: 0 auto; display: block; padding-bottom: 1rem; border-bottom: 1px solid #b4b4b4;">
+              <p style="font-weight: 600; text-transform: uppercase; font-size: 20px; color: white;">
+                ${event.eventTitle} - Contact Request
+              </p>
+              <div style="width: 100%; height: 250px;">
+                <img src="${event.eventPoster}" alt="event-image" style="width: 100%; height: 100%; border-radius: 8px; object-fit: cover;">
+              </div>
 
-    <div>
-    <!-- heading -->
-    <h1 style="font-size: 24px; font-weight: 600; margin-bottom: 10px;">
-      Hi <b>${receiver.firstName}</b>
-    </h1>
-      <p style="font-size: 14px; color: #b4b4b4; text-align: center; margin-bottom: 10px">
-        You've received a new contact request from Kachi, one of the attendees at the Test Event.
-      </p>
-      <p style="font-size: 14px; color: #b4b4b4; text-align: center; margin-bottom: 10px">
-        Visit your profile to view and respond to the request.
-      </p>
-        <a href="${link}" style="display: block; text-align: center; margin: 30px 0; padding: 5px 0; background-color: #001fcc; color: #ffffff; font-size: 16px; text-decoration: none; border-radius: 4px; width: 100%">
-          <button style="background-color: #001fcc; color: white; padding: 0.8rem 1.2rem; border-radius: 5px; border: none; cursor: pointer;">
-            Go to my profile
-          </button>
-        </a>
-    </div>
+              <div>
+              <!-- heading -->
+              <h1 style="font-size: 24px; font-weight: 600; margin-bottom: 10px;">
+                Hi <b>${receiver.firstName}</b>
+              </h1>
+                <p style="font-size: 14px; color: #000; text-align: center; margin-bottom: 10px">
+                  You've received a new contact request from Kachi, one of the attendees at the Test Event.
+                </p>
+                <p style="font-size: 14px; color: #000; text-align: center; margin-bottom: 10px">
+                  Visit your profile to view and respond to the request.
+                </p>
+                  <a href="${link}" style="display: block; text-align: center; margin: 30px 0; padding: 5px 0; background-color: #001fcc; color: #ffffff; font-size: 16px; text-decoration: none; border-radius: 4px; width: 100%">
+                    <button style="background-color: #001fcc; color: white; padding: 0.8rem 1.2rem; border-radius: 5px; border: none; cursor: pointer;">
+                      Go to my profile
+                    </button>
+                  </a>
+              </div>
 
-    <div style="max-width: 600px; margin: 1rem auto; font-size: 14px; color: #b4b4b4; text-align: center;">
-      This event is managed by ${event.organisationName} and powered by <a href="https://www.zikoro.com" style="color: #001fcc;">Zikoro</a>.
-    </div>
-    <div style="max-width: 600px; margin: 0.5rem auto; font-size: 14px; text-align: center;">
-      <a href="https://www.zikoro.com/privacy" style="color: #001fcc; text-decoration: none;">Privacy Policy</a> | 
-      <a href="https://www.zikoro.com/terms" style="text-decoration: none; color: #001fcc;">Terms and Conditions</a>
-    </div>
-  </div>
-</div>`,
+              <div style="max-width: 600px; margin: 1rem auto; font-size: 14px; color: #b4b4b4; text-align: center;">
+                This event is managed by ${event.organization.organizationName} and powered by <a href="https://www.zikoro.com" style="color: #001fcc;">Zikoro</a>.
+              </div>
+              <div style="max-width: 600px; margin: 0.5rem auto; font-size: 14px; text-align: center;">
+                <a href="https://www.zikoro.com/privacy" style="color: #001fcc; text-decoration: none;">Privacy Policy</a> | 
+                <a href="https://www.zikoro.com/terms" style="text-decoration: none; color: #001fcc;">Terms and Conditions</a>
+              </div>
+            </div>
+          </div>
+        `,
       });
       return NextResponse.json(
         { msg: "contact requested successfully" },
@@ -168,7 +169,7 @@ export async function GET(req: NextRequest) {
           `receiverUserEmail.eq.${userEmail},senderUserEmail.eq.${userEmail}`
         );
 
-        if(eventAlias) query.eq("eventAlias", eventAlias)
+      if (eventAlias) query.eq("eventAlias", eventAlias);
       // .eq("status", "pending");
 
       const { data, error, status } = await query;

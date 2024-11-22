@@ -230,12 +230,10 @@ export default function SecondSection({
     attendeeId: id,
   });
 
-  const {
-    eventCertificates,
-    isLoading: getEventCertificatesIsLoading,
-  } = useGetEventCertificates({
-    eventId,
-  });
+  const { eventCertificates, isLoading: getEventCertificatesIsLoading } =
+    useGetEventCertificates({
+      eventId,
+    });
 
   const { updateAttendeeCertificates } = useUpdateAttendeeCertificates({
     eventId: event.eventAlias,
@@ -405,7 +403,7 @@ export default function SecondSection({
   const clsBtnRef = useRef<HTMLButtonElement>(null);
 
   const { requestContact, isLoading: requestingContact } = useRequestContact({
-    receiverAlias: attendeeAlias,
+    receiverAlias: attendeeAlias ?? 0,
   });
 
   const isEventOwner = user && String(event?.createdBy) === String(user.id);
@@ -852,8 +850,7 @@ export default function SecondSection({
             (eventCertificate) =>
               !attendeeCertificates.some(
                 (attendeecertificate) =>
-                  eventCertificate.id ===
-                    attendeecertificate.CertificateGroupId
+                  eventCertificate.id === attendeecertificate.CertificateGroupId
               )
           ) && (
             <DropdownMenu>

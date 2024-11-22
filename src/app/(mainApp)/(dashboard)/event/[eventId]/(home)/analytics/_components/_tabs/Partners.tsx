@@ -124,7 +124,7 @@ const Partners = () => {
 
         <AnalyticsInfoCard
           label={"Average Leads"}
-          value={leads.length / data.length}
+          value={leads.length / data.length ?? 0}
           Icon={() => (
             <img
               className="h-10 w-10"

@@ -122,6 +122,7 @@ const page = () => {
               userContactRequests={userContactRequests}
               isLoading={contactRequestIsLoading}
               getContactRequests={getContactRequests}
+              getAttendees={getAttendee}
             />
           </section>
         </div>

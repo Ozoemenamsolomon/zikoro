@@ -200,6 +200,7 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
                 userContactRequests={userContactRequests}
                 isLoading={contactRequestIsLoading}
                 getContactRequests={getContactRequests}
+                getAttendees={onGetAttendees}
               />
             </section>
           </>
