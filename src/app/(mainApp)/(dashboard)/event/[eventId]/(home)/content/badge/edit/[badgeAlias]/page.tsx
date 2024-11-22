@@ -309,8 +309,6 @@ export default function Page({
     isAlias: true,
   });
 
-  console.log(badge, badgeAlias, "badge");
-
   const { saveBadge, isLoading } = useSaveBadge();
 
   const [pending, startTransition] = useTransition();
