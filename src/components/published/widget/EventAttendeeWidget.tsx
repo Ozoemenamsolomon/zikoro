@@ -150,7 +150,7 @@ export function EventAttendeeWidget({
           )}
         </div>
       </div>
-     {!isEventDetail && <p className={cn("capitalize relative ",  slicedArray?.length === 1
+     {isEventDetail ?  <></>: <p className={cn("capitalize relative ",  slicedArray?.length === 1
                   ? "-left-[3%]"
                   : slicedArray?.length === 2
                   ? "ml-[-3%]"
