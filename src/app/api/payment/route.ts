@@ -665,7 +665,7 @@ export async function POST(req: NextRequest) {
             return {
               ...value,
               registrationCompleted: true,
-              attendeeType: [role] ?? ["attendee"],
+              attendeeType: role && role !== "" ? [role] : ["attendee"],
             };
           });
 
