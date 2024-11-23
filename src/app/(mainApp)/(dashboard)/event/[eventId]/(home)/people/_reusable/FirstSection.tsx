@@ -26,7 +26,6 @@ import {
 } from "@/hooks/services/favourites";
 import { useGetAttendeesTags } from "@/hooks/services/tags";
 import { TAttendee } from "@/types/attendee";
-import { isWithinTimeRange } from "@/utils/date";
 import {
   calculateAndSetMaxHeight,
   convertCamelToNormal,
