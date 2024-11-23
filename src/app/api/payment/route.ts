@@ -3,6 +3,7 @@ import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { createICSContent } from "@/utils";
+
 export async function POST(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
 
@@ -12,7 +13,6 @@ export async function POST(req: NextRequest) {
       const {
         count,
         startDate,
-
         endDate,
         address,
         organizerContact,
@@ -140,7 +140,6 @@ export async function POST(req: NextRequest) {
               userEmail: attendee?.email,
               phoneNumber: attendee?.phoneNumber,
               created_at: new Date().toISOString(),
-              //inviteSource: "affiliate",
             });
 
           console.log("creating status:", statusCreatingUser);
@@ -666,7 +665,7 @@ export async function POST(req: NextRequest) {
             return {
               ...value,
               registrationCompleted: true,
-              attendeeType: role ?? ["attendee"],
+              attendeeType: [role] ?? ["attendee"],
             };
           });
 
