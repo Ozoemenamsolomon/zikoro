@@ -324,7 +324,7 @@ export default function AddAttendeeForm({
                 control={form.control}
                 name="city"
                 render={({ field }) => (
-                  <InputOffsetLabel isRequired label={"City"}>
+                  <InputOffsetLabel label={"City"}>
                     <Input
                       placeholder="Enter city"
                       {...field}
@@ -339,7 +339,7 @@ export default function AddAttendeeForm({
                 control={form.control}
                 name="country"
                 render={({ field }) => (
-                  <InputOffsetLabel isRequired label={"Country"}>
+                  <InputOffsetLabel label={"Country"}>
                     <ReactSelect
                       placeHolder="Enter Country"
                       defaultValue={{
