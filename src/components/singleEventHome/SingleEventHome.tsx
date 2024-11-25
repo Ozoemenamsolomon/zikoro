@@ -123,6 +123,9 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
   // const Comp =
   //   Array.isArray(partnersData) && partnersData?.length > 1 ? Slider : "div";
 
+
+  console.log(approvedPartners)
+  console.log("restructure", restructureData, partnersLoading)
   if (loading || !data)
     return (
       <div className="w-full h-[300px] flex items-center justify-center">
