@@ -6,7 +6,7 @@ import { cn } from "@/lib";
 import { useScrollCard } from "@/hooks";
 import { NavigateBefore, NavigateNext } from "styled-icons/material";
 
-export function ScrollableCards({ children, parentClassName, className }: { children: React.ReactNode, parentClassName?:string, className?:string }) {
+export function ScrollableCards({ children, parentClassName, className, innerClass }: { children: React.ReactNode, parentClassName?:string, className?:string; innerClass?:string; }) {
   const scroll = useRef<HTMLDivElement>(null);
   const { next, previous, isPrevious, isNext } = useScrollCard(scroll);
   return (
@@ -37,7 +37,7 @@ export function ScrollableCards({ children, parentClassName, className }: { chil
         ref={scroll}
         className={cn("no-scrollbar flex  w-[105%] gap-4 overflow-x-auto pl-[0em] pr-[4em] sm:pl-[1em]", className)}
       >
-        <div className={"flex min-w-max  gap-2 sm:gap-4 "}>{children}</div>
+        <div className={cn("flex min-w-max  gap-2 sm:gap-4 ", innerClass)}>{children}</div>
       </div>
     </div>
   );
