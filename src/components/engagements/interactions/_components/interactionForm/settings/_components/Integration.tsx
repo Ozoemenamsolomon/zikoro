@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { UseFormReturn, useWatch } from "react-hook-form";
 import { Switch } from "@/components/ui/switch";
@@ -12,83 +12,66 @@ import { formSettingSchema } from "@/schemas/engagement";
 import { TQuestion, TQuiz } from "@/types";
 import { useMemo } from "react";
 import { TEngagementFormQuestion } from "@/types/engagements";
+import { Input } from "@/components/ui/input";
 
-export function FormIntegration({data, form, engagements }: {data: TEngagementFormQuestion | null, engagements: TQuiz<TQuestion[]>[]; form: UseFormReturn<z.infer<typeof formSettingSchema>, any, any> }) {
+export function FormIntegration({
+  data,
+  form,
+  engagements,
+}: {
+  data: TEngagementFormQuestion | null;
+  engagements: TQuiz<TQuestion[]>[];
+  form: UseFormReturn<z.infer<typeof formSettingSchema>, any, any>;
+}) {
+  const isConnectedToEngagement = useWatch({
+    control: form.control,
+    name: "formSettings.isConnectedToEngagement",
+  });
+  const showForm = useWatch({
+    control: form.control,
+    name: "formSettings.showForm",
+  });
 
-    const isConnectedToEngagement = useWatch({
-      control: form.control,
-      name: 'formSettings.isConnectedToEngagement'
-    })
-    const showForm = useWatch({
-      control: form.control,
-      name: 'formSettings.showForm'
-    })
-
-    const engagementOptions  = useMemo(() => {
-      if (engagements) {
-        return engagements?.map((value) => {
-          return {
-            value: value?.quizAlias,
-            label: value?.coverTitle
-          }
-        })
-      }
-      else {
-        return []
-      }
-    },[engagements])
-
-    const initialEngagementValue = useMemo(() => {
-      if (data && engagementOptions) {
-          return engagementOptions?.find((value) => value.value === data?.formSettings?.connectedEngagementId)
-      }
-      return ''
-    },[data, engagementOptions])
-
-
-    return (
-      <>
-        <div className="w-full flex items-center justify-between">
-          <div className="w-11/12 flex flex-col items-start justify-start">
-            <p className="font-medium text-mobile sm:text-sm">
-              Connect the form with other engagement tools
-            </p>
-            <p className="text-xs  text-gray-500">
-              Embed your form into any engagement, allowing users to fill it out
-              either before or after the engagement.
-            </p>
-          </div>
-  
-          <Switch
-            // disabled={loading}
-              checked={isConnectedToEngagement}
-              onCheckedChange={(checked) => {
-                form.setValue("formSettings.isConnectedToEngagement", checked)
-              }}
-            
-            className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
-          />
-        </div>
-        <div className="flex flex-col items-start justify-start gap-y-3">
+  return (
+    <>
+      <div className="w-full flex items-center justify-between">
+        <div className="w-11/12 flex flex-col items-start justify-start">
           <p className="font-medium text-mobile sm:text-sm">
-            Choose engagement to add form
+            Redirect your form partcipants to your website of choice
           </p>
-          <FormField
-            control={form.control}
-            name="formSettings.connectedEngagementId"
-            render={({ field }) => (
-              <InputOffsetLabel label="">
-                <ReactSelect
-                  {...field}
-                  defaultValue={initialEngagementValue}
-                  placeHolder="Select an Engagement"
-                  options={engagementOptions}
-                />
-              </InputOffsetLabel>
-            )}
-          />
+          <p className="text-xs  text-gray-500">
+            Users will be redicted to the url you have provided when the form is
+            completed.
+          </p>
         </div>
-        <div className="flex flex-col items-start justify-start gap-y-3">
+
+        <Switch
+          // disabled={loading}
+          checked={isConnectedToEngagement}
+          onCheckedChange={(checked) => {
+            form.setValue("formSettings.isConnectedToEngagement", checked);
+          }}
+          className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
+        />
+      </div>
+      <div className="flex flex-col items-start justify-start gap-y-3">
+        <FormField
+          control={form.control}
+          name="formSettings.redirectUrl"
+          render={({ field }) => (
+            <InputOffsetLabel label="Redirect URL">
+              <Input
+                placeholder="Redirect URL"
+                type="text"
+                defaultValue={data?.formSettings?.redirectUrl}
+                {...form.register("formSettings.redirectUrl")}
+                className="placeholder:text-sm h-11 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+              />
+            </InputOffsetLabel>
+          )}
+        />
+      </div>
+      {/* <div className="flex flex-col items-start justify-start gap-y-3">
           <p className="font-medium text-mobile sm:text-sm">
             When should user take this form
           </p>
@@ -120,8 +103,7 @@ export function FormIntegration({data, form, engagements }: {data: TEngagementFo
               After Engagement
             </Button>
           </div>
-        </div>
-      </>
-    );
-  }
-  
+        </div> */}
+    </>
+  );
+}

@@ -64,6 +64,7 @@ import {TouchEvent, MouseEvent} from "react"
 //   sortableKeyboardCoordinates,
 // } from "@dnd-kit/sortable";
 import { PreviewModal } from "@/components/contents/_components";
+import { FormDescriptionInput } from "./_components/FormDescriptionInput";
 
 const options = [
   { name: "Mutiple Choice", image: "/fmultiplechoice.png" },
@@ -441,6 +442,7 @@ const handler = ({ nativeEvent: event }: MouseEvent | TouchEvent) => {
   return true;
 };
 
+const defaultDescriptionValue = form.watch("description")
 
 
   // const sensors = useSensors(
@@ -586,22 +588,27 @@ const handler = ({ nativeEvent: event }: MouseEvent | TouchEvent) => {
                       </FormItem>
                     )}
                   />
-                  <FormField
+               
+                </div>
+                <FormField
                     control={form.control}
                     name="description"
                     render={({ field }) => (
                       <FormItem  className="w-full">
                         <FormControl className="w-full">
-                          <Input
-                            {...form.register("description")}
-                            className="bg-transparent border-none h-11 w-full placeholder:text-gray-500"
-                            placeholder="Form Description"
+                       
+                          <FormDescriptionInput
+                          defaultValue={defaultDescriptionValue}
+                          placeholder="Form Description"
+                          onChange={(value) => {
+                            form.setValue("description", value);
+                          }}
                           />
+                        
                         </FormControl>
                       </FormItem>
                     )}
                   />
-                </div>
 
                 <div className="w-full flex flex-col items-start justify-start gap-y-6 sm:gap-y-8">
                   {/* <DndContext
@@ -659,7 +666,7 @@ const handler = ({ nativeEvent: event }: MouseEvent | TouchEvent) => {
           />
         )}
       </div>
-      {active === 1 && <FormResponses data={formattedResponses}  flattenedResponse={flattenedResponse} questions={data}/>}
+      {active === 1 && <FormResponses formAlias={formId} data={formattedResponses}  flattenedResponse={flattenedResponse} questions={data}/>}
       {isOpenPreview && (
         <PreviewModal
           url={`/engagements/${eventId}/form/${formId}`}

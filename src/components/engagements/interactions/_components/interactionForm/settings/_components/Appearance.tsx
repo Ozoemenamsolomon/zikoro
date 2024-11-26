@@ -9,6 +9,8 @@ import { ColorPickerWidget } from "@/components/composables/ColorPickerWidget";
 import { NumberSelectorWidget } from "@/components/composables";
 import * as z from "zod";
 import { formSettingSchema } from "@/schemas/engagement";
+import { FormField, Input } from "@/components";
+import InputOffsetLabel from "@/components/InputOffsetLabel";
 
 const bgColors = [
   "#ffffff",
@@ -174,7 +176,12 @@ export function FormAppearance({
     name: "formSettings.questionPerSlides",
   });
 
-  console.log(displayType)
+  const prevButtonText = useWatch({
+    control: form.control,
+    name: "formSettings.buttonText",
+  });
+
+  // console.log(displayType)
 
   return (
     <div className="w-full flex flex-col items-start justify-start gap-y-4 sm:gap-y-6">
@@ -279,6 +286,22 @@ export function FormAppearance({
         title="Text size"
         value={textFontSize}
         name="formSettings.textFontSize"
+      />
+
+      <FormField
+        control={form.control}
+        name="formSettings.buttonText"
+        render={({ field }) => (
+          <InputOffsetLabel className="w-[150px]" label="Button Text">
+            <Input
+              placeholder=""
+              type="text"
+              defaultValue={prevButtonText}
+              {...form.register("formSettings.buttonText")}
+              className="placeholder:text-sm h-11 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+            />
+          </InputOffsetLabel>
+        )}
       />
     </div>
   );

@@ -22,6 +22,7 @@ import { TEngagementFormQuestion } from "@/types/engagements";
 import { usePostRequest, useGetData } from "@/hooks/services/request";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { TQuestion, TQuiz } from "@/types";
+import { FormDescriptionInput } from "../create/_components/FormDescriptionInput";
 
 function FormSettingsComp({ eventId }: { eventId: string }) {
   const router = useRouter();
@@ -41,7 +42,7 @@ function FormSettingsComp({ eventId }: { eventId: string }) {
       formSettings: {
         isConnectedToEngagement: true,
         showForm: "beforeEngagement",
-        connectedEngagementId: "",
+        redirectUrl: "",
         isCollectUserEmail: false,
         isCoverScreen: true,
         displayType: "listing",
@@ -53,6 +54,7 @@ function FormSettingsComp({ eventId }: { eventId: string }) {
         buttonColor: "#001FFC",
         textFontSize: "14",
         isCoverImage: true,
+        buttonText: "Submit"
       },
     },
   });
@@ -110,6 +112,8 @@ return generateAlias()
       });
     }
   }, [data]);
+
+  const defaultDescriptionValue = form.watch("description")
 
   return (
     <div className="w-full px-4 mt-6 pb-24 sm:mt-10 sm:px-6 mx-auto max-w-[1300px] ">
@@ -169,22 +173,25 @@ return generateAlias()
                 </FormItem>
               )}
             />
-            <FormField
+ 
+          </div>
+          <FormField
               control={form.control}
               name="description"
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormControl className="w-full">
-                    <Input
-                      {...form.register("description")}
-                      className="bg-transparent border-none h-11  placeholder:text-gray-500"
-                      placeholder="Form Description"
-                    />
+                  <FormDescriptionInput
+                          defaultValue={defaultDescriptionValue}
+                          placeholder="Form Description"
+                          onChange={(value) => {
+                            form.setValue("description", value);
+                          }}
+                          />
                   </FormControl>
                 </FormItem>
               )}
             />
-          </div>
 
           <div className="w-full flex items-center justify-center ">
             {["Appearance", "General", "Integration"].map((item, index) => (

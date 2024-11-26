@@ -29,6 +29,7 @@ import { useVerifyUserAccess } from "@/hooks";
 import useUserStore from "@/store/globalUserStore";
 import { useRouter, useSearchParams } from "next/navigation";
 import { nanoid } from "nanoid";
+import { InlineIcon } from "@iconify/react";
 
 function SubmittedModal() {
   return (
@@ -65,6 +66,7 @@ function AttendeeFillFormComp({
   const attendeeId = params.get("id");
   const link = params.get("link");
   const query = params.get("redirect");
+  const [isView, setIsView] = useState(true);
   const [currentIndexes, setCurrentIndexes] = useState(0);
   // const { isIdPresent } = useCheckTeamMember({ eventId });
   const [isSuccess, setOpenSuccess] = useState(false);
@@ -175,6 +177,13 @@ function AttendeeFillFormComp({
       return;
     }
     setOpenSuccess(true);
+
+    if (
+      data?.formSettings?.isConnectedToEngagement &&
+      data?.formSettings?.redirectUrl
+    ) {
+      return window.open(data?.formSettings?.redirectUrl, "_self");
+    }
   }
 
   useEffect(() => {
@@ -193,9 +202,6 @@ function AttendeeFillFormComp({
     }
   }, [data, fields, currentIndexes]);
 
-  // console.log(form.getValues());
-  // console.log("uiop", currentQuestions);
-
   useEffect(() => {
     if (data) {
       form.setValue("questions", data?.questions);
@@ -210,137 +216,160 @@ function AttendeeFillFormComp({
     );
   }
 
+  if (
+    !isLoading &&
+    data?.formSettings?.isCollectUserEmail &&
+    (!attendee?.id || !attendeeId)
+  ) {
+    return (
+      <div className="w-full h-full inset-0 fixed z-[100] bg-white">
+        <div className="w-[95%] max-w-xl border rounded-lg bg-gradient-to-b gap-y-6 from-white  to-basePrimary/20  h-[400px] flex flex-col items-center justify-center shadow absolute inset-0 m-auto">
+          <InlineIcon
+            icon="fluent:emoji-sad-20-regular"
+            fontSize={40}
+            color="#001fcc"
+          />
+          <div className="w-fit flex flex-col items-center justify-center gap-y-3">
+            <p>You are not a registered attendee for this event</p>
+
+            <Button
+              onClick={() => {
+                window.open(`${window.location.origin}/live-events/${eventId}`);
+              }}
+              className="bg-basePrimary h-12 text-white font-medium"
+            >
+              Register for the event
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div
-      style={{
-        fontSize: data?.formSettings?.textFontSize + "px" || "14px",
-        backgroundColor: data?.formSettings?.backgroundColor || "",
-        color: data?.formSettings?.textColor || "",
-      }}
-      className={cn(
-        "w-full h-full fixed inset-0 overflow-y-auto",
-        isLoading && "hidden"
-      )}
-    >
-      {data?.coverImage && (data?.coverImage as string).startsWith("https") && (
-        <Image
-          src={data?.coverImage}
-          alt="cover-image"
-          width={2000}
-          height={600}
-          className="w-full h-[10rem] sm:h-[15rem] object-cover 2xl:h-[20rem]"
-        />
-      )}
-
-      <div className="w-full px-4 my-10 pb-20 sm:my-20 mx-auto max-w-4xl ">
-        <h2
-          style={{
-            fontSize: data?.formSettings?.titleFontSize + "px" || "30px",
-            lineHeight:
-              1.3 * parseInt(data?.formSettings?.titleFontSize) + "px" ||
-              "40px",
-          }}
-          className="text-lg mb-3 sm:text-xl lg:text-2xl"
-        >
-          {data?.title ?? ""}
-        </h2>
-        <p className="text-sm sm:text-base mb-8 sm:mb-12">
-          {data?.description ?? ""}
-        </p>
-
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="w-full flex flex-col items-start justify-start gap-y-4 sm:gap-y-6 2xl:gap-y-8"
+    <>
+      {isView && !isLoading && data?.formSettings?.isCoverImage && (
+        <div className="w-full h-full inset-0 fixed z-[100] flex flex-col items-center gap-y-8">
+          {data?.coverImage &&
+          (data?.coverImage as string).startsWith("https") ? (
+            <Image
+              src={data?.coverImage}
+              alt="cover-image"
+              width={2000}
+              height={1000}
+              className="w-full h-[20rem] sm:h-[20rem] object-cover 2xl:h-[24rem]"
+            />
+          ) : (
+            <div className="w-full h-[20rem] sm:h-[20rem] 2xl:h-[24rem] animate-pulse bg-gray-200"></div>
+          )}
+          <Button
+            onClick={() => setIsView(false)}
+            style={{
+              backgroundColor: data?.formSettings?.buttonColor || "",
+            }}
+            className={cn(
+              "self-center w-[150px] gap-x-2  text-white font-medium h-12 ",
+              !data?.formSettings?.buttonColor && "bg-basePrimary"
+            )}
           >
-            {currentQuestions?.map((field, index) => (
-              <div
-                className="w-full"
-                key={`${field.id}-${JSON.stringify(field)}`}
-              >
-                {field.selectedType === "INPUT_TEXT" && (
-                  <TextTypeAnswer form={form} index={index + currentIndexes} />
-                )}
-                {field.selectedType === "INPUT_DATE" && (
-                  <DateTypeAnswer form={form} index={index + currentIndexes} />
-                )}
-                {field.selectedType === "INPUT_CHECKBOX" && (
-                  <CheckboxTypeAnswer
-                    form={form}
-                    index={index + currentIndexes}
-                  />
-                )}
-                {field.selectedType === "INPUT_RATING" && (
-                  <RatingTypeAnswer
-                    form={form}
-                    index={index + currentIndexes}
-                  />
-                )}
-                {field.selectedType === "ATTACHMENT" && (
-                  <UploadTypeAnswer
-                    form={form}
-                    index={index + currentIndexes}
-                  />
-                )}
-                {field.selectedType === "INPUT_MULTIPLE_CHOICE" && (
-                  <MultiChoiceTypeAnswer
-                    form={form}
-                    index={index + currentIndexes}
-                  />
-                )}
-              </div>
-            ))}
+            <p>View Form</p>
+          </Button>
+        </div>
+      )}
 
-            {/* {!isOrganizer && !isIdPresent && ( */}
-            {data?.formSettings?.displayType === "slide" && (
-              <div className="w-full flex items-center justify-between">
-                <Button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    const questionPerSlide = parseInt(
-                      data?.formSettings?.questionPerSlides || "1"
-                    );
+      <div
+        style={{
+          fontSize: data?.formSettings?.textFontSize + "px" || "14px",
+          backgroundColor: data?.formSettings?.backgroundColor || "",
+          color: data?.formSettings?.textColor || "",
+        }}
+        className={cn(
+          "w-full h-full fixed inset-0 overflow-y-auto",
+          isLoading && "hidden"
+        )}
+      >
+        {data?.coverImage &&
+          (data?.coverImage as string).startsWith("https") && (
+            <Image
+              src={data?.coverImage}
+              alt="cover-image"
+              width={2000}
+              height={600}
+              className="w-full h-[10rem] sm:h-[15rem] object-cover 2xl:h-[20rem]"
+            />
+          )}
 
-                    if (
-                      currentIndexes >=
-                      parseInt(data?.formSettings?.questionPerSlides || "1")
-                    ) {
-                      setCurrentIndexes((prev) =>
-                        Math.max(0, prev - questionPerSlide)
-                      );
-                    }
-                  }}
-                  style={{
-                    color: data?.formSettings?.buttonColor || "",
-                    border: `1px solid ${
-                      data?.formSettings?.buttonColor || "#001fcc"
-                    }`,
-                  }}
-                  className="border h-12 font-medium"
+        <div className="w-full px-4 my-10 pb-20 sm:my-20 mx-auto max-w-4xl ">
+          <h2
+            style={{
+              fontSize: data?.formSettings?.titleFontSize + "px" || "30px",
+              lineHeight:
+                1.3 * parseInt(data?.formSettings?.titleFontSize) + "px" ||
+                "40px",
+            }}
+            className="text-lg mb-3 sm:text-xl lg:text-2xl"
+          >
+            {data?.title ?? ""}
+          </h2>
+          <p
+            className="innerhtml"
+            dangerouslySetInnerHTML={{
+              __html: data?.description,
+            }}
+          />
+
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="w-full flex flex-col items-start justify-start gap-y-4 sm:gap-y-6 2xl:gap-y-8"
+            >
+              {currentQuestions?.map((field, index) => (
+                <div
+                  className="w-full"
+                  key={`${field.id}-${JSON.stringify(field)}`}
                 >
-                  Previous
-                </Button>
-                {currentIndexes +
-                  parseInt(data?.formSettings?.questionPerSlides || "1") >=
-                fields?.length ? (
-                  <Button
-                    type="submit"
-                    disabled={loading}
-                    style={{
-                      backgroundColor: data?.formSettings?.buttonColor || "",
-                    }}
-                    className={cn(
-                      "self-center  gap-x-2  text-white font-medium h-12 ",
-                      !data?.formSettings?.buttonColor && "bg-basePrimary"
-                    )}
-                  >
-                    {loading && (
-                      <LoaderAlt className="animate-spin" size={20} />
-                    )}
-                    <p>Submit</p>
-                  </Button>
-                ) : (
+                  {field.selectedType === "INPUT_TEXT" && (
+                    <TextTypeAnswer
+                      form={form}
+                      index={index + currentIndexes}
+                    />
+                  )}
+                  {field.selectedType === "INPUT_DATE" && (
+                    <DateTypeAnswer
+                      form={form}
+                      index={index + currentIndexes}
+                    />
+                  )}
+                  {field.selectedType === "INPUT_CHECKBOX" && (
+                    <CheckboxTypeAnswer
+                      form={form}
+                      index={index + currentIndexes}
+                    />
+                  )}
+                  {field.selectedType === "INPUT_RATING" && (
+                    <RatingTypeAnswer
+                      form={form}
+                      index={index + currentIndexes}
+                    />
+                  )}
+                  {field.selectedType === "ATTACHMENT" && (
+                    <UploadTypeAnswer
+                      form={form}
+                      index={index + currentIndexes}
+                    />
+                  )}
+                  {field.selectedType === "INPUT_MULTIPLE_CHOICE" && (
+                    <MultiChoiceTypeAnswer
+                      form={form}
+                      index={index + currentIndexes}
+                    />
+                  )}
+                </div>
+              ))}
+
+              {/* {!isOrganizer && !isIdPresent && ( */}
+              {data?.formSettings?.displayType === "slide" && (
+                <div className="w-full flex items-center justify-between">
                   <Button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -348,42 +377,90 @@ function AttendeeFillFormComp({
                       const questionPerSlide = parseInt(
                         data?.formSettings?.questionPerSlides || "1"
                       );
-                      if (currentIndexes + questionPerSlide < fields.length) {
-                        setCurrentIndexes((prev) => prev + questionPerSlide);
+
+                      if (
+                        currentIndexes >=
+                        parseInt(data?.formSettings?.questionPerSlides || "1")
+                      ) {
+                        setCurrentIndexes((prev) =>
+                          Math.max(0, prev - questionPerSlide)
+                        );
                       }
                     }}
                     style={{
-                      backgroundColor: data?.formSettings?.buttonColor || "",
+                      color: data?.formSettings?.buttonColor || "",
+                      border: `1px solid ${
+                        data?.formSettings?.buttonColor || "#001fcc"
+                      }`,
                     }}
-                    className="text-white h-12 font-medium"
+                    className="border h-12 font-medium"
                   >
-                    Next
+                    Previous
                   </Button>
-                )}
-              </div>
-            )}
-            {data?.formSettings?.displayType !== "slide" && (
-              <Button
-                type="submit"
-                disabled={loading}
-                style={{
-                  backgroundColor: data?.formSettings?.buttonColor || "",
-                }}
-                className={cn(
-                  "self-center w-[150px] gap-x-2  text-white font-medium h-12 ",
-                  !data?.formSettings?.buttonColor && "bg-basePrimary"
-                )}
-              >
-                {loading && <LoaderAlt className="animate-spin" size={20} />}
-                <p>Submit</p>
-              </Button>
-            )}
-            {/* )} */}
-          </form>
-        </Form>
+                  {currentIndexes +
+                    parseInt(data?.formSettings?.questionPerSlides || "1") >=
+                  fields?.length ? (
+                    <Button
+                      type="submit"
+                      disabled={loading}
+                      style={{
+                        backgroundColor: data?.formSettings?.buttonColor || "",
+                      }}
+                      className={cn(
+                        "self-center  gap-x-2  text-white font-medium h-12 ",
+                        !data?.formSettings?.buttonColor && "bg-basePrimary"
+                      )}
+                    >
+                      {loading && (
+                        <LoaderAlt className="animate-spin" size={20} />
+                      )}
+                      <p>Submit</p>
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        const questionPerSlide = parseInt(
+                          data?.formSettings?.questionPerSlides || "1"
+                        );
+                        if (currentIndexes + questionPerSlide < fields.length) {
+                          setCurrentIndexes((prev) => prev + questionPerSlide);
+                        }
+                      }}
+                      style={{
+                        backgroundColor: data?.formSettings?.buttonColor || "",
+                      }}
+                      className="text-white h-12 font-medium"
+                    >
+                      Next
+                    </Button>
+                  )}
+                </div>
+              )}
+              {data?.formSettings?.displayType !== "slide" && (
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  style={{
+                    backgroundColor: data?.formSettings?.buttonColor || "",
+                  }}
+                  className={cn(
+                    "self-center w-[150px] gap-x-2  text-white font-medium h-12 ",
+                    !data?.formSettings?.buttonColor && "bg-basePrimary"
+                  )}
+                >
+                  {loading && <LoaderAlt className="animate-spin" size={20} />}
+                  <p>Submit</p>
+                </Button>
+              )}
+              {/* )} */}
+            </form>
+          </Form>
+        </div>
+        {isSuccess && <SubmittedModal />}
       </div>
-      {isSuccess && <SubmittedModal />}
-    </div>
+    </>
   );
 }
 
