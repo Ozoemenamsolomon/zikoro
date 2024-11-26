@@ -208,7 +208,7 @@ export function Partners({ eventId }: { eventId: string }) {
 
   const formatPartners: TExPartner[] = useMemo(() => {
     if (Array.isArray(data) && data?.length > 0) {
-      return isOrganizer || isIdPresent
+      return (isOrganizer || isIdPresent)
         ? data?.map((value) => {
             return {
               ...value,
@@ -268,15 +268,15 @@ export function Partners({ eventId }: { eventId: string }) {
 
   const sponsors = useMemo(() => {
     return searchedData.filter(
-      (v) => v.partnerType.toLowerCase() === "sponsor"
+      (v) => v.partnerType.toLowerCase().includes("sponsor")
     );
-  }, [data, searchedData]);
+  }, [ searchedData]);
 
   const exhibitors = useMemo(() => {
     return searchedData.filter(
-      (v) => v.partnerType.toLowerCase() === "exhibitor"
+      (v) => v.partnerType.toLowerCase().includes("exhibitor")
     );
-  }, [data, searchedData]);
+  }, [ searchedData]);
 
   // const singleEvent = useMemo(() => {
   //   if (event !== null) {
