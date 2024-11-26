@@ -226,7 +226,7 @@ function AttendeeFillFormComp({
         <div className="w-[95%] max-w-xl border rounded-lg bg-gradient-to-b gap-y-6 from-white  to-basePrimary/20  h-[400px] flex flex-col items-center justify-center shadow absolute inset-0 m-auto">
           <InlineIcon
             icon="fluent:emoji-sad-20-regular"
-            fontSize={40}
+            fontSize={60}
             color="#001fcc"
           />
           <div className="w-fit flex flex-col items-center justify-center gap-y-3">
@@ -249,7 +249,7 @@ function AttendeeFillFormComp({
   return (
     <>
       {isView && !isLoading && data?.formSettings?.isCoverImage && (
-        <div className="w-full h-full inset-0 fixed z-[100] flex flex-col items-center gap-y-8">
+        <div className="w-full min-h-screen bg-white inset-0 fixed z-[100] flex flex-col items-center gap-y-8">
           {data?.coverImage &&
           (data?.coverImage as string).startsWith("https") ? (
             <Image
@@ -257,7 +257,7 @@ function AttendeeFillFormComp({
               alt="cover-image"
               width={2000}
               height={1000}
-              className="w-full h-[20rem] sm:h-[20rem] object-cover 2xl:h-[24rem]"
+              className="w-full h-[20rem] sm:h-[20rem] object-cover 2xl:h-[30rem]"
             />
           ) : (
             <div className="w-full h-[20rem] sm:h-[20rem] 2xl:h-[24rem] animate-pulse bg-gray-200"></div>
@@ -312,7 +312,7 @@ function AttendeeFillFormComp({
             {data?.title ?? ""}
           </h2>
           <p
-            className="innerhtml"
+            className="innerhtml  mb-3"
             dangerouslySetInnerHTML={{
               __html: data?.description,
             }}
