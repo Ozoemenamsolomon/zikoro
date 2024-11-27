@@ -26,16 +26,24 @@ export function EventTransactionWidget({
 
   const isEmailSent = useMemo(() => {
     if (transaction) {
-      const { attendeesDetails }: { attendeesDetails: Partial<TAttendee>[] } =
-        transaction;
-      return attendeesDetails?.every((v: any) => {
-        return (
-          v?.registrationCompleted === "true" ||
-          v?.registrationCompleted === true
-        );
-      });
+  
+
+      return transaction?.emailSent === null ? true : transaction?.emailSent
     }
   }, [transaction]);
+
+  const isRegCompleted = useMemo(() => {
+   if (transaction) {
+    const { attendeesDetails }: { attendeesDetails: Partial<TAttendee>[] } =
+    transaction;
+  return attendeesDetails?.every((v: any) => {
+    return (
+      v?.registrationCompleted === "true" ||
+      v?.registrationCompleted === true
+    );
+  });
+   }
+  },[transaction])
 
   async function onResend() {
     const payload = {
@@ -44,7 +52,6 @@ export function EventTransactionWidget({
       eventImage: transaction?.eventData?.eventPoster,
       eventRegistrationRef: transaction?.eventRegistrationRef,
       amountPaid: transaction?.amountPaid,
-
       attendees: transaction?.attendees,
       discountValue: transaction?.discountValue,
       referralSource: transaction?.referralSource,
@@ -60,14 +67,12 @@ export function EventTransactionWidget({
         phoneNumber: transaction?.eventData?.organization?.eventPhoneNumber,
         whatsappNumber: transaction?.eventData?.organization?.eventWhatsApp,
       },
-
       organization: transaction?.eventData?.organization?.organizationName,
       startDate: formatDate(transaction?.eventData?.startDateTime),
       endDate: formatDate(transaction?.eventData?.endDateTime),
       paymentDate: transaction?.paymentDate,
       eventDate: transaction?.eventDate,
       eventEndDate: transaction?.eventData?.endDateTime,
-
       event: transaction?.event,
       attendeesDetails: transaction?.attendeesDetails,
       eventPrice: transaction?.eventPrice,
@@ -106,8 +111,16 @@ export function EventTransactionWidget({
       </td>
       <td
         className={cn(
-          "text-red-600 font-semibold text-xs sm:text-mobile",
-          isEmailSent && "text-green-600"
+          "bg-red-600 text-white p-1 rounded-sm font-semibold text-xs sm:text-mobile",
+          transaction?.registrationCompleted && "bg-green-600"
+        )}
+      >
+        {transaction?.registrationCompleted ? "success" : "failed"}
+      </td>
+      <td
+        className={cn(
+          "text-white p-1 bg-red-600 font-semibold text-xs sm:text-mobile",
+          isEmailSent && "bg-green-600"
         )}
       >
         {isEmailSent ? "success" : "failed"}
