@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import BlogPost from "@/components/blog/BlogPost";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 
 type DBBlogAll = {
   id: number;
@@ -46,7 +47,7 @@ export default function All() {
   return (
     <>
       <div className="my-[48px] lg:my-[80px]">
-        {blogData && blogData.length > 0 && (
+        {blogData && blogData.length > 0 ? (
           <div className="flex flex-col gap-y-[48px] lg:gap-y-[100px]  lg:max-w-[1160px] mx-auto mt-[52px] lg:mt-[100px]">
             {blogData?.length &&
               blogData?.map((blogPost, i) => (
@@ -66,6 +67,10 @@ export default function All() {
                   headerImageUrl={blogPost.headerImageUrl}
                 />
               ))}
+          </div>
+        ) : (
+          <div className="w-full h-[300px] flex items-center justify-center">
+            <LoaderAlt size={30} className="animate-spin" />
           </div>
         )}
 
