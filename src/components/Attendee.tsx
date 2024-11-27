@@ -2,7 +2,7 @@ import { useUpdateAttendees } from "@/hooks/services/attendee";
 import { Event, TUser } from "@/types";
 import { TAttendee } from "@/types/attendee";
 import { TFavouriteContact } from "@/types/favourites";
-import { format, isToday, isWithinInterval } from "date-fns";
+import { format, isToday, isWithinInterval, subDays, addDays } from "date-fns";
 import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useGetData } from "@/hooks/services/request";
@@ -97,8 +97,8 @@ const Attendee: React.FC<AttendeeProps> = ({
 
     if (
       !isWithinInterval(new Date(), {
-        start: event.startDateTime,
-        end: event.endDateTime,
+        start: subDays(event.startDateTime, 1),
+        end: addDays(event.endDateTime, 1),
       })
     )
       return;
@@ -127,11 +127,9 @@ const Attendee: React.FC<AttendeeProps> = ({
       {
         ...attendee,
         checkin: updatedCheckin,
-        checkInPoints: checkin
-          ? isCheckedInToday
-            ? Math.max(checkInPoints - allocatedcheckInPoints, 0)
-            : checkInPoints + allocatedcheckInPoints
-          : allocatedcheckInPoints,
+        checkInPoints: isCheckedInToday
+          ? Math.max(checkInPoints - allocatedcheckInPoints, 0)
+          : (checkInPoints ?? 0) + allocatedcheckInPoints,
       },
     ];
 
@@ -309,8 +307,8 @@ const Attendee: React.FC<AttendeeProps> = ({
                 user &&
                   String(event?.createdBy) === String(user.id) &&
                   isWithinInterval(new Date(), {
-                    start: event.startDateTime,
-                    end: event.endDateTime,
+                    start: subDays(event.startDateTime, 1),
+                    end: addDays(event.endDateTime, 1),
                   }) &&
                   !archive
                   ? ""

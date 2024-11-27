@@ -22,10 +22,10 @@ import { EngagementsSettings } from "@/types/engagements";
 
 const checkinMultiple: React.FC<MoreOptionsProps> = ({
   attendees,
-  getAttendees,
   attendeesTags,
   favourites,
   event,
+  getAttendees,
 }) => {
   const [mappedAttendees, setMappedAttendees] =
     useState<TAttendee[]>(attendees);
@@ -92,11 +92,12 @@ const checkinMultiple: React.FC<MoreOptionsProps> = ({
           ? [...(existingCheckin ?? []), { date: newDate, checkin: true }]
           : existingCheckin.filter(({ date }) => !isSameDay(newDate, date));
 
-      const checkInPoints = existingCheckin
-        ? action === "checkin"
-          ? Math.max(existingCheckinPoints - allocatedcheckInPoints, 0)
-          : existingCheckinPoints + allocatedcheckInPoints
-        : allocatedcheckInPoints;
+      const checkInPoints =
+        action === "checkin"
+          ? existingCheckinPoints + allocatedcheckInPoints
+          : Math.max(existingCheckinPoints - allocatedcheckInPoints, 0);
+
+      console.log(checkInPoints, "checkInPoints");
 
       return {
         ...attendee,

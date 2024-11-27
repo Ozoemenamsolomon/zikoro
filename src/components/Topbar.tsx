@@ -3,17 +3,18 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { getCookie, useCheckTeamMember, useVerifyUserAccess } from "@/hooks";
+import { useCheckTeamMember } from "@/hooks";
 import { AccessVerification } from "./composables";
 import { cn } from "@/lib";
-import { Button } from ".";
 import { ArrowExportLtr } from "styled-icons/fluentui-system-filled/";
 import { ArrowExportRtl } from "styled-icons/fluentui-system-filled/";
 import useUserStore from "@/store/globalUserStore";
 import useOrganizationStore from "@/store/globalOrganizationStore";
-
+import useEventStore from "@/store/globalEventStore";
+import { getEffectiveDate } from "@/utils";
 const Topbar = ({ eventId }: { eventId?: string }) => {
   const pathname = usePathname();
+  const { event } = useEventStore();
 
   const [isShowNav, setShowNav] = useState(false);
   const [isScrolling, setScrolling] = useState(false);
@@ -93,6 +94,27 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
     },
   ];
 
+  const updateLinks = useMemo(() => {
+    if (event) {
+      const effective = getEffectiveDate(
+        event.startDateTime,
+        event.endDateTime
+      );
+
+      return links.map((d) => {
+        if (d.name === "Agenda") {
+          return {
+            ...d,
+            href: `${d.href}?date=${
+              effective
+            }&a=undefined`,
+          };
+        }
+        return { ...d };
+      });
+    } else return links;
+  }, [event]);
+
   /***
       {
       name: "Analytics",
@@ -104,17 +126,17 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
   const set = new Set(hideFromAttendee);
 
   const reformedLink = useMemo(() => {
-    return links.filter((link) => {
+    return updateLinks.filter((link) => {
       if (!user || !user?.userEmail || !isIdPresent) {
         return !set.has(String(link?.name));
       } else if (organization?.subscriptionPlan === "Free") {
         return link?.name !== "Engagements";
       } else {
-        return links;
+        return updateLinks;
       }
     });
   }, [user, isIdPresent]);
-  // key={pathname}
+
   return (
     <>
       <nav

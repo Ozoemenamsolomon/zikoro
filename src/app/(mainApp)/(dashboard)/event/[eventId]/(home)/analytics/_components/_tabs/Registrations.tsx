@@ -478,7 +478,7 @@ const Registrations = () => {
               <span className="text-gray-900 font-medium flex-[20%]">Code</span>
               <span className="text-gray-900 font-medium flex-[20%]">Amt</span>
               <span className="text-gray-900 font-medium flex-[10%]">Qty</span>
-              <span className="text-gray-900 font-medium flex-[10%]">Vrf</span>
+              <span className="text-gray-900 font-medium flex-[10%]">Check In</span>
             </div>
             {affiliateLinks &&
               affiliateLinks

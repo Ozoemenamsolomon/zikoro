@@ -11,11 +11,13 @@ import {
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { CloseOutline } from "styled-icons/evaicons-outline";
-import { useForm } from "react-hook-form";
+import { useForm, UseFormReturn } from "react-hook-form";
 import { AddTrack, activityType, sessionType } from "..";
 import { CloseCircle } from "styled-icons/evaicons-solid";
+import DatePicker from "react-datepicker";
 import { cn } from "@/lib";
 import { Portal } from "@/components";
+import { DateRange } from "styled-icons/material-outlined";
 import {
   useGetEventAttendees,
   useFetchPartners,
@@ -33,7 +35,7 @@ import { Event } from "@/types";
 import { BoothStaffWidget } from "@/components/partners/sponsors/_components";
 import { PlusCircle } from "styled-icons/bootstrap";
 import { nanoid } from "nanoid";
-import { formatFileSize, generateAlias, uploadFile } from "@/utils";
+import { formateJSDate, formatFileSize, generateAlias, parseFormattedDate, uploadFile } from "@/utils";
 import { FilePdf } from "styled-icons/fa-regular";
 import { TEngagementFormQuestion } from "@/types/engagements";
 import { useGetData } from "@/hooks/services/request";
@@ -44,6 +46,64 @@ type TSessionFile<T> = {
   name: string;
   id: string;
 };
+
+function SelectDate({
+  className,
+  form,
+  close,
+  name,
+  value,
+  minimumDate,
+  maximumDate
+}: {
+  form: UseFormReturn<z.infer<typeof sessionSchema>, any, any>;
+  close: () => void;
+  className?: string;
+  name: any;
+  value: string;
+  minimumDate?: Date;
+  maximumDate?:Date
+}) {
+  const selectedDate = useMemo(() => {
+    return parseFormattedDate(value);
+  }, [value]);
+
+  return (
+    <div
+      onClick={(e) => {
+        e.stopPropagation();
+        e.preventDefault();
+      }}
+      className={cn(
+        "absolute left-0 sm:left-0 md:left-0 top-[3.0rem]",
+        className
+      )}
+    >
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          close();
+        }}
+        className="w-full h-full inset-0 fixed z-[70]"
+      ></button>
+      <div className="relative z-[80] w-[320px]">
+        <DatePicker
+          selected={selectedDate}
+          showTimeSelect
+          minDate={minimumDate || new Date()}
+          maxDate={maximumDate || new Date()}
+          onChange={(date) => {
+            // console.log(formateJSDate(date!));
+            form.setValue(name, formateJSDate(date!));
+          }}
+          inline
+        />
+      </div>
+    </div>
+  );
+}
+
 export function AddSession({
   eventId,
   eventStartDate,
@@ -68,6 +128,8 @@ export function AddSession({
   const [loading, setLoading] = useState(false);
   const [chosenModerators, setChosenModerators] = useState<TAttendee[]>([]);
   const { quizzes } = useGetQuizzes(eventId);
+  const [isStartDate, setStartDate] = useState(false);
+  const [isEndDate, setEndDate] = useState(false);
   const { data: forms } = useGetData<TEngagementFormQuestion[]>(
     `/engagements/${eventId}/form`
   );
@@ -76,8 +138,8 @@ export function AddSession({
   const [chosenFiles, setChosenFiles] = useState<TSessionFile<File | string>[]>(
     []
   );
-  const [isNotSameDay, setIsNotSameDay] = useState(false);
   const [active, setActive] = useState(1);
+  const [isNotSameDay, setIsNotSameDay] = useState(false);
 
   const form = useForm<z.infer<typeof sessionSchema>>({
     resolver: zodResolver(sessionSchema),
@@ -94,6 +156,48 @@ export function AddSession({
   const endTime = form.watch("endDateTime");
   const activity = form.watch("activity");
   const locationType = form.watch("sessionType");
+
+
+  const minStartDate = useMemo(() => {
+    if (event?.startDateTime) {
+      return parseFormattedDate(event?.startDateTime)
+    }
+    else return new Date()
+  },[event])
+
+  const minEndDate = useMemo(() => {
+    if (event?.endDateTime) {
+      return parseFormattedDate(event?.endDateTime)
+    }
+    else return new Date()
+  },[event])
+
+  const startDate = useMemo(() => {
+    if (startTime) {
+      form.setValue("startDateTime", formateJSDate(startTime));
+      return formateJSDate(startTime);
+    } else {
+      form.setValue("startDateTime", formateJSDate(new Date()));
+      return formateJSDate(new Date());
+    }
+  }, [startTime]);
+
+  const endDate = useMemo(() => {
+    if (endTime) {
+      form.setValue("endDateTime", formateJSDate(endTime));
+      return formateJSDate(endTime);
+    } else {
+      form.setValue("endDateTime", formateJSDate(new Date()));
+      return formateJSDate(new Date());
+    }
+  }, [endTime]);
+
+  const endMinMaxDate = useMemo(() => {
+    if (startDate) {
+      return parseFormattedDate(startDate)
+    }
+    else return new Date()
+  },[startDate])
 
   // set other activity
   useEffect(() => {
@@ -140,13 +244,13 @@ export function AddSession({
     }
   }, [event?.sessionTrack]);
 
-  // start date
-  useEffect(() => {
-    if (eventStartDate) {
-      form.setValue("startDateTime", eventStartDate);
-      form.setValue("endDateTime", eventStartDate);
-    }
-  }, [eventStartDate]);
+  // // start date
+  // useEffect(() => {
+  //   if (eventStartDate) {
+  //     form.setValue("startDateTime", eventStartDate);
+  //     form.setValue("endDateTime", eventStartDate);
+  //   }
+  // }, [eventStartDate]);
 
   // adding speakers
   useEffect(() => {
@@ -245,7 +349,9 @@ export function AddSession({
   }
 
   async function onSubmit(values: z.infer<typeof sessionSchema>) {
+
     if (isNotSameDay) return;
+
 
     let engagementType = null;
     if (
@@ -325,11 +431,13 @@ export function AddSession({
     close();
   }
 
-  //
-  useEffect(() => {
+  console.log("form values", form.getValues())
+
+   //
+   useEffect(() => {
     if (startTime && endTime) {
-      const start = startTime.split("T")[0];
-      const end = endTime.split("T")[0];
+      const start = startTime.split(" ")[0];
+      const end = endTime.split(" ")[0];
       if (start !== end) {
         setIsNotSameDay(true);
       } else {
@@ -494,13 +602,36 @@ export function AddSession({
                     name="startDateTime"
                     render={() => (
                       <InputOffsetLabel label="Start Time">
+                        <div
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          e.preventDefault();
+                          setStartDate((prev) => !prev);
+                        }}
+                        role="button"
+                        className="w-full relative h-11"
+                      >
+                        <button className="absolute left-3 top-[0.5rem]">
+                          <DateRange size={22} className="text-gray-600" />
+                        </button>
                         <Input
-                          placeholder=""
-                          type="datetime-local"
-                          //defaultValue={eventStartDate}
+                          placeholder=" Start Time"
+                          type="text"
                           {...form.register("startDateTime")}
-                          className="placeholder:text-sm h-11 inline-block  text-gray-700 accent-basePrimary"
+                          className="placeholder:text-sm pl-11 pr-4 h-11 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700 accent-basePrimary"
                         />
+                        {isStartDate && (
+                          <SelectDate
+                           value={startDate}
+                           minimumDate={minStartDate}
+                           maximumDate={minEndDate}
+                            className="sm:left-0 right-0"
+                            name="startDateTime"
+                            form={form}
+                            close={() => setStartDate((prev) => !prev)}
+                          />
+                        )}
+                      </div>
                       </InputOffsetLabel>
                     )}
                   />
@@ -511,16 +642,40 @@ export function AddSession({
                   name="endDateTime"
                   render={({ field }) => (
                     <InputOffsetLabel label="End Time">
-                      <Input
-                        placeholder=""
-                        type="datetime-local"
-                        {...form.register("endDateTime")}
-                        className="placeholder:text-sm h-11 inline-block  text-gray-700"
-                      />
+                      <div
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          e.preventDefault();
+                          setEndDate((prev) => !prev);
+                        }}
+                        role="button"
+                        className="w-full relative h-11"
+                      >
+                        <button className="absolute left-3 top-[0.5rem]">
+                          <DateRange size={22} className="text-gray-600" />
+                        </button>
+                        <Input
+                          placeholder=" End Time"
+                          type="text"
+                          {...form.register("endDateTime")}
+                          className="placeholder:text-sm pl-11 pr-4 h-11 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700 accent-basePrimary"
+                        />
+                        {isEndDate && (
+                          <SelectDate
+                           value={endDate}
+                           minimumDate={endMinMaxDate}
+                           maximumDate={endMinMaxDate}
+                            className="sm:left-0 right-0"
+                            name="endDateTime"
+                            form={form}
+                            close={() => setEndDate((prev) => !prev)}
+                          />
+                        )}
+                      </div>
                     </InputOffsetLabel>
                   )}
                 />
-                <p
+                 <p
                   className={cn(
                     "w-full text-xs col-span-full text-gray-500",
                     isNotSameDay && "text-red-500"
@@ -528,6 +683,7 @@ export function AddSession({
                 >
                   Start and End time must be the same day
                 </p>
+             
               </div>
 
               <FormField

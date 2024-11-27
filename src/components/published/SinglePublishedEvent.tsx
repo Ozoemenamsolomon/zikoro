@@ -419,7 +419,7 @@ export default function SinglePublishedEvent({
 
                   <div className="flex w-full items-center justify-between">
                     {eventAttendees?.length > 0 && (
-                      <EventAttendeeWidget attendees={eventAttendees} />
+                      <EventAttendeeWidget attendees={eventAttendees} isEventDetail />
                     )}
                     <button
                       onClick={() => setOpen((p) => !p)}

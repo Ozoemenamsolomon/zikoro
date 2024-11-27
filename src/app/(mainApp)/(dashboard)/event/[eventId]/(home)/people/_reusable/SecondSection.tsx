@@ -230,12 +230,10 @@ export default function SecondSection({
     attendeeId: id,
   });
 
-  const {
-    eventCertificates,
-    isLoading: getEventCertificatesIsLoading,
-  } = useGetEventCertificates({
-    eventId,
-  });
+  const { eventCertificates, isLoading: getEventCertificatesIsLoading } =
+    useGetEventCertificates({
+      eventId,
+    });
 
   const { updateAttendeeCertificates } = useUpdateAttendeeCertificates({
     eventId: event.eventAlias,
@@ -405,7 +403,7 @@ export default function SecondSection({
   const clsBtnRef = useRef<HTMLButtonElement>(null);
 
   const { requestContact, isLoading: requestingContact } = useRequestContact({
-    receiverAlias: attendeeAlias,
+    receiverAlias: attendeeAlias ?? 0,
   });
 
   const isEventOwner = user && String(event?.createdBy) === String(user.id);
@@ -536,7 +534,7 @@ export default function SecondSection({
         <div className="space-y-2">
           {attendeeAlias &&
             (attendeeIsUser ||
-              (String(event?.createdBy) === String(user.id) && (
+              (String(event?.createdBy) !== String(user.id) && (
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-medium text-gray-700">
                     Attendee Code: {attendeeAlias}
@@ -742,6 +740,10 @@ export default function SecondSection({
                 <span className="text-xs font-medium text-gray-700">
                   {attendeeAlias}
                 </span>
+                <span className="text-xs font-medium text-gray-700">
+                  This code is your unique ID to share your contact with event
+                  exhibitors.
+                </span>
                 <span className="bg-white h-full flex items-center px-2">
                   {hasCopiedText ? (
                     <svg
@@ -852,8 +854,7 @@ export default function SecondSection({
             (eventCertificate) =>
               !attendeeCertificates.some(
                 (attendeecertificate) =>
-                  eventCertificate.id ===
-                    attendeecertificate.CertificateGroupId
+                  eventCertificate.id === attendeecertificate.CertificateGroupId
               )
           ) && (
             <DropdownMenu>

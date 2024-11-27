@@ -49,7 +49,7 @@ export function Payment({
   const parsedData: QueryData = JSON.parse(eventData);
   //
 
-  // const user = getCookie("user");
+
   const config = paymentConfig({
     reference: data?.eventRegistrationRef,
     email: Array.isArray(data?.attendeesDetails)

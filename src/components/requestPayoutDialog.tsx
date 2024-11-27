@@ -1,6 +1,5 @@
 import { TEventTransaction } from "@/types/billing";
 import React from "react";
-// import { DialogClose } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useRequestPayOut } from "@/hooks/services/billing";
 import { DialogClose } from "./ui/dialog";
@@ -41,7 +40,6 @@ const RequestPayoutDialog = ({
   );
 
   const { user, setUser } = useUserStore();
-  // const user = getCookie("user");
 
   const { requestPayOut } = useRequestPayOut({ userId: user.id });
 
@@ -156,7 +154,21 @@ const RequestPayoutDialog = ({
         </span>
       </div>
       <DialogClose asChild>
-        <Button className="bg-basePrimary w-full" onClick={onRequestPayOut}>
+        <Button
+          className="bg-basePrimary w-full"
+          onClick={() => {
+            if (
+              organization?.payoutAccountDetails?.accountName === "" ||
+              organization?.payoutAccountDetails?.accountNumber === "" ||
+              organization?.payoutAccountDetails?.bankName === ""
+            ) {
+              return alert(
+                "Please Enter Payout Account Details before requesting payment"
+              );
+            }
+            onRequestPayOut();
+          }}
+        >
           Request Payout
         </Button>
       </DialogClose>

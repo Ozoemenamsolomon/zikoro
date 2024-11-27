@@ -26,7 +26,6 @@ import {
 } from "@/hooks/services/favourites";
 import { useGetAttendeesTags } from "@/hooks/services/tags";
 import { TAttendee } from "@/types/attendee";
-import { isWithinTimeRange } from "@/utils/date";
 import {
   calculateAndSetMaxHeight,
   convertCamelToNormal,
@@ -430,26 +429,27 @@ export default function FirstSection({
             <>
               {pendingContacts.length > 0 && (
                 <div className="relative inline-block">
-                  <span className="absolute top-0 right-0 bg-red-500 text-white text-xs font-semibold w-5 h-5 rounded-full flex items-center justify-center">
-                    {pendingContacts.length}
-                  </span>
                   <span className="bg-basePrimary/20 text-basePrimary text-sm p-1.5 rounded-xl">
+                    {pendingContacts.length + " "}
                     Pending Contacts
                   </span>
                 </div>
               )}
 
-              <span className="bg-basePrimary/20 text-basePrimary text-sm p-1.5 flex items-center justify-center rounded-xl">
-                {contactRequests.filter(
-                  (contactRequest) => contactRequest.status === "accepted"
-                ).length > 0
-                  ? `${
-                      contactRequests.filter(
-                        (contactRequest) => contactRequest.status === "accepted"
-                      ).length
-                    } contacts exchanged`
-                  : ""}
-              </span>
+              {pendingContacts.length === 0 && (
+                <span className="bg-basePrimary/20 text-basePrimary text-sm p-1.5 flex items-center justify-center rounded-xl">
+                  {contactRequests.filter(
+                    (contactRequest) => contactRequest.status === "accepted"
+                  ).length > 0
+                    ? `${
+                        contactRequests.filter(
+                          (contactRequest) =>
+                            contactRequest.status === "accepted"
+                        ).length
+                      } contacts exchanged`
+                    : ""}
+                </span>
+              )}
             </>
           )}
         </div>

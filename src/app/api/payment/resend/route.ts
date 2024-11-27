@@ -3,7 +3,6 @@ import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { createICSContent } from "@/utils";
-
 export async function POST(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
 
@@ -18,23 +17,19 @@ export async function POST(req: NextRequest) {
         organizerContact,
         organization,
         eventImage,
-        trackingId,
-        affiliateCode,
-        role,
         eventEndDate,
-        ...restItem
       } = params;
       const {
         currency,
         eventId,
         eventAlias,
-        ticketCategory,
         event,
         eventRegistrationRef,
         amountPaid,
         attendeesDetails,
         paymentDate,
         eventDate,
+        originalEvent
       } = params;
 
       const date = new Date(paymentDate);
@@ -51,112 +46,14 @@ export async function POST(req: NextRequest) {
         options
       ).format(date);
 
-      const {
-        error: firstError,
-        status: firstStatus,
-        data,
-      } = await supabase
-        .from("eventTransactions")
-        .update({ ...restItem, affiliateCode: affiliateCode })
-        .eq("eventRegistrationRef", params.eventRegistrationRef)
-        .select();
-
-      if (firstError) {
-        console.log(firstError);
-        return NextResponse.json(
-          {
-            error: firstError.message,
-          },
-          {
-            status: 400,
-          }
-        );
-        //throw firstError;
-      }
-
       let check = "testing this";
 
       // if (status === 204 || status === 200) {
       // To  update the bookedSpot
 
-      // fetch event
-      // Fetch the event by ID
-      const { data: originalEvent, error: fetchError } = await supabase
-        .from("events")
-        .select("*, organization!inner(*)")
-        .eq("id", params.eventId)
-        .single();
 
-      const registered =
-        originalEvent.registered === null
-          ? params.attendees
-          : Number(originalEvent?.registered) + params.attendees;
-      const { organization: org, ...restData } = originalEvent;
-      const { error, status } = await supabase
-        .from("events")
-        .update({ ...restData, registered })
-        .eq("id", params.eventId);
+     
 
-      if (error) {
-        return NextResponse.json(
-          {
-            error: error.message,
-          },
-          {
-            status: 400,
-          }
-        );
-      }
-
-      // AttendeeEmailInvites
-      const { error: updateError, status: updateStatus } = await supabase
-        .from("attendeeEmailInvites")
-        .update({
-          response: "attending",
-          responseDate: new Date().toISOString(),
-          guests: attendeesDetails?.map((v: any) => v?.attendeeAlias),
-        })
-        .eq("trackingId", trackingId);
-
-      //create new user
-      for (const attendee of attendeesDetails) {
-        console.log("check hallo");
-        const { data: existingUser, error: errorFetchingUser } = await supabase
-          .from("users")
-          .select("*")
-          .eq("userEmail", attendee?.email)
-          .single();
-
-        if (errorFetchingUser) {
-          console.log(`error fetching user ${attendee?.email}`);
-        }
-
-        // user does not exist
-        if (!existingUser) {
-          const { error: errorCreatingUser, status: statusCreatingUser } =
-            await supabase.from("users").insert({
-              firstName: attendee?.firstName,
-              lastName: attendee?.lastName,
-              userEmail: attendee?.email,
-              phoneNumber: attendee?.phoneNumber,
-              created_at: new Date().toISOString(),
-            });
-
-          console.log("creating status:", statusCreatingUser);
-          console.log("error", errorCreatingUser?.message);
-        }
-      }
-
-      if (affiliateCode) {
-        const { error: updateLinkError } = await supabase
-          .from("affiliateLinks")
-          .update({ isUsed: true })
-          .eq("linkCode", affiliateCode);
-
-        if (updateLinkError) {
-          console.log(`error fetching user`);
-        }
-      }
 
       // create attendee array
       const resolveAttendees = attendeesDetails.map(
@@ -307,14 +204,7 @@ export async function POST(req: NextRequest) {
                 attendee?.name
               }</p>
             
-              ${
-                originalEvent?.includeJoinEventLink &&
-                (originalEvent.organization?.subscriptionPlan ===
-                  "Enterprise" ||
-                  originalEvent.organization?.subscriptionPlan === "Lite" ||
-                  originalEvent.organization?.subscriptionPlan ===
-                    "Professional")
-                  ? `
+           
                 <a
                   href="https://www.zikoro.com/event/${eventAlias}/people/info/${
                       attendee?.attendeeAlias
@@ -328,9 +218,7 @@ export async function POST(req: NextRequest) {
                     Update Profile
                 </a>
                 
-                `
-                  : `<p></p>`
-              }
+                
             </div>
           </div>
           <!---registration-->
@@ -417,12 +305,7 @@ export async function POST(req: NextRequest) {
           src=${attendee?.qrCode}
             alt="qrcode" />
           </div>
-   ${
-     originalEvent?.includeJoinEventLink &&
-     (originalEvent.organization?.subscriptionPlan === "Enterprise" ||
-       originalEvent.organization?.subscriptionPlan === "Lite" ||
-       originalEvent.organization?.subscriptionPlan === "Professional")
-       ? `         <a
+          <a
             href="https://www.zikoro.com/event/${eventAlias}/reception?email=${
            attendee?.email
          }&createdAt=${new Date().toISOString()}&isPasswordless=${true}&alias=${
@@ -451,9 +334,7 @@ export async function POST(req: NextRequest) {
             <p style="margin:0; width:100%; text-align:center; color:white">Join Event</p>
           </button>
             </a>
-           `
-       : `<p></p>`
-   }
+   
       
             <div
               style="
@@ -665,7 +546,7 @@ export async function POST(req: NextRequest) {
             return {
               ...value,
               registrationCompleted: true,
-              attendeeType: role && role ! == "" ? [role] : ["attendee"],
+              attendeeType:  ["attendee"],
             };
           });
 
@@ -713,51 +594,51 @@ export async function generateQRCode(user: string) {
   }
 }
 
-type ICSFormat = {
-  start: number[];
-  duration: { hours: number; minutes: number };
-};
+// type ICSFormat = {
+//   start: number[];
+//   duration: { hours: number; minutes: number };
+// };
 
-export const convertToICSFormat = (
-  startDateTimeString: string,
-  endDateTimeString?: string // Optional end date parameter
-): ICSFormat => {
-  const startDateTime = new Date(startDateTimeString);
+// export const convertToICSFormat = (
+//   startDateTimeString: string,
+//   endDateTimeString?: string // Optional end date parameter
+// ): ICSFormat => {
+//   const startDateTime = new Date(startDateTimeString);
 
-  // Set the end date to one day after the start date if not provided
-  let endDateTime: Date;
-  if (endDateTimeString) {
-    endDateTime = new Date(endDateTimeString);
-  } else {
-    endDateTime = new Date(startDateTime);
-    endDateTime.setDate(startDateTime.getDate() + 1);
-  }
+//   // Set the end date to one day after the start date if not provided
+//   let endDateTime: Date;
+//   if (endDateTimeString) {
+//     endDateTime = new Date(endDateTimeString);
+//   } else {
+//     endDateTime = new Date(startDateTime);
+//     endDateTime.setDate(startDateTime.getDate() + 1);
+//   }
 
-  // Extract start date components
-  const startYear = startDateTime.getFullYear();
-  const startMonth = startDateTime.getMonth() + 1; // Months are zero-based
-  const startDay = startDateTime.getDate();
-  const startHours = startDateTime.getHours();
-  const startMinutes = startDateTime.getMinutes();
+//   // Extract start date components
+//   const startYear = startDateTime.getFullYear();
+//   const startMonth = startDateTime.getMonth() + 1; // Months are zero-based
+//   const startDay = startDateTime.getDate();
+//   const startHours = startDateTime.getHours();
+//   const startMinutes = startDateTime.getMinutes();
 
-  // Extract end date components
-  const endYear = endDateTime.getFullYear();
-  const endMonth = endDateTime.getMonth() + 1;
-  const endDay = endDateTime.getDate();
-  const endHours = endDateTime.getHours();
-  const endMinutes = endDateTime.getMinutes();
+//   // Extract end date components
+//   const endYear = endDateTime.getFullYear();
+//   const endMonth = endDateTime.getMonth() + 1;
+//   const endDay = endDateTime.getDate();
+//   const endHours = endDateTime.getHours();
+//   const endMinutes = endDateTime.getMinutes();
 
-  // Calculate duration in milliseconds
-  const durationMillis = endDateTime.getTime() - startDateTime.getTime();
+//   // Calculate duration in milliseconds
+//   const durationMillis = endDateTime.getTime() - startDateTime.getTime();
 
-  // Calculate duration in hours and minutes
-  const durationHours = Math.floor(durationMillis / (1000 * 60 * 60));
-  const durationMinutes = Math.floor(
-    (durationMillis % (1000 * 60 * 60)) / (1000 * 60)
-  );
+//   // Calculate duration in hours and minutes
+//   const durationHours = Math.floor(durationMillis / (1000 * 60 * 60));
+//   const durationMinutes = Math.floor(
+//     (durationMillis % (1000 * 60 * 60)) / (1000 * 60)
+//   );
 
-  return {
-    start: [startYear, startMonth, startDay, startHours, startMinutes],
-    duration: { hours: durationHours, minutes: durationMinutes },
-  };
-};
+//   return {
+//     start: [startYear, startMonth, startDay, startHours, startMinutes],
+//     duration: { hours: durationHours, minutes: durationMinutes },
+//   };
+// };

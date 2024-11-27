@@ -10,10 +10,12 @@ function ImageWidget({
   attendee,
   className,
   isReception,
+  isEventDetail
 }: {
   className?: string;
   attendee: TAttendee;
   isReception?: boolean;
+  isEventDetail?:boolean;
 }) {
   const [clickMobile, setClickMobile] = useState(false);
   return (
@@ -44,7 +46,7 @@ function ImageWidget({
           {attendee?.lastName[0]}
         </p>
       )}
-      <div
+   {!isReception &&   <div
         onClick={(e) => e.stopPropagation()}
         className={cn(
           "w-fit min-w-[230px] hidden absolute -bottom-14 items-start flex-col  left-1 group-hover:flex border-gradient p-1 ",
@@ -55,15 +57,15 @@ function ImageWidget({
           <span>{attendee?.firstName}</span>{" "}
           <span>{attendee?.lastName?.charAt(0)}.</span>
         </p>
-        {!isReception && (
+      
           <Link
             className="text-sm capitalize gradient-text bg-basePrimary"
             href=""
           >
             Register to see all participants
           </Link>
-        )}
-      </div>
+      
+      </div>}
     </div>
   );
 }
@@ -71,9 +73,11 @@ function ImageWidget({
 export function EventAttendeeWidget({
   attendees,
   isReception,
+  isEventDetail
 }: {
   attendees: TAttendee[];
   isReception?: boolean;
+  isEventDetail?:boolean;
 }) {
   const [otherAttendeeCount, setOtherAttendeeCount] = useState(0);
 
@@ -121,6 +125,7 @@ export function EventAttendeeWidget({
             <ImageWidget
               key={index}
               isReception={isReception}
+              isEventDetail={isEventDetail}
               attendee={attendee}
               className={
                 index === 0
@@ -145,13 +150,13 @@ export function EventAttendeeWidget({
           )}
         </div>
       </div>
-      <p className={cn("capitalize relative ",  slicedArray?.length === 1
+     {isEventDetail ?  <></>: <p className={cn("capitalize relative ",  slicedArray?.length === 1
                   ? "-left-[3%]"
                   : slicedArray?.length === 2
                   ? "ml-[-3%]"
                   : slicedArray?.length === 3
                   ? "ml-[-6%]": slicedArray?.length === 4
-                  ? "ml-[-10%]":"")}>{names}</p>
+                  ? "ml-[-10%]":"")}>{names}</p>}
     </div>
   );
 }

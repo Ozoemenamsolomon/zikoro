@@ -1554,7 +1554,7 @@ export const useGetAdminEvents = ({
         (Array.isArray(data.data) && data.data.length === 0)
       )
         return setHasReachedLastPage(true);
-        setEvents((prev) => _.uniqBy([...prev, ...data.data], 'id'));
+      setEvents((prev) => _.uniqBy([...prev, ...data.data], "id"));
     } catch (error) {
       setError(true);
     } finally {
@@ -1564,7 +1564,7 @@ export const useGetAdminEvents = ({
 
   useEffect(() => {
     setEvents([]);
-  },[eventStatus])
+  }, [eventStatus]);
 
   useEffect(() => {
     getEvents();
@@ -1575,6 +1575,69 @@ export const useGetAdminEvents = ({
     isLoading,
     error,
     getEvents,
-    hasReachedLastPage
+    hasReachedLastPage,
+  };
+};
+
+interface Transactions extends TEventTransactionDetail {
+  eventData: TOrgEvent;
+}
+
+export const useGetAdminEventTransactions = ({
+  eventAlias,
+  from,
+  to,
+  initialLoading,
+}: {
+  eventAlias: string | null;
+  from: number;
+  to: number;
+  initialLoading: boolean;
+}) => {
+  const [transactions, setTransactions] = useState<Transactions[]>([]);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+  const [hasReachedLastPage, setHasReachedLastPage] = useState(false);
+
+  const getTransactions = async () => {
+    if (initialLoading) setLoading(true);
+
+    try {
+      const { data, status } = await getRequest<Transactions[]>({
+        endpoint: `/events/admin/attendees?from=${from}&to=${to}&eventAlias=${
+          eventAlias ?? ""
+        }`,
+      });
+
+      if (status !== 200) {
+        throw data;
+      }
+      if (
+        data.data === null ||
+        (Array.isArray(data.data) && data.data.length === 0)
+      )
+        return setHasReachedLastPage(true);
+      setTransactions((prev) => _.uniqBy([...prev, ...data.data], "id"));
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    setTransactions([]);
+  }, [eventAlias]);
+
+  useEffect(() => {
+    getTransactions();
+  }, [eventAlias, from, to]);
+
+  return {
+    transactions,
+    isLoading,
+    error,
+    getTransactions,
+    hasReachedLastPage,
   };
 };

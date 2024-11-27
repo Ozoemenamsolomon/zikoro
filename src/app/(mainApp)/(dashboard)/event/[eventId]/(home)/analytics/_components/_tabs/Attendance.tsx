@@ -35,7 +35,7 @@ const Attendance = () => {
     isLoading: eventAgendasIsLoading,
     getEventAgendas,
   } = useGetEventAgendas({
-    eventId: event?.id,
+    eventId,
   });
 
   const attendeesWithAtLeastOneCheckIn = attendees.filter(
@@ -114,7 +114,7 @@ const Attendance = () => {
         />
         <AnalyticsInfoCard
           label={"Tracks"}
-          value={sessions}
+          value={event?.sessionTrack.length}
           Icon={() => (
             <img className="h-10 w-10" src={schedules.src} alt={"track"} />
           )}
@@ -198,7 +198,7 @@ const Attendance = () => {
                   checkedInOnDate[index] > 0 && (
                     <tr className="flex p-4 text-gray-800">
                       <td className="flex-[30%]">
-                        <span>Day {calculateDifferenceInDays(date)}</span>
+                        <span>Day {calculateDifferenceInDays(date) + 1}</span>
                       </td>
                       <td className="flex-[50%] flex items-center gap-4">
                         <span>{format(date, "EEEE, MMMM d")}</span>

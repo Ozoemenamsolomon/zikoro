@@ -9,6 +9,7 @@ import { TAgenda } from "./agenda";
 export type TCheckin = z.infer<typeof checkinSchema>;
 
 export type TCompletedFields = Array<keyof z.infer<typeof AttendeeSchema>>;
+
 export type TAttendee = z.infer<typeof AttendeeSchema> & {
   id?: number;
   eventRegistrationRef?: string;

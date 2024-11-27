@@ -42,11 +42,13 @@ const UserContacts = ({
   engagementsSettings,
   engagementsSettingsIsLoading,
   eventAlias,
+  getAttendees,
 }: {
   user: TUser;
   engagementsSettingsIsLoading: boolean;
   engagementsSettings: EngagementsSettings;
   eventAlias: string;
+  getAttendees: () => Promise<void>;
 }) => {
   const {
     userContactRequests,
@@ -83,6 +85,7 @@ const UserContacts = ({
     });
 
     await getContactRequests();
+    await getAttendees();
   };
 
   return (
@@ -248,6 +251,7 @@ export default function ThirdSection({
   userContactRequests,
   contactRequestIsLoading,
   getContactRequests,
+  getAttendees,
 }: {
   attendee: TAttendee;
   event: Event;
@@ -256,7 +260,9 @@ export default function ThirdSection({
   userContactRequests: ContactRequest[];
   contactRequestIsLoading: boolean;
   getContactRequests: () => Promise<void>;
+  getAttendees: () => Promise<void>;
 }) {
+  console.log(attendee, "attendee");
   const router = useRouter();
   const { eventRegistrationRef, id } = attendee;
   const { user, setUser } = useUserStore();
@@ -405,6 +411,7 @@ export default function ThirdSection({
           engagementsSettingsIsLoading={engagementsSettingsIsLoading}
           user={user}
           eventAlias={event.eventAlias}
+          getAttendees={getAttendees}
         />
       )}
       {(isEventOwner || attendeeIsUser) && (
