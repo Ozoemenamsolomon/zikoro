@@ -53,7 +53,7 @@ export default function RequestAccess({ eventId }: { eventId: string }) {
           <LoaderAlt size={30} className="animate-spin" />
         </div>
       ) : (
-        <div className="max-w-4xl w-full m-auto inset-0 absolute flex flex-col items-center justify-center gap-y-8 sm:gap-y-10">
+        <div className="max-w-3xl w-full m-auto inset-0 absolute flex flex-col items-center justify-center gap-y-8 sm:gap-y-10">
           <div className="w-full flex  items-center gap-x-3">
             {data?.eventPoster ? (
               <Image
@@ -81,7 +81,7 @@ export default function RequestAccess({ eventId }: { eventId: string }) {
           </div>
 
           {isEmailSent ? (
-            <div className="w-full max-w-2xl flex flex-col items-center justify-center gap-4">
+            <div className="w-full  flex flex-col items-center justify-center gap-4">
               <h3 className="font-semibold text-sm sm:text-lg max-w-lg text-center">
                 Access link has been sent to your email address (Please also
                 check your spam). click on the link sent to get access to this
@@ -94,7 +94,7 @@ export default function RequestAccess({ eventId }: { eventId: string }) {
           ) : (
             <>
               {isEmailNotPresent ? (
-                <div className="w-full max-w-2xl flex flex-col items-center justify-center gap-4">
+                <div className="w-full  flex flex-col items-center justify-center gap-4">
                   <h2 className="font-semibold text-base sm:text-xl">
                     We couldn’t identify you as a registered attendee for this
                     event.
@@ -119,7 +119,7 @@ export default function RequestAccess({ eventId }: { eventId: string }) {
               ) : (
                 <form
                   onSubmit={onSubmit}
-                  className="w-full flex flex-col max-w-2xl items-center justify-center gap-4"
+                  className="w-full flex flex-col  items-center justify-center gap-4"
                 >
                   <Input
                     value={email}
