@@ -15,12 +15,14 @@ export function EventTransactionWidget({
   className,
   transaction,
   transactionIds,
-  updateTransactionIds
+  updateTransactionIds,
+  getTransactions
 }: {
   className?: string;
   transaction: Transactions;
   updateTransactionIds(id: number): void
-  transactionIds: number[]
+  transactionIds: number[];
+  getTransactions:() => Promise<any>
 
 }) {
   const { postData, isLoading } = usePostRequest("/payment/resend");
@@ -85,6 +87,7 @@ export function EventTransactionWidget({
     };
 
     await postData({ payload });
+    getTransactions()
   }
 
   return (
