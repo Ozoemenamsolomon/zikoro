@@ -45,7 +45,7 @@ function FilterMod({
       ></div>
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative z-50 flex flex-col items-start w-[180px] bg-white rounded-lg py-4 text-mobile sm:text-sm"
+        className="relative z-50 flex flex-col items-start justify-start w-[180px] bg-white rounded-lg py-4 text-mobile sm:text-sm"
       >
         {filters?.map((v) => (
           <button
