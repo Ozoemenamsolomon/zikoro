@@ -21,7 +21,7 @@ export default function RootLayout({
     isPasswordless,
   });
 
-  console.log(userData, user);
+ 
   const divRef = useRef<HTMLDivElement>(null);
 
   const { event } = useEventStore();
