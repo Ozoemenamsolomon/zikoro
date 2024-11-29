@@ -1,5 +1,6 @@
 import React from "react";
 import type { Metadata } from "next";
+import { montserrat } from "@/constants/fonts";
 import "./globals.css";
 import "react-toastify/dist/ReactToastify.css";
 import { Toaster } from "react-hot-toast";
@@ -11,8 +12,7 @@ export const metadata: Metadata = {
   title: "Zikoro",
   description: "Event management software for all kinds of events",
   other: {
-    fonts: `<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap">`
-   
+    fonts: `<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap">`,
   },
 };
 
@@ -23,9 +23,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className=" text-mobile sm:text-desktop">
-         <Head>
+      <Head>
         {/* Google Tag (gtag.js) */}
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-KQQS740F2E"></script>
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-KQQS740F2E"
+        ></script>
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -37,12 +40,8 @@ export default function RootLayout({
           }}
         />
         {/* Google Fonts */}
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap"
-        />
       </Head>
-      <body >
+      <body className={`${montserrat.className}`}>
         {children}
         <Toaster {...TOASTER_PROPS} />
         <SubscriptionModal />
