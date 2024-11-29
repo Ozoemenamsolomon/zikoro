@@ -11,7 +11,11 @@ import {
   TwitterIcon,
 } from "@/constants";
 import { useMemo, useState } from "react";
-import { useGetEventAttendees } from "@/hooks";
+import {
+  useCheckTeamMember,
+  useGetEventAttendees,
+  useVerifyUserAccess,
+} from "@/hooks";
 import { TAttendee } from "@/types";
 import Link from "next/link";
 import { cn } from "@/lib";
@@ -24,7 +28,7 @@ export function Speakers({
   // changeMajorActiveState: (n: number) => void;
   eventId: string;
 }) {
-  const { attendees, isLoading , getAttendees } = useGetEventAttendees(eventId);
+  const { attendees, isLoading, getAttendees } = useGetEventAttendees(eventId);
   const [selectedAttendee, setSelectedAttendee] = useState<TAttendee | null>(
     null
   );
@@ -108,16 +112,18 @@ export function SpeakerWidget({
   setAttendee,
   className,
   isReception,
-  refetch
+  refetch,
 }: {
   changeActiveState?: (v: number) => void;
   className?: string;
   attendee: TAttendee;
   setAttendee?: (a: TAttendee) => void;
   isReception?: boolean;
-  refetch?:() => Promise<any>;
+  refetch?: () => Promise<any>;
 }) {
   const { postData, isLoading } = usePostRequest(`/attendees/speaker/delete`);
+  const { isIdPresent } = useCheckTeamMember({ eventId: attendee?.eventAlias });
+  const { isOrganizer } = useVerifyUserAccess(attendee?.eventAlias);
   // attendee?.ticketType
   return (
     <>
@@ -132,23 +138,25 @@ export function SpeakerWidget({
           className
         )}
       >
-      {isReception &&  <button
-          disabled={isLoading}
-          onClick={async () => {
-            const updatedAttendee = {
-              ...attendee,
-              attendeeType: attendee.attendeeType.filter(
-                (type) => type.toLowerCase() !== "speaker"
-              ),
-              speakingAt: null,
-            };
-            await postData({ payload: updatedAttendee });
-            refetch?.()
-          }}
-          className="absolute top-2 right-2 group-hover:block hidden"
-        >
-          <InlineIcon icon="icon-park-twotone:people-delete" fontSize={22} />
-        </button>}
+        {isReception && (isIdPresent || isOrganizer) && (
+          <button
+            disabled={isLoading}
+            onClick={async () => {
+              const updatedAttendee = {
+                ...attendee,
+                attendeeType: attendee.attendeeType.filter(
+                  (type) => type.toLowerCase() !== "speaker"
+                ),
+                speakingAt: null,
+              };
+              await postData({ payload: updatedAttendee });
+              refetch?.();
+            }}
+            className="absolute top-2 right-2 group-hover:block hidden"
+          >
+            <InlineIcon icon="icon-park-twotone:people-delete" fontSize={22} />
+          </button>
+        )}
         {attendee?.profilePicture ? (
           <Image
             src={
