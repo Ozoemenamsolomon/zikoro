@@ -132,7 +132,7 @@ export function SpeakerWidget({
           className
         )}
       >
-        <button
+      {isReception &&  <button
           disabled={isLoading}
           onClick={async () => {
             const updatedAttendee = {
@@ -148,7 +148,7 @@ export function SpeakerWidget({
           className="absolute top-2 right-2 group-hover:block hidden"
         >
           <InlineIcon icon="icon-park-twotone:people-delete" fontSize={22} />
-        </button>
+        </button>}
         {attendee?.profilePicture ? (
           <Image
             src={

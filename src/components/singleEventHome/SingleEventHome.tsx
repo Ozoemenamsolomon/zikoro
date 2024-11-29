@@ -41,7 +41,7 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
     isLoading: loadingRewards,
     getData: refetch,
   } = useGetData<Reward[]>(`/rewards/${eventId}`);
-  const { attendees, isLoading: loadingAttendees } =
+  const { attendees, isLoading: loadingAttendees, getAttendees } =
     useGetEventAttendees(eventId);
   const [active, setActive] = useState<"sponsors" | "exhibitors">("sponsors");
   const [isOpen, setIsOpen] = useState(false);
@@ -211,6 +211,8 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
                     <SpeakerWidget
                       key={attendee?.id}
                       attendee={attendee}
+                      isReception
+                      refetch={getAttendees}
                       className="border rounded-lg w-[250px] h-[250px] sm:w-[250px]"
                     />
                   ))}
