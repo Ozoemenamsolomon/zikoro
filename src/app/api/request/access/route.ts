@@ -1,12 +1,10 @@
-
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
- 
   if (req.method === "POST") {
     try {
       const params = await req.json();
-      const { email, paymentLink, eventTitle } = params;
+      const { email, paymentLink, eventTitle, attendeeName } = params;
 
       var { SendMailClient } = require("zeptomail");
 
@@ -30,7 +28,42 @@ export async function POST(req: NextRequest) {
         ],
         subject: `Join ${eventTitle}`,
         htmlbody: `<div>
-        <a href="${paymentLink}">${paymentLink}</a>
+
+            <div
+            max-width: 600px;
+            margin: 0 auto;
+            display: block;
+            margin-bottom: 1rem;
+            >
+                Dear ${attendeeName}
+
+<p style="
+ margin-bottom: 0.5rem;
+  margin-top: 2rem;
+">Click the button below to access the attendee app.</p>
+        <a
+        style="width: 130px;"
+        href="${paymentLink}"><button 
+        
+        
+         style="
+            width:100%;
+           
+          
+          padding:0.8rem;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+            font-size: 14px;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            background-color: rgb(0, 31, 204);
+            border-radius: 6px;
+            border: 0;
+            "
+        ><p style="margin:0; width:100%; text-align:center; color:white">Join Event</p></button></a>
+            </div>
  </div>`,
       });
 
