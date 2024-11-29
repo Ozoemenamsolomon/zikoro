@@ -16,6 +16,7 @@ import { TAttendee } from "@/types";
 import Link from "next/link";
 import { cn } from "@/lib";
 import { InlineIcon } from "@iconify/react";
+import { usePostRequest } from "@/hooks/services/request";
 
 export function Speakers({
   eventId,
@@ -23,7 +24,7 @@ export function Speakers({
   // changeMajorActiveState: (n: number) => void;
   eventId: string;
 }) {
-  const { attendees, isLoading } = useGetEventAttendees(eventId);
+  const { attendees, isLoading , getAttendees } = useGetEventAttendees(eventId);
   const [selectedAttendee, setSelectedAttendee] = useState<TAttendee | null>(
     null
   );
@@ -40,7 +41,10 @@ export function Speakers({
 
   const formattedAttendees = useMemo(() => {
     return attendees?.filter(({ attendeeType, speakingAt }) => {
-      return attendeeType?.includes("speaker") || (Array.isArray(speakingAt) && speakingAt?.length > 0);
+      return (
+        attendeeType?.includes("speaker") ||
+        (Array.isArray(speakingAt) && speakingAt?.length > 0)
+      );
     });
   }, [attendees]);
 
@@ -63,33 +67,29 @@ export function Speakers({
       >
         <h3 className="pb-2 w-full invisible text-center">Event Speakers</h3>
 
-       
-          <div className=" w-full grid grid-cols-1 sm:grid-cols-2 sm:flex  gap-4 items-center flex-wrap justify-center p-4 sm:p-6">
-            {isLoading && (
-              <div className="col-span-full h-[200px] flex items-center justify-center">
-                <LoaderAlt size={30} className="animate-spin" />
-              </div>
-            )}
-            {!isLoading && formattedAttendees?.length === 0 && (
-              <div className="col-span-full h-[200px] flex items-center justify-center">
-                <p className="text-mobile sm:text-sm font-semibold">
-                  No Speaker
-                </p>
-              </div>
-            )}
-            {!isLoading &&
-              Array.isArray(formattedAttendees) &&
-              formattedAttendees.map((attendee) => (
-                <SpeakerWidget
-                  key={attendee?.id}
-                  changeActiveState={changeActiveState}
-                
-                  attendee={attendee}
-                  setAttendee={setAttendee}
-                />
-              ))}
-          </div>
-     
+        <div className=" w-full grid grid-cols-1 sm:grid-cols-2 sm:flex  gap-4 items-center flex-wrap justify-center p-4 sm:p-6">
+          {isLoading && (
+            <div className="col-span-full h-[200px] flex items-center justify-center">
+              <LoaderAlt size={30} className="animate-spin" />
+            </div>
+          )}
+          {!isLoading && formattedAttendees?.length === 0 && (
+            <div className="col-span-full h-[200px] flex items-center justify-center">
+              <p className="text-mobile sm:text-sm font-semibold">No Speaker</p>
+            </div>
+          )}
+          {!isLoading &&
+            Array.isArray(formattedAttendees) &&
+            formattedAttendees.map((attendee) => (
+              <SpeakerWidget
+                key={attendee?.id}
+                changeActiveState={changeActiveState}
+                attendee={attendee}
+                setAttendee={setAttendee}
+                refetch={getAttendees}
+              />
+            ))}
+        </div>
       </div>
       {active === 2 && selectedAttendee && (
         <SpeakerInfo
@@ -107,14 +107,17 @@ export function SpeakerWidget({
   attendee,
   setAttendee,
   className,
-  isReception
+  isReception,
+  refetch
 }: {
   changeActiveState?: (v: number) => void;
-className?:string;
+  className?: string;
   attendee: TAttendee;
   setAttendee?: (a: TAttendee) => void;
-  isReception?:boolean;
+  isReception?: boolean;
+  refetch?:() => Promise<any>;
 }) {
+  const { postData, isLoading } = usePostRequest(`/attendees/speaker/delete`);
   // attendee?.ticketType
   return (
     <>
@@ -124,12 +127,27 @@ className?:string;
           if (setAttendee) setAttendee(attendee);
         }}
         role="button"
-        className={cn("w-full sm:w-[250px] relative group flex flex-col gap-y-2 items-center justify-center p-4", className)}
+        className={cn(
+          "w-full sm:w-[250px] relative group flex flex-col gap-y-2 items-center justify-center p-4",
+          className
+        )}
       >
         <button
-       // onClick={}
-        className="absolute top-2 right-2 group-hover:block hidden">
-            <InlineIcon icon="icon-park-twotone:people-delete" fontSize={22}/>
+          disabled={isLoading}
+          onClick={async () => {
+            const updatedAttendee = {
+              ...attendee,
+              attendeeType: attendee.attendeeType.filter(
+                (type) => type.toLowerCase() !== "speaker"
+              ),
+              speakingAt: null,
+            };
+            await postData({ payload: updatedAttendee });
+            refetch?.()
+          }}
+          className="absolute top-2 right-2 group-hover:block hidden"
+        >
+          <InlineIcon icon="icon-park-twotone:people-delete" fontSize={22} />
         </button>
         {attendee?.profilePicture ? (
           <Image
@@ -152,8 +170,12 @@ className?:string;
 
         <div className="flex w-full items-center flex-col justify-center">
           <h2 className="font-medium capitalize text-center text-ellipsis whitespace-nowrap overflow-hidden text-lg">{`${attendee?.firstName} ${attendee?.lastName}`}</h2>
-          <p className="text-gray-500 text-ellipsis whitespace-nowrap overflow-hidden">{attendee?.jobTitle ?? ""}</p>
-          <p className="text-gray-500 text-ellipsis whitespace-nowrap overflow-hidden">{attendee?.organization ?? ""}</p>
+          <p className="text-gray-500 text-ellipsis whitespace-nowrap overflow-hidden">
+            {attendee?.jobTitle ?? ""}
+          </p>
+          <p className="text-gray-500 text-ellipsis whitespace-nowrap overflow-hidden">
+            {attendee?.organization ?? ""}
+          </p>
         </div>
 
         {/* {isViewProfile && (
