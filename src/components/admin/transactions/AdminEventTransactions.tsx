@@ -41,19 +41,19 @@ function FilterMod({
     <div className="absolute top-[2.8rem] -left-4">
       <div
         onClick={close}
-        className="w-full h-full inset-0 fixed z-[100] "
+        className="w-full h-full inset-0 fixed z-40 "
       ></div>
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative z-[150] flex flex-col items-start w-[180px] bg-white rounded-lg py-4 text-mobile sm:text-sm"
+        className="relative z-50 flex flex-col items-start w-[180px] bg-white rounded-lg py-4 text-mobile sm:text-sm"
       >
         {filters?.map((v) => (
           <button
             onClick={() => {
               onSelected(v);
-              close();
+             
             }}
-            className="w-full px-3 py-2"
+            className="w-full text-start px-3 py-2"
           >
             {v?.label}
           </button>
@@ -134,6 +134,7 @@ export default function AdminTransactions({
 
   function onSelected(val: { label: string; value: boolean; name: string }) {
     setSelectedOptions((prev) => _.uniqBy([...prev, val], "name"));
+    onToggle()
   }
 
   async function sendBulkMail() {
@@ -243,14 +244,14 @@ export default function AdminTransactions({
       <div className="w-full pt-6 px-4 sm:pt-18">
         <table className="w-full min-w-[1000px]  overflow-x-auto no-scrollbar">
           <thead className="w-full">
-            <tr className="w-full p-4 font-medium bg-gray-100 gap-2 text-mobile sm:text-sm items-center rounded-t-lg grid grid-cols-12 ">
+            <tr className="w-full p-4 font-medium bg-gray-100 gap-2 text-mobile sm:text-sm items-center rounded-t-lg grid grid-cols-9 ">
               <td className="">Date</td>
-              <td className="col-span-2">RegisteredBy</td>
+              <td>Reg. Ref.</td>
               <td className="col-span-2">Event Name</td>
               <td>No of Attendees</td>
-              <td className="">Amount Payable</td>
+              
               <td className="">Amount Paid</td>
-              <td>Reg. Ref.</td>
+             
               <td>Email Sent</td>
               <td>Reg. Completed</td>
               <td>Action</td>

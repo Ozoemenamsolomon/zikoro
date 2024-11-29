@@ -90,7 +90,7 @@ export function EventTransactionWidget({
   return (
     <tr
       className={cn(
-        "w-full p-4 gap-2 grid grid-cols-12 items-center border-b",
+        "w-full p-4 gap-2 grid grid-cols-9 items-center border-b",
         className
       )}
     >
@@ -106,25 +106,20 @@ export function EventTransactionWidget({
           <span>{date}</span>
         </label>
         </td>
-      <td className="col-span-2 w-full text-ellipsis whitespace-nowrap overflow-hidden">
-        {transaction?.userEmail ?? ""}
+        <td className="w-full text-ellipsis whitespace-nowrap overflow-hidden">
+        {transaction?.eventRegistrationRef ?? ""}
       </td>
       <td className="col-span-2 w-full text-ellipsis whitespace-nowrap overflow-hidden">
         {transaction?.event ?? ""}
       </td>
 
       <td>{transaction?.attendees ?? "0"}</td>
-      <td>
-        {transaction?.currency}
-        {transaction?.amountPayable ?? "0"}
-      </td>
+     
       <td>
         {transaction?.currency}
         {transaction?.amountPaid ?? "0"}
       </td>
-      <td className="w-full text-ellipsis whitespace-nowrap overflow-hidden">
-        {transaction?.eventRegistrationRef ?? ""}
-      </td>
+  
       <td
         className={cn(
           "bg-red-600 text-white p-1 w-fit flex items-center justify-center  rounded-sm font-semibold text-xs sm:text-mobile",
