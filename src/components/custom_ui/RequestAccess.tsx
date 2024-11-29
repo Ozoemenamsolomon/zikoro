@@ -81,7 +81,7 @@ export default function RequestAccess({ eventId }: { eventId: string }) {
           </div>
 
           {isEmailSent ? (
-            <div className="w-full  flex flex-col items-center justify-center gap-4">
+            <div className="w-full  flex flex-col items-center justify-center gap-8 ">
                 <InlineIcon icon="lsicon:email-send-filled" fontSize={22}/>
               <h3 className="font-semibold text-sm sm:text-lg max-w-lg text-center">
                 Access link has been sent to your email address (Please also
@@ -95,7 +95,7 @@ export default function RequestAccess({ eventId }: { eventId: string }) {
           ) : (
             <>
               {isEmailNotPresent ? (
-                <div className="w-full  flex flex-col items-center justify-center gap-4">
+                <div className="w-full  flex flex-col items-center justify-center gap-8 sm:gap-12">
                   <h2 className="font-semibold text-base sm:text-xl">
                     We couldn’t identify you as a registered attendee for this
                     event.
@@ -120,7 +120,7 @@ export default function RequestAccess({ eventId }: { eventId: string }) {
               ) : (
                 <form
                   onSubmit={onSubmit}
-                  className="w-full flex flex-col  items-center justify-center gap-4"
+                  className="w-full flex flex-col  items-center justify-center gap-8 sm:gap-12"
                 >
                     <div className="w-full flex flex-col items-center justify-center gap-y-2">
                     <h2 className="font-semibold text-base sm:text-xl text-center">
