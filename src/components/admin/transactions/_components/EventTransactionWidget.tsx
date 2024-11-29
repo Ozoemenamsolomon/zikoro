@@ -14,9 +14,14 @@ interface Transactions extends TEventTransactionDetail {
 export function EventTransactionWidget({
   className,
   transaction,
+  transactionIds,
+  updateTransactionIds
 }: {
   className?: string;
   transaction: Transactions;
+  updateTransactionIds(id: number): void
+  transactionIds: number[]
+
 }) {
   const { postData, isLoading } = usePostRequest("/payment/resend");
 
@@ -89,7 +94,18 @@ export function EventTransactionWidget({
         className
       )}
     >
-      <td>{date}</td>
+      <td>
+        
+        <label className="w-full flex items-center gap-x-2">
+        <input
+            checked={transactionIds.includes(transaction?.id)}
+            onChange={() => updateTransactionIds(transaction?.id)}
+            type="checkbox"
+            className="accent-basePrimary w-4 h-4"
+          />
+          <span>{date}</span>
+        </label>
+        </td>
       <td className="col-span-2 w-full text-ellipsis whitespace-nowrap overflow-hidden">
         {transaction?.userEmail ?? ""}
       </td>
