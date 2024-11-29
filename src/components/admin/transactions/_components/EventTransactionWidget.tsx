@@ -90,7 +90,7 @@ export function EventTransactionWidget({
   return (
     <tr
       className={cn(
-        "w-full p-4 gap-2 grid grid-cols-11 items-center border-b",
+        "w-full p-4 gap-2 grid grid-cols-12 items-center border-b",
         className
       )}
     >
@@ -127,7 +127,7 @@ export function EventTransactionWidget({
       </td>
       <td
         className={cn(
-          "bg-red-600 text-white p-1 rounded-sm font-semibold text-xs sm:text-mobile",
+          "bg-red-600 text-white p-1 w-fit rounded-sm font-semibold text-xs sm:text-mobile",
           transaction?.registrationCompleted && "bg-green-600"
         )}
       >
@@ -135,7 +135,7 @@ export function EventTransactionWidget({
       </td>
       <td
         className={cn(
-          "text-white p-1 bg-red-600 font-semibold text-xs sm:text-mobile",
+          "text-white p-1 bg-red-600 w-fit font-semibold text-xs sm:text-mobile",
           isEmailSent && "bg-green-600"
         )}
       >
