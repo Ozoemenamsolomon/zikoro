@@ -185,13 +185,6 @@ export default function AttendeeCard(props) {
                       Your request has been sent to the Attendee.
                     </p>
                   </div>
-                ) : props.attendeeExchangedContacts &&
-                  props.attendeeExchangedContacts.status === "rejected" ? (
-                  <div className="flex justify-between gap-2 items-start">
-                    <p className="text-sm text-gray-500">
-                      Your request was rejected by the Attendee.
-                    </p>
-                  </div>
                 ) : (
                   <SlideToReveal
                     action={props.action}

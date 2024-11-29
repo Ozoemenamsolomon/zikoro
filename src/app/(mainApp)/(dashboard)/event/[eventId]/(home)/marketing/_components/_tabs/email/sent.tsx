@@ -259,7 +259,7 @@ const Sent = () => {
           </Button>
         </Link>
       </div>
-      <div className="grid grid-cols-5 gap-4 items-center mb-8">
+      <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-4 items-center mb-8">
         <EmailInfoCard label="Sent Emails" value={1000} Icon={CalendarIcon} />
         <EmailInfoCard label="Delivered Emails" value={1000} Icon={Check2} />
         <EmailInfoCard label="Open Rate" value={"70% "} Icon={EyeIcon} />
