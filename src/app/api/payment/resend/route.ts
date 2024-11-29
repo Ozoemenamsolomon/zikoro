@@ -531,34 +531,30 @@ export async function POST(req: NextRequest) {
         }
       });
 
-      const { data: attendees } = await supabase
-        .from("attendees")
-        .select("*")
-        .eq("eventAlias", eventAlias)
-        .range(0, 1000);
+      const { data: eventTransactions } = await supabase
+      .from("eventTransactions")
+      .select("*")
+      .eq("eventRegistrationRef", eventRegistrationRef)
+   
 
-      if (attendees) {
-        const allregisteredAttendees = attendees
-          ?.filter((attendee) => {
-            return attendee?.eventRegistrationRef === eventRegistrationRef;
-          })
-          .map((value) => {
-            return {
-              ...value,
-              registrationCompleted: true,
-              attendeeType:  ["attendee"],
-            };
-          });
+    if (eventTransactions) {
+      const allTransactions = eventTransactions?.map((value) => {
+          return {
+            ...value,
+            emailSent: true,
+          
+          };
+        });
 
-        const { error } = await supabase
-          .from("attendees")
-          .upsert(allregisteredAttendees, { onConflict: "id" });
+      const { error } = await supabase
+        .from("eventTransactions")
+        .upsert(allTransactions, { onConflict: "id" });
 
-        if (error) {
-          return NextResponse.json({ error: error?.message }, { status: 400 });
-        }
-        if (error) throw error;
+      if (error) {
+        return NextResponse.json({ error: error?.message }, { status: 400 });
       }
+      if (error) throw error;
+    }
 
       return NextResponse.json(
         { msg: "Transaction details updated successfully", check },

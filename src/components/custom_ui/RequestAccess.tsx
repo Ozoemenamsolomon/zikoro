@@ -22,7 +22,7 @@ export default function RequestAccess({ eventId }: { eventId: string }) {
   const { requestEmail } = useRequestAccess();
 
   async function onSubmit(e: any) {
-    e.preventDefault()
+    e.preventDefault();
     if (loadingAttendees || eventAttendees?.length === 0) return;
 
     const isEmailPresent = eventAttendees?.find(
@@ -34,8 +34,12 @@ export default function RequestAccess({ eventId }: { eventId: string }) {
       try {
         await requestEmail({
           email,
-          paymentLink: isEmailPresent?.paymentLink!,
-          eventTitle: data?.eventTitle!
+          paymentLink: `https://www.zikoro.com/event/${eventId}/reception?email=${
+           isEmailPresent?.email
+         }&createdAt=${new Date().toISOString()}&isPasswordless=${true}&alias=${
+           isEmailPresent?.attendeeAlias
+         }`,
+          eventTitle: data?.eventTitle!,
         });
       } catch (error) {
       } finally {
@@ -82,7 +86,7 @@ export default function RequestAccess({ eventId }: { eventId: string }) {
 
           {isEmailSent ? (
             <div className="w-full  flex flex-col items-center justify-center gap-8 ">
-                <InlineIcon icon="lsicon:email-send-filled" fontSize={22}/>
+              <InlineIcon icon="lsicon:email-send-filled" fontSize={22} />
               <h3 className="font-semibold text-sm sm:text-lg max-w-lg text-center">
                 Access link has been sent to your email address (Please also
                 check your spam). click on the link sent to get access to this
@@ -122,14 +126,17 @@ export default function RequestAccess({ eventId }: { eventId: string }) {
                   onSubmit={onSubmit}
                   className="w-full flex flex-col  items-center justify-center gap-8 sm:gap-12"
                 >
-                    <div className="w-full flex flex-col items-center justify-center gap-y-2">
+                  <div className="w-full flex flex-col items-center justify-center gap-y-2">
                     <h2 className="font-semibold text-base sm:text-xl text-center">
-
-We couldn’t identify you as a registered attendee for this event.
-
-</h2>
-<p className="text-center">  Please enter your email address below. If you’re registered, we’ll send you a link to join the event.</p>
-                    </div>
+                      We couldn’t identify you as a registered attendee for this
+                      event.
+                    </h2>
+                    <p className="text-center">
+                      {" "}
+                      Please enter your email address below. If you’re
+                      registered, we’ll send you a link to join the event.
+                    </p>
+                  </div>
                   <Input
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}

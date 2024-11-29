@@ -675,6 +675,31 @@ export async function POST(req: NextRequest) {
         }
       });
 
+      const { data: eventTransactions } = await supabase
+      .from("eventTransactions")
+      .select("*")
+      .eq("eventRegistrationRef", eventRegistrationRef)
+   
+
+    if (eventTransactions) {
+      const allTransactions = eventTransactions?.map((value) => {
+          return {
+            ...value,
+            emailSent: true,
+          
+          };
+        });
+
+      const { error } = await supabase
+        .from("eventTransactions")
+        .upsert(allTransactions, { onConflict: "id" });
+
+      if (error) {
+        return NextResponse.json({ error: error?.message }, { status: 400 });
+      }
+      if (error) throw error;
+    }
+
      
 
       return NextResponse.json(
