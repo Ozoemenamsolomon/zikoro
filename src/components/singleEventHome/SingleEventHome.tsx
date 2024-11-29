@@ -41,7 +41,7 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
     isLoading: loadingRewards,
     getData: refetch,
   } = useGetData<Reward[]>(`/rewards/${eventId}`);
-  const { attendees, isLoading: loadingAttendees } =
+  const { attendees, isLoading: loadingAttendees, getAttendees } =
     useGetEventAttendees(eventId);
   const [active, setActive] = useState<"sponsors" | "exhibitors">("sponsors");
   const [isOpen, setIsOpen] = useState(false);
@@ -92,6 +92,8 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
     });
   }, [attendees]);
 
+  //console.log('formatted',formattedAttendees)
+
   // const nonArchiveAttendees = useMemo(() => {
   //   return attendees?.filter((attendee) => !attendee?.archive);
   // }, [attendees]);
@@ -123,6 +125,9 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
   // const Comp =
   //   Array.isArray(partnersData) && partnersData?.length > 1 ? Slider : "div";
 
+
+  console.log(approvedPartners)
+  console.log("restructure", restructureData, partnersLoading)
   if (loading || !data)
     return (
       <div className="w-full h-[300px] flex items-center justify-center">
@@ -208,6 +213,8 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
                     <SpeakerWidget
                       key={attendee?.id}
                       attendee={attendee}
+                      isReception
+                      refetch={getAttendees}
                       className="border rounded-lg w-[250px] h-[250px] sm:w-[250px]"
                     />
                   ))}

@@ -110,6 +110,25 @@ return generateAlias()
         coverImage: data?.coverImage,
         formSettings: data?.formSettings,
       });
+
+      form.setValue("formSettings", {
+        ...data.formSettings,
+        isConnectedToEngagement: true,
+        showForm: "beforeEngagement",
+        redirectUrl: "",
+        isCollectUserEmail: false,
+        isCoverScreen: true,
+        displayType: "listing",
+        questionPerSlides: "1",
+        titleFontSize: "36",
+        headingFontSize: "24",
+        backgroundColor: "#ffffff",
+        textColor: "#000000",
+        buttonColor: "#001FFC",
+        textFontSize: "14",
+        isCoverImage: true,
+        buttonText: "Submit"
+      })
     }
   }, [data]);
 
@@ -182,7 +201,7 @@ return generateAlias()
                 <FormItem className="w-full">
                   <FormControl className="w-full">
                   <FormDescriptionInput
-                          defaultValue={defaultDescriptionValue}
+                          defaultValue={data?.description}
                           placeholder="Form Description"
                           onChange={(value) => {
                             form.setValue("description", value);

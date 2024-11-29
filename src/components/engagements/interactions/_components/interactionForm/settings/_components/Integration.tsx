@@ -54,7 +54,7 @@ export function FormIntegration({
           className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
         />
       </div>
-      <div className="flex flex-col items-start justify-start gap-y-3">
+      <div className="flex flex-col w-full max-w-[350px] items-start justify-start gap-y-3">
         <FormField
           control={form.control}
           name="formSettings.redirectUrl"

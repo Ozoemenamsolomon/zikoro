@@ -21,8 +21,9 @@ export default function RequestAccess({ eventId }: { eventId: string }) {
   const [isLoading, setIsLoading] = useState(false);
   const { requestEmail } = useRequestAccess();
 
-  async function onSubmit() {
-    if (loadingAttendees || eventAttendees?.length > 0) return;
+  async function onSubmit(e: any) {
+    e.preventDefault()
+    if (loadingAttendees || eventAttendees?.length === 0) return;
 
     const isEmailPresent = eventAttendees?.find(
       (attendee) => attendee.userEmail === email
@@ -52,12 +53,12 @@ export default function RequestAccess({ eventId }: { eventId: string }) {
           <LoaderAlt size={30} className="animate-spin" />
         </div>
       ) : (
-        <div className="max-w-4xl w-full m-auto inset-0 absolute flex flex-col items-center justify-center gap-y-8 sm:gap-y-10">
+        <div className="max-w-3xl w-full m-auto inset-0 absolute flex flex-col items-center justify-center gap-y-8 sm:gap-y-10">
           <div className="w-full flex  items-center gap-x-3">
             {data?.eventPoster ? (
               <Image
                 src={data?.eventPoster}
-                className="w-36 h-36 rounded-lg object-cover sm:w-80  sm:h-80"
+                className="w-36 h-36 rounded-lg object-cover sm:w-64  sm:h-64"
                 alt={data?.eventTitle}
                 width={300}
                 height={300}
@@ -80,7 +81,8 @@ export default function RequestAccess({ eventId }: { eventId: string }) {
           </div>
 
           {isEmailSent ? (
-            <div className="w-full max-w-2xl flex flex-col items-center justify-center gap-4">
+            <div className="w-full  flex flex-col items-center justify-center gap-8 ">
+                <InlineIcon icon="lsicon:email-send-filled" fontSize={22}/>
               <h3 className="font-semibold text-sm sm:text-lg max-w-lg text-center">
                 Access link has been sent to your email address (Please also
                 check your spam). click on the link sent to get access to this
@@ -93,7 +95,7 @@ export default function RequestAccess({ eventId }: { eventId: string }) {
           ) : (
             <>
               {isEmailNotPresent ? (
-                <div className="w-full max-w-2xl flex flex-col items-center justify-center gap-4">
+                <div className="w-full  flex flex-col items-center justify-center gap-8 sm:gap-12">
                   <h2 className="font-semibold text-base sm:text-xl">
                     We couldn’t identify you as a registered attendee for this
                     event.
@@ -118,8 +120,16 @@ export default function RequestAccess({ eventId }: { eventId: string }) {
               ) : (
                 <form
                   onSubmit={onSubmit}
-                  className="w-full flex flex-col max-w-2xl items-center justify-center gap-4"
+                  className="w-full flex flex-col  items-center justify-center gap-8 sm:gap-12"
                 >
+                    <div className="w-full flex flex-col items-center justify-center gap-y-2">
+                    <h2 className="font-semibold text-base sm:text-xl text-center">
+
+We couldn’t identify you as a registered attendee for this event.
+
+</h2>
+<p className="text-center">  Please enter your email address below. If you’re registered, we’ll send you a link to join the event.</p>
+                    </div>
                   <Input
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}

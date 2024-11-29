@@ -62,11 +62,13 @@ export async function PATCH(req: NextRequest) {
                 border-bottom: 1px solid #b4b4b4;
               "
             >
-              <div style="width:100; height:80px;">
+              <div style="width:100%; margin: 0 auto; height:80px;">
               <img alt="ad" 
               style="
-            
-              " src="https://res.cloudinary.com/dkdrbjfdt/image/upload/v1730758848/qhurray_pofqdf.png" >
+              width:100%;
+              height:100%;
+              " 
+              src="https://res.cloudinary.com/dkdrbjfdt/image/upload/v1730758848/qhurray_pofqdf.png" >
               </div>
 
               <p style="
@@ -105,6 +107,8 @@ export async function PATCH(req: NextRequest) {
              ${ quiz?.interactionType !== "poll" && `<p
               style="
               text-align:center;
+              font-weight:600;
+              font-size:20px;
               "
               >Points</p>`}
 
@@ -118,7 +122,11 @@ export async function PATCH(req: NextRequest) {
               height: fit-content;
               "
               >
-              <p style"text-align: center; margin-bottom: 2.5rem;">Share the quiz with friends</p>
+              <p style"
+              text-align: center; 
+              margin-bottom: 2.5rem;
+              ">
+              Share the quiz with friends</p>
 
               <div
                 style="
@@ -198,18 +206,23 @@ export async function PATCH(req: NextRequest) {
 
              >
 
-                <div style="margin: 0 auto;">
+                <div style="
+                width:300px;
+
+                margin: 0 auto;">
               <img alt="adw" 
               style="
-              
-              " src="https://res.cloudinary.com/dkdrbjfdt/image/upload/v1730758845/qhuman_czpvvs.png" >
+              width:100%;
+              height:100%;
+              "
+               src="https://res.cloudinary.com/dkdrbjfdt/image/upload/v1730758845/qhuman_czpvvs.png" >
               </div>
                 <p
                 text-align:center;
                 margin-top:6rem;
                 margin-bottom:0.5rem;
                 font-weight:600;
-                font-size:26px;
+                font-size:28px;
                 >Organize your own ${
                   quiz?.interactionType !== "poll" ? "quiz" : "poll"
                 } now</p>
@@ -218,6 +231,8 @@ export async function PATCH(req: NextRequest) {
              style="
               margin:0 auto;
               width:160px;
+              display:block;
+
              "
 
               href="${deploymentUrl}/create"
@@ -226,7 +241,7 @@ export async function PATCH(req: NextRequest) {
             style="
             border:0;
             border-radius:8px;
-             
+             width:100%;
              padding:8px;
              background:#001fcc;
              color:#ffffff;

@@ -23,7 +23,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className=" text-mobile sm:text-desktop">
-         <Head>
+         <head>
         {/* Google Tag (gtag.js) */}
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-KQQS740F2E"></script>
         <script
@@ -41,7 +41,7 @@ export default function RootLayout({
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap"
         />
-      </Head>
+      </head>
       <body >
         {children}
         <Toaster {...TOASTER_PROPS} />

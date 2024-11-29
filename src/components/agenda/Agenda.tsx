@@ -136,7 +136,7 @@ export default function Agenda({
                     // refetchSession();
                   }}
                   className={cn(
-                    "p-1 text-gray-400 flex w-fit h-fit gap-2 flex-col items-center justify-center  text-mobile sm:text-sm",
+                    "p-1 text-gray-400 flex w-fit h-[80px] gap-2 flex-col items-center justify-center  text-mobile sm:text-sm",
                     (activeDateQuery || currentEvent?.startDate) ===
                       val?.date &&
                       "border-basePrimary border bg-white shadow rounded-xl"

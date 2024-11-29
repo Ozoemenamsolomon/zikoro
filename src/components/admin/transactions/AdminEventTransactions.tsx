@@ -2,7 +2,7 @@
 
 import { RouteHeader } from "../_components";
 import { useState, useEffect } from "react";
-import {  formatDate } from "@/utils";
+import { formatDate } from "@/utils";
 import {
   useGetAdminEventTransactions,
   useInfiniteScrollPagination,
@@ -15,6 +15,7 @@ import { TEventTransactionDetail, TOrgEvent } from "@/types";
 import { InlineIcon } from "@iconify/react";
 import _ from "lodash";
 import { usePostRequest } from "@/hooks/services/request";
+import { MdClose } from "react-icons/md";
 
 function FilterMod({
   onSelected,
@@ -39,21 +40,17 @@ function FilterMod({
   ];
   return (
     <div className="absolute top-[2.8rem] -left-4">
-      <div
-        onClick={close}
-        className="w-full h-full inset-0 fixed z-[100] "
-      ></div>
+      <div onClick={close} className="w-full h-full inset-0 fixed z-40 "></div>
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative z-[150] flex flex-col items-start w-[180px] bg-white rounded-lg py-4 text-mobile sm:text-sm"
+        className="relative z-50 flex flex-col items-start justify-start w-[180px] bg-white rounded-lg py-4 text-mobile sm:text-sm"
       >
         {filters?.map((v) => (
           <button
             onClick={() => {
               onSelected(v);
-              close();
             }}
-            className="w-full px-3 py-2"
+            className="w-full hover:bg-gray-200 text-start px-3 py-2"
           >
             {v?.label}
           </button>
@@ -113,6 +110,7 @@ export default function AdminTransactions({
   useEffect(() => {
     if (Array.isArray(transactions)) {
       const filtered = transactions.filter((transaction) => {
+        console.log("qwdwfwfwe", selectedOptions);
         if (selectedOptions.length <= 2) {
           return selectedOptions.every((option) => {
             return (
@@ -123,6 +121,7 @@ export default function AdminTransactions({
         return true;
       });
       setFilteredData(filtered);
+      console.log("dfwfwefwe", filtered);
       setTransactionIds([]);
     }
   }, [transactions, selectedOptions]);
@@ -134,6 +133,7 @@ export default function AdminTransactions({
 
   function onSelected(val: { label: string; value: boolean; name: string }) {
     setSelectedOptions((prev) => _.uniqBy([...prev, val], "name"));
+    onToggle();
   }
 
   async function sendBulkMail() {
@@ -178,6 +178,7 @@ export default function AdminTransactions({
         };
 
         await postData({ payload });
+        getTransactions();
       }
 
       setLoading(false);
@@ -202,7 +203,7 @@ export default function AdminTransactions({
         header="Event Transactions"
         description="All Events Transactions"
       />
-      <div className="w-full flex sm:flex-row-reverse flex-col gap-4 items-start  sm:items-end px-4 justify-start sm:justify-end ">
+      <div className="w-full flex sm:flex-row-reverse flex-col gap-4 items-start  sm:items-center px-4 justify-start sm:justify-between ">
         <div className="w-full sm:w-fit flex flex-col gap-4 items-start justify-start sm:flex-row sm:items-center">
           <button
             onClick={onToggle}
@@ -225,6 +226,21 @@ export default function AdminTransactions({
             />
           </div>
         </div>
+        <div className="flex juatify-center mb-4 items-center gap-x-2">
+          {selectedOptions?.length > 0 &&
+            selectedOptions?.map((v) => (
+              <button
+                onClick={() =>
+                  setSelectedOptions(
+                    selectedOptions?.filter((val) => val?.name !== v?.name)
+                  )
+                }
+                className="flex items-center gap-x-2"
+              >
+                {v?.label} <MdClose size={20} />
+              </button>
+            ))}
+        </div>
         {/**visible when length od selectedid is greater than zero */}
         {transactionIds?.length > 0 && (
           <button
@@ -243,14 +259,14 @@ export default function AdminTransactions({
       <div className="w-full pt-6 px-4 sm:pt-18">
         <table className="w-full min-w-[1000px]  overflow-x-auto no-scrollbar">
           <thead className="w-full">
-            <tr className="w-full p-4 font-medium bg-gray-100 gap-2 text-mobile sm:text-sm items-center rounded-t-lg grid grid-cols-12 ">
+            <tr className="w-full p-4 font-medium bg-gray-100 gap-2 text-mobile sm:text-sm items-center rounded-t-lg grid grid-cols-9 ">
               <td className="">Date</td>
-              <td className="col-span-2">RegisteredBy</td>
+              <td>Reg. Ref.</td>
               <td className="col-span-2">Event Name</td>
               <td>No of Attendees</td>
-              <td className="">Amount Payable</td>
+
               <td className="">Amount Paid</td>
-              <td>Reg. Ref.</td>
+
               <td>Email Sent</td>
               <td>Reg. Completed</td>
               <td>Action</td>
@@ -281,6 +297,7 @@ export default function AdminTransactions({
                     updateTransactionIds={updateTransactionIds}
                     transactionIds={transactionIds}
                     transaction={transaction}
+                    getTransactions={getTransactions}
                   />
                 </tr>
               ))}
