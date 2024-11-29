@@ -231,12 +231,12 @@ function OfferCardModal({
             </div>
           </div>
           <div className="flex px-3 items-center gap-x-3">
-            {offer?.productPromo && (
+            {typeof Number(offer?.productPromo) === "number" && (
               <p className="font-semibold">{`₦${Number(
                 offer?.productPromo
               )?.toLocaleString()}`}</p>
             )}
-            {offer?.productPrice && (
+            {typeof Number(offer?.productPrice) === "number" && (
               <p className="font-semibold text-gray-400">{`₦${Number(
                 offer?.productPrice
               )?.toLocaleString()}`}</p>

@@ -20,52 +20,52 @@ export async function POST(req: NextRequest) {
       }
       if (error) throw error;
 
-      if (
-        typeof params.formSettings.connectedEngagementId === "string" &&
-        params.formSettings.connectedEngagementId.length > 0
-      ) {
-        const { error: engagementFetchError, data } = await supabase
-          .from("quiz")
-          .select("*")
-          .eq("quizAlias", params.formSettings.connectedEngagementId)
-          .single();
+      // if (
+      //   typeof params.formSettings.connectedEngagementId === "string" &&
+      //   params.formSettings.connectedEngagementId.length > 0
+      // ) {
+      //   const { error: engagementFetchError, data } = await supabase
+      //     .from("quiz")
+      //     .select("*")
+      //     .eq("quizAlias", params.formSettings.connectedEngagementId)
+      //     .single();
 
-        if (engagementFetchError) {
-          return NextResponse.json(
-            {
-              error: engagementFetchError.message,
-            },
-            {
-              status: 400,
-            }
-          );
-        }
+      //   if (engagementFetchError) {
+      //     return NextResponse.json(
+      //       {
+      //         error: engagementFetchError.message,
+      //       },
+      //       {
+      //         status: 400,
+      //       }
+      //     );
+      //   }
 
-        if (engagementFetchError) throw error;
+      //   if (engagementFetchError) throw error;
 
-        if (data && !data?.formAlias) {
-          const payload = {
-            ...data,
-            formAlias: params.formSettings.connectedEngagementId,
-          };
-          const { error: upateError } = await supabase
-            .from("quiz")
-            .upsert(payload);
+      //   if (data && !data?.formAlias) {
+      //     const payload = {
+      //       ...data,
+      //       formAlias: params.formSettings.connectedEngagementId,
+      //     };
+      //     const { error: upateError } = await supabase
+      //       .from("quiz")
+      //       .upsert(payload);
 
-          if (upateError) {
-            return NextResponse.json(
-              {
-                error: upateError.message,
-              },
-              {
-                status: 400,
-              }
-            );
-          }
+      //     if (upateError) {
+      //       return NextResponse.json(
+      //         {
+      //           error: upateError.message,
+      //         },
+      //         {
+      //           status: 400,
+      //         }
+      //       );
+      //     }
 
-          if (upateError) throw error;
-        }
-      }
+      //     if (upateError) throw error;
+      //   }
+      // }
 
       return NextResponse.json(
         { msg: "Form Created Successfully" },
