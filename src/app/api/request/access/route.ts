@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
         
         
          style="
-            width:100%;
+           style="width: 130px;"
            
           
           padding:0.8rem;

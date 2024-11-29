@@ -26,7 +26,7 @@ export default function RequestAccess({ eventId }: { eventId: string }) {
     if (loadingAttendees || eventAttendees?.length === 0) return;
 
     const isEmailPresent = eventAttendees?.find(
-      (attendee) => attendee.userEmail === email
+      (attendee) => attendee.email === email
     );
 
     if (isEmailPresent) {
@@ -40,6 +40,7 @@ export default function RequestAccess({ eventId }: { eventId: string }) {
            isEmailPresent?.attendeeAlias
          }`,
           eventTitle: data?.eventTitle!,
+          attendeeName: isEmailPresent?.firstName!
         });
       } catch (error) {
       } finally {
