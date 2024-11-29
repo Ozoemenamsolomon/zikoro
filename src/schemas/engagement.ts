@@ -26,7 +26,7 @@ export const formSettingSchema = z.object({
     formSettings: z.object({
         isConnectedToEngagement: z.boolean(),
         showForm: z.string(),
-        connectedEngagementId: z.string().optional(),
+        redirectUrl: z.string().optional(),
         isCollectUserEmail: z.boolean(),
         isCoverScreen:z.boolean(),
         displayType: z.string(),
@@ -36,6 +36,7 @@ export const formSettingSchema = z.object({
         backgroundColor: z.string(),
         textColor:z.string(),
         buttonColor:z.string(),
+        buttonText:z.string(),
         textFontSize:z.string(),
         isCoverImage: z.boolean()
     })

@@ -55,7 +55,7 @@ export function FormGeneralSettings({
           onCheckedChange={(checked) => {
             form.setValue("formSettings.isCoverScreen", checked);
           }}
-          onClick={() => {}}
+        
           className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
         />
       </div>

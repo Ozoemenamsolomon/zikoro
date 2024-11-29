@@ -14,7 +14,8 @@ import {
   InteractionCard,
   InteractionsSelectionModal,
   QuizSettings,
-  FormCard
+  FormCard,
+  StaticInteractionModal,
 } from "./_components";
 import { useMemo, useState } from "react";
 import Image from "next/image";
@@ -22,16 +23,22 @@ import { verifyingAccess } from "@/utils";
 import { useRouter } from "next/navigation";
 import { useGetData } from "@/hooks/services/request";
 import { TEngagementFormQuestion } from "@/types/engagements";
+import useOrganizationStore from "@/store/globalOrganizationStore";
+import { TOrganization } from "@/types";
 export default function Interactions({ eventId }: { eventId: string }) {
   const [isOpen, setOpen] = useState(false);
   const [isOpenInteractionModal, setOpenInteractionModal] = useState(false);
   const { isOrganizer } = useVerifyUserAccess(eventId);
   const { isIdPresent } = useCheckTeamMember({ eventId });
   const [interactionType, setInteractionType] = useState("");
- // const { organization } = useOrganizationStore();
+  const { organization } = useOrganizationStore();
   const { quizzes, isLoading, getQuizzes } = useGetQuizzes(eventId);
-  const {data, isLoading: loading, getData} = useGetData<TEngagementFormQuestion[]>(`/engagements/${eventId}/form`)
-  const router = useRouter()
+  const {
+    data,
+    isLoading: loading,
+    getData,
+  } = useGetData<TEngagementFormQuestion[]>(`/engagements/${eventId}/form`);
+  const router = useRouter();
 
   function onClose() {
     setOpen((prev) => !prev);
@@ -56,28 +63,21 @@ export default function Interactions({ eventId }: { eventId: string }) {
 
   const visibleForm = useMemo(() => {
     if (!isIdPresent && !isOrganizer) {
-      const filteredQuizzes = data?.filter(
-        (form) => !form?.isActive
-      );
+      const filteredQuizzes = data?.filter((form) => !form?.isActive);
 
       return filteredQuizzes;
     } else {
       return data;
     }
-  },[data, isIdPresent, isOrganizer])
-
+  }, [data, isIdPresent, isOrganizer]);
 
   const interactioDataLength = useMemo(() => {
-      if (visibleForm && visibleQuizzes) {
-        return [
-          ...visibleForm,
-          ...visibleQuizzes
-        ].length
-      }
-      else {
-        return 0
-      }
-  },[visibleForm, visibleQuizzes])
+    if (visibleForm && visibleQuizzes) {
+      return [...visibleForm, ...visibleQuizzes].length;
+    } else {
+      return 0;
+    }
+  }, [visibleForm, visibleQuizzes]);
 
   //console.log({ visibleQuizzes, quizzes, isIdPresent, isOrganizer });
 
@@ -85,14 +85,14 @@ export default function Interactions({ eventId }: { eventId: string }) {
     const liveQuizCount = quizzes?.filter(
       ({ accessibility }) => accessibility?.live
     )?.length;
-    if (liveQuizCount >= 3) {
-      verifyingAccess({
-        textContent:
-          "You have reached the maximum limit of 3 Live Quiz. You can delete some quiz to create a new one.",
-        isNotUpgrading: true,
-      });
-      return;
-    }
+    // if (liveQuizCount >= 3) {
+    //   verifyingAccess({
+    //     textContent:
+    //       "You have reached the maximum limit of 3 Live Quiz.",
+    //     isNotUpgrading: true,
+    //   });
+    //   return;
+    // }
     setInteractionType("quiz");
     onClose();
   }
@@ -101,14 +101,13 @@ export default function Interactions({ eventId }: { eventId: string }) {
     const pollCount = quizzes?.filter(
       ({ interactionType }) => interactionType === "poll"
     )?.length;
-    if (pollCount >= 3) {
-      verifyingAccess({
-        textContent:
-          "You have reached the maximum limit of 3 polls. ",
-        isNotUpgrading: true,
-      });
-      return;
-    }
+    // if (pollCount >= 3) {
+    //   verifyingAccess({
+    //     textContent: "You have reached the maximum limit of 3 polls. ",
+    //     isNotUpgrading: true,
+    //   });
+    //   return;
+    // }
     setInteractionType("poll");
     onClose();
   }
@@ -142,14 +141,16 @@ export default function Interactions({ eventId }: { eventId: string }) {
             </div>
           )}
           {!isLoading && !loading && interactioDataLength === 0 && (
-              <div className="w-full col-span-full flex items-center justify-center h-[350px]">
-                <EmptyState
-                  isNotAttendee={isIdPresent || isOrganizer}
-                  toggleInteractionModal={toggleInteractionModal}
-                />
-              </div>
-            )}
-          {!isLoading && !loading &&
+            <div className="w-full col-span-full flex items-center justify-center h-[350px]">
+              <EmptyState
+                isNotAttendee={isIdPresent || isOrganizer}
+                toggleInteractionModal={toggleInteractionModal}
+                organization={organization}
+              />
+            </div>
+          )}
+          {!isLoading &&
+            !loading &&
             Array.isArray(visibleQuizzes) &&
             visibleQuizzes.map((quiz, index) => (
               <InteractionCard
@@ -157,10 +158,10 @@ export default function Interactions({ eventId }: { eventId: string }) {
                 isNotAttendee={isIdPresent || isOrganizer}
                 key={quiz.quizAlias}
                 quiz={quiz}
-                
               />
             ))}
-             {!isLoading && !loading &&
+          {!isLoading &&
+            !loading &&
             Array.isArray(visibleForm) &&
             visibleForm.map((form, index) => (
               <FormCard
@@ -168,8 +169,6 @@ export default function Interactions({ eventId }: { eventId: string }) {
                 isNotAttendee={isIdPresent || isOrganizer}
                 key={form.formAlias}
                 form={form}
-               
-                
               />
             ))}
         </div>
@@ -197,12 +196,14 @@ export default function Interactions({ eventId }: { eventId: string }) {
 function EmptyState({
   toggleInteractionModal,
   isNotAttendee,
+  organization,
 }: {
   toggleInteractionModal: () => void;
   isNotAttendee: boolean;
+  organization: TOrganization | null;
 }) {
   return (
-    <div className="w-full flex flex-col gap-y-3 items-center justify-center h-[24rem]">
+    <div className="w-full flex flex-col gap-y-6 items-center justify-center h-[24rem]">
       <Image
         className="w-fit h-fit"
         src="/chatbubble.png"
@@ -211,7 +212,9 @@ function EmptyState({
         height={150}
       />
       <h2 className="text-basePrimary font-semibold text-base sm:text-2xl">
-        {!isNotAttendee
+        {organization?.subscriptionPlan?.toLowerCase() === "free"
+          ? "Features are only available for a paid plan"
+          : !isNotAttendee
           ? "No Interaction Yet"
           : "You have not created any interaction yet."}
       </h2>
@@ -221,15 +224,19 @@ function EmptyState({
         </p>
       )}
 
-      <Button
-        onClick={toggleInteractionModal}
-        className={cn(
-          "bg-basePrimary text-white hidden rounded-lg",
-          isNotAttendee && "flex"
-        )}
-      >
-        <p> Create Interaction 🎊</p>
-      </Button>
+      {organization?.subscriptionPlan.toLowerCase() !== "free" ? (
+        <Button
+          onClick={toggleInteractionModal}
+          className={cn(
+            "bg-basePrimary text-white hidden rounded-lg",
+            isNotAttendee && "flex"
+          )}
+        >
+          <p> Create Interaction 🎊</p>
+        </Button>
+      ) : (
+        <StaticInteractionModal />
+      )}
     </div>
   );
 }
