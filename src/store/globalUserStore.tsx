@@ -5,6 +5,7 @@ import { TUser } from "@/types";
 // Define the user state interface
 interface userState {
   user: TUser | null;
+  loading:boolean;
   setUser: (user: TUser | null) => void;
 }
 
@@ -13,7 +14,8 @@ const useUserStore = create<userState>()(
   persist(
     (set) => ({
       user: null,
-      setUser: (user: TUser | null) => set({ user }),
+      loading: true,
+      setUser: (user: TUser | null) => set({ user, loading: false }),
     }),
     {
       name: "user", // name of the item in the storage (must be unique)
