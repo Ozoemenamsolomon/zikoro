@@ -11,9 +11,6 @@ import Head from "next/head";
 export const metadata: Metadata = {
   title: "Zikoro",
   description: "Event management software for all kinds of events",
-  other: {
-    fonts: `<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap">`,
-  },
 };
 
 export default function RootLayout({
@@ -42,7 +39,6 @@ export default function RootLayout({
         {/* Google Fonts */}
       </Head>
       <body className={`${montserrat.className}`}>
-       
         {children}
         <Toaster {...TOASTER_PROPS} />
         <SubscriptionModal />
