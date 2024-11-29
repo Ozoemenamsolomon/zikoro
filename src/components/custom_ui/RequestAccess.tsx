@@ -82,6 +82,7 @@ export default function RequestAccess({ eventId }: { eventId: string }) {
 
           {isEmailSent ? (
             <div className="w-full  flex flex-col items-center justify-center gap-4">
+                <InlineIcon icon="lsicon:email-send-filled" fontSize={22}/>
               <h3 className="font-semibold text-sm sm:text-lg max-w-lg text-center">
                 Access link has been sent to your email address (Please also
                 check your spam). click on the link sent to get access to this
