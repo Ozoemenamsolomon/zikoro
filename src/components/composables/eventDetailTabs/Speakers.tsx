@@ -15,6 +15,7 @@ import { useGetEventAttendees } from "@/hooks";
 import { TAttendee } from "@/types";
 import Link from "next/link";
 import { cn } from "@/lib";
+import { InlineIcon } from "@iconify/react";
 
 export function Speakers({
   eventId,
@@ -105,12 +106,14 @@ export function SpeakerWidget({
 
   attendee,
   setAttendee,
-  className
+  className,
+  isReception
 }: {
   changeActiveState?: (v: number) => void;
 className?:string;
   attendee: TAttendee;
   setAttendee?: (a: TAttendee) => void;
+  isReception?:boolean;
 }) {
   // attendee?.ticketType
   return (
@@ -121,8 +124,13 @@ className?:string;
           if (setAttendee) setAttendee(attendee);
         }}
         role="button"
-        className={cn("w-full sm:w-[250px] flex flex-col gap-y-2 items-center justify-center p-4", className)}
+        className={cn("w-full sm:w-[250px] relative group flex flex-col gap-y-2 items-center justify-center p-4", className)}
       >
+        <button
+       // onClick={}
+        className="absolute top-2 right-2 group-hover:block hidden">
+            <InlineIcon icon="icon-park-twotone:people-delete" fontSize={22}/>
+        </button>
         {attendee?.profilePicture ? (
           <Image
             src={

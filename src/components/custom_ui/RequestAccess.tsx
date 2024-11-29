@@ -21,7 +21,8 @@ export default function RequestAccess({ eventId }: { eventId: string }) {
   const [isLoading, setIsLoading] = useState(false);
   const { requestEmail } = useRequestAccess();
 
-  async function onSubmit() {
+  async function onSubmit(e: any) {
+    e.preventDefault()
     if (loadingAttendees || eventAttendees?.length > 0) return;
 
     const isEmailPresent = eventAttendees?.find(
@@ -57,7 +58,7 @@ export default function RequestAccess({ eventId }: { eventId: string }) {
             {data?.eventPoster ? (
               <Image
                 src={data?.eventPoster}
-                className="w-36 h-36 rounded-lg object-cover sm:w-80  sm:h-80"
+                className="w-36 h-36 rounded-lg object-cover sm:w-64  sm:h-64"
                 alt={data?.eventTitle}
                 width={300}
                 height={300}
