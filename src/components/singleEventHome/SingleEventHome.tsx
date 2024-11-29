@@ -92,6 +92,8 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
     });
   }, [attendees]);
 
+  //console.log('formatted',formattedAttendees)
+
   // const nonArchiveAttendees = useMemo(() => {
   //   return attendees?.filter((attendee) => !attendee?.archive);
   // }, [attendees]);

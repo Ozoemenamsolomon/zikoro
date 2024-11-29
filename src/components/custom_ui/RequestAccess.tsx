@@ -23,7 +23,7 @@ export default function RequestAccess({ eventId }: { eventId: string }) {
 
   async function onSubmit(e: any) {
     e.preventDefault()
-    if (loadingAttendees || eventAttendees?.length > 0) return;
+    if (loadingAttendees || eventAttendees?.length === 0) return;
 
     const isEmailPresent = eventAttendees?.find(
       (attendee) => attendee.userEmail === email
@@ -122,6 +122,14 @@ export default function RequestAccess({ eventId }: { eventId: string }) {
                   onSubmit={onSubmit}
                   className="w-full flex flex-col  items-center justify-center gap-4"
                 >
+                    <div className="w-full flex flex-col items-center justify-center gap-y-2">
+                    <h2 className="font-semibold text-base sm:text-xl text-center">
+
+We couldn’t identify you as a registered attendee for this event.
+
+</h2>
+<p className="text-center">  Please enter your email address below. If you’re registered, we’ll send you a link to join the event.</p>
+                    </div>
                   <Input
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}

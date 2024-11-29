@@ -55,7 +55,23 @@ export async function GET(req: NextRequest) {
     try {
       const { data, error } = await supabase.auth.getUser();
 
+      console.log(
+        "user data data dwfwfwefwefwefwefwefeg", data
+      )
+      if (error) {
+        return NextResponse.json(
+          {
+            error: error?.message
+          },
+          {
+            status: 400
+          }
+        )
+      }
+
       if (error) throw error;
+
+     
 
       return NextResponse.json(
         {

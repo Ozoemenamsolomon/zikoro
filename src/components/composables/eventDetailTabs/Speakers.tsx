@@ -125,6 +125,8 @@ export function SpeakerWidget({
   const { isIdPresent } = useCheckTeamMember({ eventId: attendee?.eventAlias });
   const { isOrganizer } = useVerifyUserAccess(attendee?.eventAlias);
   // attendee?.ticketType
+
+  
   return (
     <>
       <div
@@ -144,9 +146,9 @@ export function SpeakerWidget({
             onClick={async () => {
               const updatedAttendee = {
                 ...attendee,
-                attendeeType: attendee.attendeeType.filter(
+                attendeeType: Array.isArray(attendee.attendeeType) ?  attendee.attendeeType?.filter(
                   (type) => type.toLowerCase() !== "speaker"
-                ),
+                ): [],
                 speakingAt: null,
               };
               await postData({ payload: updatedAttendee });
