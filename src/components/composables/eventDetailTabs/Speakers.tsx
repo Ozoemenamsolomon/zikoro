@@ -11,10 +11,20 @@ import {
   TwitterIcon,
 } from "@/constants";
 import { useMemo, useState } from "react";
-import { useGetEventAttendees } from "@/hooks";
+import {
+  useCheckTeamMember,
+  useGetEventAttendees,
+  useVerifyUserAccess,
+} from "@/hooks";
 import { TAttendee } from "@/types";
 import Link from "next/link";
 import { cn } from "@/lib";
+import { InlineIcon } from "@iconify/react";
+import { usePostRequest } from "@/hooks/services/request";
+import { DeleteCard } from "@/components/agenda/_components";
+
+
+
 
 export function Speakers({
   eventId,
@@ -22,7 +32,7 @@ export function Speakers({
   // changeMajorActiveState: (n: number) => void;
   eventId: string;
 }) {
-  const { attendees, isLoading } = useGetEventAttendees(eventId);
+  const { attendees, isLoading, getAttendees } = useGetEventAttendees(eventId);
   const [selectedAttendee, setSelectedAttendee] = useState<TAttendee | null>(
     null
   );
@@ -39,7 +49,10 @@ export function Speakers({
 
   const formattedAttendees = useMemo(() => {
     return attendees?.filter(({ attendeeType, speakingAt }) => {
-      return attendeeType?.includes("speaker") || (Array.isArray(speakingAt) && speakingAt?.length > 0);
+      return (
+        attendeeType?.includes("speaker") ||
+        (Array.isArray(speakingAt) && speakingAt?.length > 0)
+      );
     });
   }, [attendees]);
 
@@ -62,33 +75,29 @@ export function Speakers({
       >
         <h3 className="pb-2 w-full invisible text-center">Event Speakers</h3>
 
-       
-          <div className=" w-full grid grid-cols-1 sm:grid-cols-2 sm:flex  gap-4 items-center flex-wrap justify-center p-4 sm:p-6">
-            {isLoading && (
-              <div className="col-span-full h-[200px] flex items-center justify-center">
-                <LoaderAlt size={30} className="animate-spin" />
-              </div>
-            )}
-            {!isLoading && formattedAttendees?.length === 0 && (
-              <div className="col-span-full h-[200px] flex items-center justify-center">
-                <p className="text-mobile sm:text-sm font-semibold">
-                  No Speaker
-                </p>
-              </div>
-            )}
-            {!isLoading &&
-              Array.isArray(formattedAttendees) &&
-              formattedAttendees.map((attendee) => (
-                <SpeakerWidget
-                  key={attendee?.id}
-                  changeActiveState={changeActiveState}
-                
-                  attendee={attendee}
-                  setAttendee={setAttendee}
-                />
-              ))}
-          </div>
-     
+        <div className=" w-full grid grid-cols-1 sm:grid-cols-2 sm:flex  gap-4 items-center flex-wrap justify-center p-4 sm:p-6">
+          {isLoading && (
+            <div className="col-span-full h-[200px] flex items-center justify-center">
+              <LoaderAlt size={30} className="animate-spin" />
+            </div>
+          )}
+          {!isLoading && formattedAttendees?.length === 0 && (
+            <div className="col-span-full h-[200px] flex items-center justify-center">
+              <p className="text-mobile sm:text-sm font-semibold">No Speaker</p>
+            </div>
+          )}
+          {!isLoading &&
+            Array.isArray(formattedAttendees) &&
+            formattedAttendees.map((attendee) => (
+              <SpeakerWidget
+                key={attendee?.id}
+                changeActiveState={changeActiveState}
+                attendee={attendee}
+                setAttendee={setAttendee}
+                refetch={getAttendees}
+              />
+            ))}
+        </div>
       </div>
       {active === 2 && selectedAttendee && (
         <SpeakerInfo
@@ -105,24 +114,62 @@ export function SpeakerWidget({
 
   attendee,
   setAttendee,
-  className
+  className,
+  isReception,
+  refetch,
 }: {
   changeActiveState?: (v: number) => void;
-className?:string;
+  className?: string;
   attendee: TAttendee;
   setAttendee?: (a: TAttendee) => void;
+  isReception?: boolean;
+  refetch?: () => Promise<any>;
 }) {
+  const { postData, isLoading } = usePostRequest(`/attendees/speaker/delete`);
+  const { isIdPresent } = useCheckTeamMember({ eventId: attendee?.eventAlias });
+  const { isOrganizer } = useVerifyUserAccess(attendee?.eventAlias);
+  const [isDeleting, setDeleting] = useState(false)
   // attendee?.ticketType
+
+ async function remove() {
+  const updatedAttendee = {
+    ...attendee,
+    attendeeType: Array.isArray(attendee.attendeeType) ?  attendee.attendeeType?.filter(
+      (type) => type.toLowerCase() !== "speaker"
+    ): [],
+    speakingAt: null,
+  };
+  await postData({ payload: updatedAttendee });
+  refetch?.();
+  }
+
+  function toggleDelete() {
+    setDeleting((p) => !p)
+  }
+  
   return (
     <>
+    {isDeleting && <DeleteCard loading={isLoading} close={toggleDelete} deletes={remove}/>}
       <div
         onClick={() => {
           changeActiveState?.(2);
           if (setAttendee) setAttendee(attendee);
         }}
         role="button"
-        className={cn("w-full sm:w-[250px] flex flex-col gap-y-2 items-center justify-center p-4", className)}
+        className={cn(
+          "w-full sm:w-[250px] relative group flex flex-col gap-y-2 items-center justify-center p-4",
+          className
+        )}
       >
+        {isReception && (isIdPresent || isOrganizer) && (
+          <button
+            disabled={isLoading}
+            onClick={toggleDelete}
+            className="absolute top-2 right-2 group-hover:block hidden"
+          >
+            <InlineIcon icon="icon-park-twotone:people-delete" fontSize={22} />
+          </button>
+        )}
         {attendee?.profilePicture ? (
           <Image
             src={
@@ -144,8 +191,12 @@ className?:string;
 
         <div className="flex w-full items-center flex-col justify-center">
           <h2 className="font-medium capitalize text-center text-ellipsis whitespace-nowrap overflow-hidden text-lg">{`${attendee?.firstName} ${attendee?.lastName}`}</h2>
-          <p className="text-gray-500 text-ellipsis whitespace-nowrap overflow-hidden">{attendee?.jobTitle ?? ""}</p>
-          <p className="text-gray-500 text-ellipsis whitespace-nowrap overflow-hidden">{attendee?.organization ?? ""}</p>
+          <p className="text-gray-500 text-ellipsis whitespace-nowrap overflow-hidden">
+            {attendee?.jobTitle ?? ""}
+          </p>
+          <p className="text-gray-500 text-ellipsis whitespace-nowrap overflow-hidden">
+            {attendee?.organization ?? ""}
+          </p>
         </div>
 
         {/* {isViewProfile && (

@@ -99,7 +99,7 @@ export function ReceptionAgenda({
                   isIdPresent={isIdPresent}
                   isOrganizer={isOrganizer}
                   isReception={true}
-                  isEventDetail={true}
+                  isEventDetail={false}
                   refetchEvent={refetchEvent}
                   attendeeId={attendeeId}
                   myAgendas={myAgendas}

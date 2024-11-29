@@ -1641,3 +1641,34 @@ export const useGetAdminEventTransactions = ({
     hasReachedLastPage,
   };
 };
+
+export function useRequestAccess() {
+  const [isLoading, setLoading] = useState<boolean>(false);
+
+  const requestEmail = async ({
+    email,
+    paymentLink,
+    eventTitle,
+    attendeeName
+  }: {
+    email: string;
+    paymentLink: string;
+    eventTitle:string;
+    attendeeName:string;
+  }) => {
+    setLoading(true);
+
+    try {
+      const { data, status } = await postRequest<any>({
+        endpoint: `/request/access`,
+        payload: { email, paymentLink, eventTitle },
+      });
+    } catch (error: any) {
+      toast(error?.response?.data?.error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { requestEmail, isLoading };
+}

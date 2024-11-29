@@ -5,7 +5,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import * as z from "zod";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { getRequest, postRequest } from "@/utils/api";
 import { TAuthUser, TUser } from "@/types";
@@ -408,38 +408,53 @@ export function useVerifyCode() {
   };
 }
 
-// user that register for an event
 export function useAttendee({
   email,
   isPasswordless,
 }: {
-  email: string;
-  isPasswordless: string;
+  email?: string; // Optional
+  isPasswordless?: string; // Optional
 }) {
-  const [loading, setLoading] = useState(false);
-  const { user, setUser } = useUserStore();
+  const [loading, setLoading] = useState(true);
+  const { user, setUser, loading: isStoreloading } = useUserStore();
+  const router = useRouter();
+  const { eventId } = useParams();
   const [userData, setUserData] = useState<TUser | null>(null);
+
   const getUser = async () => {
     setLoading(true);
     try {
       if (email && isPasswordless) {
-        const { data, status } = await getRequest<TUser>({
+        // Fetch user only if email and isPasswordless are provided
+        const { data } = await getRequest<TUser>({
           endpoint: `/users/attendee/${email}`,
         });
 
-        setUser(data.data);
-        setUserData(data.data);
-      }
-
-      setLoading(false);
+        if (data?.data) {
+          setUser(data.data); 
+          setUserData(data.data);
+        } else if (!user) {
+    
+          router.push(`/request/access/${eventId}`);
+        }
+      } 
     } catch (error) {
-      console.log(error, "error");
+      console.error("Error fetching attendee data:", error);
+    } finally {
+      setLoading(false); 
     }
   };
 
   useEffect(() => {
-    getUser();
-  }, [email, isPasswordless]);
+   if (!isStoreloading) {
+    if (!user) {
+      getUser(); 
+    } else {
+      setUserData(user);
+      setLoading(false);
+    }
+   }
+  }, [email, isPasswordless, user, isStoreloading]);
 
   return {
     userData,
@@ -447,3 +462,4 @@ export function useAttendee({
     loading,
   };
 }
+
