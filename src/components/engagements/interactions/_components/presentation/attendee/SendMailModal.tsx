@@ -151,7 +151,7 @@ export function SendMailModal<T>({
           </h1>
           {quiz?.interactionType !== "poll" && (
             <div className="space-y-2 flex flex-col items-center justify-center">
-              <p className="font-medium text-lg sm:text-2xl">{attendeePoint}</p>
+              <p className="font-medium text-lg sm:text-2xl">{attendeePoint?.toFixed(0)}</p>
               <p className="flex items-center gap-x-2">
                 <InlineIcon
                   icon="solar:star-circle-bold-duotone"

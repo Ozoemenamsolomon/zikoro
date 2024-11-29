@@ -32,6 +32,7 @@ import { Copy } from "styled-icons/boxicons-regular";
 import { PlusCircleOutline } from "styled-icons/evaicons-outline";
 import useEventStore from "@/store/globalEventStore";
 import { cn } from "@/lib";
+import { ReactSelect } from "@/components";
 
 type TInviteDetail = {
   name: string;
@@ -137,12 +138,12 @@ ${event?.eventTitle} Organizing Team
           {Object.entries(invitees).map(
             ([key, { name, email, role }], index) => (
               <div className="grid md:grid-cols-12 gap-4 w-full">
-                <div className="md:col-span-4 w-full rounded-md bg-background text-sm relative">
+                <div className="md:col-span-4 w-full bg-gradient-to-tr rounded-md from-custom-bg-gradient-start to-custom-bg-gradient-end placeholder-gray-500 border border-basePrimary">
                   <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
                     Name
                   </span>
                   <Input
-                    className="placeholder:text-xs md:placeholder:text-sm placeholder:text-gray-200 text-gray-700"
+                    className="placeholder:text-sm placeholder:text-gray-600 text-gray-700"
                     onInput={(e) =>
                       updateInvitee(key, { name: e.currentTarget.value })
                     }
@@ -151,12 +152,12 @@ ${event?.eventTitle} Organizing Team
                     value={name}
                   />
                 </div>
-                <div className="md:col-span-4 w-full rounded-md bg-background text-sm relative">
+                <div className="md:col-span-4 w-full bg-gradient-to-tr rounded-md from-custom-bg-gradient-start to-custom-bg-gradient-end placeholder-gray-500 border border-basePrimary">
                   <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
                     Email
                   </span>
                   <Input
-                    className="placeholder:text-xs md:placeholder:text-sm placeholder:text-gray-200 text-gray-700"
+                    className="placeholder:text-sm placeholder:text-gray-600 text-gray-700"
                     onInput={(e) =>
                       updateInvitee(key, { email: e.currentTarget.value })
                     }
@@ -167,7 +168,7 @@ ${event?.eventTitle} Organizing Team
                 </div>
                 <div
                   className={cn(
-                    "w-full rounded-md bg-background text-sm relative",
+                    "w-full rounded-md bg-background text-sm relative bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end placeholder-gray-500 border border-basePrimary",
                     index === 0 ? "md:col-span-4" : "md:col-span-3"
                   )}
                 >
@@ -182,9 +183,9 @@ ${event?.eventTitle} Organizing Team
                     required
                     value={role}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="bg-transparent">
                       <SelectValue
-                        className="text-tiny md:text-sm text-gray-200"
+                        className="text-tiny md:text-sm text-gray-200 bg-transparent"
                         placeholder="select Attendee type"
                       />
                     </SelectTrigger>

@@ -534,7 +534,7 @@ export default function SecondSection({
         <div className="space-y-2">
           {attendeeAlias &&
             (attendeeIsUser ||
-              (String(event?.createdBy) === String(user.id) && (
+              (String(event?.createdBy) !== String(user.id) && (
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-medium text-gray-700">
                     Attendee Code: {attendeeAlias}
@@ -740,6 +740,7 @@ export default function SecondSection({
                 <span className="text-xs font-medium text-gray-700">
                   {attendeeAlias}
                 </span>
+
                 <span className="bg-white h-full flex items-center px-2">
                   {hasCopiedText ? (
                     <svg

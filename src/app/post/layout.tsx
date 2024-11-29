@@ -3,13 +3,10 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Zikoro Blog Post",
+  description: "Some stories associated with us ",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <section className="">
       <Navbar />

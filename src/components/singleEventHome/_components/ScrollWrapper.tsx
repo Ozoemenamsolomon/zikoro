@@ -29,7 +29,7 @@ export function ScrollWrapper({
       </div>
       <ScrollableCards
         parentClassName={parentClassName || "bg-white  h-full py-10 rounded-lg px-6"}
-        className="items-center justify-center"
+        className="items-center"
       >
         {children}
       </ScrollableCards>

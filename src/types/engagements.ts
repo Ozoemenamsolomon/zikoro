@@ -37,7 +37,7 @@ export interface TEngagementFormQuestion {
   formSettings: {
     isConnectedToEngagement: boolean;
     showForm: string;
-    connectedEngagementId?: string;
+    redirectUrl?: string;
     isCollectUserEmail: boolean;
     isCoverScreen: boolean;
     displayType: string;

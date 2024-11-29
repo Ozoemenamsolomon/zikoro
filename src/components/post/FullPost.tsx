@@ -113,7 +113,7 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
 
   //share functionality
   const [articleUrl] = useState<string>(
-    `https://www.zikoro.com/live-events/${postId}`
+    `https://www.zikoro.com/post/${postId}`
   );
   const handleShareOnFacebook = () => {
     shareOnFacebook(articleUrl);

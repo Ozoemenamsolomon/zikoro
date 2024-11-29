@@ -104,7 +104,7 @@ export function EventAttendeeWidget({
 
   const names = useMemo(() => {
     const attendeeNames = slicedArray?.map(
-      ({ firstName, lastName }) => `${firstName} ${lastName?.charAt(0)}`
+      ({ firstName, lastName }) => ` ${firstName} ${lastName?.charAt(0)}`
     );
     const isGreaterThanZero =
       attendeeNames.slice(3, attendeeNames?.length)?.length > 0;

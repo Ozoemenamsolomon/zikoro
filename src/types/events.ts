@@ -226,6 +226,7 @@ export interface TEventTransactionDetail {
   userEmail: string;
   userId: string;
   eventAlias: string;
+  emailSent: boolean;
 }
 
 export interface TEventDiscount {

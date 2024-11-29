@@ -17,6 +17,8 @@ import { Button } from "@/components/custom_ui/Button";
 import { useMemo } from "react";
 import { json2csv } from "json-2-csv";
 import { saveAs } from "file-saver";
+import { useDeleteRequest } from "@/hooks/services/request";
+import * as XLSX from "xlsx";
 interface FormResponseProps {
   data:
     | {
@@ -25,12 +27,15 @@ interface FormResponseProps {
     | undefined;
   flattenedResponse: TFormattedEngagementFormAnswer[];
   questions: TEngagementFormQuestion;
+  formAlias: string;
 }
 export default function FormResponses({
   data,
   flattenedResponse,
   questions,
+  formAlias
 }: FormResponseProps) {
+  const {deleteData, isLoading} = useDeleteRequest(`/engagements/formAnswer/${formAlias}/delete`)
   const inputMultiChoiceCheckBox = useMemo(() => {
     const checkData: { key: TFormattedEngagementFormAnswer[] }[] = [];
     if (data) {
@@ -137,18 +142,30 @@ export default function FormResponses({
         return Object.values(result);
       }
       const transformedData = transformData(flattenedResponse);
-     
-      const csv = json2csv(transformedData);
-      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-
-      saveAs(blob, "response.csv");
+      
+  
+      const worksheet = XLSX.utils.json_to_sheet(transformedData);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Responses");
+      XLSX.writeFile(workbook, "response.xlsx");
     } catch (error) {
       console.log(error);
     }
   }
+
+  async function deleteResponses() {
+    await deleteData()
+    window.location.reload()
+  }
   return (
     <div className="w-full px-4 mx-auto max-w-[1300px] text-mobile sm:text-sm sm:px-6 mt-4 sm:mt-6">
-      <div className="w-full mb-4 flex items-end justify-end">
+      <div className="w-full mb-4 flex items-end gap-x-4 justify-end">
+        <Button
+        onClick={deleteResponses}
+        className="items-center gap-x-1">
+            <InlineIcon icon="icon-park-twotone:delete-themes" fontSize={22}/>
+          <p>Clear Responses</p>
+        </Button>
         <Button onClick={downloadCsv} className="w-fit  gap-x-1 items-center">
           <p>Export</p>
           <InlineIcon icon="lets-icons:export-duotone" fontSize={22} />
