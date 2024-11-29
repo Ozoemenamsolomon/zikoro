@@ -129,9 +129,7 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
     return updateLinks.filter((link) => {
       if (!user || !user?.userEmail || !isIdPresent) {
         return !set.has(String(link?.name));
-      } else if (organization?.subscriptionPlan === "Free") {
-        return link?.name !== "Engagements";
-      } else {
+      }  else {
         return updateLinks;
       }
     });
