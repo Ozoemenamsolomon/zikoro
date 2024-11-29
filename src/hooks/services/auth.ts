@@ -416,7 +416,7 @@ export function useAttendee({
   isPasswordless?: string; // Optional
 }) {
   const [loading, setLoading] = useState(true);
-  const { user, setUser } = useUserStore();
+  const { user, setUser, loading: isStoreloading } = useUserStore();
   const router = useRouter();
   const { eventId } = useParams();
   const [userData, setUserData] = useState<TUser | null>(null);
@@ -437,10 +437,7 @@ export function useAttendee({
     
           router.push(`/request/access/${eventId}`);
         }
-      } else if (!user) {
-        
-        router.push(`/request/access/${eventId}`);
-      }
+      } 
     } catch (error) {
       console.error("Error fetching attendee data:", error);
     } finally {
@@ -449,13 +446,15 @@ export function useAttendee({
   };
 
   useEffect(() => {
+   if (!isStoreloading) {
     if (!user) {
       getUser(); 
     } else {
       setUserData(user);
       setLoading(false);
     }
-  }, [email, isPasswordless, user]);
+   }
+  }, [email, isPasswordless, user, isStoreloading]);
 
   return {
     userData,

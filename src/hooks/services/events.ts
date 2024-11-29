@@ -1648,11 +1648,13 @@ export function useRequestAccess() {
   const requestEmail = async ({
     email,
     paymentLink,
-    eventTitle
+    eventTitle,
+    attendeeName
   }: {
     email: string;
     paymentLink: string;
     eventTitle:string;
+    attendeeName:string;
   }) => {
     setLoading(true);
 

@@ -26,7 +26,7 @@ export default function RequestAccess({ eventId }: { eventId: string }) {
     if (loadingAttendees || eventAttendees?.length === 0) return;
 
     const isEmailPresent = eventAttendees?.find(
-      (attendee) => attendee.userEmail === email
+      (attendee) => attendee.email === email
     );
 
     if (isEmailPresent) {
@@ -40,6 +40,7 @@ export default function RequestAccess({ eventId }: { eventId: string }) {
            isEmailPresent?.attendeeAlias
          }`,
           eventTitle: data?.eventTitle!,
+          attendeeName: isEmailPresent?.firstName!
         });
       } catch (error) {
       } finally {
@@ -86,7 +87,7 @@ export default function RequestAccess({ eventId }: { eventId: string }) {
 
           {isEmailSent ? (
             <div className="w-full  flex flex-col items-center justify-center gap-8 ">
-              <InlineIcon icon="lsicon:email-send-filled" fontSize={22} />
+              <InlineIcon icon="lsicon:email-send-filled" fontSize={30} />
               <h3 className="font-semibold text-sm sm:text-lg max-w-lg text-center">
                 Access link has been sent to your email address (Please also
                 check your spam). click on the link sent to get access to this

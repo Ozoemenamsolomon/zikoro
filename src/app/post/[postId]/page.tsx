@@ -5,5 +5,5 @@ export default function Page({
 }: {
   params: { postId: string };
 }) {
-    return <FullPost postId= {postId} />
+  return <FullPost postId={postId} />;
 }
