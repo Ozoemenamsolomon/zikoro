@@ -41,7 +41,7 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
     isLoading: loadingRewards,
     getData: refetch,
   } = useGetData<Reward[]>(`/rewards/${eventId}`);
-  const { attendees, isLoading: loadingAttendees } =
+  const { attendees, isLoading: loadingAttendees, getAttendees } =
     useGetEventAttendees(eventId);
   const [active, setActive] = useState<"sponsors" | "exhibitors">("sponsors");
   const [isOpen, setIsOpen] = useState(false);
@@ -92,6 +92,8 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
     });
   }, [attendees]);
 
+  //console.log('formatted',formattedAttendees)
+
   // const nonArchiveAttendees = useMemo(() => {
   //   return attendees?.filter((attendee) => !attendee?.archive);
   // }, [attendees]);
@@ -123,6 +125,9 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
   // const Comp =
   //   Array.isArray(partnersData) && partnersData?.length > 1 ? Slider : "div";
 
+
+  console.log(approvedPartners)
+  console.log("restructure", restructureData, partnersLoading)
   if (loading || !data)
     return (
       <div className="w-full h-[300px] flex items-center justify-center">
@@ -132,7 +137,7 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
   return (
     <>
       <div className="w-full px-4 mx-auto  max-w-[1300px] text-mobile sm:text-sm sm:px-6 mt-6 sm:mt-10 ">
-        <div className="w-full flex mt-16 sm:mt-0 mb-6 sm:mb-10 items-center gap-x-3">
+        <div className="w-full flex mt-16 sm:mt-0 mb-10 items-center gap-x-3">
           {data?.eventPoster ? (
             <Image
               src={data?.eventPoster}
@@ -161,30 +166,32 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
             </button>
           </div>
         </div>
-      {Array.isArray(approvedPartners) && approvedPartners?.length > 0 &&  <div className="w-full block sm:hidden mb-6">
-          <h2 className="font-semibold text-desktop sm:text-lg mb-3">
-            Partners
-          </h2>
-          <div className="w-full overflow-x-auto no-scrollbar">
-            <div className="min-w-max flex items-center gap-x-2">
-              {partnersData.map(({ companyLogo }) => (
-                <div className="w-[100px] h-[40px] bg-white px-3 py-2 rounded-md relative ">
-                  {companyLogo ? (
-                    <Image
-                      className="w-[100px] h-[40px] object-contain flex items-center inset-0 justify-center m-auto absolute"
-                      src={companyLogo}
-                      alt="logo"
-                      width={300}
-                      height={200}
-                    />
-                  ) : (
-                    <div className="w-[100px] h-[40px] animate-pulse bg-gray-200"></div>
-                  )}
-                </div>
-              ))}
+        {Array.isArray(approvedPartners) && approvedPartners?.length > 0 && (
+          <div className="w-full block sm:hidden mb-10">
+            <h2 className="font-semibold text-desktop sm:text-lg mb-3">
+              Partners
+            </h2>
+            <div className="w-full overflow-x-auto no-scrollbar">
+              <div className="min-w-max flex items-center gap-x-2">
+                {approvedPartners.map(({ companyLogo }) => (
+                  <div className="w-[100px] h-[40px] bg-white px-3 py-2 rounded-md relative ">
+                    {companyLogo ? (
+                      <Image
+                        className="w-[100px] h-[40px] object-contain flex items-center inset-0 justify-center m-auto absolute"
+                        src={companyLogo}
+                        alt="logo"
+                        width={300}
+                        height={200}
+                      />
+                    ) : (
+                      <div className="w-[100px] h-[40px] animate-pulse bg-gray-200"></div>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-        </div>}
+        )}
         <ReceptionAgenda
           event={data}
           eventId={eventId}
@@ -193,90 +200,73 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
           attendeeId={attendeeId}
           refetchEvent={refetchEvent}
         />
-        {!loadingAttendees && Array.isArray(formattedAttendees) && formattedAttendees?.length > 0 && (
-          <ScrollWrapper
-            header="Speakers"
-            onclick={() => {}}
-            hideSeeAll
-            children={
-              <>
-                {formattedAttendees.map((attendee) => (
-                  <SpeakerWidget
-                    key={attendee?.id}
-                    attendee={attendee}
-                    className="border rounded-lg w-[250px] h-[250px] sm:w-[250px]"
-                  />
-                ))}
-              </>
-            }
-          />
-        )}
-
-        <div className="w-full hidden h-full my-10 sm:grid sm:grid-cols-1 md:grid-cols-2 gap-6">
-          {!partnersLoading && restructureData && (restructureData?.sponsors || restructureData?.exhibitors)?.length > 0  &&(
+        {!loadingAttendees &&
+          Array.isArray(formattedAttendees) &&
+          formattedAttendees?.length > 0 && (
             <ScrollWrapper
-              header="Partners"
-              onclick={() =>
-                router.push(`/event/${eventId}/partners?p=${active}`)
-              }
-              parentClassName="px-6 pt-36  h-full rounded-lg pb-10 bg-white"
+              header="Speakers"
+              onclick={() => {}}
+              hideSeeAll
               children={
                 <>
-                  <div className="flex absolute w-fit mx-auto inset-x-0 top-10 items-center bg-[#F9FAFF]  justify-center rounded-xl p-1 border">
-                    {["sponsors", "exhibitors"].map((v: any) => (
-                      <button
-                        onClick={() => setActive(v)}
-                        className={cn(
-                          " rounded-xl capitalize px-3 py-2",
-                          active === v && "bg-white border"
-                        )}
-                      >
-                        {v}
-                      </button>
-                    ))}
-                  </div>
-                  {restructureData &&
-                    Array.isArray(restructureData[active]) &&
-                    restructureData[active].map((sponsor) => (
-                      <PartnerCard
-                        key={sponsor.id}
-                        event={data}
-                        isEventDetail
-                        sponsor={sponsor}
-                      />
-                    ))}
-                </>
-              }
-            />
-          )}
-          {!isLoading && Array.isArray(offers) && offers?.length > 0 &&(
-            <ScrollWrapper
-              header="Offers"
-              onclick={() =>
-                router.push(`/event/${eventId}/market-place/offers`)
-              }
-              children={
-                <>
-                  {offers.map((offer) => (
-                    <OfferCard
-                      key={offer.partnerId}
-                      offer={offer}
+                  {formattedAttendees.map((attendee) => (
+                    <SpeakerWidget
+                      key={attendee?.id}
                       attendee={attendee}
-                      isOrganizer={isOrganizer}
-                      engagementsSettings={engagementsSettings}
-                      leadsInterests={leadsInterests}
-                      leads={leads}
-                      refetch={refetchOffer}
-                      className="w-[300px] h-[310px]"
+                      isReception
+                      refetch={getAttendees}
+                      className="border rounded-lg w-[250px] h-[250px] sm:w-[250px]"
                     />
                   ))}
                 </>
               }
             />
           )}
-        </div>
 
-        {!loadingRewards && Array.isArray(rewards) && rewards?.length > 0 && (
+        <div className="w-full hidden h-full my-10 sm:grid sm:grid-cols-1 md:grid-cols-2 gap-6">
+         <div className="w-full ">
+         {!partnersLoading &&
+            restructureData &&
+            (restructureData?.sponsors || restructureData?.exhibitors)?.length >
+              0 && (
+              <ScrollWrapper
+                header="Partners"
+                onclick={() =>
+                  router.push(`/event/${eventId}/partners?p=${active}`)
+                }
+                parentClassName="px-6 pt-36  h-full rounded-lg pb-10 bg-white"
+                children={
+                  <>
+                    <div className="flex absolute w-fit mx-auto inset-x-0 top-10 items-center bg-[#F9FAFF]  justify-center rounded-xl p-1 border">
+                      {["sponsors", "exhibitors"].map((v: any) => (
+                        <button
+                          onClick={() => setActive(v)}
+                          className={cn(
+                            " rounded-xl capitalize px-3 py-2",
+                            active === v && "bg-white border"
+                          )}
+                        >
+                          {v}
+                        </button>
+                      ))}
+                    </div>
+                    {restructureData &&
+                      Array.isArray(restructureData[active]) &&
+                      restructureData[active].map((sponsor) => (
+                        <PartnerCard
+                          key={sponsor.id}
+                          event={data}
+                          isEventDetail
+                          sponsor={sponsor}
+                        />
+                      ))}
+                  </>
+                }
+              />
+            )}
+         </div>
+         <div className="w-full">
+         {!loadingRewards && Array.isArray(rewards) && rewards?.length > 0 && (
           <ScrollWrapper
             header="Offers"
             onclick={() =>
@@ -302,8 +292,14 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
           />
         )}
 
+         </div>
+      
+        </div>
+
+       
+
         <div className="w-full mt-10">
-          {!loadingReview && Array.isArray(reviews) && reviews?.length > 0 &&(
+          {!loadingReview && Array.isArray(reviews) && reviews?.length > 0 && (
             <ScrollWrapper
               header="Reviews"
               onclick={() => {}}
@@ -342,12 +338,14 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
 function AboutModal({ close, event }: { event: Event; close: () => void }) {
   return (
     <div
-    role="button"
-    onClick={close}
-    className="fixed inset-0 w-full h-full z-[100] ">
+      role="button"
+      onClick={close}
+      className="fixed inset-0 w-full h-full z-[100] "
+    >
       <div
-      onClick={(e) => e.stopPropagation()}
-      className="py-6 px-5 max-w-2xl rounded-lg border bg-white absolute inset-0 overflow-y-auto m-auto max-h-[65%]">
+        onClick={(e) => e.stopPropagation()}
+        className="py-6 px-5 max-w-2xl rounded-lg border bg-white absolute inset-0 overflow-y-auto m-auto max-h-[65%]"
+      >
         <div className="w-full pb-2 mb-6 border-b flex items-center justify-between">
           <h2 className="text-lg sm:text-2xl font-semibold">About Event</h2>
 

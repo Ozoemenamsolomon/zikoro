@@ -241,18 +241,7 @@ function Widget({
             </div>
           </div>
 
-          {isReception && isLive && (
-            <Button
-              onClick={() =>
-                router.push(
-                  `/event/${event?.eventAlias}/agenda/${session?.sessionAlias}`
-                )
-              }
-              className="bg-basePrimary text-white font-medium rounded-lg h-11 "
-            >
-              Join
-            </Button>
-          )}
+        
         </div>
         {isAddedAttendee && (
           <>
@@ -294,7 +283,8 @@ function Widget({
             </div>
           </>
         )}
-        {isReception && session?.sessionUrl && (
+       <div className="w-full mb-3 flex items-center gap-x-3">
+       {isReception && session?.sessionUrl && (
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -307,6 +297,19 @@ function Widget({
             <p className="text-xs">Copy Event Link</p>
           </button>
         )}
+          {isReception && isLive && (
+            <Button
+              onClick={() =>
+                router.push(
+                  `/event/${event?.eventAlias}/agenda/${session?.sessionAlias}`
+                )
+              }
+              className="bg-basePrimary text-white font-medium rounded-lg h-11 "
+            >
+              Join
+            </Button>
+          )}
+       </div>
         {!isFullScreen && (isIdPresent || isOrganizer) && !isReception && (
           <div
             onClick={(e) => {

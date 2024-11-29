@@ -20,6 +20,7 @@ export * from "./actions/ActivateQuiz";
 export * from "./presentation/attendee/QuizLobby";
 export * from "./presentation/ScoreBoard";
 export * from "./modals/InteractionsSelectionModal";
+export * from "./modals/StaticInteractionModal";
 export * from "./custom_ui/InteractionInput";
 export * from "./presentation/attendee/SendMailModal";
 export * from "./presentation/attendee/AvatarModal";

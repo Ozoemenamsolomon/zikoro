@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { PlusCircle } from "styled-icons/bootstrap";
-import { Button } from "..";
+import { Button, ScrollableCards } from "..";
 import { cn } from "@/lib";
 import { useState, useMemo } from "react";
 import { Printer } from "styled-icons/evaicons-solid";
@@ -120,7 +120,38 @@ export default function Agenda({
             </Button>
           </div>
         )}
-        <div className="w-full no-scrollbar mt-8 overflow-x-auto">
+        <div className="w-full mt-8">
+          <ScrollableCards
+          className="pr-[0em] sm:pl-[0em]"
+          innerClass="min-w-max flex items-center rounded-xl  justify-center bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end gap-x-0"
+          >
+          {Array.isArray(dateRange) &&
+              dateRange?.map((val, index) => (
+                <button
+                  key={val?.date}
+                  onClick={() => {
+                    router.push(
+                      `${pathname}?date=${val?.date}&a=${queryParam}`
+                    );
+                    // refetchSession();
+                  }}
+                  className={cn(
+                    "p-1 text-gray-400 flex w-fit h-[75px] gap-2 flex-col items-center justify-center  text-mobile sm:text-sm",
+                    (activeDateQuery || currentEvent?.startDate) ===
+                      val?.date &&
+                      "border-basePrimary border bg-white shadow rounded-xl"
+                  )}
+                >
+                  <p className="font-medium">Day {index + 1}</p>
+                  <p className="flex items-center gap-x-2">
+                    {" "}
+                    <IconifyAgendaCalendarIcon /> {val?.formattedDate}
+                  </p>
+                </button>
+              ))}
+          </ScrollableCards>
+        </div>
+        {/* <div className="w-full no-scrollbar mt-8 overflow-x-auto">
           <div className="min-w-max flex items-center rounded-xl h-fit justify-center bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end gap-x-0">
             {Array.isArray(dateRange) &&
               dateRange?.map((val, index) => (
@@ -147,7 +178,7 @@ export default function Agenda({
                 </button>
               ))}
           </div>
-        </div>
+        </div> */}
         {(isIdPresent || isOrganizer) &&
           Array.isArray(sessionAgendas) &&
           sessionAgendas?.length > 0 && (

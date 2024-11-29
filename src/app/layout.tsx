@@ -42,6 +42,7 @@ export default function RootLayout({
         {/* Google Fonts */}
       </Head>
       <body className={`${montserrat.className}`}>
+       
         {children}
         <Toaster {...TOASTER_PROPS} />
         <SubscriptionModal />

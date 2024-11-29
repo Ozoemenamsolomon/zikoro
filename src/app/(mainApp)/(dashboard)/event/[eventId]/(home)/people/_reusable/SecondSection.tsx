@@ -740,10 +740,7 @@ export default function SecondSection({
                 <span className="text-xs font-medium text-gray-700">
                   {attendeeAlias}
                 </span>
-                <span className="text-xs font-medium text-gray-700">
-                  This code is your unique ID to share your contact with event
-                  exhibitors.
-                </span>
+
                 <span className="bg-white h-full flex items-center px-2">
                   {hasCopiedText ? (
                     <svg
