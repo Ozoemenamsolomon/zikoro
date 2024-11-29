@@ -174,7 +174,7 @@ export function Engagement({
             event={event}
             refetch={refetch}
           >
-            <div className="w-full px-3 py-4 grid  grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 items-center gap-4">
+            <div className="w-full px-3 py-4 grid  grid-cols-1 items-center gap-4">
               {Array.isArray(agenda?.sessionSpeakers) &&
                 agenda?.sessionSpeakers?.length === 0 && (
                   <div className="w-full col-span-full h-[200px] flex items-center justify-center">
@@ -201,7 +201,7 @@ export function Engagement({
             event={event}
             refetch={refetch}
           >
-            <div className="w-full px-3 py-4 grid  grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 items-center gap-4">
+            <div className="w-full px-3 py-4 grid  grid-cols-1 items-center gap-4">
               {Array.isArray(agenda?.sessionModerators) &&
                 agenda?.sessionModerators?.length === 0 && (
                   <div className="w-full col-span-full h-[200px] flex items-center justify-center">
