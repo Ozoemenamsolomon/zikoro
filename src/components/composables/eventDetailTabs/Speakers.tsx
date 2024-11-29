@@ -21,6 +21,10 @@ import Link from "next/link";
 import { cn } from "@/lib";
 import { InlineIcon } from "@iconify/react";
 import { usePostRequest } from "@/hooks/services/request";
+import { DeleteCard } from "@/components/agenda/_components";
+
+
+
 
 export function Speakers({
   eventId,
@@ -124,11 +128,28 @@ export function SpeakerWidget({
   const { postData, isLoading } = usePostRequest(`/attendees/speaker/delete`);
   const { isIdPresent } = useCheckTeamMember({ eventId: attendee?.eventAlias });
   const { isOrganizer } = useVerifyUserAccess(attendee?.eventAlias);
+  const [isDeleting, setDeleting] = useState(false)
   // attendee?.ticketType
 
+ async function remove() {
+  const updatedAttendee = {
+    ...attendee,
+    attendeeType: Array.isArray(attendee.attendeeType) ?  attendee.attendeeType?.filter(
+      (type) => type.toLowerCase() !== "speaker"
+    ): [],
+    speakingAt: null,
+  };
+  await postData({ payload: updatedAttendee });
+  refetch?.();
+  }
+
+  function toggleDelete() {
+    setDeleting((p) => !p)
+  }
   
   return (
     <>
+    {isDeleting && <DeleteCard loading={isLoading} close={toggleDelete} deletes={remove}/>}
       <div
         onClick={() => {
           changeActiveState?.(2);
@@ -143,17 +164,7 @@ export function SpeakerWidget({
         {isReception && (isIdPresent || isOrganizer) && (
           <button
             disabled={isLoading}
-            onClick={async () => {
-              const updatedAttendee = {
-                ...attendee,
-                attendeeType: Array.isArray(attendee.attendeeType) ?  attendee.attendeeType?.filter(
-                  (type) => type.toLowerCase() !== "speaker"
-                ): [],
-                speakingAt: null,
-              };
-              await postData({ payload: updatedAttendee });
-              refetch?.();
-            }}
+            onClick={toggleDelete}
             className="absolute top-2 right-2 group-hover:block hidden"
           >
             <InlineIcon icon="icon-park-twotone:people-delete" fontSize={22} />
