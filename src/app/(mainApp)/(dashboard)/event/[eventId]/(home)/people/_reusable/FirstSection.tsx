@@ -211,7 +211,7 @@ export default function FirstSection({
     favourites,
     getFavourites,
     isLoading: favouriteIsLoading,
-  } = useGetFavourites({ userId: user ? user.id : 0 });
+  } = useGetFavourites({ userId: user ? user.id : 0, eventId: event.id });
 
   const {
     attendeesTags,

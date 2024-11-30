@@ -46,15 +46,20 @@ export async function GET(
   if (req.method === "GET") {
     try {
       const { userId } = params;
+      const searchParams = req.nextUrl.searchParams;
+      const eventId = searchParams.get("eventId");
+      if (!eventId) throw new Error("Event id is required");
+
+      console.log(eventId);
 
       const { data, error, status } = await supabase
         .from("favouriteContact")
         .select("*")
         .eq("userId", userId)
+        .eq("eventId", eventId)
         .maybeSingle();
 
       if (error) throw error;
-
 
       return NextResponse.json(
         { data },

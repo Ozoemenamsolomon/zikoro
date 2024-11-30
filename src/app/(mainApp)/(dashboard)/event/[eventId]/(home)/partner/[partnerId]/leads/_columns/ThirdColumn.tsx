@@ -116,7 +116,7 @@ const ThirdColumn = ({
     eventId: event?.eventAlias,
   });
 
-  const {eventId} =useParams()
+  const { eventId } = useParams();
   const { data: leadInterests, isLoading: interestsIsLoading } = useGetData<
     TLeadsInterest[]
   >(
@@ -289,7 +289,7 @@ const ThirdColumn = ({
           >
             <StyledText
               fill={"#0a0e2e"}
-              x={180}
+              x={containerDivRef.current?.offsetWidth / 2}
               y={140}
               fontWeight={600}
               fontSize={48}
@@ -298,7 +298,7 @@ const ThirdColumn = ({
             </StyledText>
             <StyledText
               fill={"#4b5563"}
-              x={180}
+              x={containerDivRef.current?.offsetWidth / 2}
               y={170}
               fontSize={16}
             >
