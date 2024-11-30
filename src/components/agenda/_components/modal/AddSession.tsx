@@ -397,6 +397,8 @@ export function AddSession({
       sessionData = restData;
     }
 
+    console.log("ffff", sessionData)
+
     const payload: Partial<TAgenda> = session?.id
       ? {
           ...sessionData,
@@ -422,6 +424,12 @@ export function AddSession({
           eventId: String(event?.id),
           engagementType,
         };
+
+
+        // console.log({chosenModerators, chosenSpeakers, chosenSponsors})
+       console.log({payload})
+
+        // return   setLoading(false);
 
     // return
     const asyncFn = session?.id ? updateAgenda : createAgenda;
