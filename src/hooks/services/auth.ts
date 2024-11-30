@@ -437,10 +437,7 @@ export function useAttendee({
     
           router.push(`/request/access/${eventId}`);
         }
-      } else if (!user) {
-        
-        router.push(`/request/access/${eventId}`);
-      }
+      } 
     } catch (error) {
       console.error("Error fetching attendee data:", error);
     } finally {
