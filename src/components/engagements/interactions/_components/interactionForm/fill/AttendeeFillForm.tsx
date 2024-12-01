@@ -87,7 +87,7 @@ function AttendeeFillFormComp({
     resolver: zodResolver(formAnswerSchema),
     defaultValues: {
       eventAlias: eventId,
-      attendeeEmail: attendee?.email,
+    
 
       formResponseAlias: generateAlias(),
       formAlias: formId,
@@ -134,6 +134,7 @@ function AttendeeFillFormComp({
       ...restData,
       attendeeAlias: attendeeId || attendee?.attendeeAlias || generateAlias(),
       attendeeId: attendee?.id ? attendee?.id : null,
+      attendeeEmail: attendee?.email || "",
       responses,
     };
     if (
