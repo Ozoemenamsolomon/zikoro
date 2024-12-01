@@ -27,7 +27,7 @@ const page = ({
   const router = useRouter();
 
   return (
-    <section>
+    <section className="px-4 md:px-12">
       <div className="border-b-[1px] border-[#F3F3F3] py-4 px-2 flex gap-4">
         <button onClick={() => router.back()} className="flex items-center">
           <ArrowLeftIcon className="w-6 h-6" />
