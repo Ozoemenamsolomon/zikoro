@@ -58,7 +58,7 @@ export default function RequestAccess({ eventId }: { eventId: string }) {
           <LoaderAlt size={30} className="animate-spin" />
         </div>
       ) : (
-        <div className="max-w-3xl w-full m-auto inset-0 absolute flex flex-col items-center justify-center gap-y-8 sm:gap-y-10">
+        <div className="max-w-3xl p-4 sm:p-6 w-full m-auto inset-0 absolute flex flex-col items-center justify-center gap-y-8 sm:gap-y-10">
           <div className="w-full flex  items-center gap-x-3">
             {data?.eventPoster ? (
               <Image
