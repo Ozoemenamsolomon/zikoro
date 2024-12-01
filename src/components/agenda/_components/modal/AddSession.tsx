@@ -429,7 +429,7 @@ export function AddSession({
         // console.log({chosenModerators, chosenSpeakers, chosenSponsors})
        console.log({payload})
 
-        // return   setLoading(false);
+      // return   setLoading(false);
 
     // return
     const asyncFn = session?.id ? updateAgenda : createAgenda;

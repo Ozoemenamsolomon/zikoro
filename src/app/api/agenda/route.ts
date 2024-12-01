@@ -299,9 +299,9 @@ export async function PATCH(req: NextRequest) {
             // add to the existing session if it is not present
             // check if session is already present and update
 
-            const presentSession = moderator?.moderatingAt?.session?.find(
-              ({ sessionAlias }: { sessionAlias: string }) =>
-                sessionAlias === params?.sessionAlias
+            const presentSession = moderator?.moderatingAt?.find(
+              (session: any) =>
+                session?.sessionAlias === params?.sessionAlias
             )?.sessionAlias;
             const filterModerators = moderator?.moderatingAt?.filter(
               (s: any) => {
@@ -367,9 +367,9 @@ export async function PATCH(req: NextRequest) {
             // add to the existing session if it is not present
             // check if session is already present and update
 
-            const presentSession = speaker?.speakingAt?.session?.find(
-              ({ sessionAlias }: { sessionAlias: string }) =>
-                sessionAlias === params?.sessionAlias
+            const presentSession = speaker?.speakingAt?.find(
+              (session: any) =>
+                session?.sessionAlias === params?.sessionAlias
             )?.sessionAlias;
             const filterSpeakers = speaker?.speakingAt?.filter((s: any) => {
               return s?.session?.sessionAlias === presentSession
@@ -431,9 +431,9 @@ export async function PATCH(req: NextRequest) {
             // add to the existing session if it is not present
             // check if session is already present and update
 
-            const presentSession = sponsor?.sponsoredSession?.session?.find(
-              ({ sessionAlias }: { sessionAlias: string }) =>
-                sessionAlias === params?.sessionAlias
+            const presentSession = sponsor?.sponsoredSession?.find(
+              (session: any) =>
+                session?.sessionAlias === params?.sessionAlias
             )?.sessionAlias;
             const filtersponsors = sponsor?.sponsoredSession?.filter(
               (s: any) => {

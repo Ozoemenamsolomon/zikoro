@@ -240,7 +240,7 @@ export function Partners({ eventId }: { eventId: string }) {
     } else {
       return [];
     }
-  }, [data]);
+  }, [data, isOrganizer, isIdPresent]);
 
   const { filteredData, filters, selectedFilters, applyFilter, setOptions } =
     useFilter<TExPartner>({
@@ -248,10 +248,15 @@ export function Partners({ eventId }: { eventId: string }) {
       dataFilters: partnersFilter,
     });
 
+    console.log({filteredData})
+
   const { searchTerm, searchedData, setSearchTerm } = useSearch<TExPartner>({
     data: filteredData || [],
     accessorKey: ["companyName"],
   });
+
+  console.log({searchedData})
+  console.log({formatPartners})
 
   useEffect(() => {
     if (loading) return;
