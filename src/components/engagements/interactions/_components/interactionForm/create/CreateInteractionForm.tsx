@@ -65,6 +65,7 @@ import {TouchEvent, MouseEvent} from "react"
 // } from "@dnd-kit/sortable";
 import { PreviewModal } from "@/components/contents/_components";
 import { FormDescriptionInput } from "./_components/FormDescriptionInput";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 
 const options = [
   { name: "Mutiple Choice", image: "/fmultiplechoice.png" },
@@ -258,7 +259,7 @@ function CreateInteractionFormComp({
   const [flattenedResponse, setFlattenedResponse] = useState<TFormattedEngagementFormAnswer[]>([])
   const { postData } =
     usePostRequest<Partial<TEngagementFormQuestion>>("/engagements/form");
-  const { data } = useGetData<TEngagementFormQuestion>(
+  const { data, isLoading } = useGetData<TEngagementFormQuestion>(
     `/engagements/form/${formId}`
   );
   const { data: formResponses } = useGetData<TEngagementFormAnswer[]>(
@@ -472,7 +473,8 @@ const defaultDescriptionValue = form.watch("description")
   // }
   return (
     <InteractionLayout eventId={eventId}>
-      <div
+     <>
+  {!isLoading && data ?   <div
         className={cn(
           "w-full px-4 mx-auto  max-w-[1300px] text-mobile sm:text-sm sm:px-6 mt-6 sm:mt-10"
         )}
@@ -666,6 +668,12 @@ const defaultDescriptionValue = form.watch("description")
           />
         )}
       </div>
+    :
+    <div className="w-full h-[300px] flex items-center justify-center">
+        <LoaderAlt size={30} className="animate-spin"/>
+
+    </div>  
+    }
       {active === 1 && <FormResponses formAlias={formId} data={formattedResponses}  flattenedResponse={flattenedResponse} questions={data}/>}
       {isOpenPreview && (
         <PreviewModal
@@ -675,6 +683,7 @@ const defaultDescriptionValue = form.watch("description")
           title={data?.title}
         />
       )}
+     </>
     </InteractionLayout>
   );
 }

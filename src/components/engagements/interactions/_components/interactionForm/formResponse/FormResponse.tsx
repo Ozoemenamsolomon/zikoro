@@ -172,7 +172,7 @@ export default function FormResponses({
       )}
       <div className="w-full px-4 mx-auto max-w-[1300px] text-mobile sm:text-sm sm:px-6 mt-4 sm:mt-6">
         <div className="w-full mb-4 flex items-end gap-x-4 justify-end">
-          <Button onClick={deleteResponses} className="items-center gap-x-1">
+          <Button onClick={toggleDelete} className="items-center gap-x-1">
             <InlineIcon icon="icon-park-twotone:delete-themes" fontSize={22} />
             <p>Clear Responses</p>
           </Button>
