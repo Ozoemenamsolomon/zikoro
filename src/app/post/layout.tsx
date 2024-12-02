@@ -3,7 +3,7 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Zikoro Blog Post",
-  description: "Some stories associated with us ",
+  description: "Zikoro Blog Post",
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {
