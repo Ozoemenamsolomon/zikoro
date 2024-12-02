@@ -58,7 +58,7 @@ export default function RequestAccess({ eventId }: { eventId: string }) {
           <LoaderAlt size={30} className="animate-spin" />
         </div>
       ) : (
-        <div className="max-w-3xl w-full m-auto inset-0 absolute flex flex-col items-center justify-center gap-y-8 sm:gap-y-10">
+        <div className="max-w-3xl p-4 sm:p-6 w-full m-auto inset-0 absolute flex flex-col items-center justify-center gap-y-8 sm:gap-y-10">
           <div className="w-full flex  items-center gap-x-3">
             {data?.eventPoster ? (
               <Image
@@ -87,7 +87,7 @@ export default function RequestAccess({ eventId }: { eventId: string }) {
 
           {isEmailSent ? (
             <div className="w-full  flex flex-col items-center justify-center gap-8 ">
-              <InlineIcon icon="lsicon:email-send-filled" fontSize={22} />
+              <InlineIcon icon="lsicon:email-send-filled" fontSize={30} />
               <h3 className="font-semibold text-sm sm:text-lg max-w-lg text-center">
                 Access link has been sent to your email address (Please also
                 check your spam). click on the link sent to get access to this

@@ -100,9 +100,21 @@ function AttendeeNotesSection(props) {
         {!props.noteIsLoading ? (
           <>
             {props.note ? (
-              <p className="text-sm font-normal text-[#15161B] leading-normal border-[1px] border-[#EBEBEB] rounded-lg py-4 px-2">
-                {props.note.notes}
-              </p>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <p className="text-sm font-normal text-[#15161B] leading-normal border-[1px] border-[#EBEBEB] rounded-lg py-4 px-2 cursor-pointer">
+                    {props.note.notes.slice(0, 180) + "..."}
+                  </p>
+                </DialogTrigger>
+                <DialogContent className="px-3 h-36 oveflow-y-auto no-scrollbar">
+                  <DialogHeader>
+                    <DialogTitle>
+                      <span className="capitalize">Note</span>
+                    </DialogTitle>
+                  </DialogHeader>
+                  {props.note.notes}
+                </DialogContent>
+              </Dialog>
             ) : (
               <p className="px-2 text-sm font-medium text-gray-500">
                 No note for this attendee
@@ -192,7 +204,7 @@ export default function SecondSection({
     isLoading: noteIsLoading,
     error,
     getnote,
-  } = useGetnote({ attendeeId: id });
+  } = useGetnote({ attendeeId: id, userId: user?.id });
 
   const {
     attendeeTags,

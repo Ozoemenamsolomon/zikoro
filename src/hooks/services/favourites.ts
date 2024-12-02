@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { toast } from "@/components/ui/use-toast";
 import { TFavouriteContact } from "@/types/favourites";
@@ -58,8 +58,10 @@ type UseGetFavouritesResult = {
 
 export const useGetFavourites = ({
   userId,
+  eventId,
 }: {
   userId: number;
+  eventId: number;
 }): UseGetFavouritesResult => {
   const [favourites, setFavourites] = useState<TFavouriteContact | null>(null);
   const [isLoading, setLoading] = useState<boolean>(false);
@@ -70,7 +72,7 @@ export const useGetFavourites = ({
 
     try {
       const { data, status } = await getRequest<TFavouriteContact>({
-        endpoint: `/favourites/${userId}`,
+        endpoint: `/favourites/${userId}?eventId=${eventId}`,
       });
 
       if (status !== 200) {

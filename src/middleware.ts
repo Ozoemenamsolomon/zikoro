@@ -13,6 +13,8 @@ const includedPaths = [
   "/appointments",
   "/create",
   "/admin",
+  "/event/:eventId/reception"
+
 ];
 
 export async function middleware(req: NextRequest) {
@@ -24,6 +26,32 @@ export async function middleware(req: NextRequest) {
   } = await supabase.auth.getSession();
 
   const path = req.nextUrl.pathname;
+
+  console.log('middleware path',path)
+  
+  // pathname include reception
+  // searchparam not include email and isPasswordless
+  // searchParam include eventId
+  // no session
+
+  if (path.includes("reception")) {
+    console.log("from middleware")
+    const searchParams = req.nextUrl.searchParams
+    const email = searchParams.get("email")
+    const isPasswordless = searchParams.get("isPasswordless")
+   if (!email || !isPasswordless) {
+   
+   if (!session) {
+    
+      const pathLength = path.split("/").length
+      const eventId = path.split("/")[pathLength -2]
+      const redirectUrl = new URL(`/request/access/${eventId}`, req.url);
+
+      return NextResponse.redirect(redirectUrl);
+    }
+   }
+  }
+
 
   // Check if the request path starts with /appointments
   if (path.startsWith("/appointments")) {
@@ -71,5 +99,6 @@ export const config = {
     "/referrals/:path*",
     "/appointments/:path*",
     "/admin/:path*",
+    "/event/:path*"
   ],
 };

@@ -8,6 +8,8 @@ export async function POST(req: NextRequest) {
     try {
       const params = await req.json();
 
+      console.log(params);
+
       const { error } = await supabase
         .from("notes")
         .upsert(params, { onConflict: "id" });
@@ -42,10 +44,15 @@ export async function GET(
   if (req.method === "GET") {
     try {
       const { attendeeId } = params;
+      //search params
+      const { searchParams } = new URL(req.url);
+      const userId = searchParams.get("userId");
+
       const { data, error, status } = await supabase
         .from("notes")
         .select("*")
         .eq("attendeeId", attendeeId)
+        .eq("userId", userId)
         .maybeSingle();
 
       if (error) throw error;

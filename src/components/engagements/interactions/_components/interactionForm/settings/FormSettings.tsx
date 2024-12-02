@@ -33,9 +33,9 @@ function FormSettingsComp({ eventId }: { eventId: string }) {
   );
   const { postData } =
     usePostRequest<Partial<TEngagementFormQuestion>>("/engagements/form");
-  const { data } = prevFormId
+  const { data, isLoading } = prevFormId
     ? useGetData<TEngagementFormQuestion>(`/engagements/form/${prevFormId}`)
-    : { data: null };
+    : { data: null, isLoading: false };
   const form = useForm<z.infer<typeof formSettingSchema>>({
     resolver: zodResolver(formSettingSchema),
     defaultValues: {
@@ -54,15 +54,15 @@ function FormSettingsComp({ eventId }: { eventId: string }) {
         buttonColor: "#001FFC",
         textFontSize: "14",
         isCoverImage: true,
-        buttonText: "Submit"
+        buttonText: "Submit",
       },
     },
   });
   const [active, setActive] = useState(0);
   const [loading, setLoading] = useState(false);
   const alias = useMemo(() => {
-return generateAlias()
-  },[]);
+    return generateAlias();
+  }, []);
   async function onSubmit(values: z.infer<typeof formSettingSchema>) {
     setLoading(true);
     const image = await new Promise(async (resolve) => {
@@ -78,7 +78,6 @@ return generateAlias()
       } else resolve(null);
     });
 
-    
     const payload: Partial<TEngagementFormQuestion> = data?.formAlias
       ? {
           ...data,
@@ -90,14 +89,18 @@ return generateAlias()
           coverImage: image as string,
           formAlias: alias,
           eventAlias: eventId,
-          isActive: true
+          isActive: true,
         };
 
     await postData({
       payload: payload,
     });
     setLoading(false);
-    router.push(`/event/${eventId}/engagements/interactions/form/create/questions/${data?.formAlias|| alias}`)
+    router.push(
+      `/event/${eventId}/engagements/interactions/form/create/questions/${
+        data?.formAlias || alias
+      }`
+    );
   }
 
   // console.log(form.getValues());
@@ -111,137 +114,117 @@ return generateAlias()
         formSettings: data?.formSettings,
       });
 
-      form.setValue("formSettings", {
-        ...data.formSettings,
-        isConnectedToEngagement: true,
-        showForm: "beforeEngagement",
-        redirectUrl: "",
-        isCollectUserEmail: false,
-        isCoverScreen: true,
-        displayType: "listing",
-        questionPerSlides: "1",
-        titleFontSize: "36",
-        headingFontSize: "24",
-        backgroundColor: "#ffffff",
-        textColor: "#000000",
-        buttonColor: "#001FFC",
-        textFontSize: "14",
-        isCoverImage: true,
-        buttonText: "Submit"
-      })
+      form.setValue("formSettings",data.formSettings);
     }
   }, [data]);
 
-  const defaultDescriptionValue = form.watch("description")
-
   return (
-    <div className="w-full px-4 mt-6 pb-24 sm:mt-10 sm:px-6 mx-auto max-w-[1300px] ">
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="w-full flex flex-col items-start justify-start sm:gap-y-8 gap-y-8 2xl:gap-y-10 "
-        >
-          <div className="w-full flex items-center justify-between mb-2">
-            <Button
-              onClick={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                router.back();
-              }}
-              className="h-fit w-fit px-0 gap-x-2"
+    <>
+      {!isLoading ? (
+        <div className="w-full px-4 mt-6 pb-24 sm:mt-10 sm:px-6 mx-auto max-w-[1300px] ">
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="w-full flex flex-col items-start justify-start sm:gap-y-8 gap-y-8 2xl:gap-y-10 "
             >
-              <ArrowBack size={20} />
-              <p>Back</p>
-            </Button>
+              <div className="w-full flex items-center justify-between mb-2">
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    router.back();
+                  }}
+                  className="h-fit w-fit px-0 gap-x-2"
+                >
+                  <ArrowBack size={20} />
+                  <p>Back</p>
+                </Button>
 
-            <p className="font-medium ">Form Setting</p>
+                <p className="font-medium ">Form Setting</p>
 
-            <div className="flex items-center gap-x-2">
-              <Button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  e.preventDefault();
+                <div className="flex items-center gap-x-2">
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                    }}
+                    className=" h-11 hidden border border-basePrimary  items-center gap-x-2"
+                  >
+                    <InlineIcon color="#001fcc" icon="mdi:eye" fontSize={20} />
+                    <p className="gradient-text bg-basePrimary font-medium">
+                      Preview
+                    </p>
+                  </Button>
+                  <Button className="font-medium text-white bg-basePrimary gap-x-2 rounded-lg h-11">
+                    {loading && (
+                      <LoaderAlt className="animate-spin" size={20} />
+                    )}
+                    <p>{prevFormId ? "Update" : "Create"}</p>
+                  </Button>
+                </div>
+              </div>
+
+              <div className="w-full border-gray-200 flex flex-col items-start justify-start gap-y-1  rounded-lg border p-3 sm:p-4">
+                <FormField
+                  control={form.control}
+                  name="title"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormControl className="w-full">
+                        <Input
+                          {...form.register("title")}
+                          className="bg-transparent border-none h-14 text-2xl placeholder:text-gray-500 placeholder:text-2xl"
+                          placeholder="Form Title"
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <FormDescriptionInput
+                defaultValue={data?.description}
+                placeholder="Form Description"
+                onChange={(value) => {
+                  form.setValue("description", value);
                 }}
-                className=" h-11 hidden border border-basePrimary  items-center gap-x-2"
-              >
-                <InlineIcon color="#001fcc" icon="mdi:eye" fontSize={20} />
-                <p className="gradient-text bg-basePrimary font-medium">
-                  Preview
-                </p>
-              </Button>
-              <Button className="font-medium text-white bg-basePrimary gap-x-2 rounded-lg h-11">
-                {loading && <LoaderAlt className="animate-spin" size={20} />}
-                <p>{prevFormId ? "Update" :"Create"}</p>
-              </Button>
-            </div>
-          </div>
+              />
 
-          <div className="w-full border-gray-200 flex flex-col items-start justify-start gap-y-1  rounded-lg border p-3 sm:p-4">
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormControl className="w-full">
-                    <Input
-                      {...form.register("title")}
-                      className="bg-transparent border-none h-14 text-2xl placeholder:text-gray-500 placeholder:text-2xl"
-                      placeholder="Form Title"
-                    />
-                  </FormControl>
-                </FormItem>
+              <div className="w-full flex items-center justify-center ">
+                {["Appearance", "General", "Integration"].map((item, index) => (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      setActive(index);
+                    }}
+                    key={index}
+                    className={cn(
+                      "border-b-2 text-xs sm:text-sm pb-2 px-3 ",
+                      active === index && "border-basePrimary"
+                    )}
+                  >
+                    {item}
+                  </button>
+                ))}
+              </div>
+              {active === 2 && (
+                <FormIntegration
+                  data={data}
+                  engagements={engagements}
+                  form={form}
+                />
               )}
-            />
- 
-          </div>
-          <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormControl className="w-full">
-                  <FormDescriptionInput
-                          defaultValue={data?.description}
-                          placeholder="Form Description"
-                          onChange={(value) => {
-                            form.setValue("description", value);
-                          }}
-                          />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-
-          <div className="w-full flex items-center justify-center ">
-            {["Appearance", "General", "Integration"].map((item, index) => (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  e.preventDefault();
-                  setActive(index);
-                }}
-                key={index}
-                className={cn(
-                  "border-b-2 text-xs sm:text-sm pb-2 px-3 ",
-                  active === index && "border-basePrimary"
-                )}
-              >
-                {item}
-              </button>
-            ))}
-          </div>
-          {active === 2 && (
-            <FormIntegration
-              data={data}
-              engagements={engagements}
-              form={form}
-            />
-          )}
-          {active === 1 && <FormGeneralSettings form={form} />}
-          {active === 0 && <FormAppearance form={form} />}
-        </form>
-      </Form>
-    </div>
+              {active === 1 && <FormGeneralSettings form={form} />}
+              {active === 0 && <FormAppearance form={form} />}
+            </form>
+          </Form>
+        </div>
+      ) : (
+        <div className="w-full h-[300px] flex items-center justify-center">
+          <LoaderAlt size={30} className="animate-spin" />
+        </div>
+      )}
+    </>
   );
 }
 

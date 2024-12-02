@@ -6,13 +6,14 @@ import { Text } from "@/components/certificate";
 
 const Verification = ({ details, setValue }: TabProps) => {
   const { connectors } = useEditor();
+  const url = "https://zikoro.com/verify/certificate/#{certificate_id#}";
 
   return (
     <>
       <div className="space-y-4">
         <button
           ref={(ref) =>
-            ref && connectors.create(ref, <CertificateQRCode url="this" />)
+            ref && connectors.create(ref, <CertificateQRCode url={url} />)
           }
           className={"bg-gray-50 py-3 px-2 rounded text-gray-800 w-full border"}
           data-cy="toolbox-qr-code"
@@ -42,12 +43,7 @@ const Verification = ({ details, setValue }: TabProps) => {
             ref &&
             connectors.create(
               ref,
-              <Text
-                text={"#{first_name#}"}
-                isBold
-                isItalic
-                isNotEditable
-              />
+              <Text text={"#{first_name#}"} isBold isItalic isNotEditable />
             )
           }
           className={"bg-gray-50 py-3 px-2 rounded text-gray-800 w-full border"}
@@ -60,12 +56,7 @@ const Verification = ({ details, setValue }: TabProps) => {
             ref &&
             connectors.create(
               ref,
-              <Text
-                text={"#{last_name#}"}
-                isBold
-                isItalic
-                isNotEditable
-              />
+              <Text text={"#{last_name#}"} isBold isItalic isNotEditable />
             )
           }
           className={"bg-gray-50 py-3 px-2 rounded text-gray-800 w-full border"}

@@ -43,6 +43,9 @@ import ArchiveAttendee from "@/components/moreOptionDialog/archiveAttendee";
 import { ContactRequest } from "@/types/contacts";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import CertificateDialog from "@/components/moreOptionDialog/certificateDialog";
+import { Button } from "@/components/ui/button";
+import { ArrowBack } from "styled-icons/typicons";
+import { useRouter } from "next/navigation";
 
 type TSortorder = "asc" | "desc" | "none";
 
@@ -211,7 +214,7 @@ export default function FirstSection({
     favourites,
     getFavourites,
     isLoading: favouriteIsLoading,
-  } = useGetFavourites({ userId: user ? user.id : 0 });
+  } = useGetFavourites({ userId: user ? user.id : 0, eventId: event.id });
 
   const {
     attendeesTags,
@@ -222,6 +225,8 @@ export default function FirstSection({
   const { updateFavourites } = useUpdateFavourites({
     userId: user ? user.id : 0,
   });
+
+  const router = useRouter();
 
   const toggleFavourites = async (id: number, isFavourite: boolean) => {
     const newFavouriteAttendees = !favourites
@@ -422,9 +427,14 @@ export default function FirstSection({
     <>
       <div className="flex space-between justify-between border-b-[1px] border-[#F3F3F3] py-4 md:py-2 px-2 bg-white">
         <div className="flex items-center gap-2">
-          <h1 className="font-semibold leading-normal text-greyBlack">
-            Attendees{" "}
-          </h1>
+          <div className="flex items-center gap-2">
+            <Button onClick={() => router.back()}>
+              <ArrowBack className="px-1 h-fit w-fit" size={24} />
+            </Button>
+            <h1 className="font-semibold leading-normal text-greyBlack">
+              Attendees{" "}
+            </h1>
+          </div>
           {contactRequests.length > 0 && (
             <>
               {pendingContacts.length > 0 && (

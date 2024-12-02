@@ -16,13 +16,14 @@ export async function GET(req: NextRequest) {
       let transactions = [];
       const query = supabase
         .from("eventTransactions")
-        .select("*")
+        .select("*", { count: 'exact' }) 
+        .order("created_at", { ascending: false }) 
         .range(Number(from || 0), Number(to || 50));
       if (eventAlias && eventAlias?.length > 0) {
         query.eq("eventAlias", eventAlias);
       }
 
-      const { data, error, status } = await query;
+      const { data, error, status, count } = await query;
 
       if (data) {
         const updatedWithAttendees = await Promise.all(
