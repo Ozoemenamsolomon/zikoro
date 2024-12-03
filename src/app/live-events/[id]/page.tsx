@@ -1,9 +1,9 @@
 import SinglePublishedEvent from "@/components/published/SinglePublishedEvent";
-
+import Head from "next/head";
 export default function Page({ params: { id }, searchParams }: {searchParams:any; params: { id: string } }) {
   return (
     <>
-    {/* <head>
+  <Head>
     
         <title>
           Testing event thing
@@ -19,7 +19,7 @@ export default function Page({ params: { id }, searchParams }: {searchParams:any
 
         <meta name="author" content="Zikoro" />
   
-    </head> */}
+    </Head> 
       <SinglePublishedEvent searchParams={searchParams} id={id} />
     </>
   );

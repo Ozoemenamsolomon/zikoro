@@ -313,7 +313,7 @@ function AttendeeFillFormComp({
             {data?.title ?? ""}
           </h2>
           <p
-            className="innerhtml  mb-3"
+            className="innerhtml  "
             dangerouslySetInnerHTML={{
               __html: data?.description,
             }}
@@ -322,7 +322,7 @@ function AttendeeFillFormComp({
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className="w-full flex flex-col items-start justify-start gap-y-4 sm:gap-y-6 2xl:gap-y-8"
+              className="w-full flex flex-col items-start mt-3 justify-start gap-y-4 sm:gap-y-6 2xl:gap-y-8"
             >
               {currentQuestions?.map((field, index) => (
                 <div
@@ -452,7 +452,7 @@ function AttendeeFillFormComp({
                   )}
                 >
                   {loading && <LoaderAlt className="animate-spin" size={20} />}
-                  <p>Submit</p>
+                  <p>{data?.formSettings?.buttonText  || "Submit"}</p>
                 </Button>
               )}
               {/* )} */}
