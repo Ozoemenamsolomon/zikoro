@@ -119,7 +119,11 @@ export async function POST(req: NextRequest) {
           values?.eventAlias
         }/partner/${values?.partnerAlias} </p>
 
-<p>This link will guide you through the necessary steps to finalize your registration and provide all the details required to set up your booth at the event.</p>
+<p>To access your virtual booth, you need to be a registered attendee using this email: ${
+          values?.email
+        }. If you haven’t registered yet, please do so by following this link: ${deploymentUrl}/live-events/${
+          values?.eventAlias
+        }p>
 
 <p>If you encounter any issues or have any questions during the registration process, please do not hesitate to contact our team at ${
           organizerEmail || ""
@@ -270,10 +274,8 @@ export async function PATCH(req: NextRequest) {
         .eq("partnerAlias", payload?.partnerAlias);
 
       var { SendMailClient } = require("zeptomail");
-     
-      if (deactivate) {
-        
 
+      if (deactivate) {
         let client = new SendMailClient({
           url: process.env.NEXT_PUBLIC_ZEPTO_URL,
           token: process.env.NEXT_PUBLIC_ZEPTO_TOKEN,

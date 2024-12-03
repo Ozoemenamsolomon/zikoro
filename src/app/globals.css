@@ -402,20 +402,20 @@ input[type="number"] {
 /* Unordered List */
 .innerhtml ul {
   list-style-type: disc; /* Default filled circle */
-  padding-left: 2rem;
+  padding-left: 1rem;
 }
 
 /* Ordered List */
 .innerhtml ol {
   list-style-type: decimal; /* Default decimal numbers */
-  padding-left: 2rem;
+  padding-left: 1rem;
 }
 .innerhtml ul li {
-  padding-bottom: 2rem;
+  padding-bottom: 1rem;
 }
 
 .innerhtml ol li {
-  padding-bottom: 2rem;
+  padding-bottom: 1rem;
 }
 
 /* DatePicker.css */

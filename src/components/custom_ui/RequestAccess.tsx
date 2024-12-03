@@ -40,7 +40,7 @@ export default function RequestAccess({ eventId }: { eventId: string }) {
            isEmailPresent?.attendeeAlias
          }`,
           eventTitle: data?.eventTitle!,
-          attendeeName: isEmailPresent?.firstName!
+          attendeeName: isEmailPresent?.firstName! || "User"
         });
       } catch (error) {
       } finally {

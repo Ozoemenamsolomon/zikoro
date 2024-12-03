@@ -1,6 +1,6 @@
 import { TAttendee, TPartner, TUser } from ".";
 
-type TSessionFile<T> = {
+export type TSessionFile<T> = {
   size: string;
   file: T;
   name: string;
