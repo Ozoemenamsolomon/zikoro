@@ -297,7 +297,7 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
                         : "",
                       backgroundColor: "#fff",
                       height: "11.69in",
-                      width: "8.27in",
+                      width: "100%",
                     }}
                     id="certificate"
                   >

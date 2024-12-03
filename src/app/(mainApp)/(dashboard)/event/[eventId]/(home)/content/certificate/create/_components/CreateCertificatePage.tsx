@@ -857,7 +857,7 @@ const page = () => {
                   ? `url(${details.background})`
                     : "",
                   backgroundColor: "#fff",
-                  width: "8.27in",
+                  width: "90%",
                   height: "11.69in",
                 }}
                 ref={certificateRef}

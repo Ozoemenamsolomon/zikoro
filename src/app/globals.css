@@ -585,8 +585,6 @@ input[type="number"] {
   /* border-radius: 8px; */
 }
 
-
-
 /**********************/
 .form-description-input .quill .ql-editor {
   height: 100%;
@@ -619,9 +617,7 @@ input[type="number"] {
   right: 15px;
 }
 
-
 /***************/
-
 
 .interaction-input .quill .ql-editor {
   height: 100%;
@@ -804,14 +800,16 @@ input[type="number"] {
 /* blogPost pictures*/
 
 .blogPost p img {
-  width: 100%;
-  object-position: contain;
-  display: block;
+  width: 100%; /* Full width */
+  display: block; /* Ensures no inline spacing */
+  object-fit: cover; /* Keeps the entire image visible without cropping */
+  margin: 0; /* No extra spacing */
+  padding: 0; /* Reset padding */
 }
 
 @media screen and (min-width: 768px) {
   .blogPost p img {
-    height: 380px;
+    height: 280px;
   }
 }
 
