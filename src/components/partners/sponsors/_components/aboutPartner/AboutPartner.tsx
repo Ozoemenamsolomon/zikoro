@@ -22,17 +22,17 @@ export function AboutPartner({
   partnerId,
   isHaveAccess,
   isOrganizer,
-  attendee
+  attendee,
 }: {
   partnerId: string;
   refetch: () => Promise<any>;
   partner: TPartner | null;
   isHaveAccess: boolean;
-  isOrganizer:boolean;
-  attendee?:TAttendee
+  isOrganizer: boolean;
+  attendee?: TAttendee;
 }) {
   const router = useRouter();
-  
+
   const [isAddJob, setAddJob] = useState(false);
 
   function onOpen() {
@@ -93,8 +93,6 @@ export function AboutPartner({
               width={200}
               height={90}
             />
-
-            
           </div>
         </section>
 
@@ -103,7 +101,7 @@ export function AboutPartner({
             <p className="font-semibold text-base sm:text-xl">
               Company Description
             </p>
-           {isHaveAccess && <Edit partner={partner} refetch={refetch} />}
+            {isHaveAccess && <Edit partner={partner} refetch={refetch} />}
           </div>
           <div className="items-start px-3 py-4 justify-start flex w-full flex-col gap-y-2">
             <p className="mb-4 font-semibold text-base sm:text-xl">
@@ -124,39 +122,52 @@ export function AboutPartner({
                 </div>
               )}
             </div>
-            <div className="flex items-center gap-x-2">
-              {partner?.phoneNumber !== null && (
-                <Button
-                  onClick={() => phoneCall(partner?.phoneNumber)}
-                  className="px-0 h-10 w-10 rounded-full bg-[#F3F3F3] "
-                >
-                  <PhoneCall size={22} className="text-black" />
-                </Button>
-              )}
-              {partner?.whatsApp !== null && (
-                <Button
-                  onClick={() => whatsapp(partner?.whatsApp)}
-                  className="px-0 h-10 w-10 rounded-full bg-[#F3F3F3] "
-                >
-                  <Whatsapp size={22} className="text-black" />
-                </Button>
-              )}
-              {partner?.email !== null && (
-                <Button
-                  onClick={() => sendMail(partner?.email)}
-                  className="px-0 h-10 w-10 rounded-full bg-[#F3F3F3] "
-                >
-                  <Email size={22} className="text-black" />
-                </Button>
-              )}
-              {partner?.website !== null && (
-                <Button
-                  onClick={visitWebsite}
-                  className="px-0 h-10 w-10 rounded-full bg-[#F3F3F3] "
-                >
-                  <World size={22} className="text-black" />
-                </Button>
-              )}
+            <div className="flex items-start flex-col justify-start gap-2">
+              {partner?.phoneNumber !== null &&
+                partner?.phoneNumber !== undefined &&
+                partner?.phoneNumber?.length > 0 && (
+                  <Button
+                    onClick={() => phoneCall(partner?.phoneNumber)}
+                    className="px-0  flex items-center gap-x-2"
+                  >
+                    <PhoneCall size={22} className="text-black" />
+                    <p>{partner?.phoneNumber}</p>
+                  </Button>
+                )}
+              {partner?.whatsApp !== null &&
+                partner?.whatsApp !== undefined &&
+                partner?.whatsApp?.length > 0 && (
+                  <Button
+                    onClick={() => whatsapp(partner?.whatsApp)}
+                    className="px-0 flex items-center gap-x-2"
+                  >
+                    <Whatsapp size={22} className="text-black" />
+
+                    <p>{partner?.whatsApp}</p>
+                  </Button>
+                )}
+              {partner?.email !== null &&
+                partner?.email !== undefined &&
+                partner?.email?.length > 0 && (
+                  <Button
+                    onClick={() => sendMail(partner?.email)}
+                    className="px-0 flex items-center gap-x-2 "
+                  >
+                    <Email size={22} className="text-black" />
+                    <p>{partner?.email}</p>
+                  </Button>
+                )}
+              {partner?.website !== null &&
+                partner?.website !== undefined &&
+                partner?.website?.length > 0 && (
+                  <Button
+                    onClick={visitWebsite}
+                    className="px-0 flex items-center gap-x-2 "
+                  >
+                    <World size={22} className="text-black" />
+                    <p>{partner?.website}</p>
+                  </Button>
+                )}
             </div>
             <div></div>
           </div>
@@ -194,7 +205,7 @@ export function AboutPartner({
         <section className="w-full flex flex-col  pb-2 border-b">
           <div className="w-full px-3 py-3 border-b flex items-center justify-between">
             <p className="font-semibold text-base sm:text-xl">Booth Staff</p>
-          {isHaveAccess &&  <Edit partner={partner} refetch={refetch} />}
+            {isHaveAccess && <Edit partner={partner} refetch={refetch} />}
           </div>
           <div className="w-full px-3 py-4 grid grid-cols-3 items-center gap-4">
             {Array.isArray(partner?.boothStaff) &&
@@ -215,16 +226,21 @@ export function AboutPartner({
           <div className="w-full px-3 py-3 border-b flex items-center justify-between">
             <p className="font-semibold text-base sm:text-xl">Jobs</p>
 
-          {isHaveAccess &&  <Button onClick={onOpen} className="px-1 h-fit w-fitf">
-              <PlusCircle size={24} />
-            </Button>}
+            {isHaveAccess && (
+              <Button onClick={onOpen} className="px-1 h-fit w-fitf">
+                <PlusCircle size={24} />
+              </Button>
+            )}
           </div>
           <div className="w-full px-3 py-4 grid grid-cols-1 items-center gap-6">
-            {partner?.jobs === null || (Array.isArray(partner?.jobs) && partner?.jobs?.length === 0) && (
-              <div className="w-full flex col-span-full items-center justify-center h-[50px]">
-                <p className="font-semibold text-mobile sm:text-sm">No available Job</p>
-              </div>
-            )}
+            {partner?.jobs === null ||
+              (Array.isArray(partner?.jobs) && partner?.jobs?.length === 0 && (
+                <div className="w-full flex col-span-full items-center justify-center h-[50px]">
+                  <p className="font-semibold text-mobile sm:text-sm">
+                    No available Job
+                  </p>
+                </div>
+              ))}
             {Array.isArray(partner?.jobs) &&
               partner?.jobs.map((job, index) => (
                 <JobWidget

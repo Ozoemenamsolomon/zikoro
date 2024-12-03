@@ -217,38 +217,37 @@ function AttendeeFillFormComp({
     );
   }
 
-  if (
-    !isLoading &&
-    data?.formSettings?.isCollectUserEmail &&
-    (!attendee?.id || !attendeeId)
-  ) {
-    return (
-      <div className="w-full h-full inset-0 fixed z-[100] bg-white">
-        <div className="w-[95%] max-w-xl border rounded-lg bg-gradient-to-b gap-y-6 from-white  to-basePrimary/20  h-[400px] flex flex-col items-center justify-center shadow absolute inset-0 m-auto">
-          <InlineIcon
-            icon="fluent:emoji-sad-20-regular"
-            fontSize={60}
-            color="#001fcc"
-          />
-          <div className="w-fit flex flex-col items-center justify-center gap-y-3">
-            <p>You are not a registered attendee for this event</p>
-
-            <Button
-              onClick={() => {
-                window.open(`${window.location.origin}/live-events/${eventId}`);
-              }}
-              className="bg-basePrimary h-12 text-white font-medium"
-            >
-              Register for the event
-            </Button>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  
 
   return (
-    <>
+    <>{
+
+      !isLoading &&
+    data?.formSettings?.isCollectUserEmail &&
+    (!attendee?.id || !attendeeId) &&
+
+    <div className="w-full h-full inset-0 fixed z-[100] bg-white">
+    <div className="w-[95%] max-w-xl border rounded-lg bg-gradient-to-b gap-y-6 from-white  to-basePrimary/20  h-[400px] flex flex-col items-center justify-center shadow absolute inset-0 m-auto">
+      <InlineIcon
+        icon="fluent:emoji-sad-20-regular"
+        fontSize={60}
+        color="#001fcc"
+      />
+      <div className="w-fit flex flex-col items-center justify-center gap-y-3">
+        <p>You are not a registered attendee for this event</p>
+
+        <Button
+          onClick={() => {
+            window.open(`${window.location.origin}/live-events/${eventId}`);
+          }}
+          className="bg-basePrimary h-12 text-white font-medium"
+        >
+          Register for the event
+        </Button>
+      </div>
+    </div>
+  </div>
+    }
       {isView && !isLoading && data?.formSettings?.isCoverImage && (
         <div className="w-full min-h-screen bg-white inset-0 fixed z-[100] flex flex-col items-center gap-y-8">
           {data?.coverImage &&
@@ -313,7 +312,7 @@ function AttendeeFillFormComp({
             {data?.title ?? ""}
           </h2>
           <p
-            className="innerhtml  mb-3"
+            className="innerhtml  "
             dangerouslySetInnerHTML={{
               __html: data?.description,
             }}
@@ -322,7 +321,7 @@ function AttendeeFillFormComp({
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className="w-full flex flex-col items-start justify-start gap-y-4 sm:gap-y-6 2xl:gap-y-8"
+              className="w-full flex flex-col items-start mt-3 justify-start gap-y-4 sm:gap-y-6 2xl:gap-y-8"
             >
               {currentQuestions?.map((field, index) => (
                 <div
@@ -452,7 +451,7 @@ function AttendeeFillFormComp({
                   )}
                 >
                   {loading && <LoaderAlt className="animate-spin" size={20} />}
-                  <p>Submit</p>
+                  <p>{data?.formSettings?.buttonText  || "Submit"}</p>
                 </Button>
               )}
               {/* )} */}

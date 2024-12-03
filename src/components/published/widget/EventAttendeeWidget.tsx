@@ -156,7 +156,7 @@ export function EventAttendeeWidget({
                   ? "ml-[-3%]"
                   : slicedArray?.length === 3
                   ? "ml-[-6%]": slicedArray?.length === 4
-                  ? "ml-[-10%]":"")}>{names}</p>}
+                  ? "ml-[-25%]":"")}>{names}</p>}
     </div>
   );
 }
