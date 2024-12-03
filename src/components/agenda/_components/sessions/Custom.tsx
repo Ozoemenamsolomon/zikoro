@@ -304,7 +304,7 @@ function Widget({
                   `/event/${event?.eventAlias}/agenda/${session?.sessionAlias}`
                 )
               }
-              className="bg-basePrimary text-white font-medium rounded-lg h-11 "
+              className="bg-basePrimary text-white font-medium rounded-lg h-10 text-mobile sm:text-sm "
             >
               Join
             </Button>
