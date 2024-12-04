@@ -5,7 +5,6 @@ import { useState, useEffect } from "react";
 import { formatDate } from "@/utils";
 import {
   useGetAdminEventTransactions,
-  useInfiniteScrollPagination,
 } from "@/hooks";
 import { EventTransactionWidget } from "./_components";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
@@ -16,6 +15,7 @@ import { InlineIcon } from "@iconify/react";
 import _ from "lodash";
 import { usePostRequest } from "@/hooks/services/request";
 import { MdClose } from "react-icons/md";
+import { Pagination } from "@/components/custom_ui/Pagination";
 
 function FilterMod({
   onSelected,
@@ -71,10 +71,11 @@ export default function AdminTransactions({
 }) {
   const [from, setFrom] = useState(0);
   const [to, setTo] = useState(50);
-  const [initialLoading, setInitialLoading] = useState(true);
+  // const [initialLoading, setInitialLoading] = useState(true);
   const [filteredData, setFilteredData] = useState<Transactions[]>([]);
   const [isFilter, setOpenFilterModal] = useState(false);
   const [transactionIds, setTransactionIds] = useState<number[]>([]);
+  const [pages, setPage] = useState(1);
   const [selectedOptions, setSelectedOptions] = useState<
     { label: string; value: boolean; name: string }[]
   >([]);
@@ -92,21 +93,26 @@ export default function AdminTransactions({
     setOpenFilterModal((p) => !p);
   }
 
-  const { hasReachedLastPage, getTransactions, transactions, isLoading } =
-    useGetAdminEventTransactions({
-      eventAlias: e,
-      from,
-      to,
-      initialLoading,
-    });
-
-  const { ref: infiniteScrollRef } = useInfiniteScrollPagination(
+  const {
     hasReachedLastPage,
-    setFrom,
-    setTo,
-    setInitialLoading
-  );
+    getTransactions,
+    transactions,
+    isLoading,
+    total,
+  } = useGetAdminEventTransactions({
+    eventAlias: e,
+    from,
+    to,
+  });
 
+  // const { ref: infiniteScrollRef } = useInfiniteScrollPagination(
+  //   hasReachedLastPage,
+  //   setFrom,
+  //   setTo,
+  //   setInitialLoading
+  // );
+
+  console.log(selectedOptions);
   useEffect(() => {
     if (Array.isArray(transactions)) {
       const filtered = transactions.filter((transaction) => {
@@ -121,7 +127,7 @@ export default function AdminTransactions({
         return true;
       });
       setFilteredData(filtered);
-      console.log("dfwfwefwe", filtered);
+      // console.log("dfwfwefwe", filtered);
       setTransactionIds([]);
     }
   }, [transactions, selectedOptions]);
@@ -197,6 +203,9 @@ export default function AdminTransactions({
     }
   }
 
+  function changePage(n: number) {
+    setPage(n);
+  }
   return (
     <div className="w-full pt-12 sm:pt-16">
       <RouteHeader
@@ -289,10 +298,7 @@ export default function AdminTransactions({
             {!isLoading &&
               Array.isArray(searchedData) &&
               searchedData?.map((transaction) => (
-                <tr
-                  ref={!hasReachedLastPage ? infiniteScrollRef : null}
-                  className="w-full"
-                >
+                <tr className="w-full">
                   <EventTransactionWidget
                     updateTransactionIds={updateTransactionIds}
                     transactionIds={transactionIds}
@@ -304,6 +310,8 @@ export default function AdminTransactions({
           </tbody>
         </table>
       </div>
+
+      <Pagination totalPages={total} setPage={changePage} />
     </div>
   );
 }

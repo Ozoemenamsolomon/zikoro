@@ -4,32 +4,40 @@ import { Metadata } from "next";
 export const generateMetadata = async ({
   params,
 }: {
-params: Promise<{ id: string }>
+  params: Promise<{ id: string }>;
 }): Promise<Metadata> => {
-  const id = (await params).id
-  // await fetch(`/api/events/${params.eventId}/event`)
+  const id = (await params).id;
+
+  const eventDetail = await fetch(`/api/events/${id}/event`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  }).then((res) => res.json());
 
   return {
-    title: `Event Live ${id}`,
-    description: "Olaoogergerger",
+    title: `${eventDetail?.data?.eventTitle} || "Live Event"`,
+    description: `${eventDetail?.data?.description ?? ""}`,
 
-    // openGraph:{
-    //         type: "website",
-    //         url: "https://example.com",
-    //         title: "My Website",
-    //         description: "My Website Description",
-    //         siteName: "My Website",
-    //         images: [{
-    //           url: "https://example.com/og.png",
-    //         }],
-    //       }
+    openGraph: {
+      images: [
+        {
+          url: `${eventDetail?.data?.eventPoster}` || "",
+        },
+      ],
+    },
   };
 };
 
-export default function Page({ params: { id }, searchParams }: {searchParams:any; params: { id: string } }) {
+export default function Page({
+  params: { id },
+  searchParams,
+}: {
+  searchParams: any;
+  params: { id: string };
+}) {
   return (
     <>
-
       <SinglePublishedEvent searchParams={searchParams} id={id} />
     </>
   );
