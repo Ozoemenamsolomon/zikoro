@@ -1,25 +1,31 @@
 import SinglePublishedEvent from "@/components/published/SinglePublishedEvent";
-import Head from "next/head";
+import { Metadata } from "next";
+
+export const metaGenerator = async ({ params }: { params: { eventId: string } }): Promise<Metadata> => {
+
+   await fetch(`/api/events/${params.eventId}/event`)
+
+
+	return {
+		
+		openGraph:{
+            type: "website",
+            url: "https://example.com",
+            title: "My Website",
+            description: "My Website Description",
+            siteName: "My Website",
+            images: [{
+              url: "https://example.com/og.png",
+            }],
+          }
+	};
+};
+
+
 export default function Page({ params: { id }, searchParams }: {searchParams:any; params: { id: string } }) {
   return (
     <>
-  <Head>
-    
-        <title>
-          Testing event thing
-        </title>
-        <meta
-          name="description"
-          content="I am the tester"
-        />
-        <meta
-          property="og:image"
-          content="https://res.cloudinary.com/dkdrbjfdt/image/upload/v1727343240/bcbwh1ytyrujzebewwtg.jpg"
-        />
 
-        <meta name="author" content="Zikoro" />
-  
-    </Head> 
       <SinglePublishedEvent searchParams={searchParams} id={id} />
     </>
   );
