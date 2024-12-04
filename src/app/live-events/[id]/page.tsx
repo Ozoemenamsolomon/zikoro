@@ -8,12 +8,14 @@ export const generateMetadata = async ({
 }): Promise<Metadata> => {
   const id = (await params).id;
 
-  const eventDetail = await fetch(`/api/events/${id}/event`, {
+  const response = fetch(`https://zikoro.com/api/events/${id}/event`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
     },
   }).then((res) => res.json());
+
+  const eventDetail = await response;
 
   return {
     title: `${eventDetail?.data?.eventTitle} || "Live Event"`,
