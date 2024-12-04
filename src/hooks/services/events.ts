@@ -1348,7 +1348,7 @@ export function useVerifyUserAccess(eventId: string) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!loading) {
+    if (!loading && user) {
       const atId = eventAttendees?.find(
         ({ email, eventAlias }) =>
           eventAlias === eventId && email === user?.userEmail
@@ -1375,7 +1375,7 @@ export function useVerifyUserAccess(eventId: string) {
       setIsLoading(false);
       // console.log("attendee", isPresent);
     }
-  }, [eventAttendees, loading]);
+  }, [eventAttendees, loading,  user]);
 
   return {
     attendeeId,
