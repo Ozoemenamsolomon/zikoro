@@ -20,22 +20,23 @@ export function Pagination({
   };
 
   return (
-    <div className="w-full flex items-center justify-center font-mono  mt-3">
+    <div className="w-full flex items-center justify-center font-mono  mt-6">
       <ReactPaginate
         breakLabel="..."
         className="flex items-center gap-x-2"
         nextLabel={
           <button className="text-gray-400">
-            <MdNavigateNext size={20} />
+            <MdNavigateNext size={22} />
           </button>
         }
         onPageChange={handlePageClick}
         pageRangeDisplayed={3}
         pageCount={totalPages}
+        pageClassName="bg-white rounded-lg flex items-center justify-center w-6 h-6"
         activeClassName="text-white bg-basePrimary w-6 h-6 flex items-center justify-center rounded-lg"
         previousLabel={
           <button className="text-gray-400">
-            <MdNavigateBefore size={20} />
+            <MdNavigateBefore size={22} />
           </button>
         }
         renderOnZeroPageCount={null}

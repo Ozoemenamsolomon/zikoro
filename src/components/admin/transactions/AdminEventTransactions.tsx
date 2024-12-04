@@ -204,6 +204,7 @@ export default function AdminTransactions({
   }
 
   function changePage(n: number) {
+    console.log('number of page',n)
     setPage(n);
   }
   return (
