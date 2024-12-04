@@ -14,8 +14,6 @@ export function Pagination({
 }) {
   // Invoke when user click to request another page.
   const handlePageClick = (event: any) => {
-    // const newOffset = (event.selected * 20) % dataLength;
-    // console.log(newOffset, event.selected * 20, dataLength);
     setPage(event.selected + 1);
   };
 
