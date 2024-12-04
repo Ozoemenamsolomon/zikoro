@@ -75,7 +75,6 @@ export default function AdminTransactions({
   const [filteredData, setFilteredData] = useState<Transactions[]>([]);
   const [isFilter, setOpenFilterModal] = useState(false);
   const [transactionIds, setTransactionIds] = useState<number[]>([]);
-  const [pages, setPage] = useState(1);
   const [selectedOptions, setSelectedOptions] = useState<
     { label: string; value: boolean; name: string }[]
   >([]);
@@ -203,9 +202,17 @@ export default function AdminTransactions({
     }
   }
 
+
+
   function changePage(n: number) {
+    // 1 * 50 // 1 * 50 -50
+    // 2 * 50 // 2 * 50 - 50
+    // 3 & 50 // 3 * 50 -50
+    // 4 & 50 // 
     console.log('number of page',n)
-    setPage(n);
+    setFrom((n * 50)-50);
+    setTo(n * 50)
+  
   }
   return (
     <div className="w-full pt-12 sm:pt-16">

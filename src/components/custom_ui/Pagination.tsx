@@ -32,8 +32,8 @@ export function Pagination({
         onPageChange={handlePageClick}
         pageRangeDisplayed={3}
         pageCount={totalPages}
-        pageClassName="bg-white rounded-lg flex items-center justify-center w-6 h-6"
-        activeClassName="text-white bg-basePrimary w-6 h-6 flex items-center justify-center rounded-lg"
+        pageClassName="bg-white rounded-lg flex shadow items-center justify-center w-8 h-8"
+        activeClassName="text-white bg-basePrimary w-8 h-8 flex items-center justify-center rounded-lg"
         previousLabel={
           <button className="text-gray-400">
             <MdNavigateBefore size={22} />

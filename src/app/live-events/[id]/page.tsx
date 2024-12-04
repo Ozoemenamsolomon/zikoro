@@ -18,14 +18,12 @@ export const generateMetadata = async ({
   const eventDetail = await response;
 
   return {
-    title: `${eventDetail?.data?.eventTitle} || "Live Event"`,
+    title: `${eventDetail?.data?.eventTitle || "Zikoro Event"} `,
     description: `${eventDetail?.data?.description ?? ""}`,
 
     openGraph: {
       images: [
-        {
-          url: `${eventDetail?.data?.eventPoster}` || "",
-        },
+     `${eventDetail?.data?.eventPoster}` || ""
       ],
     },
   };
