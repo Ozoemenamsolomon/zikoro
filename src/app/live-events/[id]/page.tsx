@@ -3,7 +3,7 @@ import { Metadata } from "next";
 
 export const metaGenerator = async ({ params }: { params: { eventId: string } }): Promise<Metadata> => {
 
-   await fetch(`/api/events/${params.eventId}/event`)
+   // await fetch(`/api/events/${params.eventId}/event`)
 
 
 	return {
