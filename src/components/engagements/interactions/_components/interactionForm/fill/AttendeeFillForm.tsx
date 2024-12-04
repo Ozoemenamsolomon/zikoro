@@ -400,21 +400,19 @@ function AttendeeFillFormComp({
                     parseInt(data?.formSettings?.questionPerSlides || "1") >=
                   fields?.length ? (
                     <Button
-                      type="submit"
-                      disabled={loading}
-                      style={{
-                        backgroundColor: data?.formSettings?.buttonColor || "",
-                      }}
-                      className={cn(
-                        "self-center  gap-x-2  text-white font-medium h-12 ",
-                        !data?.formSettings?.buttonColor && "bg-basePrimary"
-                      )}
-                    >
-                      {loading && (
-                        <LoaderAlt className="animate-spin" size={20} />
-                      )}
-                      <p>Submit</p>
-                    </Button>
+                  type="submit"
+                  disabled={loading}
+                  style={{
+                    backgroundColor: data?.formSettings?.buttonColor || "",
+                  }}
+                  className={cn(
+                    "self-center w-fit gap-x-2  text-white font-medium h-12 ",
+                    !data?.formSettings?.buttonColor && "bg-basePrimary"
+                  )}
+                >
+                  {loading && <LoaderAlt className="animate-spin" size={20} />}
+                  <p>{data?.formSettings?.buttonText  || "Submit"}</p>
+                </Button>
                   ) : (
                     <Button
                       onClick={(e) => {
@@ -445,7 +443,7 @@ function AttendeeFillFormComp({
                     backgroundColor: data?.formSettings?.buttonColor || "",
                   }}
                   className={cn(
-                    "self-center w-[150px] gap-x-2  text-white font-medium h-12 ",
+                    "self-center w-fit gap-x-2  text-white font-medium h-12 ",
                     !data?.formSettings?.buttonColor && "bg-basePrimary"
                   )}
                 >

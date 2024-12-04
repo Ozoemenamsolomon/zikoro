@@ -68,6 +68,7 @@ function AddedFiles({ file }: { file: TSessionFile<string> }) {
           loading={false}
           buttonText="Download"
           deletes={download}
+          className="bg-basePrimary w-fit"
         />
       )}
     </>

@@ -147,6 +147,7 @@ const total = useMemo(() => {
       currency: partnerTier?.currency,
       organizerPhoneNumber: organization?.eventPhoneNumber!,
       organizerWhatsappNumber: organization?.eventWhatsApp!,
+      organizerEmail: organization?.eventContactEmail!
     };
 
     if (total === 0) {
