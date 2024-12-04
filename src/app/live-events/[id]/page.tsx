@@ -7,17 +7,19 @@ export const metaGenerator = async ({ params }: { params: { eventId: string } })
 
 
 	return {
+    title:"Event Live",
+    description: "Olaoogergerger"
 		
-		openGraph:{
-            type: "website",
-            url: "https://example.com",
-            title: "My Website",
-            description: "My Website Description",
-            siteName: "My Website",
-            images: [{
-              url: "https://example.com/og.png",
-            }],
-          }
+		// openGraph:{
+    //         type: "website",
+    //         url: "https://example.com",
+    //         title: "My Website",
+    //         description: "My Website Description",
+    //         siteName: "My Website",
+    //         images: [{
+    //           url: "https://example.com/og.png",
+    //         }],
+    //       }
 	};
 };
 
