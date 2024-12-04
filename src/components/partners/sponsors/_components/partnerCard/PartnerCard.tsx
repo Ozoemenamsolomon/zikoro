@@ -70,19 +70,18 @@ export function PartnerCard({
           <div className="w-[100px] h-[40px] animate-pulse bg-gray-200"></div>
         )}
 
-        {sponsor?.tierName &&
-          sponsor.partnerType.toLowerCase().includes("exhibitor") && (
-            <p
-              style={{
-                color: tierColor?.color || "#001fcc",
-                border: `1px solid ${tierColor?.color}`,
-                backgroundColor: rgba,
-              }}
-              className=" px-4 py-1 text-sm rounded-3xl"
-            >
-              {sponsor?.tierName}
-            </p>
-          )}
+        {sponsor?.tierName && (
+          <p
+            style={{
+              color: tierColor?.color || "#001fcc",
+              border: `1px solid ${tierColor?.color}`,
+              backgroundColor: rgba,
+            }}
+            className=" px-4 py-1 text-sm rounded-3xl"
+          >
+            {sponsor?.tierName}
+          </p>
+        )}
       </div>
       <div className="w-full px-4   items-start col-span-2 text-[#717171] justify-start flex flex-col gap-y-4">
         <div className="font-semibold flex capitalize flex-wrap text-black text-xl">

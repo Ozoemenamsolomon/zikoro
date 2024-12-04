@@ -38,7 +38,6 @@ import {
 } from "@/hooks/services/certificate";
 import { Image as ImageElement } from "@/components/certificate";
 import lz from "lzutf8";
-import { exportComponentAsPNG } from "react-component-export-image";
 import { useToPng } from "@hugocxl/react-to-image";
 import CertificateQRCode from "@/components/certificate/QRCode";
 import { useGetEvent } from "@/hooks";
@@ -857,7 +856,7 @@ const page = () => {
                   ? `url(${details.background})`
                     : "",
                   backgroundColor: "#fff",
-                  width: "8.27in",
+                  width: "90%",
                   height: "11.69in",
                 }}
                 ref={certificateRef}

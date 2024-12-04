@@ -8,10 +8,10 @@ import { TOASTER_PROPS } from "@/lib";
 import { SubscriptionModal } from "../components/contents/_components/modal/SubscriptionModal";
 import Head from "next/head";
 
-export const metadata: Metadata = {
-  title: "Zikoro",
-  description: "Event management software for all kinds of events",
-};
+// export const metadata: Metadata = {
+//   title: "Zikoro",
+//   description: "Event management software for all kinds of events",
+// };
 
 export default function RootLayout({
   children,

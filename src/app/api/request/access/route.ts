@@ -42,7 +42,9 @@ export async function POST(req: NextRequest) {
   margin-top: 2rem;
 ">Click the button below to access the attendee app.</p>
         <a
-        style="width: 130px;"
+        style="width: 130px;
+        background-color: #001fcc;
+        "
         href="${paymentLink}"><button 
         
         
@@ -58,7 +60,7 @@ export async function POST(req: NextRequest) {
             color: white;
             text-align: center;
             text-decoration: none;
-            background-color: rgb(0, 31, 204);
+            background-color: #001fcc;
             border-radius: 6px;
             border: 0;
             "

@@ -39,12 +39,6 @@ import {
   geocodeAddress,
 } from "@/utils";
 import { TOrgEvent, OrganizerContact, Event } from "@/types";
-import {
-  GoogleMap,
-  Marker,
-  InfoWindow,
-  useLoadScript,
-} from "@react-google-maps/api";
 import copy from "copy-to-clipboard";
 
 function ShareEvent({
@@ -334,32 +328,10 @@ export default function SinglePublishedEvent({
     email: data?.eventContactEmail,
   };
 
-  const { isLoaded } = useLoadScript({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
-  });
+
 
   return (
     <>
-      <Head>
-        <title>
-          {eventDetail ? `${eventDetail?.eventTitle} ` : "Loading..."}
-        </title>
-        <meta
-          name="description"
-          content={eventDetail ? `${eventDetail?.description}` : "Loading..."}
-        />
-        <meta
-          property="og:image"
-          content={
-            eventDetail && eventDetail?.eventPoster?.startsWith("https")
-              ? eventDetail?.eventPoster
-              : ""
-          }
-        />
-
-        <meta name="author" content="Zikoro" />
-      </Head>
-
       {eventDetail ? (
         <div className="w-full h-full fixed overflow-y-auto bg-[#F7F8FF]">
           <div className="w-full px-4 sm:px-6 md:px-10 flex items-center justify-between p-3 sm:p-4 border-b border-[#EAEAEA]">
