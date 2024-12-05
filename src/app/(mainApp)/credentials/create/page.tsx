@@ -1,8 +1,19 @@
 import React from "react";
 import CreateCredentialsPage from "./CreateCredentialsPage";
 
-const page = ({ params }: { params: { certificateAlias: string } }) => {
-  return <CreateCredentialsPage certificateAlias={params.certificateAlias} />;
+const page = ({
+  params,
+  searchParams,
+}: {
+  params: { certificateAlias: string };
+  searchParams: { orgId: string };
+}) => {
+  return (
+    <CreateCredentialsPage
+      certificateAlias={params.certificateAlias}
+      organizationId={searchParams.orgId}
+    />
+  );
 };
 
 export default page;

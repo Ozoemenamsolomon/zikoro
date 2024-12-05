@@ -28,15 +28,15 @@ interface ImageSidebarProps {
   editor: Editor | undefined;
   activeTool: ActiveTool;
   onChangeActiveTool: (tool: ActiveTool) => void;
+  organizationId: string;
 }
 
 export const ImageSidebar = ({
   editor,
   activeTool,
   onChangeActiveTool,
+  organizationId,
 }: ImageSidebarProps) => {
-  const { searchParams } = new URL(window.location.href);
-  const organizationId = searchParams.get("orgId");
   console.log(organizationId);
   const {
     organization,
@@ -282,8 +282,8 @@ export const ImageSidebar = ({
         <div className="p-4">
           <div className="grid grid-cols-2 gap-4">
             {organization &&
-              !!organization.certificateAsset?.elements &&
-              organization.certificateAsset?.elements.map((image, index) => {
+              !!organization.certificateAsset?.backgrounds &&
+              organization.certificateAsset?.backgrounds.map((image, index) => {
                 return (
                   <button
                     onClick={() => editor?.addImage(image)}

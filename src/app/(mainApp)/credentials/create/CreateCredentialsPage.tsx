@@ -5,8 +5,10 @@ import React, { useEffect, useState } from "react";
 
 const CreateCredentialsPage = ({
   certificateAlias,
+  organizationId,
 }: {
   certificateAlias: string;
+  organizationId: string;
 }) => {
   const { certificate, isLoading } = useGetCertificate({
     certificateAlias,
@@ -27,6 +29,7 @@ const CreateCredentialsPage = ({
       initialData={certificate?.certificateJSON}
       name={certificate?.certificateName}
       setName={setName}
+      organizationId={organizationId}
     />
   );
 };

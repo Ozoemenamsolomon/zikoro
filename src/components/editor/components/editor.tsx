@@ -33,9 +33,15 @@ interface EditorProps {
   initialData: ResponseType["data"];
   name: string;
   setName: (name: string) => void;
+  organizationId: string;
 }
 
-export const Editor = ({ initialData, name, setName }: EditorProps) => {
+export const Editor = ({
+  initialData,
+  name,
+  setName,
+  organizationId,
+}: EditorProps) => {
   // const { mutate } = useUpdateProject(initialData.id);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -154,11 +160,13 @@ export const Editor = ({ initialData, name, setName }: EditorProps) => {
           editor={editor}
           activeTool={activeTool}
           onChangeActiveTool={onChangeActiveTool}
+          organizationId={organizationId}
         />
         <ImageSidebar
           editor={editor}
           activeTool={activeTool}
           onChangeActiveTool={onChangeActiveTool}
+          organizationId={organizationId}
         />
         {/* <TemplateSidebar
           editor={editor}

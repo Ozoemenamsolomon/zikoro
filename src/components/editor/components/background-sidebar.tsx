@@ -28,15 +28,15 @@ interface ImageSidebarProps {
   editor: Editor | undefined;
   activeTool: ActiveTool;
   onChangeActiveTool: (tool: ActiveTool) => void;
+  organizationId: string;
 }
 
 export const BackgroundSidebar = ({
   editor,
   activeTool,
   onChangeActiveTool,
+  organizationId,
 }: ImageSidebarProps) => {
-  const { searchParams } = new URL(window.location.href);
-  const organizationId = searchParams.get("orgId");
   const {
     organization,
     isLoading: fetching,
