@@ -107,7 +107,8 @@ export type ActiveTool =
   | "settings"
   | "ai"
   | "remove-bg"
-  | "templates";
+  | "templates"
+  | "background";
 
 export const FILL_COLOR = "rgba(0,0,0,1)";
 export const STROKE_COLOR = "rgba(0,0,0,1)";
@@ -217,6 +218,7 @@ export interface Editor {
   zoomIn: () => void;
   zoomOut: () => void;
   getWorkspace: () => fabric.Object | undefined;
+  changeBackgroundImage: (image: string) => void;
   changeBackground: (value: string) => void;
   changeSize: (value: { width: number; height: number }) => void;
   enableDrawingMode: () => void;

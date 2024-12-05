@@ -103,7 +103,7 @@ const buildEditor = ({
 
     await transformText(dataUrl.objects);
     const fileString = `data:text/json;charset=utf-8,${encodeURIComponent(
-      JSON.stringify(dataUrl, null, "\t"),
+      JSON.stringify(dataUrl, null, "\t")
     )}`;
     downloadFile(fileString, "json");
   };
@@ -152,7 +152,7 @@ const buildEditor = ({
       const center = canvas.getCenter();
       canvas.zoomToPoint(
         new fabric.Point(center.left, center.top),
-        zoomRatio > 1 ? 1 : zoomRatio,
+        zoomRatio > 1 ? 1 : zoomRatio
       );
     },
     zoomOut: () => {
@@ -161,7 +161,7 @@ const buildEditor = ({
       const center = canvas.getCenter();
       canvas.zoomToPoint(
         new fabric.Point(center.left, center.top),
-        zoomRatio < 0.2 ? 0.2 : zoomRatio,
+        zoomRatio < 0.2 ? 0.2 : zoomRatio
       );
     },
     changeSize: (value: { width: number; height: number }) => {
@@ -174,6 +174,16 @@ const buildEditor = ({
     changeBackground: (value: string) => {
       const workspace = getWorkspace();
       workspace?.set({ fill: value });
+      canvas.renderAll();
+      save();
+    },
+    changeBackgroundImage: (url: string) => {
+      console.log(url);
+
+      canvas.setBackgroundImage(url, canvas.renderAll.bind(canvas), {
+        backgroundImageStretch: true,
+      });
+
       canvas.renderAll();
       save();
     },
@@ -218,7 +228,7 @@ const buildEditor = ({
         },
         {
           crossOrigin: "anonymous",
-        },
+        }
       );
     },
     delete: () => {
@@ -505,7 +515,7 @@ const buildEditor = ({
           stroke: strokeColor,
           strokeWidth: strokeWidth,
           strokeDashArray: strokeDashArray,
-        },
+        }
       );
 
       addToCanvas(object);
@@ -527,7 +537,7 @@ const buildEditor = ({
           stroke: strokeColor,
           strokeWidth: strokeWidth,
           strokeDashArray: strokeDashArray,
-        },
+        }
       );
       addToCanvas(object);
     },
@@ -761,7 +771,7 @@ export const useEditor = ({
     [
       canvasHistory, // No need, this is from useRef
       setHistoryIndex, // No need, this is from useState
-    ],
+    ]
   );
 
   return { init, editor };

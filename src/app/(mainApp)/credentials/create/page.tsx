@@ -1,9 +1,8 @@
-import { Editor } from "@/components/editor/components/editor";
 import React from "react";
+import CreateCredentialsPage from "./CreateCredentialsPage";
 
-const page = () => {
-    // const {} = fetchCerti
-  return <Editor />
+const page = ({ params }: { params: { certificateAlias: string } }) => {
+  return <CreateCredentialsPage certificateAlias={params.certificateAlias} />;
 };
 
 export default page;

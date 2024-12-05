@@ -30,14 +30,13 @@ interface ImageSidebarProps {
   onChangeActiveTool: (tool: ActiveTool) => void;
 }
 
-export const ImageSidebar = ({
+export const BackgroundSidebar = ({
   editor,
   activeTool,
   onChangeActiveTool,
 }: ImageSidebarProps) => {
   const searchParams = useSearchParams();
   const organizationId = searchParams.get("orgId");
-  console.log(organizationId);
   const {
     organization,
     isLoading: fetching,
@@ -49,40 +48,44 @@ export const ImageSidebar = ({
     organizationId,
   });
 
-  const [elementUploading, setElementUploading] = useState<boolean>(false);
-  const uploadElement = async (file: File | null) => {
+  const divRef = useRef<HTMLDivElement>(null);
+
+  const workspace = editor?.getWorkspace();
+
+  const [backgroundUploading, setBackgroundUploading] =
+    useState<boolean>(false);
+
+  const uploadBackground = async (file: File | null) => {
     try {
       if (!file) return;
-      setElementUploading(true);
+      setBackgroundUploading(true);
       const { url, error } = await uploadFile(file, "image");
 
       if (error || !url) throw error;
-      // alert("File uploaded successfully");
+      alert("File uploaded successfully");
 
-      // setValue("element", url);
+      // setValue("background", url);
       const payload = organization?.certificateAsset
         ? {
             certificateAsset: {
               ...organization?.certificateAsset,
-              elements: organization?.certificateAsset?.elements
-                ? [...organization?.certificateAsset?.elements, url]
+              backgrounds: organization?.certificateAsset?.backgrounds
+                ? [...organization?.certificateAsset?.backgrounds, url]
                 : [url],
             },
           }
         : {
             certificateAsset: {
-              elements: [url],
-              backgrounds: [],
+              backgrounds: [url],
+              elements: [],
             },
           };
 
       // const payload = {
       //   certificateAsset: {
-      //     elements: organization?.certificateAsset?.elements,
+      //     backgrounds: organization?.certificateAsset?.backgrounds,
       //   },
       // };
-
-      console.log(payload.certificateAsset.elements);
 
       await updateOrganization({
         payload,
@@ -93,18 +96,18 @@ export const ImageSidebar = ({
       alert("error uploading profile picture");
       console.error("Error uploading file:", error);
     } finally {
-      setElementUploading(false);
+      setBackgroundUploading(false);
     }
   };
 
-  const divRef = useRef<HTMLDivElement>(null);
+  const deleteBackground = async (url: string) => {
+    if (workspace.fill === url) editor?.changeBackground("#fff");
 
-  const deleteElement = async (url: string) => {
     const payload = {
       certificateAsset: organization?.certificateAsset
         ? {
             ...organization?.certificateAsset,
-            elements: organization?.certificateAsset.elements.filter(
+            backgrounds: organization?.certificateAsset.backgrounds.filter(
               (item: string) => item !== url
             ),
           }
@@ -161,7 +164,7 @@ export const ImageSidebar = ({
                 />
               </svg>
               <div className="text-gray-800 font-medium flex flex-col gap-2 text-center">
-                <span>Are you sure you want to delete this element?</span>
+                <span>Are you sure you want to delete this background?</span>
               </div>
             </div>
             <div className="flex gap-2">
@@ -178,7 +181,7 @@ export const ImageSidebar = ({
                 onClick={async (e) => {
                   e.stopPropagation();
                   clsBtnRef.current?.click();
-                  await deleteElement(url);
+                  await deleteBackground(url);
                 }}
                 className="bg-basePrimary w-full"
               >
@@ -205,21 +208,21 @@ export const ImageSidebar = ({
     <aside
       className={cn(
         "relative z-[40] flex h-full w-[360px] flex-col border-r bg-white",
-        activeTool === "images" ? "visible" : "hidden"
+        activeTool === "background" ? "visible" : "hidden"
       )}
     >
       <ToolSidebarHeader
-        title="Images"
-        description="Add images to your canvas"
+        title="Background"
+        description="Add background to your canvas"
       />
       <div className="flex flex-col gap-2 items-center py-4">
         {" "}
         <Button
-          disabled={elementUploading}
+          disabled={backgroundUploading}
           onClick={() => document.getElementById("file-input")?.click()}
           className="border-basePrimary border-2 text-basePrimary bg-transparent flex gap-4 justify-center items-center rounded-md py-2 px-3 hover:bg-basePrimary/20"
         >
-          {elementUploading ? (
+          {backgroundUploading ? (
             <div className="animate-spin">
               <svg
                 stroke="currentColor"
@@ -250,14 +253,16 @@ export const ImageSidebar = ({
               <line x1={12} y1={3} x2={12} y2={15} />
             </svg>
           )}
-          <span>Import Element</span>
+          <span>Import Background</span>
         </Button>
         <div className="hidden">
           <Input
             id="file-input"
             name="background"
             type="file"
-            onChange={(e) => e.target.files && uploadElement(e.target.files[0])}
+            onChange={(e) =>
+              e.target.files && uploadBackground(e.target.files[0])
+            }
             accept="image/*"
           />
         </div>
@@ -271,24 +276,27 @@ export const ImageSidebar = ({
         </div>
       )}
       {/* {error && (
-          <div className="flex flex-1 flex-col items-center justify-center gap-y-4">
-            <AlertTriangle className="size-4 text-muted-foreground" />
-            <p className="text-xs text-muted-foreground">
-              Failed to fetch images
-            </p>
-          </div>
-        )} */}
+        <div className="flex flex-1 flex-col items-center justify-center gap-y-4">
+          <AlertTriangle className="size-4 text-muted-foreground" />
+          <p className="text-xs text-muted-foreground">
+            Failed to fetch images
+          </p>
+        </div>
+      )} */}
       <ScrollArea>
         <div className="p-4">
           <div className="grid grid-cols-2 gap-4">
-            {organization &&
-              !!organization.certificateAsset?.elements &&
-              organization.certificateAsset?.elements.map((image, index) => {
+            {!fetching &&
+              organization &&
+              !!organization.certificateAsset?.backgrounds &&
+              organization.certificateAsset?.backgrounds.map((image, index) => {
                 return (
                   <button
-                    onClick={() => editor?.addImage(image)}
+                    onClick={() => {
+                      editor?.addImage(image);
+                    }}
                     key={image}
-                    className="group relative h-[100px] w-full overflow-hidden rounded-sm border bg-muted transition hover:opacity-75"
+                    className="group relative h-[200px] w-full overflow-hidden rounded-sm border bg-muted transition hover:opacity-75"
                   >
                     <Delete url={image} />
 

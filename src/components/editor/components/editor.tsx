@@ -27,12 +27,15 @@ import { DrawSidebar } from "@/components/editor/components/draw-sidebar";
 import { TemplateSidebar } from "@/components/editor/components/template-sidebar";
 import { RemoveBgSidebar } from "@/components/editor/components/remove-bg-sidebar";
 import { SettingsSidebar } from "@/components/editor/components/settings-sidebar";
+import { BackgroundSidebar } from "./background-sidebar";
 
 interface EditorProps {
   initialData: ResponseType["data"];
+  name: string;
+  setName: (name: string) => void;
 }
 
-export const Editor = ({ initialData }: EditorProps) => {
+export const Editor = ({ initialData, name, setName }: EditorProps) => {
   // const { mutate } = useUpdateProject(initialData.id);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -53,8 +56,8 @@ export const Editor = ({ initialData }: EditorProps) => {
 
   const { init, editor } = useEditor({
     defaultState: initialData?.json,
-    defaultWidth: initialData?.width ?? 1200,
-    defaultHeight: initialData?.height ?? 900,
+    defaultWidth: initialData?.width ?? 900,
+    defaultHeight: initialData?.height ?? 1200,
     clearSelectionCallback: onClearSelection,
     // saveCallback: debouncedSave,
   });
@@ -104,6 +107,8 @@ export const Editor = ({ initialData }: EditorProps) => {
         editor={editor}
         activeTool={activeTool}
         onChangeActiveTool={onChangeActiveTool}
+        setName={setName}
+        name={name}
       />
       <div className="absolute top-[68px] flex h-[calc(100%-68px)] w-full">
         <Sidebar
@@ -145,11 +150,16 @@ export const Editor = ({ initialData }: EditorProps) => {
           activeTool={activeTool}
           onChangeActiveTool={onChangeActiveTool}
         />
-        {/* <ImageSidebar
+        <BackgroundSidebar
           editor={editor}
           activeTool={activeTool}
           onChangeActiveTool={onChangeActiveTool}
-        /> */}
+        />
+        <ImageSidebar
+          editor={editor}
+          activeTool={activeTool}
+          onChangeActiveTool={onChangeActiveTool}
+        />
         {/* <TemplateSidebar
           editor={editor}
           activeTool={activeTool}
