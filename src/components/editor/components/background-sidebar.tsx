@@ -35,7 +35,7 @@ export const BackgroundSidebar = ({
   activeTool,
   onChangeActiveTool,
 }: ImageSidebarProps) => {
-  const searchParams = useSearchParams();
+  const { searchParams } = new URL(window.location.href);
   const organizationId = searchParams.get("orgId");
   const {
     organization,
