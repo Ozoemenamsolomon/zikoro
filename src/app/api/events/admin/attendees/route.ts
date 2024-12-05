@@ -14,10 +14,11 @@ export async function GET(req: NextRequest) {
       const eventAlias = searchParams.get("eventAlias");
 
       let transactions = [];
+      let totalPages = 0;
       const query = supabase
         .from("eventTransactions")
-        .select("*", { count: 'exact' }) 
-        .order("created_at", { ascending: false }) 
+        .select("*", { count: "exact" })
+        .order("created_at", { ascending: false })
         .range(Number(from || 0), Number(to || 50));
       if (eventAlias && eventAlias?.length > 0) {
         query.eq("eventAlias", eventAlias);
@@ -26,6 +27,7 @@ export async function GET(req: NextRequest) {
       const { data, error, status, count } = await query;
 
       if (data) {
+        if (data?.length > 0 && count) totalPages = Math.ceil(count / 50);
         const updatedWithAttendees = await Promise.all(
           data?.map(async (trans) => {
             const { data: fetchedAttendees, error: errorFetchingAttendee } =
@@ -76,7 +78,7 @@ export async function GET(req: NextRequest) {
 
       return NextResponse.json(
         {
-          data: transactions,
+          data: { transactions, totalPages },
         },
         {
           status: 200,

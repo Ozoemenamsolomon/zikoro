@@ -61,7 +61,7 @@ export function FormIntegration({
           render={({ field }) => (
             <InputOffsetLabel label="Redirect URL">
               <Input
-                placeholder="Redirect URL"
+                placeholder="Redirect URL (Start with https://) e.g https://"
                 type="text"
                 defaultValue={data?.formSettings?.redirectUrl}
                 {...form.register("formSettings.redirectUrl")}

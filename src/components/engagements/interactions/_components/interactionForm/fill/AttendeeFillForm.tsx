@@ -61,7 +61,7 @@ function AttendeeFillFormComp({
 }) {
   const { user } = useUserStore();
   const router = useRouter();
-  const { isOrganizer, attendee } = useVerifyUserAccess(eventId);
+  const { isOrganizer, attendee, isLoading: loadingAttendee } = useVerifyUserAccess(eventId);
   const params = useSearchParams();
   const attendeeId = params.get("id");
   const link = params.get("link");
@@ -209,7 +209,7 @@ function AttendeeFillFormComp({
     }
   }, [data]);
 
-  if (isLoading) {
+  if (isLoading || loadingAttendee) {
     return (
       <div className="w-full h-[30rem] flex items-center justify-center">
         <LoaderAlt size={30} className="animate-spin" />
@@ -217,14 +217,13 @@ function AttendeeFillFormComp({
     );
   }
 
-  
 
   return (
     <>{
 
-      !isLoading &&
+      !isLoading && !loadingAttendee &&
     data?.formSettings?.isCollectUserEmail &&
-    (!attendee?.id || !attendeeId) &&
+    (typeof attendee !== "object" || attendeeId !== null) &&
 
     <div className="w-full h-full inset-0 fixed z-[100] bg-white">
     <div className="w-[95%] max-w-xl border rounded-lg bg-gradient-to-b gap-y-6 from-white  to-basePrimary/20  h-[400px] flex flex-col items-center justify-center shadow absolute inset-0 m-auto">
@@ -401,21 +400,19 @@ function AttendeeFillFormComp({
                     parseInt(data?.formSettings?.questionPerSlides || "1") >=
                   fields?.length ? (
                     <Button
-                      type="submit"
-                      disabled={loading}
-                      style={{
-                        backgroundColor: data?.formSettings?.buttonColor || "",
-                      }}
-                      className={cn(
-                        "self-center  gap-x-2  text-white font-medium h-12 ",
-                        !data?.formSettings?.buttonColor && "bg-basePrimary"
-                      )}
-                    >
-                      {loading && (
-                        <LoaderAlt className="animate-spin" size={20} />
-                      )}
-                      <p>Submit</p>
-                    </Button>
+                  type="submit"
+                  disabled={loading}
+                  style={{
+                    backgroundColor: data?.formSettings?.buttonColor || "",
+                  }}
+                  className={cn(
+                    "self-center w-fit gap-x-2  text-white font-medium h-12 ",
+                    !data?.formSettings?.buttonColor && "bg-basePrimary"
+                  )}
+                >
+                  {loading && <LoaderAlt className="animate-spin" size={20} />}
+                  <p>{data?.formSettings?.buttonText  || "Submit"}</p>
+                </Button>
                   ) : (
                     <Button
                       onClick={(e) => {
@@ -446,7 +443,7 @@ function AttendeeFillFormComp({
                     backgroundColor: data?.formSettings?.buttonColor || "",
                   }}
                   className={cn(
-                    "self-center w-[150px] gap-x-2  text-white font-medium h-12 ",
+                    "self-center w-fit gap-x-2  text-white font-medium h-12 ",
                     !data?.formSettings?.buttonColor && "bg-basePrimary"
                   )}
                 >
