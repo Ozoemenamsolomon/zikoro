@@ -21,7 +21,7 @@ import Link from "next/link";
 import { cn } from "@/lib";
 import { InlineIcon } from "@iconify/react";
 import { usePostRequest } from "@/hooks/services/request";
-import { DeleteCard } from "@/components/agenda/_components";
+import { ActionCard } from "@/components/custom_ui/ActionCard";
 
 
 
@@ -149,7 +149,7 @@ export function SpeakerWidget({
   
   return (
     <>
-    {isDeleting && <DeleteCard loading={isLoading} close={toggleDelete} deletes={remove}/>}
+    {isDeleting && <ActionCard loading={isLoading} close={toggleDelete} deletes={remove}/>}
       <div
         onClick={() => {
           changeActiveState?.(2);

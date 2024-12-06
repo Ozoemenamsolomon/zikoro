@@ -947,7 +947,7 @@ export default function SecondSection({
                 {attendeeCertificates.map((certificate) => (
                   <DropdownMenuItem key={certificate.id}>
                     <Link
-                      href={`/verify/certificate/${certificate.certificateId}`}
+                      href={`/credentials/verify/certificate/${certificate.certificateId}`}
                     >
                       {certificate.CertificateName}
                     </Link>

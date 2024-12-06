@@ -8,10 +8,12 @@ import {
   Shapes,
   Sparkles,
   Type,
+  Lock,
 } from "lucide-react";
 
 import { ActiveTool } from "@/components/editor/types";
 import { SidebarItem } from "@/components/editor/components/sidebar-item";
+import { PiSelectionBackground } from "react-icons/pi";
 
 interface SidebarProps {
   activeTool: ActiveTool;
@@ -29,6 +31,12 @@ export const Sidebar = ({ activeTool, onChangeActiveTool }: SidebarProps) => {
           onClick={() => onChangeActiveTool("templates")}
         />
         <SidebarItem
+          icon={PiSelectionBackground}
+          label="Background"
+          isActive={activeTool === "background"}
+          onClick={() => onChangeActiveTool("background")}
+        />
+        <SidebarItem
           icon={ImageIcon}
           label="Image"
           isActive={activeTool === "images"}
@@ -39,6 +47,12 @@ export const Sidebar = ({ activeTool, onChangeActiveTool }: SidebarProps) => {
           label="Text"
           isActive={activeTool === "text"}
           onClick={() => onChangeActiveTool("text")}
+        />
+        <SidebarItem
+          icon={Lock}
+          label="Verification"
+          isActive={activeTool === "verification"}
+          onClick={() => onChangeActiveTool("verification")}
         />
         <SidebarItem
           icon={Shapes}
@@ -52,12 +66,12 @@ export const Sidebar = ({ activeTool, onChangeActiveTool }: SidebarProps) => {
           isActive={activeTool === "draw"}
           onClick={() => onChangeActiveTool("draw")}
         />
-        <SidebarItem
+        {/* <SidebarItem
           icon={Sparkles}
           label="AI"
           isActive={activeTool === "ai"}
           onClick={() => onChangeActiveTool("ai")}
-        />
+        /> */}
         <SidebarItem
           icon={Settings}
           label="Settings"

@@ -19,7 +19,7 @@ import { json2csv } from "json-2-csv";
 import { saveAs } from "file-saver";
 import { useDeleteRequest } from "@/hooks/services/request";
 import * as XLSX from "xlsx";
-import { DeleteCard } from "@/components/agenda/_components";
+import { ActionCard } from "@/components/custom_ui/ActionCard";
 interface FormResponseProps {
   data:
     | {
@@ -144,6 +144,8 @@ export default function FormResponses({
       }
       const transformedData = transformData(flattenedResponse);
 
+      console.log(flattenedResponse)
+
       const worksheet = XLSX.utils.json_to_sheet(transformedData);
       const workbook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(workbook, worksheet, "Responses");
@@ -164,7 +166,7 @@ export default function FormResponses({
   return (
     <>
       {isDeleting && (
-        <DeleteCard
+        <ActionCard
           loading={isLoading}
           deletes={deleteResponses}
           close={toggleDelete}

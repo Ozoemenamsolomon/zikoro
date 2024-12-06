@@ -1,12 +1,13 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import {
+  useCreateCertificate,
   useDeleteCertificate,
   useGetAttendeeCertificate,
   useGetCertificates,
   useSaveCertificate,
 } from "@/hooks";
-import { compareAsc, format, isPast, subDays } from "date-fns";
+import { format, isPast } from "date-fns";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -31,18 +32,35 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { TCertificate } from "@/types/certificates";
+import useOrganizationStore from "@/store/globalOrganizationStore";
 
 const Certificates = () => {
   const router = useRouter();
 
   const { eventId } = useParams();
 
+  const { organization } = useOrganizationStore();
+
   const { certificates, isLoading, getCertificates } = useGetCertificates({
     eventId,
   });
 
-  const { saveCertificate, isLoading: certificateIsSaving } =
-    useSaveCertificate();
+  const { createCertificate, isLoading: certificateIsCreating } =
+    useCreateCertificate();
+
+  // const { saveCertificate, isLoading: certificateIsSaving } =
+  //   useSaveCertificate();
+
+  const createCertificateFn = async () => {
+    const data = await createCertificate({
+      payload: { eventId },
+    });
+
+    if (!data) return;
+    router.push(
+      `/credentials/create/${data.certificateAlias}?eventAlias=${eventId}&orgId=${organization.id}`
+    );
+  };
 
   const {
     deleteCertificate,
@@ -60,7 +78,7 @@ const Certificates = () => {
       certificateName: certificate.certificateName + " copy",
     };
 
-    const newCertificate = await saveCertificate({ payload });
+    const newCertificate = await createCertificate({ payload });
 
     if (newCertificate) {
       router.push(`certificate/create?certificateId=${newCertificate.id}`);
@@ -476,7 +494,7 @@ const Certificates = () => {
               >
                 Cancel
               </Button>
-              <Button
+              {/* <Button
                 disabled={isLoading}
                 onClick={async (e) => {
                   e.stopPropagation();
@@ -496,7 +514,7 @@ const Certificates = () => {
                 className="bg-basePrimary w-full"
               >
                 Publish
-              </Button>
+              </Button> */}
             </div>
           </div>
           <DialogClose asChild>
@@ -721,8 +739,9 @@ const Certificates = () => {
           onClick={(e) => {
             e.stopPropagation();
 
-            router.push(`/event/${eventId}/content/certificate/create`);
+            createCertificateFn();
           }}
+          disabled={certificateIsCreating}
           className="bg-basePrimary flex gap-4 items-center w-fit py-2"
         >
           <svg
@@ -745,10 +764,10 @@ const Certificates = () => {
   return (
     <div className="flex flex-col gap-2 px-2 py-4">
       <Button
+        disabled={certificateIsCreating}
         onClick={(e) => {
           e.stopPropagation();
-
-          router.push(`/event/${eventId}/content/certificate/create`);
+          createCertificateFn();
         }}
         className="bg-basePrimary flex gap-4 items-center w-fit py-2 self-end"
       >
@@ -776,6 +795,7 @@ const Certificates = () => {
             eventId,
             certificateSettings,
             lastEdited,
+            certificateAlias,
           } = certificate;
 
           return (
@@ -827,9 +847,8 @@ const Certificates = () => {
               </DropdownMenu>
               <button
                 disabled={
-                  !!certificateIsSaving ||
-                  (!!certificateSettings?.publishOn &&
-                    !!isPast(certificateSettings?.publishOn))
+                  !!certificateSettings?.publishOn &&
+                  !!isPast(certificateSettings?.publishOn)
                 }
                 className={`border rounded-md relative w-full h-full overflow-hidden ${
                   certificateSettings?.publishOn &&
@@ -839,7 +858,7 @@ const Certificates = () => {
                 }`}
                 onClick={() =>
                   router.push(
-                    `/event/${eventId}/content/certificate/create?certificateId=${id}`
+                    `/credentials/create/${certificateAlias}?eventAlias=${eventId}&orgId=${organization.id}`
                   )
                 }
               >

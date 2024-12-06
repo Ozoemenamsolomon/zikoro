@@ -119,6 +119,7 @@ export const useGetOrganization = ({
         throw new Error("Failed to fetch organization data");
       }
     } catch (error) {
+      console.log(error);
       setError(true);
     } finally {
       setLoading(false);
@@ -211,4 +212,3 @@ export function useGetUserOrganizations() {
     getOrganizations,
   };
 }
-

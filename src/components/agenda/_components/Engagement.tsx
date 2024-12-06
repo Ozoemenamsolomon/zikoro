@@ -25,7 +25,7 @@ import { EngagementsSettings } from "@/types/engagements";
 import { FilePdf } from "styled-icons/fa-regular";
 import Image from "next/image";
 import Link from "next/link";
-import { DeleteCard } from "./cards/DeleteCard";
+import { ActionCard } from "../../custom_ui/ActionCard";
 
 const tabs = [
   { name: "Description", id: 1 },
@@ -63,11 +63,12 @@ function AddedFiles({ file }: { file: TSessionFile<string> }) {
         </div>
       </div>
       {isDownloadFile && (
-        <DeleteCard
+        <ActionCard
           close={onTogglemodal}
           loading={false}
           buttonText="Download"
           deletes={download}
+          className="bg-basePrimary w-fit"
         />
       )}
     </>

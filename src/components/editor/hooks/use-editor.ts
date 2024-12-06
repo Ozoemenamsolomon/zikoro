@@ -31,6 +31,7 @@ import { useAutoResize } from "@/components/editor/hooks/use-auto-resize";
 import { useCanvasEvents } from "@/components/editor/hooks/use-canvas-events";
 import { useWindowEvents } from "@/components/editor/hooks/use-window-events";
 import { useLoadState } from "@/components/editor/hooks/use-load-state";
+import jsPDF from "jspdf";
 
 const buildEditor = ({
   save,
@@ -68,6 +69,23 @@ const buildEditor = ({
     };
   };
 
+  const savePdf = (name?: string) => {
+    const options = generateSaveOptions();
+
+    canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
+    const dataUrl = canvas.toDataURL(options);
+
+    const pdf = new jsPDF();
+    const imgProperties = pdf.getImageProperties(dataUrl);
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = pdf.internal.pageSize.getHeight();
+
+    pdf.addImage(dataUrl, "PNG", 0, 0, pdfWidth, pdfHeight);
+    pdf.save(name || "untitled.pdf");
+
+    autoZoom();
+  };
+
   const savePng = () => {
     const options = generateSaveOptions();
 
@@ -103,7 +121,7 @@ const buildEditor = ({
 
     await transformText(dataUrl.objects);
     const fileString = `data:text/json;charset=utf-8,${encodeURIComponent(
-      JSON.stringify(dataUrl, null, "\t"),
+      JSON.stringify(dataUrl, null, "\t")
     )}`;
     downloadFile(fileString, "json");
   };
@@ -137,6 +155,7 @@ const buildEditor = ({
   };
 
   return {
+    savePdf,
     savePng,
     saveJpg,
     saveSvg,
@@ -152,7 +171,7 @@ const buildEditor = ({
       const center = canvas.getCenter();
       canvas.zoomToPoint(
         new fabric.Point(center.left, center.top),
-        zoomRatio > 1 ? 1 : zoomRatio,
+        zoomRatio > 1 ? 1 : zoomRatio
       );
     },
     zoomOut: () => {
@@ -161,7 +180,7 @@ const buildEditor = ({
       const center = canvas.getCenter();
       canvas.zoomToPoint(
         new fabric.Point(center.left, center.top),
-        zoomRatio < 0.2 ? 0.2 : zoomRatio,
+        zoomRatio < 0.2 ? 0.2 : zoomRatio
       );
     },
     changeSize: (value: { width: number; height: number }) => {
@@ -174,6 +193,16 @@ const buildEditor = ({
     changeBackground: (value: string) => {
       const workspace = getWorkspace();
       workspace?.set({ fill: value });
+      canvas.renderAll();
+      save();
+    },
+    changeBackgroundImage: (url: string) => {
+      console.log(url);
+
+      canvas.setBackgroundImage(url, canvas.renderAll.bind(canvas), {
+        backgroundImageStretch: true,
+      });
+
       canvas.renderAll();
       save();
     },
@@ -218,7 +247,7 @@ const buildEditor = ({
         },
         {
           crossOrigin: "anonymous",
-        },
+        }
       );
     },
     delete: () => {
@@ -505,7 +534,7 @@ const buildEditor = ({
           stroke: strokeColor,
           strokeWidth: strokeWidth,
           strokeDashArray: strokeDashArray,
-        },
+        }
       );
 
       addToCanvas(object);
@@ -527,7 +556,7 @@ const buildEditor = ({
           stroke: strokeColor,
           strokeWidth: strokeWidth,
           strokeDashArray: strokeDashArray,
-        },
+        }
       );
       addToCanvas(object);
     },
@@ -744,8 +773,8 @@ export const useEditor = ({
         }),
       });
 
-      initialCanvas.setWidth(initialContainer.offsetWidth);
-      initialCanvas.setHeight(initialContainer.offsetHeight);
+      initialCanvas.setWidth(initialContainer?.offsetWidth);
+      initialCanvas.setHeight(initialContainer?.offsetHeight);
 
       initialCanvas.add(initialWorkspace);
       initialCanvas.centerObject(initialWorkspace);
@@ -761,7 +790,7 @@ export const useEditor = ({
     [
       canvasHistory, // No need, this is from useRef
       setHistoryIndex, // No need, this is from useState
-    ],
+    ]
   );
 
   return { init, editor };

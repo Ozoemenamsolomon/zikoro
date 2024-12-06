@@ -22,6 +22,7 @@ export * from "./presentation/ScoreBoard";
 export * from "./modals/InteractionsSelectionModal";
 export * from "./modals/StaticInteractionModal";
 export * from "./custom_ui/InteractionInput";
+export * from "./modals/EventQaSetting";
 export * from "./presentation/attendee/SendMailModal";
 export * from "./presentation/attendee/AvatarModal";
 export * from "./formactions/ActivateForm";

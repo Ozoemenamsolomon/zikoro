@@ -12,7 +12,6 @@ import {
   AlignCenter,
   AlignRight,
   Trash,
-  SquareSplitHorizontal,
   Copy,
 } from "lucide-react";
 
@@ -28,6 +27,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Hint } from "@/components/hint";
 import { Button } from "@/components/ui/button";
+import { PiSquareSplitHorizontal } from "react-icons/pi";
 
 interface ToolbarProps {
   editor: Editor | undefined;
@@ -214,7 +214,7 @@ export const Toolbar = ({
               variant="ghost"
               className={cn(
                 "w-auto px-2 text-sm",
-                activeTool === "font" && "bg-gray-100",
+                activeTool === "font" && "bg-gray-100"
               )}
             >
               <div className="max-w-[100px] truncate">
@@ -354,7 +354,7 @@ export const Toolbar = ({
               variant="ghost"
               className={cn(activeTool === "remove-bg" && "bg-gray-100")}
             >
-              <SquareSplitHorizontal className="size-4" />
+              <PiSquareSplitHorizontal className="size-4" />
             </Button>
           </Hint>
         </div>
