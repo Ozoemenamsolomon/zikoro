@@ -1668,7 +1668,7 @@ export function useRequestAccess() {
     try {
       const { data, status } = await postRequest<any>({
         endpoint: `/request/access`,
-        payload: { email, paymentLink, eventTitle },
+        payload: { email, paymentLink, eventTitle, attendeeName },
       });
     } catch (error: any) {
       toast(error?.response?.data?.error);

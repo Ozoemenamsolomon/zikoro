@@ -49,7 +49,7 @@ export interface TEngagementFormQuestion {
     buttonColor: string;
     textFontSize: string;
     isCoverImage: boolean;
-    buttonText:string;
+    buttonText: string;
   };
 }
 
@@ -89,4 +89,19 @@ export interface TFormattedEngagementFormAnswer {
   question: string;
   questionImage?: string | any;
   optionFields: any;
+}
+
+export interface TEventQa {
+  id: number;
+  qaAlias: string;
+  coverImage: string;
+  eventAlias: string;
+  coverTitle:string;
+  created_at: string;
+  description: string;
+  branding: { poweredBy: boolean; eventName: boolean };
+  accessibility: {
+    visible: boolean;
+    disable: boolean;
+  };
 }

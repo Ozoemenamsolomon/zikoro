@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
             },
           },
         ],
-        subject: `Join ${eventTitle}`,
+        subject: `Access to join ${eventTitle}`,
         htmlbody: `<div>
 
             <div
@@ -43,28 +43,30 @@ export async function POST(req: NextRequest) {
 ">Click the button below to access the attendee app.</p>
         <a
         style="width: 130px;
-        background-color: #001fcc;
+      
         "
-        href="${paymentLink}"><button 
+        href="${paymentLink}">
+        <button 
         
         
          style="
-           style="width: 130px;"
            
-          
+        width:130px;
           padding:0.8rem;
           display:flex;
           align-items:center;
           justify-content:center;
-            font-size: 14px;
-            color: white;
-            text-align: center;
-            text-decoration: none;
-            background-color: #001fcc;
-            border-radius: 6px;
-            border: 0;
+          font-size: 14px;
+          color: white;
+          text-align: center;
+          text-decoration: none;
+          background-color: rgb(0, 31, 204);
+          border-radius: 6px;
+          border: 0;
             "
-        ><p style="margin:0; width:100%; text-align:center; color:white">Join Event</p></button></a>
+        ><p style="margin:0; width:100%; text-align:center; color:white">Join Event
+        </p></button>
+        </a>
             </div>
  </div>`,
       });
