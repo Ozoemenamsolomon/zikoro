@@ -10,19 +10,61 @@ import {
   TIssuedCertificate,
 } from "@/types/certificates";
 import { RequestStatus, UseGetResult, usePostResult } from "@/types/request";
-import { deleteRequest, getRequest, postRequest } from "@/utils/api";
+import {
+  deleteRequest,
+  getRequest,
+  patchRequest,
+  postRequest,
+} from "@/utils/api";
 import { useEffect, useState } from "react";
-import { getCookie } from "@/hooks";
 import useUserStore from "@/store/globalUserStore";
 
-export const useSaveCertificate = () => {
+export const useSaveCertificate = ({
+  certificateAlias,
+}: {
+  certificateAlias: string;
+}) => {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
   const saveCertificate = async ({ payload }: { payload: TCertificate }) => {
     setLoading(true);
+    // toast({
+    //   description: "saving certificate...",
+    // });
+    try {
+      const { data, status } = await patchRequest<TCertificate>({
+        endpoint: "/certificates/" + certificateAlias,
+        payload,
+      });
+
+      if (status !== 201) throw data.data;
+      // toast({
+      //   description: "Certificate Saved Successfully",
+      // });
+      return data.data;
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { saveCertificate, isLoading, error };
+};
+
+export const useCreateCertificate = () => {
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const createCertificate = async ({
+    payload,
+  }: {
+    payload: { eventId: string };
+  }) => {
+    setLoading(true);
     toast({
-      description: "saving certificate...",
+      description: "creating certificate...",
     });
     try {
       const { data, status } = await postRequest<TCertificate>({
@@ -42,7 +84,7 @@ export const useSaveCertificate = () => {
     }
   };
 
-  return { saveCertificate, isLoading, error };
+  return { createCertificate, isLoading, error };
 };
 
 export const useDeleteCertificate = () => {

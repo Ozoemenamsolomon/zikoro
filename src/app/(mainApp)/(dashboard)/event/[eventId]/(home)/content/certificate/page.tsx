@@ -1,6 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import {
+  useCreateCertificate,
   useDeleteCertificate,
   useGetAttendeeCertificate,
   useGetCertificates,
@@ -31,18 +32,35 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { TCertificate } from "@/types/certificates";
+import useOrganizationStore from "@/store/globalOrganizationStore";
 
 const Certificates = () => {
   const router = useRouter();
 
   const { eventId } = useParams();
 
+  const { organization } = useOrganizationStore();
+
   const { certificates, isLoading, getCertificates } = useGetCertificates({
     eventId,
   });
 
+  const { createCertificate, isLoading: certificateIsCreating } =
+    useCreateCertificate();
+
   const { saveCertificate, isLoading: certificateIsSaving } =
     useSaveCertificate();
+
+  const createCertificateFn = async () => {
+    const data = await createCertificate({
+      payload: { eventId },
+    });
+
+    if (!data) return;
+    router.push(
+      `/credentials/create/${data.certificateAlias}?eventAlias=${eventId}&orgId=${organization.id}`
+    );
+  };
 
   const {
     deleteCertificate,
@@ -721,8 +739,9 @@ const Certificates = () => {
           onClick={(e) => {
             e.stopPropagation();
 
-            router.push(`/event/${eventId}/content/certificate/create`);
+            createCertificateFn();
           }}
+          disabled={certificateIsCreating}
           className="bg-basePrimary flex gap-4 items-center w-fit py-2"
         >
           <svg
@@ -745,10 +764,10 @@ const Certificates = () => {
   return (
     <div className="flex flex-col gap-2 px-2 py-4">
       <Button
+        disabled={certificateIsCreating}
         onClick={(e) => {
           e.stopPropagation();
-
-          router.push(`/event/${eventId}/content/certificate/create`);
+          createCertificateFn();
         }}
         className="bg-basePrimary flex gap-4 items-center w-fit py-2 self-end"
       >
@@ -776,6 +795,7 @@ const Certificates = () => {
             eventId,
             certificateSettings,
             lastEdited,
+            certificateAlias,
           } = certificate;
 
           return (
@@ -839,7 +859,7 @@ const Certificates = () => {
                 }`}
                 onClick={() =>
                   router.push(
-                    `/event/${eventId}/content/certificate/create?certificateId=${id}`
+                    `/credentials/create/${certificateAlias}?eventAlias=${eventId}&orgId=${organizationId}`
                   )
                 }
               >

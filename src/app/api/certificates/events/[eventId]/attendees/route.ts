@@ -80,7 +80,7 @@ export async function POST(
               );
               return {
                 certificateId,
-                certificateURL: "www.zikoro.com/verify/certificate/" + certificateId,
+                certificateURL: "www.zikoro.com/credentials/verify/certificate/" + certificateId,
                 ...certificateInfo,
                 ...attendee,
               };

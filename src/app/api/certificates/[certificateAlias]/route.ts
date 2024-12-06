@@ -44,17 +44,23 @@ export async function GET(
   }
 }
 
-export async function PATCH(req: NextRequest) {
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: { certificateAlias: string } }
+) {
   const supabase = createRouteHandlerClient({ cookies });
   if (req.method === "PATCH") {
     try {
-      const params = await req.json();
+      const { certificateAlias } = params;
 
-      console.log(params);
+      const payload = await req.json();
+
+      console.log(payload);
 
       const { data, error } = await supabase
         .from("certificate")
-        .update(params)
+        .update(payload)
+        .eq("certificateAlias", certificateAlias)
         .select()
         .maybeSingle();
 

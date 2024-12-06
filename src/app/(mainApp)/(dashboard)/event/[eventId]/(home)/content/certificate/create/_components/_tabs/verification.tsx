@@ -6,7 +6,7 @@ import { Text } from "@/components/certificate";
 
 const Verification = ({ details, setValue }: TabProps) => {
   const { connectors } = useEditor();
-  const url = "https://zikoro.com/verify/certificate/#{certificate_id#}";
+  const url = "https://zikoro.com/credentials/verify/certificate/#{certificate_id#}";
 
   return (
     <>
