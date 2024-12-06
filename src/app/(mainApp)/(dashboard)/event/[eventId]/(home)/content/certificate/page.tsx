@@ -48,8 +48,8 @@ const Certificates = () => {
   const { createCertificate, isLoading: certificateIsCreating } =
     useCreateCertificate();
 
-  const { saveCertificate, isLoading: certificateIsSaving } =
-    useSaveCertificate();
+  // const { saveCertificate, isLoading: certificateIsSaving } =
+  //   useSaveCertificate();
 
   const createCertificateFn = async () => {
     const data = await createCertificate({
@@ -78,7 +78,7 @@ const Certificates = () => {
       certificateName: certificate.certificateName + " copy",
     };
 
-    const newCertificate = await saveCertificate({ payload });
+    const newCertificate = await createCertificate({ payload });
 
     if (newCertificate) {
       router.push(`certificate/create?certificateId=${newCertificate.id}`);
@@ -494,7 +494,7 @@ const Certificates = () => {
               >
                 Cancel
               </Button>
-              <Button
+              {/* <Button
                 disabled={isLoading}
                 onClick={async (e) => {
                   e.stopPropagation();
@@ -514,7 +514,7 @@ const Certificates = () => {
                 className="bg-basePrimary w-full"
               >
                 Publish
-              </Button>
+              </Button> */}
             </div>
           </div>
           <DialogClose asChild>
@@ -847,7 +847,7 @@ const Certificates = () => {
               </DropdownMenu>
               <button
                 disabled={
-                  !!certificateIsSaving ||
+                  
                   (!!certificateSettings?.publishOn &&
                     !!isPast(certificateSettings?.publishOn))
                 }

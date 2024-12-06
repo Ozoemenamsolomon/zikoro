@@ -773,8 +773,8 @@ export const useEditor = ({
         }),
       });
 
-      initialCanvas.setWidth(initialContainer.offsetWidth);
-      initialCanvas.setHeight(initialContainer.offsetHeight);
+      initialCanvas.setWidth(initialContainer?.offsetWidth);
+      initialCanvas.setHeight(initialContainer?.offsetHeight);
 
       initialCanvas.add(initialWorkspace);
       initialCanvas.centerObject(initialWorkspace);
