@@ -20,6 +20,8 @@ export async function GET(
         .eq("certificateId", certificateId)
         .maybeSingle();
 
+      console.log(data);
+
       if (error) throw error;
 
       return NextResponse.json(

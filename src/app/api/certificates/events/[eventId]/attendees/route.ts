@@ -22,8 +22,6 @@ export async function GET(
         .select("*")
         .eq("eventAlias", eventId);
 
-      
-
       if (certificateError) throw certificateError;
 
       // const attendeeIds = new Set(
@@ -79,10 +77,12 @@ export async function POST(
                 JSON.stringify({ ...certificateInfo, ...attendee })
               );
               return {
-                certificateId,
-                certificateURL: "www.zikoro.com/credentials/verify/certificate/" + certificateId,
                 ...certificateInfo,
                 ...attendee,
+                certificateId,
+                certificateURL:
+                  "www.zikoro.com/credentials/verify/certificate/" +
+                  certificateId,
               };
             }),
             { onConflict: "id" }
@@ -102,8 +102,6 @@ export async function POST(
       }
 
       const { data: certificateData, error } = query;
-
-      
 
       if (error) throw error;
 
@@ -207,7 +205,6 @@ export async function POST(
                 </html>
                 `,
               });
-              
 
               // Send email to individual recipient
               // await transporter.sendMail({
@@ -267,18 +264,17 @@ export async function POST(
               //   `,
               // });
 
-              // 
+              //
             } catch (error) {
               console.error(`Error sending email to ${attendeeEmail}:`, error);
-              
             }
           }
         );
 
         // await transporter.sendMail(mailData, function (err: any, info: any) {
-        //   
+        //
         //   if (err) throw err;
-        //   else 
+        //   else
         // });
       }
 
