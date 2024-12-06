@@ -858,7 +858,7 @@ const Certificates = () => {
                 }`}
                 onClick={() =>
                   router.push(
-                    `/credentials/create/${certificateAlias}?eventAlias=${eventId}&orgId=${organizationId}`
+                    `/credentials/create/${certificateAlias}?eventAlias=${eventId}&orgId=${organization.id}`
                   )
                 }
               >

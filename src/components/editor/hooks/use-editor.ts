@@ -78,7 +78,7 @@ const buildEditor = ({
     const pdf = new jsPDF();
     const imgProperties = pdf.getImageProperties(dataUrl);
     const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (imgProperties.height * pdfWidth) / imgProperties.width;
+    const pdfHeight = pdf.internal.pageSize.getHeight();
 
     pdf.addImage(dataUrl, "PNG", 0, 0, pdfWidth, pdfHeight);
     pdf.save(name || "untitled.pdf");

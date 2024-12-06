@@ -5,6 +5,7 @@ import { BsCloudCheck, BsCloudSlash } from "react-icons/bs";
 import { useFilePicker } from "use-file-picker";
 // import { useMutationState } from "@tanstack/react-query";
 import {
+  ArrowLeft,
   ChevronDown,
   Download,
   Loader,
@@ -29,6 +30,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
+import { useRouter } from "next/navigation";
 
 interface NavbarProps {
   id: string;
@@ -49,8 +51,9 @@ export const Navbar = ({
   setName,
   name,
   isSaving,
-  isError
+  isError,
 }: NavbarProps) => {
+  const router = useRouter();
   const { openFilePicker } = useFilePicker({
     accept: ".json",
     onFilesSuccessfullySelected: ({ plainFiles }: any) => {
@@ -86,6 +89,19 @@ export const Navbar = ({
                 <p>Open</p>
                 <p className="text-xs text-muted-foreground">
                   Open a JSON file
+                </p>
+              </div>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => router.back()}
+              className="flex items-center gap-x-2"
+            >
+              <ArrowLeft className="px-1 h-fit w-fit" size={16} />
+
+              <div>
+                <p>Back</p>
+                <p className="text-xs text-muted-foreground">
+                  Go to certificate menu
                 </p>
               </div>
             </DropdownMenuItem>

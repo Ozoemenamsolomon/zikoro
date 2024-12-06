@@ -429,9 +429,6 @@ export default function FirstSection({
       <div className="flex space-between justify-between border-b-[1px] border-[#F3F3F3] py-4 md:py-2 px-2 bg-white">
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-2">
-            <Button onClick={() => router.back()} variant="ghost">
-              <ArrowLeft className="px-1 h-fit w-fit" size={16} />
-            </Button>
             <h1 className="font-semibold leading-normal text-greyBlack">
               Attendees{" "}
             </h1>
