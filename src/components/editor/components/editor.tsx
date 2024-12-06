@@ -28,6 +28,7 @@ import { TemplateSidebar } from "@/components/editor/components/template-sidebar
 import { RemoveBgSidebar } from "@/components/editor/components/remove-bg-sidebar";
 import { SettingsSidebar } from "@/components/editor/components/settings-sidebar";
 import { BackgroundSidebar } from "./background-sidebar";
+import { VerificationSidebar } from "./verification-sidebar";
 
 interface EditorProps {
   initialData: ResponseType["data"];
@@ -160,6 +161,11 @@ export const Editor = ({
           onChangeActiveTool={onChangeActiveTool}
         />
         <TextSidebar
+          editor={editor}
+          activeTool={activeTool}
+          onChangeActiveTool={onChangeActiveTool}
+        />
+        <VerificationSidebar
           editor={editor}
           activeTool={activeTool}
           onChangeActiveTool={onChangeActiveTool}

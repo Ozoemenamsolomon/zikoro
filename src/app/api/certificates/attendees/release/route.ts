@@ -171,7 +171,7 @@ export async function POST(req: NextRequest) {
       }
 
       return NextResponse.json(
-        { msg: "certificate released successfully", data },
+        { msg: "certificate released successfully", certificate },
         {
           status: 201,
         }

@@ -61,10 +61,19 @@ const CertificateView = ({ certificate }: { certificate: TCertificate }) => {
   const canvasRef = useRef(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  console.log(initialData, "initialData");
+  console.log(certificate?.originalCertificate, "initialData");
+
+  const newState = JSON.parse(
+    replaceSpecialText(JSON.stringify(initialData?.json || {}), {
+      asset: certificate,
+      attendee: certificate?.attendee,
+      event: certificate?.originalCertificate.event,
+      organization: certificate?.originalCertificate.event.organization,
+    })
+  );
 
   const { init, editor } = useEditor({
-    defaultState: initialData?.json,
+    defaultState: newState,
     defaultWidth: initialData?.width ?? 900,
     defaultHeight: initialData?.height ?? 1200,
   });
@@ -88,6 +97,8 @@ const CertificateView = ({ certificate }: { certificate: TCertificate }) => {
   function toggleShareDropDown() {
     showShareDropDown((prev) => !prev);
   }
+
+  console.log(certificate);
 
   const shareText = `Excited to share my ${certificate?.CertificateName} certificate from ${certificate?.originalCertificate.event.eventTitle} with you! Check it out here: ${window.location.href}`;
 
@@ -153,7 +164,8 @@ const CertificateView = ({ certificate }: { certificate: TCertificate }) => {
           </Button>
         </div>
       </div>
-      <div className="h-[calc(100%-124px)] w-full" ref={containerRef}>
+      <div className="relative h-[calc(100%-124px)] w-full" ref={containerRef}>
+        <div className="absolute inset-0 bg-transparent z-50" />
         <canvas ref={canvasRef} />
       </div>
     </div>
@@ -188,6 +200,8 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
     error,
     verifyAttendeeCertificate,
   } = useVerifyAttendeeCertificate({ certificateId });
+
+  console.log(certificate);
 
   useEffect(() => {
     if (isLoading) {

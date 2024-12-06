@@ -7,7 +7,7 @@ import {
   useGetCertificates,
   useSaveCertificate,
 } from "@/hooks";
-import { compareAsc, format, isPast, subDays } from "date-fns";
+import { format, isPast } from "date-fns";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -847,9 +847,8 @@ const Certificates = () => {
               </DropdownMenu>
               <button
                 disabled={
-                  
-                  (!!certificateSettings?.publishOn &&
-                    !!isPast(certificateSettings?.publishOn))
+                  !!certificateSettings?.publishOn &&
+                  !!isPast(certificateSettings?.publishOn)
                 }
                 className={`border rounded-md relative w-full h-full overflow-hidden ${
                   certificateSettings?.publishOn &&
