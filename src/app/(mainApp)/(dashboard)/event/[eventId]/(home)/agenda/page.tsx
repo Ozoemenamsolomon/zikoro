@@ -1,4 +1,10 @@
 import Agenda from "@/components/agenda/Agenda";
+import { metaGenerator } from "../../../meta";
+import { Metadata } from "next";
+
+export const generateMetadata = async ({ params }: { params: { eventId: string } }): Promise<Metadata> =>
+	await metaGenerator({ params });
+
 
 export default function page({
   params: { eventId },

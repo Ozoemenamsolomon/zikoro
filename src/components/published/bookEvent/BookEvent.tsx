@@ -31,7 +31,7 @@ import {
   useTransactionDetail,
   useRedeemDiscountCode,
 } from "@/hooks";
-import { toast } from "@/components/ui/use-toast";
+import toast from "react-hot-toast";
 import { Event } from "@/types";
 import { generateAlphanumericHash } from "@/utils/helpers";
 import { usePathname, useRouter } from "next/navigation";
@@ -277,7 +277,7 @@ export function BookEvent({
       return; /// stop submission
     }
 
-    console.log("in the form A")
+    //console.log("in the form A")
     // maually checking for "others"
     if (values.aboutUs === "others" && !values.others) {
       form.setError("others", {
@@ -287,17 +287,14 @@ export function BookEvent({
 
       return; /// stop submission
     }
-    console.log("in the form C", minAttendees, fields?.length)
+  
     // checking if the attendees number satisfy the minimum attendees required to use the event discount code
     if (minAttendees !== undefined && minAttendees !== fields?.length) {
-      toast({
-        variant: "destructive",
-        description: `Discount code is valid for minimum of ${minAttendees} attendees`,
-      });
-      return;
+     return toast.error(`Discount code is valid for minimum of ${minAttendees} attendees`);
+     
     }
 
-    console.log("in the form D")
+   
 
     const paymentLink = `${
       window.location.origin

@@ -19,6 +19,11 @@ export const formQuestionSchema = z.object({
     
 });
 
+export const eventQaAskAndReplySchema = z.object({
+    isAnonymous: z.boolean(),
+    text: z.string().min(1, {message:"Field is rewuired"})
+})
+
 export const formSettingSchema = z.object({
     title: z.string().min(3, { message: "Title is required" }),
     description: z.string().optional(),
@@ -56,3 +61,9 @@ export const formAnswerSchema = z.object( {
         questionId: z.string()
     }))
 })
+
+export const eventQaSettingSchema = z.object({
+    description: z.any(),
+    coverTitle: z.string().min(3, { message: "Title is required" }),
+    coverImage: z.any(),
+  });

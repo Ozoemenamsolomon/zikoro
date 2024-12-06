@@ -4,7 +4,7 @@ import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { Button, Portal } from "@/components";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib";
-export function DeleteCard({
+export function ActionCard({
   close,
   deletes,
   loading,
