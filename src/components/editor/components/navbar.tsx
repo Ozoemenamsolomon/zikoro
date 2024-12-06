@@ -28,12 +28,15 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 
 interface NavbarProps {
   id: string;
   editor: Editor | undefined;
   activeTool: ActiveTool;
   onChangeActiveTool: (tool: ActiveTool) => void;
+  setName: (name: string) => void;
+  name: string;
 }
 
 export const Navbar = ({
@@ -41,6 +44,8 @@ export const Navbar = ({
   editor,
   activeTool,
   onChangeActiveTool,
+  setName,
+  name,
 }: NavbarProps) => {
   // const data = useMutationState({
   //   filters: {
@@ -53,6 +58,7 @@ export const Navbar = ({
   // const currentStatus = data[data.length - 1];
 
   // const isError = currentStatus === "error";
+
   const isError = false;
   const isPending = false;
 
@@ -146,6 +152,12 @@ export const Navbar = ({
             <div className="text-xs text-muted-foreground">Saved</div>
           </div>
         )}
+        <Input
+          type="text"
+          className="outline-0 bg-transparent border-0 max-w-fit px-4 focus-visible:ring-sky-300 flex justify-center mx-auto border-b"
+          value={name}
+          onInput={(e) => setName(e.currentTarget.value)}
+        />
         <div className="ml-auto flex items-center gap-x-4">
           <DropdownMenu modal={false}>
             <DropdownMenuTrigger asChild>

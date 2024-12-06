@@ -9,14 +9,13 @@ export async function GET(
 ) {
   const { certificateAlias } = params;
   const { searchParams } = new URL(req.url);
-  const isAlias = searchParams.get("isAlias");
   const supabase = createRouteHandlerClient({ cookies });
   if (req.method === "GET") {
     try {
       const { data, error, status } = await supabase
         .from("certificate")
         .select("*")
-        .eq(isAlias === "true" ? "certificateAlias" : "id", certificateAlias)
+        .eq("certificateAlias", certificateAlias)
         .maybeSingle();
 
       console.log(data, "certificate");

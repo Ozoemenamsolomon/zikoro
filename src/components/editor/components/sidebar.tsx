@@ -12,6 +12,7 @@ import {
 
 import { ActiveTool } from "@/components/editor/types";
 import { SidebarItem } from "@/components/editor/components/sidebar-item";
+import { PiSelectionBackground } from "react-icons/pi";
 
 interface SidebarProps {
   activeTool: ActiveTool;
@@ -27,6 +28,12 @@ export const Sidebar = ({ activeTool, onChangeActiveTool }: SidebarProps) => {
           label="Design"
           isActive={activeTool === "templates"}
           onClick={() => onChangeActiveTool("templates")}
+        />
+        <SidebarItem
+          icon={PiSelectionBackground}
+          label="Background"
+          isActive={activeTool === "background"}
+          onClick={() => onChangeActiveTool("background")}
         />
         <SidebarItem
           icon={ImageIcon}
