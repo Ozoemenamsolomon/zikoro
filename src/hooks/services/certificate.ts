@@ -510,10 +510,15 @@ export const useVerifyAttendeeCertificate = ({
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
+  console.log(certificateId);
+
   const verifyAttendeeCertificate = async () => {
+    console.log(certificateId);
     try {
       setLoading(true);
       toast({ description: "verifying certificate..." });
+
+      console.log(certificateId);
 
       const { data, status } = await getRequest<TFullCertificate>({
         endpoint: `/certificates/attendees/verify/${certificateId}`,
@@ -533,6 +538,7 @@ export const useVerifyAttendeeCertificate = ({
 
       setAttendeeCertificate(data.data);
     } catch (error) {
+      console.log(error);
       setError(true);
       toast({
         description: "something went wrong",
@@ -545,7 +551,7 @@ export const useVerifyAttendeeCertificate = ({
 
   useEffect(() => {
     verifyAttendeeCertificate();
-  }, [certificateId]);
+  }, []);
 
   return { attendeeCertificate, isLoading, error, verifyAttendeeCertificate };
 };

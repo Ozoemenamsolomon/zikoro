@@ -201,7 +201,7 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
     verifyAttendeeCertificate,
   } = useVerifyAttendeeCertificate({ certificateId });
 
-  console.log(certificate);
+  console.log(certificate, certificateId);
 
   useEffect(() => {
     if (isLoading) {
@@ -219,7 +219,7 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
 
   return (
     <section className="min-h-screen flex flex-col-reverse md:flex-row justify-center gap-6 pt-20 pb-8 bg-[#F9FAFF]">
-      {!isLoading ? (
+      {!isLoading && certificate ? (
         <>
           <CertificateView certificate={certificate} />
           <div className="flex-[40%] flex flex-col gap-8 px-2">

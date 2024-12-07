@@ -171,9 +171,9 @@ const CertificateDialog: React.FC<MoreOptionsProps> = ({
           <SelectContent>
             {eventCertificates &&
               eventCertificates
-                .filter(({ certificateSettings: { publishOn } }) =>
-                  isPast(publishOn)
-                )
+                // .filter(({ certificateSettings: { publishOn } }) =>
+                //   isPast(publishOn)
+                // )
                 .map(
                   ({ id, certificateName }) =>
                     id && (
