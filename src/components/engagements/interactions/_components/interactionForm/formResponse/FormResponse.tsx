@@ -15,8 +15,6 @@ import Image from "next/image";
 import { cn } from "@/lib";
 import { Button } from "@/components/custom_ui/Button";
 import { useMemo, useState } from "react";
-import { json2csv } from "json-2-csv";
-import { saveAs } from "file-saver";
 import { useDeleteRequest } from "@/hooks/services/request";
 import * as XLSX from "xlsx";
 import { ActionCard } from "@/components/custom_ui/ActionCard";
@@ -37,6 +35,7 @@ export default function FormResponses({
   formAlias,
 }: FormResponseProps) {
   const [isDeleting, setDeleting] = useState(false);
+  const [isDownload, setIsDownload] = useState(false)
   const { deleteData, isLoading } = useDeleteRequest(
     `/engagements/formAnswer/${formAlias}/delete`
   );
@@ -144,7 +143,7 @@ export default function FormResponses({
       }
       const transformedData = transformData(flattenedResponse);
 
-      console.log(flattenedResponse)
+    //  console.log(flattenedResponse)
 
       const worksheet = XLSX.utils.json_to_sheet(transformedData);
       const workbook = XLSX.utils.book_new();
@@ -163,6 +162,15 @@ export default function FormResponses({
     await deleteData();
     window.location.reload();
   }
+
+  async function download() {
+    downloadCsv()
+   // window.location.reload();
+  }
+
+  function toggleModal() {
+    setIsDownload((p) => !p)
+  }
   return (
     <>
       {isDeleting && (
@@ -172,13 +180,20 @@ export default function FormResponses({
           close={toggleDelete}
         />
       )}
+          {isDownload && (
+        <ActionCard
+          loading={true}
+          deletes={download}
+          close={toggleModal}
+        />
+      )}
       <div className="w-full px-4 mx-auto max-w-[1300px] text-mobile sm:text-sm sm:px-6 mt-4 sm:mt-6">
         <div className="w-full mb-4 flex items-end gap-x-4 justify-end">
           <Button onClick={toggleDelete} className="items-center gap-x-1">
             <InlineIcon icon="icon-park-twotone:delete-themes" fontSize={22} />
             <p>Clear Responses</p>
           </Button>
-          <Button onClick={downloadCsv} className="w-fit  gap-x-1 items-center">
+          <Button onClick={toggleModal} className="w-fit  gap-x-1 items-center">
             <p>Export</p>
             <InlineIcon icon="lets-icons:export-duotone" fontSize={22} />
           </Button>
