@@ -5,6 +5,7 @@ import { BsCloudCheck, BsCloudSlash } from "react-icons/bs";
 import { useFilePicker } from "use-file-picker";
 // import { useMutationState } from "@tanstack/react-query";
 import {
+  ArrowLeft,
   ChevronDown,
   Download,
   Loader,
@@ -29,6 +30,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
+import { useRouter } from "next/navigation";
 
 interface NavbarProps {
   id: string;
@@ -37,6 +39,8 @@ interface NavbarProps {
   onChangeActiveTool: (tool: ActiveTool) => void;
   setName: (name: string) => void;
   name: string;
+  isSaving: boolean;
+  isError: boolean;
 }
 
 export const Navbar = ({
@@ -46,22 +50,10 @@ export const Navbar = ({
   onChangeActiveTool,
   setName,
   name,
+  isSaving,
+  isError,
 }: NavbarProps) => {
-  // const data = useMutationState({
-  //   filters: {
-  //     mutationKey: ["project", { id }],
-  //     exact: true,
-  //   },
-  //   select: (mutation) => mutation.state.status,
-  // });
-
-  // const currentStatus = data[data.length - 1];
-
-  // const isError = currentStatus === "error";
-
-  const isError = false;
-  const isPending = false;
-
+  const router = useRouter();
   const { openFilePicker } = useFilePicker({
     accept: ".json",
     onFilesSuccessfullySelected: ({ plainFiles }: any) => {
@@ -100,6 +92,19 @@ export const Navbar = ({
                 </p>
               </div>
             </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => router.back()}
+              className="flex items-center gap-x-2"
+            >
+              <ArrowLeft className="px-1 h-fit w-fit" size={16} />
+
+              <div>
+                <p>Back</p>
+                <p className="text-xs text-muted-foreground">
+                  Go to certificate menu
+                </p>
+              </div>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
         <Separator orientation="vertical" className="mx-2" />
@@ -134,19 +139,19 @@ export const Navbar = ({
           </Button>
         </Hint>
         <Separator orientation="vertical" className="mx-2" />
-        {isPending && (
+        {isSaving && (
           <div className="flex items-center gap-x-2">
             <Loader className="size-4 animate-spin text-muted-foreground" />
             <div className="text-xs text-muted-foreground">Saving...</div>
           </div>
         )}
-        {!isPending && isError && (
+        {!isSaving && isError && (
           <div className="flex items-center gap-x-2">
             <BsCloudSlash className="size-[20px] text-muted-foreground" />
             <div className="text-xs text-muted-foreground">Failed to save</div>
           </div>
         )}
-        {!isPending && !isError && (
+        {!isSaving && !isError && (
           <div className="flex items-center gap-x-2">
             <BsCloudCheck className="size-[20px] text-muted-foreground" />
             <div className="text-xs text-muted-foreground">Saved</div>

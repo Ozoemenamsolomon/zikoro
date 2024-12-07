@@ -37,7 +37,6 @@ export const ImageSidebar = ({
   onChangeActiveTool,
   organizationId,
 }: ImageSidebarProps) => {
-  console.log(organizationId);
   const {
     organization,
     isLoading: fetching,
@@ -51,6 +50,7 @@ export const ImageSidebar = ({
 
   const [elementUploading, setElementUploading] = useState<boolean>(false);
   const uploadElement = async (file: File | null) => {
+    console.log(file);
     try {
       if (!file) return;
       setElementUploading(true);
@@ -216,7 +216,7 @@ export const ImageSidebar = ({
         {" "}
         <Button
           disabled={elementUploading}
-          onClick={() => document.getElementById("file-input")?.click()}
+          onClick={() => document.getElementById("image-input")?.click()}
           className="border-basePrimary border-2 text-basePrimary bg-transparent flex gap-4 justify-center items-center rounded-md py-2 px-3 hover:bg-basePrimary/20"
         >
           {elementUploading ? (
@@ -254,8 +254,8 @@ export const ImageSidebar = ({
         </Button>
         <div className="hidden">
           <Input
-            id="file-input"
-            name="background"
+            id="image-input"
+            name="image"
             type="file"
             onChange={(e) => e.target.files && uploadElement(e.target.files[0])}
             accept="image/*"
@@ -282,13 +282,13 @@ export const ImageSidebar = ({
         <div className="p-4">
           <div className="grid grid-cols-2 gap-4">
             {organization &&
-              !!organization.certificateAsset?.backgrounds &&
-              organization.certificateAsset?.backgrounds.map((image, index) => {
+              !!organization.certificateAsset?.elements &&
+              organization.certificateAsset?.elements.map((image, index) => {
                 return (
                   <button
                     onClick={() => editor?.addImage(image)}
                     key={image}
-                    className="group relative h-[100px] w-full overflow-hidden rounded-sm border bg-muted transition hover:opacity-75"
+                    className="group relative h-[200px] w-full overflow-hidden rounded-sm border bg-muted transition hover:opacity-75"
                   >
                     <Delete url={image} />
 

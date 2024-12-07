@@ -1,7 +1,7 @@
 "use client";
 
 import { fabric } from "fabric";
-// import debounce from "lodash.debounce";
+import debounce from "lodash.debounce";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 // import { ResponseType } from "@/components/projects/api/use-get-project";
@@ -28,12 +28,17 @@ import { TemplateSidebar } from "@/components/editor/components/template-sidebar
 import { RemoveBgSidebar } from "@/components/editor/components/remove-bg-sidebar";
 import { SettingsSidebar } from "@/components/editor/components/settings-sidebar";
 import { BackgroundSidebar } from "./background-sidebar";
+import { VerificationSidebar } from "./verification-sidebar";
 
 interface EditorProps {
   initialData: ResponseType["data"];
   name: string;
   setName: (name: string) => void;
   organizationId: string;
+  eventAlias: string;
+  save: (values: { json: string; height: number; width: number }) => void;
+  isSaving: boolean;
+  isError: boolean;
 }
 
 export const Editor = ({
@@ -41,16 +46,20 @@ export const Editor = ({
   name,
   setName,
   organizationId,
+  eventAlias,
+  save,
+  isSaving,
+  isError,
 }: EditorProps) => {
   // const { mutate } = useUpdateProject(initialData.id);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // const debouncedSave = useCallback(
-  //   debounce((values: { json: string; height: number; width: number }) => {
-  //     // mutate(values);
-  //   }, 500),
-  //   [mutate],
-  // );
+  const debouncedSave = useCallback(
+    debounce((values: { json: string; height: number; width: number }) => {
+      save(values);
+    }, 1500),
+    [save]
+  );
 
   const [activeTool, setActiveTool] = useState<ActiveTool>("select");
 
@@ -65,7 +74,7 @@ export const Editor = ({
     defaultWidth: initialData?.width ?? 900,
     defaultHeight: initialData?.height ?? 1200,
     clearSelectionCallback: onClearSelection,
-    // saveCallback: debouncedSave,
+    saveCallback: debouncedSave,
   });
 
   const onChangeActiveTool = useCallback(
@@ -113,8 +122,13 @@ export const Editor = ({
         editor={editor}
         activeTool={activeTool}
         onChangeActiveTool={onChangeActiveTool}
-        setName={setName}
+        setName={(name) => {
+          setName(name);
+          debouncedSave();
+        }}
         name={name}
+        isSaving={isSaving}
+        isError={isError}
       />
       <div className="absolute top-[68px] flex h-[calc(100%-68px)] w-full">
         <Sidebar
@@ -147,6 +161,11 @@ export const Editor = ({
           onChangeActiveTool={onChangeActiveTool}
         />
         <TextSidebar
+          editor={editor}
+          activeTool={activeTool}
+          onChangeActiveTool={onChangeActiveTool}
+        />
+        <VerificationSidebar
           editor={editor}
           activeTool={activeTool}
           onChangeActiveTool={onChangeActiveTool}

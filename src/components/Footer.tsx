@@ -119,7 +119,7 @@ export default function Footer() {
             Explore Events
           </li>
           <li
-            onClick={() => router.push("/verify/certificate")}
+            onClick={() => router.push("/credentials/verify/certificate")}
             className="text-[13px] lg:text-base font-normal cursor-pointer"
           >
             Verify Certificates
@@ -187,7 +187,7 @@ export default function Footer() {
           Explore Events{" "}
         </p>
         <p
-          onClick={() => router.push("/verify/certificate")}
+          onClick={() => router.push("/credentials/verify/certificate")}
           className="font-light cursor-pointer text-[13px] lg:text-base"
         >
           Verify Certificate{" "}

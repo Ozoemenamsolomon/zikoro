@@ -31,6 +31,7 @@ import { useAutoResize } from "@/components/editor/hooks/use-auto-resize";
 import { useCanvasEvents } from "@/components/editor/hooks/use-canvas-events";
 import { useWindowEvents } from "@/components/editor/hooks/use-window-events";
 import { useLoadState } from "@/components/editor/hooks/use-load-state";
+import jsPDF from "jspdf";
 
 const buildEditor = ({
   save,
@@ -66,6 +67,23 @@ const buildEditor = ({
       left,
       top,
     };
+  };
+
+  const savePdf = (name?: string) => {
+    const options = generateSaveOptions();
+
+    canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
+    const dataUrl = canvas.toDataURL(options);
+
+    const pdf = new jsPDF();
+    const imgProperties = pdf.getImageProperties(dataUrl);
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = pdf.internal.pageSize.getHeight();
+
+    pdf.addImage(dataUrl, "PNG", 0, 0, pdfWidth, pdfHeight);
+    pdf.save(name || "untitled.pdf");
+
+    autoZoom();
   };
 
   const savePng = () => {
@@ -137,6 +155,7 @@ const buildEditor = ({
   };
 
   return {
+    savePdf,
     savePng,
     saveJpg,
     saveSvg,
@@ -754,8 +773,8 @@ export const useEditor = ({
         }),
       });
 
-      initialCanvas.setWidth(initialContainer.offsetWidth);
-      initialCanvas.setHeight(initialContainer.offsetHeight);
+      initialCanvas.setWidth(initialContainer?.offsetWidth);
+      initialCanvas.setHeight(initialContainer?.offsetHeight);
 
       initialCanvas.add(initialWorkspace);
       initialCanvas.centerObject(initialWorkspace);

@@ -8,6 +8,7 @@ import {
   Shapes,
   Sparkles,
   Type,
+  Lock,
 } from "lucide-react";
 
 import { ActiveTool } from "@/components/editor/types";
@@ -48,6 +49,12 @@ export const Sidebar = ({ activeTool, onChangeActiveTool }: SidebarProps) => {
           onClick={() => onChangeActiveTool("text")}
         />
         <SidebarItem
+          icon={Lock}
+          label="Verification"
+          isActive={activeTool === "verification"}
+          onClick={() => onChangeActiveTool("verification")}
+        />
+        <SidebarItem
           icon={Shapes}
           label="Shapes"
           isActive={activeTool === "shapes"}
@@ -59,12 +66,12 @@ export const Sidebar = ({ activeTool, onChangeActiveTool }: SidebarProps) => {
           isActive={activeTool === "draw"}
           onClick={() => onChangeActiveTool("draw")}
         />
-        <SidebarItem
+        {/* <SidebarItem
           icon={Sparkles}
           label="AI"
           isActive={activeTool === "ai"}
           onClick={() => onChangeActiveTool("ai")}
-        />
+        /> */}
         <SidebarItem
           icon={Settings}
           label="Settings"

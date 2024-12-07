@@ -108,7 +108,8 @@ export type ActiveTool =
   | "ai"
   | "remove-bg"
   | "templates"
-  | "background";
+  | "background"
+  | "verification";
 
 export const FILL_COLOR = "rgba(0,0,0,1)";
 export const STROKE_COLOR = "rgba(0,0,0,1)";
@@ -205,6 +206,7 @@ export type BuildEditorProps = {
 };
 
 export interface Editor {
+  savePdf: (name?: string) => void;
   savePng: () => void;
   saveJpg: () => void;
   saveSvg: () => void;

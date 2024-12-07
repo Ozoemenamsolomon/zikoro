@@ -20,7 +20,7 @@ import { Image as ImageElement } from "@/components/certificate";
 import { replaceSpecialText } from "@/utils/helpers";
 import { Editor, Frame } from "@craftjs/core";
 import { toast } from "@/components/ui/use-toast";
-import lz from "lzutf8";
+import { fabric } from "fabric";
 import { useToPng, useToSvg } from "@hugocxl/react-to-image";
 import {
   FacebookIcon,
@@ -30,6 +30,8 @@ import {
 } from "@/constants";
 import { LinkedinShareButton } from "next-share";
 import Link from "next/link";
+import { useEditor } from "../../../../../../components/editor/hooks/use-editor";
+import { TCertificate } from "@/types";
 
 // import { ShareSocial } from "react-share-social";
 
@@ -51,6 +53,125 @@ const style = {
   },
 };
 
+const CertificateView = ({ certificate }: { certificate: TCertificate }) => {
+  const initialData = certificate?.originalCertificate.certificateJSON;
+
+  const [isShareDropDown, showShareDropDown] = useState(false);
+
+  const canvasRef = useRef(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  console.log(certificate?.originalCertificate, "initialData");
+
+  const newState = JSON.parse(
+    replaceSpecialText(JSON.stringify(initialData?.json || {}), {
+      asset: certificate,
+      attendee: certificate?.attendee,
+      event: certificate?.originalCertificate.event,
+      organization: certificate?.originalCertificate.event.organization,
+    })
+  );
+
+  const { init, editor } = useEditor({
+    defaultState: newState,
+    defaultWidth: initialData?.width ?? 900,
+    defaultHeight: initialData?.height ?? 1200,
+  });
+
+  useEffect(() => {
+    const canvas = new fabric.Canvas(canvasRef.current, {
+      controlsAboveOverlay: true,
+      preserveObjectStacking: true,
+    });
+
+    init({
+      initialCanvas: canvas,
+      initialContainer: containerRef.current!,
+    });
+
+    return () => {
+      canvas.dispose();
+    };
+  }, [init]);
+
+  function toggleShareDropDown() {
+    showShareDropDown((prev) => !prev);
+  }
+
+  console.log(certificate);
+
+  const shareText = `Excited to share my ${certificate?.CertificateName} certificate from ${certificate?.originalCertificate.event.eventTitle} with you! Check it out here: ${window.location.href}`;
+
+  return (
+    <div className="flex-[60%] flex flex-col-reverse md:flex-col items-center gap-4 px-8">
+      <div className="flex gap-2 w-3/4">
+        <Button
+          onClick={() =>
+            editor?.savePdf(
+              `${
+                certificate?.attendee.firstName +
+                "_" +
+                certificate?.attendee.lastName
+              }_${certificate?.CertificateName}.pdf`
+            )
+          }
+          className="bg-basePrimary"
+        >
+          Download PDF
+        </Button>
+        <Button
+          onClick={() => editor?.savePng()}
+          className="border-basePrimary border-2 text-basePrimary bg-transparent hover:bg-basePrimary/20"
+        >
+          Download PNG
+        </Button>
+        <Button
+          onClick={() => editor?.saveSvg()}
+          className="border-basePrimary border-2 text-basePrimary bg-transparent hover:bg-basePrimary/20"
+        >
+          Download SVG
+        </Button>
+        <div className="relative">
+          <Button
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleShareDropDown();
+            }}
+            className="border-basePrimary border-2 text-basePrimary bg-transparent hover:bg-basePrimary/20"
+          >
+            <svg
+              stroke="currentColor"
+              fill="currentColor"
+              strokeWidth={0}
+              viewBox="0 0 24 24"
+              height="1em"
+              width="1em"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle fill="none" cx="17.5" cy="18.5" r="1.5" />
+              <circle fill="none" cx="5.5" cy="11.5" r="1.5" />
+              <circle fill="none" cx="17.5" cy="5.5" r="1.5" />
+              <path d="M5.5,15c0.91,0,1.733-0.358,2.357-0.93l6.26,3.577C14.048,17.922,14,18.204,14,18.5c0,1.93,1.57,3.5,3.5,3.5 s3.5-1.57,3.5-3.5S19.43,15,17.5,15c-0.91,0-1.733,0.358-2.357,0.93l-6.26-3.577c0.063-0.247,0.103-0.502,0.108-0.768l6.151-3.515 C15.767,8.642,16.59,9,17.5,9C19.43,9,21,7.43,21,5.5S19.43,2,17.5,2S14,3.57,14,5.5c0,0.296,0.048,0.578,0.117,0.853L8.433,9.602 C7.808,8.64,6.729,8,5.5,8C3.57,8,2,9.57,2,11.5S3.57,15,5.5,15z M17.5,17c0.827,0,1.5,0.673,1.5,1.5S18.327,20,17.5,20 S16,19.327,16,18.5S16.673,17,17.5,17z M17.5,4C18.327,4,19,4.673,19,5.5S18.327,7,17.5,7S16,6.327,16,5.5S16.673,4,17.5,4z M5.5,10C6.327,10,7,10.673,7,11.5S6.327,13,5.5,13S4,12.327,4,11.5S4.673,10,5.5,10z" />
+            </svg>
+            <h3 className="font-medium ">Share this Certificate</h3>
+            {isShareDropDown && (
+              <ActionModal
+                close={toggleShareDropDown}
+                url={certificate?.certificateURL}
+                shareText={shareText}
+              />
+            )}
+          </Button>
+        </div>
+      </div>
+      <div className="relative h-[calc(100%-124px)] w-full" ref={containerRef}>
+        <div className="absolute inset-0 bg-transparent z-50" />
+        <canvas ref={canvasRef} />
+      </div>
+    </div>
+  );
+};
+
 const Page = ({ params }: { params: { certificateId: string } }) => {
   function enforceDesktopView() {
     if (window.innerWidth < 1024) {
@@ -68,13 +189,6 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
       window.removeEventListener("resize", enforceDesktopView);
     };
   }, []);
-  const certificateRef = useRef<HTMLDivElement | null>(null);
-
-  const [isShareDropDown, showShareDropDown] = useState(false);
-
-  function toggleShareDropDown() {
-    showShareDropDown((prev) => !prev);
-  }
 
   const router = useRouter();
 
@@ -87,72 +201,7 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
     verifyAttendeeCertificate,
   } = useVerifyAttendeeCertificate({ certificateId });
 
-  // const handleDownloadPdf = async () => {
-  //   const element = certificateRef.current;
-  //   if (!element) return;
-  //   const canvas = await html2canvas(element);
-  //   const data = canvas.toDataURL("image/png");
-
-  //   const pdf = new jsPDF();
-  //   const imgProperties = pdf.getImageProperties(data);
-  //   const pdfWidth = pdf.internal.pageSize.getWidth();
-  //   const pdfHeight = (imgProperties.height * pdfWidth) / imgProperties.width;
-
-  //   pdf.addImage(data, "PNG", 0, 0, pdfWidth, pdfHeight);
-  //   pdf.save(
-  //     `${
-  //       certificate?.attendee.firstName + "_" + certificate?.attendee.lastName
-  //     }_${certificate?.CertificateName}.pdf`
-  //   );
-  // };
-
-  const [data2, handleDownloadPdf] = useToPng<HTMLDivElement>({
-    selector: "#certificate",
-    onSuccess: (data) => {
-      if (!certificate) return;
-      const pdf = new jsPDF();
-      const imgProperties = pdf.getImageProperties(data);
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (imgProperties.height * pdfWidth) / imgProperties.width;
-
-      pdf.addImage(data, "PNG", 0, 0, pdfWidth, pdfHeight);
-      pdf.save(
-        `${
-          certificate?.attendee.firstName + "_" + certificate?.attendee.lastName
-        }_${certificate?.CertificateName}.pdf`
-      );
-    },
-  });
-
-  const [data, download] = useToPng<HTMLDivElement>({
-    selector: "#certificate",
-    onSuccess: (data) => {
-      if (!certificate) return;
-      const link = document.createElement("a");
-      link.download = `${
-        certificate?.attendee.firstName + "_" + certificate?.attendee.lastName
-      }_${certificate?.CertificateName}.png`;
-      link.href = data;
-      link.click();
-    },
-  });
-
-  const [data3, downloadSVG] = useToSvg<HTMLDivElement>({
-    selector: "#certificate",
-    onSuccess: (data) => {
-      if (!certificate) return;
-      const link = document.createElement("a");
-      link.download = `${
-        certificate?.attendee.firstName + "_" + certificate?.attendee.lastName
-      }_${certificate?.CertificateName}.svg`;
-      link.href = data;
-      link.click();
-    },
-  });
-
-  console.log(data, "data");
-
-  const hashRef = useRef<string | undefined>();
+  console.log(certificate, certificateId);
 
   useEffect(() => {
     if (isLoading) {
@@ -164,165 +213,15 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
         variant: "destructive",
         description: "Certificate does not exist",
       });
-      return; // Exit early after showing the toast
-    }
-
-    // if (
-    //   !attendee.id ||
-    //   (certificate.certificateSettings.canReceive.exceptions &&
-    //     certificate.certificateSettings.canReceive.exceptions.includes(
-    //       attendee.id
-    //     ))
-    // ) {
-    //   btnRef.current?.click();
-    //   toast({
-    //     variant: "destructive",
-    //     description: "Certificate cannot be released for this attendee",
-    //   });
-    //   return; // Exit early after showing the toast
-    // }
-
-    // if (
-    //   certificate.certificateSettings.publishOn &&
-    //   !isPast(new Date(certificate.certificateSettings.publishOn))
-    // ) {
-    //   btnRef.current?.click();
-    //   toast({
-    //     variant: "destructive",
-    //     description: "Certificate has not been published yet",
-    //   });
-    //   return; // Exit early after showing the toast
-    // }
-
-    if (
-      certificate?.originalCertificate.certficateDetails &&
-      certificate?.originalCertificate.certficateDetails.craftHash
-    ) {
-      const initData = lz.decompress(
-        lz.decodeBase64(
-          certificate?.originalCertificate.certficateDetails.craftHash
-        )
-      );
-
-      hashRef.current = JSON.parse(
-        replaceSpecialText(JSON.stringify(initData), {
-          asset: certificate,
-          attendee: certificate?.attendee,
-          event: certificate?.originalCertificate.event,
-          organization: certificate.originalCertificate.event.organization,
-        })
-      );
+      return;
     }
   }, [isLoading, certificate]);
 
-  const shareText = `Excited to share my ${certificate?.CertificateName} certificate from ${certificate?.originalCertificate.event.eventTitle} with you! Check it out here: ${window.location.href}`;
-
   return (
     <section className="min-h-screen flex flex-col-reverse md:flex-row justify-center gap-6 pt-20 pb-8 bg-[#F9FAFF]">
-      {!isLoading ? (
+      {!isLoading && certificate ? (
         <>
-          <div className="flex-[60%] flex flex-col-reverse md:flex-col items-center gap-4 px-8">
-            <div className="flex gap-2 w-3/4">
-              <Button onClick={handleDownloadPdf} className="bg-basePrimary">
-                Download PDF
-              </Button>
-              <Button
-                // onClick={() => exportComponentAsPNG(certificateRef)}
-                onClick={download}
-                className="border-basePrimary border-2 text-basePrimary bg-transparent hover:bg-basePrimary/20"
-              >
-                Download PNG
-              </Button>
-              {/* <Button
-                // onClick={() => exportComponentAsPNG(certificateRef)}
-                onClick={downloadSVG}
-                className="border-basePrimary border-2 text-basePrimary bg-transparent hover:bg-basePrimary/20"
-              >
-                Download SVG
-              </Button> */}
-              <div className="relative">
-                <Button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleShareDropDown();
-                  }}
-                  className="border-basePrimary border-2 text-basePrimary bg-transparent hover:bg-basePrimary/20"
-                >
-                  <svg
-                    stroke="currentColor"
-                    fill="currentColor"
-                    strokeWidth={0}
-                    viewBox="0 0 24 24"
-                    height="1em"
-                    width="1em"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <circle fill="none" cx="17.5" cy="18.5" r="1.5" />
-                    <circle fill="none" cx="5.5" cy="11.5" r="1.5" />
-                    <circle fill="none" cx="17.5" cy="5.5" r="1.5" />
-                    <path d="M5.5,15c0.91,0,1.733-0.358,2.357-0.93l6.26,3.577C14.048,17.922,14,18.204,14,18.5c0,1.93,1.57,3.5,3.5,3.5 s3.5-1.57,3.5-3.5S19.43,15,17.5,15c-0.91,0-1.733,0.358-2.357,0.93l-6.26-3.577c0.063-0.247,0.103-0.502,0.108-0.768l6.151-3.515 C15.767,8.642,16.59,9,17.5,9C19.43,9,21,7.43,21,5.5S19.43,2,17.5,2S14,3.57,14,5.5c0,0.296,0.048,0.578,0.117,0.853L8.433,9.602 C7.808,8.64,6.729,8,5.5,8C3.57,8,2,9.57,2,11.5S3.57,15,5.5,15z M17.5,17c0.827,0,1.5,0.673,1.5,1.5S18.327,20,17.5,20 S16,19.327,16,18.5S16.673,17,17.5,17z M17.5,4C18.327,4,19,4.673,19,5.5S18.327,7,17.5,7S16,6.327,16,5.5S16.673,4,17.5,4z M5.5,10C6.327,10,7,10.673,7,11.5S6.327,13,5.5,13S4,12.327,4,11.5S4.673,10,5.5,10z" />
-                  </svg>
-                  <h3 className="font-medium ">Share this Certificate</h3>
-                  {isShareDropDown && (
-                    <ActionModal
-                      close={toggleShareDropDown}
-                      url={certificate?.certificateURL}
-                      shareText={shareText}
-                    />
-                  )}
-                </Button>
-              </div>
-            </div>
-            {hashRef.current ? (
-              <Editor
-                enabled={false}
-                resolver={{
-                  Text,
-                  Container,
-                  ImageElement,
-                  QRCode,
-                  CertificateQRCode,
-                }}
-              >
-                <div className="relative px-4 w-full" ref={certificateRef}>
-                  <div className="inset-0 absolute bg-transparent z-[100]" />
-                  <div
-                    className="relative space-y-6 text-black bg-no-repeat mx-auto"
-                    style={{
-                      backgroundRepeat: "no-repeat",
-                      backgroundSize: "100% 100%",
-                      backgroundImage: !!certificate?.originalCertificate
-                        ?.certficateDetails?.background
-                        ? `url(${certificate?.originalCertificate?.certficateDetails?.background})`
-                        : "",
-                      backgroundColor: "#fff",
-                      height: "11.69in",
-                      width: "100%",
-                    }}
-                    id="certificate"
-                  >
-                    <Frame data={hashRef.current}></Frame>
-                  </div>
-                </div>
-              </Editor>
-            ) : (
-              <div className="h-full w-full flex items-center justify-center">
-                <div className="animate-spin">
-                  <svg
-                    stroke="currentColor"
-                    fill="currentColor"
-                    strokeWidth={0}
-                    viewBox="0 0 1024 1024"
-                    height="2.5em"
-                    width="2.5em"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M512 1024c-69.1 0-136.2-13.5-199.3-40.2C251.7 958 197 921 150 874c-47-47-84-101.7-109.8-162.7C13.5 648.2 0 581.1 0 512c0-19.9 16.1-36 36-36s36 16.1 36 36c0 59.4 11.6 117 34.6 171.3 22.2 52.4 53.9 99.5 94.3 139.9 40.4 40.4 87.5 72.2 139.9 94.3C395 940.4 452.6 952 512 952c59.4 0 117-11.6 171.3-34.6 52.4-22.2 99.5-53.9 139.9-94.3 40.4-40.4 72.2-87.5 94.3-139.9C940.4 629 952 571.4 952 512c0-59.4-11.6-117-34.6-171.3a440.45 440.45 0 0 0-94.3-139.9 437.71 437.71 0 0 0-139.9-94.3C629 83.6 571.4 72 512 72c-19.9 0-36-16.1-36-36s16.1-36 36-36c69.1 0 136.2 13.5 199.3 40.2C772.3 66 827 103 874 150c47 47 83.9 101.8 109.7 162.7 26.7 63.1 40.2 130.2 40.2 199.3s-13.5 136.2-40.2 199.3C958 772.3 921 827 874 874c-47 47-101.8 83.9-162.7 109.7-63.1 26.8-130.2 40.3-199.3 40.3z" />
-                  </svg>
-                </div>
-              </div>
-            )}
-          </div>
+          <CertificateView certificate={certificate} />
           <div className="flex-[40%] flex flex-col gap-8 px-2">
             <div className="flex flex-col gap-4">
               <div>
@@ -403,7 +302,7 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
                 Scope of the training
               </h2>
               <div className="flex flex-wrap gap-2">
-                {certificate?.originalCertificate.certificateSettings.skills.map(
+                {certificate?.originalCertificate?.certificateSettings?.skills.map(
                   ({ value, color }) => (
                     <div
                       className="relative text-xs flex items-center gap-1.5 p-2 rounded w-fit md:text-sm"
