@@ -4,6 +4,7 @@ import { InlineIcon } from "@iconify/react";
 import { Button } from "@/components/custom_ui/Button";
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib";
 
 export function AllQuestions({ isAttendee }: { isAttendee?: boolean }) {
   const [replyQuestion, setReplyQuestion] = useState<any | null>(null);
@@ -18,7 +19,7 @@ export function AllQuestions({ isAttendee }: { isAttendee?: boolean }) {
     e.preventDefault();
   }
   return (
-    <div className="w-full max-w-2xl overflow-y-auto bg-white no-scrollbar h-full mx-auto">
+    <div className={cn("w-full max-w-2xl overflow-y-auto  no-scrollbar h-full mx-auto", replyQuestion !== null && "bg-white")}>
       {!replyQuestion ? (
         <div className="w-full flex flex-col items-start justify-start gap-3 sm:gap-4">
           {[1, 2, 3, 4, 5, 6].map((_) => (
@@ -69,7 +70,7 @@ export function AllQuestions({ isAttendee }: { isAttendee?: boolean }) {
                 type="submit"
                 className="h-10 w-10 bg-basePrimary rounded-full px-0 "
               >
-                <InlineIcon icon="prime:send" color="#ffffff" fontSize={22} />
+                <InlineIcon icon="prime:send" color="#ffffff" fontSize={30} />
               </Button>
             </div>
             <label htmlFor="isAnonymous" className="flex items-center gap-x-2">

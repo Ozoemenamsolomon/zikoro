@@ -15,7 +15,7 @@ export function AskandReplyCard({
   return (
     <div
       className={cn(
-        "w-full flex flex-col items-start p-3 rounded-lg justify-start gap-y-3 sm:gap-y-3",
+        "w-full flex h-fit flex-col items-start p-3 rounded-lg justify-start gap-y-3 sm:gap-y-4",
         className
       )}
     >
