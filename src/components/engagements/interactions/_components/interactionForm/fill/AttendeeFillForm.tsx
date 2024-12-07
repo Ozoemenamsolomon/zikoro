@@ -209,6 +209,9 @@ function AttendeeFillFormComp({
     }
   }, [data]);
 
+
+  console.log(isLoading, loadingAttendee)
+
   if (isLoading || loadingAttendee) {
     return (
       <div className="w-full h-[30rem] flex items-center justify-center">

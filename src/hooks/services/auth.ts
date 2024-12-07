@@ -416,7 +416,7 @@ export function useAttendee({
   isPasswordless?: string; // Optional
 }) {
   const [loading, setLoading] = useState(true);
-  const { user, setUser, loading: isStoreloading } = useUserStore();
+  const { user, setUser } = useUserStore();
   const router = useRouter();
   const { eventId } = useParams();
   const [userData, setUserData] = useState<TUser | null>(null);
@@ -446,15 +446,15 @@ export function useAttendee({
   };
 
   useEffect(() => {
-   if (!isStoreloading) {
+  
     if (!user) {
       getUser(); 
     } else {
       setUserData(user);
       setLoading(false);
     }
-   }
-  }, [email, isPasswordless, user, isStoreloading]);
+   
+  }, [email, isPasswordless, user]);
 
   return {
     userData,
