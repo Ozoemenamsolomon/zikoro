@@ -14,7 +14,7 @@ type TopSectionProp = {
   allQuestionsCount: number;
   myQuestionsCount: number;
   awaitingReviewCount?: number;
-  isAttendee: boolean;
+  isAttendee?: boolean;
   activeState: number;
   setActiveState: (i:number) => void;
 };
@@ -32,7 +32,7 @@ export function TopSection({
     { value: "Top Liked", label: "Top Liked" },
   ];
   return (
-    <div className="w-full overflow-x-auto no-scrollbar min-w-[900px] bg-white px-4 sm:px-6 flex items-center text-sm justify-center gap-8 sm:gap-10">
+    <div className="w-full overflow-x-auto no-scrollbar min-w-[900px] bg-white px-4 sm:px-6 flex items-center text-sm justify-center gap-10 sm:gap-20">
       {!isAttendee && (
         <Button className="gap-x-2 bg-basePrimary text-white font-medium rounded-lg ">
           <InlineIcon
@@ -47,7 +47,7 @@ export function TopSection({
       onClick={() => setActiveState(1)}
       className={cn("px-2 py-4 flex items-center gap-x-1 text-sm", activeState === 1 && "text-basePrimary border-b border-basePrimary")}>
         <p>All Questions</p>
-        <span className="text-tiny font-medium px-2 py-1 flex items-center justify-center rounded-full bg-basePrimary text-white">
+        <span className="text-xs font-medium px-2 py-1 flex items-center justify-center rounded-full bg-basePrimary text-white">
           {allQuestionsCount}
         </span>
       </button>
@@ -55,7 +55,7 @@ export function TopSection({
        onClick={() => setActiveState(2)}
       className={cn("px-2 py-4 flex items-center gap-x-1 text-sm", activeState === 2 && "text-basePrimary border-b border-basePrimary")}>
         <p>My Questions</p>
-        <span className="text-tiny font-medium px-2 py-1 flex items-center justify-center rounded-full bg-basePrimary text-white">
+        <span className="text-xs font-medium px-2 py-1 flex items-center justify-center rounded-full bg-basePrimary text-white">
           {myQuestionsCount}
         </span>
       </button>
@@ -64,15 +64,15 @@ export function TopSection({
         onClick={() => setActiveState(3)}
         className={cn("px-2 py-4 flex items-center gap-x-1 text-sm", activeState === 3 && "text-basePrimary border-b border-basePrimary")}>
           <p>Awaiting Review</p>
-          <span className="text-tiny font-medium px-2 py-1 flex items-center justify-center rounded-full bg-basePrimary text-white">
+          <span className="text-xs font-medium px-2 py-1 flex items-center justify-center rounded-full bg-basePrimary text-white">
             {awaitingReviewCount}
           </span>
         </button>
       )}
 
       <Select>
-        <SelectTrigger className="h-12 w-[180px]">
-          <SelectValue placeholder="Select Courses" />
+        <SelectTrigger className="h-11 w-[180px]">
+          <SelectValue placeholder="Select Filter" />
         </SelectTrigger>
         <SelectContent className="bg-white">
           <SelectGroup>

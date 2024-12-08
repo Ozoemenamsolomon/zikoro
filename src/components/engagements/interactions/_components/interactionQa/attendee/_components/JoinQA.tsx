@@ -53,10 +53,10 @@ export function JoinQA({ joined }: { joined: () => void }) {
   return (
     <>
       <div className="w-full h-full inset-0 fixed bg-[#F9FAFF]">
-        <div className="w-[95%] max-w-xl rounded-lg absolute h-fit flex flex-col items-start justify-start gap-6 bg-white border p-4 sm:p-6 m-auto inset-0">
+        <div className="w-[95%] max-w-xl rounded-lg absolute h-fit flex flex-col items-start justify-start gap-8 bg-white border p-4 sm:p-6 m-auto inset-0">
           <button
             onClick={() => router.back()}
-            className="flex items-center gap-x-1 text-mobile sm:text-sm"
+            className="flex mb-3 items-center gap-x-1 text-mobile sm:text-sm"
           >
             <InlineIcon
               fontSize={20}
@@ -107,7 +107,7 @@ export function JoinQA({ joined }: { joined: () => void }) {
 
             <Button
               type="submit"
-              className="bg-basePrimary text-white font-medium "
+              className="bg-basePrimary w-[110px] text-white font-medium "
             >
               Let's Go
             </Button>

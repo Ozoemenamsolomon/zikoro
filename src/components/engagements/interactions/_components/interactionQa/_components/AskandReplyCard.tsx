@@ -15,7 +15,7 @@ export function AskandReplyCard({
   return (
     <div
       className={cn(
-        "w-full flex flex-col items-start p-3 rounded-lg justify-start gap-y-3 sm:gap-y-3",
+        "w-full flex h-fit flex-col items-start p-3 rounded-lg justify-start gap-y-3 sm:gap-y-4",
         className
       )}
     >
@@ -23,7 +23,7 @@ export function AskandReplyCard({
         <Image
           src="/zikoro.png"
           alt=""
-          className="rounded-full h-11 w-11"
+          className="rounded-full object-contain border h-12 w-12"
           width={100}
           height={100}
         />

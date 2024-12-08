@@ -33,6 +33,7 @@ export default function Interactions({ eventId }: { eventId: string }) {
   const [interactionType, setInteractionType] = useState("");
   const { organization } = useOrganizationStore();
   const { quizzes, isLoading, getQuizzes } = useGetQuizzes(eventId);
+  const [isEventQa, setIsEventQa] = useState(false)
   const {
     data,
     isLoading: loading,
@@ -80,7 +81,9 @@ export default function Interactions({ eventId }: { eventId: string }) {
   }, [visibleForm, visibleQuizzes]);
 
   //console.log({ visibleQuizzes, quizzes, isIdPresent, isOrganizer });
-
+function toggleQa() {
+  setIsEventQa((p) => !p)
+}
   function toggleQuiz() {
     const liveQuizCount = quizzes?.filter(
       ({ accessibility }) => accessibility?.live
@@ -187,6 +190,7 @@ export default function Interactions({ eventId }: { eventId: string }) {
           toggleQuiz={toggleQuiz}
           togglePoll={togglePoll}
           goToForm={goToForm}
+          toggleQa={toggleQa}
         />
       )}
     </InteractionLayout>

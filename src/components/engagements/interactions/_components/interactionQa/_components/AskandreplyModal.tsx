@@ -8,15 +8,19 @@ import { eventQaAskAndReplySchema } from "@/schemas";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-export function AskandReplyModal() {
+export function AskandReplyModal({close}:{close:() => void;}) {
   const form = useForm<z.infer<typeof eventQaAskAndReplySchema>>({
     resolver: zodResolver(eventQaAskAndReplySchema),
   });
 
   async function onSubmit() {}
   return (
-    <div className="w-full h-full z-[100] inset-0 bg-black/50 fixed">
-      <div className="w-[95%] max-w-3xl p-4 h-fit sm:p-6 m-auto absolute inset-0 bg-white rounded-lg">
+    <div 
+    onClick={close}
+    className="w-full h-full z-[100] inset-0 bg-black/50 fixed">
+      <div
+      onClick={(e) => e.stopPropagation()}
+      className="w-[95%] max-w-3xl p-4 h-fit sm:p-6 m-auto absolute inset-0 bg-white rounded-lg">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -26,11 +30,11 @@ export function AskandReplyModal() {
               control={form.control}
               name="text"
               render={({ field }) => (
-                <InputOffsetLabel label="Description">
+                <InputOffsetLabel label="">
                   <Textarea
-                    placeholder="Enter the description"
+                    placeholder="Enter the question"
                     {...form.register("text")}
-                    className="placeholder:text-sm   placeholder:text-gray-400 text-gray-700"
+                    className="placeholder:text-sm h-96  placeholder:text-gray-400 text-gray-700"
                   ></Textarea>
                 </InputOffsetLabel>
               )}
