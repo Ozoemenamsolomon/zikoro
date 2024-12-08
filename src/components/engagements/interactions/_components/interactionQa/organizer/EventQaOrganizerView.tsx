@@ -13,7 +13,7 @@ import { Minimize2 } from "styled-icons/feather";
 import { AwaitingReview, EventQaAdvert } from "./_components";
 import { cn } from "@/lib";
 
-export default function EventQaOrganizerView() {
+export default function EventQaOrganizerView({eventId, qaId}:{eventId:string; qaId:string}) {
   const [active, setActive] = useState(1);
   const [isOpen, setIsOpen] = useState(false);
   const [isRightBox, setIsRightBox] = useState(true);
