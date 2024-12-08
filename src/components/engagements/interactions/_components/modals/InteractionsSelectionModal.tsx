@@ -7,12 +7,14 @@ export function InteractionsSelectionModal({
   close,
   toggleQuiz,
   togglePoll,
-  goToForm
+  goToForm,
+  toggleQa
 }: {
   close: () => void;
   toggleQuiz: () => void;
   togglePoll:() => void;
   goToForm: () => void;
+  toggleQa:() => void;
 }) {
 
 
@@ -41,6 +43,7 @@ export function InteractionsSelectionModal({
     {
       image: "/iqa.png",
       header: "Q & A",
+      asynFn: toggleQa,
       description:
         "Allow participants to ask and answer questions.",
     },
