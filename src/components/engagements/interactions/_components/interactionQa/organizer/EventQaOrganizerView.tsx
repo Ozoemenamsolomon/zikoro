@@ -38,7 +38,7 @@ export default function EventQaOrganizerView({eventId, qaId}:{eventId:string; qa
         />
         <div
           className={cn(
-            "w-full h-[80vh] rounded-lg bg-white gap-6 grid grid-cols-8"
+            "w-full rounded-lg h-[95vh] relative bg-white gap-6 grid grid-cols-8"
           )}
         >
           <EventQaAdvert
@@ -52,8 +52,9 @@ export default function EventQaOrganizerView({eventId, qaId}:{eventId:string; qa
           />
           <div
             className={cn(
-              "w-full h-[80vh] col-span-5 rounded-lg bg-[#F9FAFF]",
-              !isLeftBox && isRightBox && "col-span-full"
+              "w-full h-[95vh] col-span-6 pt-6 relative rounded-lg bg-[#F9FAFF]",
+              !isLeftBox && isRightBox && "col-span-full",
+              !isRightBox && "hidden"
             )}
           >
             {active === 1 && <AllQuestions />}
@@ -63,10 +64,12 @@ export default function EventQaOrganizerView({eventId, qaId}:{eventId:string; qa
             <Button onClick={(e) => {
           e.stopPropagation()
           setIsLeftBox(!isLeftBox)
-        }} className="px-0 fixed z-50 left-8  bottom-16 sm:left-10 sm:bottom-20 h-fit w-fit">
+        }} className="px-0 absolute z-50 left-8  bottom-16 sm:left-10 sm:bottom-20 h-fit w-fit">
           <Minimize2 size={20} />
         </Button>
-            <Button className="h-14 w-14 fixed z-50 right-8 px-0 bottom-16 sm:right-10 sm:bottom-20 rounded-full bg-basePrimary">
+            <Button
+            onClick={onShowQuestionModal}
+            className="h-14 w-14 fixed z-50 right-8 px-0 bottom-16 sm:right-10 sm:bottom-20 rounded-full bg-basePrimary">
               <Plus size={40} className="text-white" />
             </Button>
           </div>

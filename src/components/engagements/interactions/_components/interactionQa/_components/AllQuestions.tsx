@@ -19,7 +19,7 @@ export function AllQuestions({ isAttendee }: { isAttendee?: boolean }) {
     e.preventDefault();
   }
   return (
-    <div className={cn("w-full max-w-2xl overflow-y-auto  no-scrollbar h-full mx-auto", replyQuestion !== null && "bg-white")}>
+    <div className={cn("w-full max-w-2xl overflow-y-auto  no-scrollbar h-full mx-auto", replyQuestion !== null && "bg-white p-4")}>
       {!replyQuestion ? (
         <div className="w-full flex flex-col items-start justify-start gap-3 sm:gap-4">
           {[1, 2, 3, 4, 5, 6].map((_) => (
@@ -33,7 +33,7 @@ export function AllQuestions({ isAttendee }: { isAttendee?: boolean }) {
       ) : (
         <div className="w-full flex flex-col items-start justify-start gap-4 ">
           <button
-            //onClick={() => router.back()}
+            onClick={() => setReplyQuestion(null)}
             className="flex items-center gap-x-1 text-mobile sm:text-sm"
           >
             <InlineIcon
@@ -47,15 +47,15 @@ export function AllQuestions({ isAttendee }: { isAttendee?: boolean }) {
             onSubmit={submitReply}
             className="w-full flex items-center justify-center gap-3 flex-col"
           >
-            <div className="w-full items-end gap-x-2">
+            <div className="w-full flex items-end gap-x-2">
               <Image
                 src="/zikoro.png"
                 alt=""
-                className="rounded-full h-10 w-10"
+                className="rounded-full h-12 w-12 border object-contain"
                 width={100}
                 height={100}
               />
-              <div className="w-[65%]">
+              <div className="w-[80%]">
                 <Input
                   value={reply}
                   onChange={(e) => {
@@ -80,9 +80,9 @@ export function AllQuestions({ isAttendee }: { isAttendee?: boolean }) {
                 type="checkbox"
                 checked={isAnonymous}
                 onChange={(e) => setIsAnonymous(!isAnonymous)}
-                className="accent-basePrimary h-5 w-5 rounded-lg"
+                className="accent-basePrimary h-4 w-4 rounded-lg"
               />
-              <p>Reply as anyonymous</p>
+              <p className="text-sm ">Reply as anyonymous</p>
             </label>
           </form>
 

@@ -23,7 +23,7 @@ export function AskandReplyCard({
         <Image
           src="/zikoro.png"
           alt=""
-          className="rounded-full h-11 w-11"
+          className="rounded-full object-contain border h-12 w-12"
           width={100}
           height={100}
         />

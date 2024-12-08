@@ -41,11 +41,13 @@ export default function EventQaAttendeeView({
           activeState={active}
         />
 
-        <div className="w-full h-[80vh] rounded-lg bg-[#F9FAFF]">
+        <div className="w-full h-[95vh] rounded-lg pt-5 sm:pt-6 bg-[#F9FAFF]">
           {active === 1 && <AllQuestions isAttendee />}
           {active === 2 && <MyQuestions isAttendee />}
           {/*** floating button */}
-          <Button className="h-14 w-14 fixed z-50 right-8 px-0 bottom-16 sm:right-10 sm:bottom-20 rounded-full bg-basePrimary">
+          <Button 
+          onClick={onShowQuestionModal}
+          className="h-14 w-14 fixed z-50 right-8 px-0 bottom-16 sm:right-10 sm:bottom-20 rounded-full bg-basePrimary">
             <Plus size={40} className="text-white" />
           </Button>
         </div>

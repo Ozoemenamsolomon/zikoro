@@ -30,11 +30,11 @@ export function AskandReplyModal({close}:{close:() => void;}) {
               control={form.control}
               name="text"
               render={({ field }) => (
-                <InputOffsetLabel label="Description">
+                <InputOffsetLabel label="">
                   <Textarea
-                    placeholder="Enter the description"
+                    placeholder="Enter the question"
                     {...form.register("text")}
-                    className="placeholder:text-sm   placeholder:text-gray-400 text-gray-700"
+                    className="placeholder:text-sm h-96  placeholder:text-gray-400 text-gray-700"
                   ></Textarea>
                 </InputOffsetLabel>
               )}

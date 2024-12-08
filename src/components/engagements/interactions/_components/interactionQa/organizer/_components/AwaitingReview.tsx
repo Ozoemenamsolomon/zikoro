@@ -53,7 +53,7 @@ function ActionModal({
           <p>{description}</p>
         </div>
 
-        <div className="w-full flex font-semibold items-center justify-between">
+        <div className="w-full flex font-semibold items-center justify-around">
           <Button className={cn("h-11 rounded-lg text-white ", buttonColor)}>
             {buttonText}
           </Button>
@@ -80,13 +80,13 @@ function AwaitingReviewCard() {
 
   return (
     <>
-      <div className="w-full p-3 bg-white rounded-lg border h-fit flex gap-y-3 sm:gap-y-4 flex-col items-start justify-start">
+      <div className="w-full p-4 bg-white rounded-lg border h-fit flex gap-y-3 sm:gap-y-4 flex-col items-start justify-start">
         <div className="w-full flex items-start justify-between ">
           <div className="flex items-center gap-x-2">
             <Image
               src="/zikoro.png"
               alt=""
-              className="rounded-full h-11 w-11"
+              className="rounded-full h-12 object-contain border w-12"
               width={100}
               height={100}
             />
@@ -130,7 +130,7 @@ function AwaitingReviewCard() {
           transparentColor="bg-red-600/10"
           iconColor="#dc2626"
           mainColor="text-red-600"
-          iconName=""
+          iconName="mingcute:delete-line"
         />
       )}
       {isApprove && (
