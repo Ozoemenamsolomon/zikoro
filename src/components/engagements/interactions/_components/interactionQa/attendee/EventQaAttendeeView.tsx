@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { JoinQA } from "./_components";
-import { AllQuestions, MyQuestions, TopSection } from "../_components";
+import { AllQuestions, AskandReplyModal, MyQuestions, TopSection } from "../_components";
 import { Plus } from "styled-icons/bootstrap";
 import { Button } from "@/components/custom_ui/Button";
 
@@ -15,6 +15,7 @@ export default function EventQaAttendeeView({
 }) {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [active, setActive] = useState(1);
+  const [isOpen, setIsOpen] = useState(false)
 
   function toggleJoin() {
     setIsSignedIn((p) => !p);
@@ -22,6 +23,10 @@ export default function EventQaAttendeeView({
 
   function setActiveState(n: number) {
     setActive(n);
+  }
+
+  function onShowQuestionModal() {
+    setIsOpen((p) => !p)
   }
   return (
     <>
@@ -45,6 +50,8 @@ export default function EventQaAttendeeView({
           </Button>
         </div>
       </div>
+
+      {isOpen && <AskandReplyModal close={onShowQuestionModal}/>}
     </>
   );
 }

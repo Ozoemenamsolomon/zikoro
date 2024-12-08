@@ -14,7 +14,7 @@ type TopSectionProp = {
   allQuestionsCount: number;
   myQuestionsCount: number;
   awaitingReviewCount?: number;
-  isAttendee: boolean;
+  isAttendee?: boolean;
   activeState: number;
   setActiveState: (i:number) => void;
 };

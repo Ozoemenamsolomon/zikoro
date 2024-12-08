@@ -1,1 +1,2 @@
-export * from "./AwaitingReview"
+export * from "./AwaitingReview";
+export * from "./EventQaAd";
