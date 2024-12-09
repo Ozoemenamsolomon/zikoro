@@ -240,7 +240,7 @@ export function useLogOut(redirectPath: string = "/") {
   const { setUser } = useUserStore();
 
   async function logOut() {
-    await supabase.auth.signOut();
+  //  await supabase.auth.signOut();
     setUser(null);
     setOrganization(null);
     setEvent(null);

@@ -50,6 +50,7 @@ export interface TEngagementFormQuestion {
     textFontSize: string;
     isCoverImage: boolean;
     buttonText: string;
+    startButtonText:string;
   };
 }
 

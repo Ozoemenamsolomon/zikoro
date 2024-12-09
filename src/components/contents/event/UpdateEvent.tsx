@@ -39,7 +39,6 @@ import { timezones } from "@/constants/timezones";
 import { Switch } from "@/components/ui/switch";
 import { CiBookmark } from "react-icons/ci";
 
-
 function PriceValidityDate({
   id,
   value,
@@ -63,7 +62,6 @@ function PriceValidityDate({
       return formateJSDate(new Date());
     }
   }, [value]);
-
 
   return (
     <FormField
@@ -310,9 +308,7 @@ function UpdateEventComp({ eventId }: { eventId: string }) {
     }
     if (
       values?.locationType !== "Virtual" &&
-      (!values?.eventCity ||
-      !values?.eventAddress ||
-      !values?.eventCountry)
+      (!values?.eventCity || !values?.eventAddress || !values?.eventCountry)
     ) {
       toast({
         variant: "destructive",
@@ -384,7 +380,7 @@ function UpdateEventComp({ eventId }: { eventId: string }) {
   // update event
   async function publishEvent() {
     if (!data) return;
- 
+
     if (data?.eventStatus === "review") {
       showPublishModal();
       toast({
@@ -394,17 +390,27 @@ function UpdateEventComp({ eventId }: { eventId: string }) {
 
       return;
     }
+
+    if (data?.eventStatus === "published") {
+      showPublishModal();
+      toast({
+        variant: "destructive",
+        description: "Event already published",
+      });
+
+      return;
+    }
     setIsPublishing(true);
     const statusDetail = {
       createdAt: new Date().toISOString(),
-      status: "review",
+      status: "published",
       user: userData?.userEmail!,
     };
     const { organization, ...restData } = data;
     await update(
       {
         ...restData,
-        eventStatus: "review",
+        eventStatus: "published",
         eventStatusDetails:
           data?.eventStatusDetails && data?.eventStatusDetails !== null
             ? [...data?.eventStatusDetails, statusDetail]
@@ -704,24 +710,24 @@ function UpdateEventComp({ eventId }: { eventId: string }) {
                 {/**"col-span-1 sm:col-span-2 " */}
 
                 {/* {location !== "Virtual" && ( */}
-                  <FormField
-                    control={form.control}
-                    name="eventAddress"
-                    render={({ field }) => (
-                      <InputOffsetLabel
-                        className="col-span-1 sm:col-span-2 "
-                        label="Event Address"
-                      >
-                        <Input
-                          type="text"
-                          placeholder="Enter Event Address"
-                          defaultValue={data?.eventAddress}
-                          {...form.register("eventAddress")}
-                          className=" placeholder:text-sm h-11 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
-                        />
-                      </InputOffsetLabel>
-                    )}
-                  />
+                <FormField
+                  control={form.control}
+                  name="eventAddress"
+                  render={({ field }) => (
+                    <InputOffsetLabel
+                      className="col-span-1 sm:col-span-2 "
+                      label="Event Address"
+                    >
+                      <Input
+                        type="text"
+                        placeholder="Enter Event Address"
+                        defaultValue={data?.eventAddress}
+                        {...form.register("eventAddress")}
+                        className=" placeholder:text-sm h-11 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                      />
+                    </InputOffsetLabel>
+                  )}
+                />
                 {/* )} */}
                 <FormField
                   control={form.control}
@@ -740,41 +746,41 @@ function UpdateEventComp({ eventId }: { eventId: string }) {
                 />
 
                 {/* {location !== "Virtual" && ( */}
-                  <>
-                    {" "}
-                    <FormField
-                      control={form.control}
-                      name="eventCity"
-                      render={({ field }) => (
-                        <InputOffsetLabel label="Event City">
-                          <Input
-                            type="text"
-                            placeholder="Enter Event City"
-                            defaultValue={data?.eventCity}
-                            {...form.register("eventCity")}
-                            className=" placeholder:text-sm h-11 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
-                          />
-                        </InputOffsetLabel>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="eventCountry"
-                      render={({ field }) => (
-                        <InputOffsetLabel label="Event Country">
-                          <ReactSelect
-                            {...field}
-                            placeHolder="Select the Country"
-                            defaultValue={{
-                              value: data?.eventCountry,
-                              label: data?.eventCountry,
-                            }}
-                            options={countriesList}
-                          />
-                        </InputOffsetLabel>
-                      )}
-                    />
-                  </>
+                <>
+                  {" "}
+                  <FormField
+                    control={form.control}
+                    name="eventCity"
+                    render={({ field }) => (
+                      <InputOffsetLabel label="Event City">
+                        <Input
+                          type="text"
+                          placeholder="Enter Event City"
+                          defaultValue={data?.eventCity}
+                          {...form.register("eventCity")}
+                          className=" placeholder:text-sm h-11 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                        />
+                      </InputOffsetLabel>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="eventCountry"
+                    render={({ field }) => (
+                      <InputOffsetLabel label="Event Country">
+                        <ReactSelect
+                          {...field}
+                          placeHolder="Select the Country"
+                          defaultValue={{
+                            value: data?.eventCountry,
+                            label: data?.eventCountry,
+                          }}
+                          options={countriesList}
+                        />
+                      </InputOffsetLabel>
+                    )}
+                  />
+                </>
                 {/* )} */}
                 <FormField
                   control={form.control}
@@ -1017,8 +1023,7 @@ function UpdateEventComp({ eventId }: { eventId: string }) {
             message={
               data?.published
                 ? `You are about to unpublish your event. Do you wish to continue?`
-                : ` You are about to publish an event. You will be notified when the admin
-            approves it.`
+                : ` You are about to publish this event. Your attendees will be able to register for your event when this is successful.`
             }
           />
         )}
@@ -1038,8 +1043,6 @@ function UpdateEventComp({ eventId }: { eventId: string }) {
     </DateAndTimeAdapter>
   );
 }
-
-
 
 export default function UpdateEvent({ eventId }: { eventId: string }) {
   return (
