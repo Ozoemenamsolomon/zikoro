@@ -1375,7 +1375,7 @@ export function useVerifyUserAccess(eventId: string) {
       setIsLoading(false);
       // console.log("attendee", isPresent);
     }
-  }, [eventAttendees, loading]);
+  }, [eventAttendees, loading,  user]);
 
   return {
     attendeeId,
@@ -1583,27 +1583,31 @@ interface Transactions extends TEventTransactionDetail {
   eventData: TOrgEvent;
 }
 
+interface TAllResponse {
+  transactions: Transactions[];
+  totalPages: number;
+}
+
 export const useGetAdminEventTransactions = ({
   eventAlias,
   from,
   to,
-  initialLoading,
 }: {
   eventAlias: string | null;
   from: number;
   to: number;
-  initialLoading: boolean;
 }) => {
   const [transactions, setTransactions] = useState<Transactions[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
+  const [total, setTotal] = useState(1);
   const [hasReachedLastPage, setHasReachedLastPage] = useState(false);
 
   const getTransactions = async () => {
-    if (initialLoading) setLoading(true);
+    setLoading(true);
 
     try {
-      const { data, status } = await getRequest<Transactions[]>({
+      const { data, status } = await getRequest<TAllResponse>({
         endpoint: `/events/admin/attendees?from=${from}&to=${to}&eventAlias=${
           eventAlias ?? ""
         }`,
@@ -1613,11 +1617,13 @@ export const useGetAdminEventTransactions = ({
         throw data;
       }
       if (
-        data.data === null ||
-        (Array.isArray(data.data) && data.data.length === 0)
+        data.data.transactions === null ||
+        (Array.isArray(data.data.transactions) &&
+          data.data.transactions.length === 0)
       )
         return setHasReachedLastPage(true);
-      setTransactions((prev) => _.uniqBy([...prev, ...data.data], "id"));
+      setTransactions(_.uniqBy([...data.data.transactions], "id"));
+      setTotal(data?.data?.totalPages);
     } catch (error) {
       setError(true);
     } finally {
@@ -1639,6 +1645,7 @@ export const useGetAdminEventTransactions = ({
     error,
     getTransactions,
     hasReachedLastPage,
+    total,
   };
 };
 
@@ -1649,19 +1656,19 @@ export function useRequestAccess() {
     email,
     paymentLink,
     eventTitle,
-    attendeeName
+    attendeeName,
   }: {
     email: string;
     paymentLink: string;
-    eventTitle:string;
-    attendeeName:string;
+    eventTitle: string;
+    attendeeName: string;
   }) => {
     setLoading(true);
 
     try {
       const { data, status } = await postRequest<any>({
         endpoint: `/request/access`,
-        payload: { email, paymentLink, eventTitle },
+        payload: { email, paymentLink, eventTitle, attendeeName },
       });
     } catch (error: any) {
       toast(error?.response?.data?.error);

@@ -15,8 +15,6 @@ const Page = () => {
   const onSubmit = async () => {
     const certificate = await getAttendeeCertificate({ certificateId });
 
-    
-
     if (!!certificate) router.push(`/verify/cerificate/${certificateId}`);
   };
 

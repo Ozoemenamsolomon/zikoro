@@ -20,7 +20,7 @@ import {
   UploadTypeAnswer,
 } from "./answerTypes";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formAnswerSchema } from "@/schemas/engagement";
@@ -61,7 +61,11 @@ function AttendeeFillFormComp({
 }) {
   const { user } = useUserStore();
   const router = useRouter();
-  const { isOrganizer, attendee } = useVerifyUserAccess(eventId);
+  const {
+    isOrganizer,
+    attendee,
+    isLoading: loadingAttendee,
+  } = useVerifyUserAccess(eventId);
   const params = useSearchParams();
   const attendeeId = params.get("id");
   const link = params.get("link");
@@ -87,7 +91,6 @@ function AttendeeFillFormComp({
     resolver: zodResolver(formAnswerSchema),
     defaultValues: {
       eventAlias: eventId,
-    
 
       formResponseAlias: generateAlias(),
       formAlias: formId,
@@ -209,7 +212,21 @@ function AttendeeFillFormComp({
     }
   }, [data]);
 
-  if (isLoading) {
+  // check if attendee has already fill the form
+  const isResponseAlreadySubmitted = useMemo(() => {
+    if (Array.isArray(formAnswers) && formAnswers?.length > 0) {
+      return formAnswers?.some(
+        (item) =>
+          item?.attendeeAlias === (attendee?.attendeeAlias || attendeeId)
+      );
+    } else {
+      return false;
+    }
+  }, [formAnswers, attendee, attendeeId]);
+
+  console.log(isLoading, loadingAttendee);
+
+  if (isLoading || loadingAttendee) {
     return (
       <div className="w-full h-[30rem] flex items-center justify-center">
         <LoaderAlt size={30} className="animate-spin" />
@@ -217,38 +234,36 @@ function AttendeeFillFormComp({
     );
   }
 
-  if (
-    !isLoading &&
-    data?.formSettings?.isCollectUserEmail &&
-    (!attendee?.id || !attendeeId)
-  ) {
-    return (
-      <div className="w-full h-full inset-0 fixed z-[100] bg-white">
-        <div className="w-[95%] max-w-xl border rounded-lg bg-gradient-to-b gap-y-6 from-white  to-basePrimary/20  h-[400px] flex flex-col items-center justify-center shadow absolute inset-0 m-auto">
-          <InlineIcon
-            icon="fluent:emoji-sad-20-regular"
-            fontSize={60}
-            color="#001fcc"
-          />
-          <div className="w-fit flex flex-col items-center justify-center gap-y-3">
-            <p>You are not a registered attendee for this event</p>
-
-            <Button
-              onClick={() => {
-                window.open(`${window.location.origin}/live-events/${eventId}`);
-              }}
-              className="bg-basePrimary h-12 text-white font-medium"
-            >
-              Register for the event
-            </Button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <>
+      {!isLoading &&
+        !loadingAttendee &&
+        data?.formSettings?.isCollectUserEmail &&
+        (typeof attendee !== "object" || attendeeId !== null) && (
+          <div className="w-full h-full inset-0 fixed z-[100] bg-white">
+            <div className="w-[95%] max-w-xl border rounded-lg bg-gradient-to-b gap-y-6 from-white  to-basePrimary/20  h-[400px] flex flex-col items-center justify-center shadow absolute inset-0 m-auto">
+              <InlineIcon
+                icon="fluent:emoji-sad-20-regular"
+                fontSize={60}
+                color="#001fcc"
+              />
+              <div className="w-fit flex flex-col items-center justify-center gap-y-3">
+                <p>You are not a registered attendee for this event</p>
+
+                <Button
+                  onClick={() => {
+                    window.open(
+                      `${window.location.origin}/live-events/${eventId}`
+                    );
+                  }}
+                  className="bg-basePrimary h-12 text-white font-medium"
+                >
+                  Register for the event
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
       {isView && !isLoading && data?.formSettings?.isCoverImage && (
         <div className="w-full min-h-screen bg-white inset-0 fixed z-[100] flex flex-col items-center gap-y-8">
           {data?.coverImage &&
@@ -269,11 +284,11 @@ function AttendeeFillFormComp({
               backgroundColor: data?.formSettings?.buttonColor || "",
             }}
             className={cn(
-              "self-center w-[150px] gap-x-2  text-white font-medium h-12 ",
+              "self-center w-fit gap-x-2  text-white font-medium h-12 ",
               !data?.formSettings?.buttonColor && "bg-basePrimary"
             )}
           >
-            <p>View Form</p>
+            <p>Start</p>
           </Button>
         </div>
       )}
@@ -313,7 +328,7 @@ function AttendeeFillFormComp({
             {data?.title ?? ""}
           </h2>
           <p
-            className="innerhtml  mb-3"
+            className="innerhtml  "
             dangerouslySetInnerHTML={{
               __html: data?.description,
             }}
@@ -322,7 +337,7 @@ function AttendeeFillFormComp({
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className="w-full flex flex-col items-start justify-start gap-y-4 sm:gap-y-6 2xl:gap-y-8"
+              className="w-full flex flex-col items-start mt-3 justify-start gap-y-4 sm:gap-y-6 2xl:gap-y-8"
             >
               {currentQuestions?.map((field, index) => (
                 <div
@@ -408,14 +423,14 @@ function AttendeeFillFormComp({
                         backgroundColor: data?.formSettings?.buttonColor || "",
                       }}
                       className={cn(
-                        "self-center  gap-x-2  text-white font-medium h-12 ",
+                        "self-center w-fit gap-x-2  text-white font-medium h-12 ",
                         !data?.formSettings?.buttonColor && "bg-basePrimary"
                       )}
                     >
                       {loading && (
                         <LoaderAlt className="animate-spin" size={20} />
                       )}
-                      <p>Submit</p>
+                      <p>{data?.formSettings?.buttonText || "Submit"}</p>
                     </Button>
                   ) : (
                     <Button
@@ -447,19 +462,19 @@ function AttendeeFillFormComp({
                     backgroundColor: data?.formSettings?.buttonColor || "",
                   }}
                   className={cn(
-                    "self-center w-[150px] gap-x-2  text-white font-medium h-12 ",
+                    "self-center w-fit gap-x-2  text-white font-medium h-12 ",
                     !data?.formSettings?.buttonColor && "bg-basePrimary"
                   )}
                 >
                   {loading && <LoaderAlt className="animate-spin" size={20} />}
-                  <p>Submit</p>
+                  <p>{data?.formSettings?.buttonText || "Submit"}</p>
                 </Button>
               )}
               {/* )} */}
             </form>
           </Form>
         </div>
-        {isSuccess && <SubmittedModal />}
+        {(isSuccess || isResponseAlreadySubmitted) && <SubmittedModal />}
       </div>
     </>
   );

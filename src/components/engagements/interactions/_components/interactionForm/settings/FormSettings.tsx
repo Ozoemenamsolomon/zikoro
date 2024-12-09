@@ -40,7 +40,7 @@ function FormSettingsComp({ eventId }: { eventId: string }) {
     resolver: zodResolver(formSettingSchema),
     defaultValues: {
       formSettings: {
-        isConnectedToEngagement: true,
+        isConnectedToEngagement: false,
         showForm: "beforeEngagement",
         redirectUrl: "",
         isCollectUserEmail: false,
@@ -55,6 +55,7 @@ function FormSettingsComp({ eventId }: { eventId: string }) {
         textFontSize: "14",
         isCoverImage: true,
         buttonText: "Submit",
+        startButtonText:"Start"
       },
     },
   });

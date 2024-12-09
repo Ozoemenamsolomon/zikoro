@@ -56,7 +56,6 @@ function createAudioInstance() {
     const audio = new Audio("/audio/AylexCinematic.mp3");
     //  audio.src = "audio/AylexCinematic.mp3";
     audio.loop = true;
-   
 
     return audio;
   }
@@ -536,7 +535,7 @@ export function PlayersOnboarding({
   const { updateQuiz } = useUpdateQuiz();
   const params = useSearchParams();
   const query = params.get("redirect");
-  const respAlias = params.get("responseAlias")
+  const respAlias = params.get("responseAlias");
   const { addLiveParticipant } = useAddLiveParticipant();
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -656,7 +655,7 @@ export function PlayersOnboarding({
         attendee: attendee || undefined,
         joinedAt: new Date().toISOString(),
         participantImage: chosenAvatar,
-      formResponseAlias: respAlias
+        formResponseAlias: respAlias,
       };
 
       await addLiveParticipant({ payload });
@@ -672,7 +671,7 @@ export function PlayersOnboarding({
                 attendee: attendee || undefined,
                 joinedAt: new Date().toISOString(),
                 participantImage: chosenAvatar,
-                formResponseAlias: respAlias
+                formResponseAlias: respAlias,
               },
             ]
           : [
@@ -682,7 +681,7 @@ export function PlayersOnboarding({
                 attendee: attendee || undefined,
                 joinedAt: new Date().toISOString(),
                 participantImage: chosenAvatar,
-                formResponseAlias: respAlias
+                formResponseAlias: respAlias,
               },
             ],
       };
@@ -690,11 +689,11 @@ export function PlayersOnboarding({
     }
 
     //  saveCookie("currentPlayer", { id });
-    
+
     await refetch();
-    await refetchLobby?.()
+    await refetchLobby?.();
     if (quiz?.accessibility?.live) {
-      await refetchLobby?.()
+      await refetchLobby?.();
       setisLobby(true);
     } else {
       close();
@@ -722,7 +721,6 @@ export function PlayersOnboarding({
       audio.volume = 0.05;
       audio.play();
     }
-    
   }
 
   useEffect(() => {

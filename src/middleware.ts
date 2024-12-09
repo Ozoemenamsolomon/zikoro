@@ -13,8 +13,16 @@ const includedPaths = [
   "/appointments",
   "/create",
   "/admin",
-  "/event/:eventId/reception"
+  "/event/:eventId/reception",
+];
 
+const eventAttendeePaths = [
+  "reception",
+  "engagements",
+  "people/all",
+  "market-place",
+  "partners",
+  "agenda",
 ];
 
 export async function middleware(req: NextRequest) {
@@ -27,31 +35,62 @@ export async function middleware(req: NextRequest) {
 
   const path = req.nextUrl.pathname;
 
-  console.log('middleware path',path)
-  
+  console.log("middleware path", path);
+
   // pathname include reception
   // searchparam not include email and isPasswordless
   // searchParam include eventId
   // no session
 
-  if (path.includes("reception")) {
-    console.log("from middleware")
-    const searchParams = req.nextUrl.searchParams
-    const email = searchParams.get("email")
-    const isPasswordless = searchParams.get("isPasswordless")
-   if (!email || !isPasswordless) {
-   
-   if (!session) {
-    
-      const pathLength = path.split("/").length
-      const eventId = path.split("/")[pathLength -2]
-      const redirectUrl = new URL(`/request/access/${eventId}`, req.url);
+  const isIncluded = eventAttendeePaths.some((included) =>
+    path.includes(included)
+  );
 
-      return NextResponse.redirect(redirectUrl);
+  if (path.startsWith("/event") && isIncluded) {
+    console.log("from middleware");
+    const searchParams = req.nextUrl.searchParams;
+    const email = searchParams.get("email");
+    const isPasswordless = searchParams.get("isPasswordless");
+    if (!email || !isPasswordless) {
+      const eventId = path.split("/")[2];
+
+      // fetch an event using its id, and chcck if the organizer subscription is valid
+      const response = await fetch(
+        `https://zikoro.com/api/events/${eventId}/event`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      ).then((res) => res.json());
+
+      // check if the orgamization has subscription
+      if (
+        response.data?.organization?.subscriptionPlan.toLowerCase() === "free"
+      ) {
+        console.log("On free sub");
+      } else if (response.data?.organization?.subscriptionExpiryDate) {
+        const expiryDate = new Date(
+          response.data.organization.subscriptionExpiryDate
+        );
+        const currentDate = new Date();
+
+        // Check if the subscription has expired
+        if (expiryDate < currentDate) {
+          console.log("Subscription has expired");
+        }
+      }
+
+      if (!session) {
+        const pathLength = path.split("/").length;
+
+        const redirectUrl = new URL(`/request/access/${eventId}`, req.url);
+
+        return NextResponse.redirect(redirectUrl);
+      }
     }
-   }
   }
-
 
   // Check if the request path starts with /appointments
   if (path.startsWith("/appointments")) {
@@ -70,7 +109,7 @@ export async function middleware(req: NextRequest) {
   const isIncludedPath = includedPaths.some((includedPath) =>
     path.startsWith(includedPath)
   );
-  
+
   if (isIncludedPath && !session) {
     // If user is not authenticated and path is included, redirect to the login page
     if (path.startsWith("/api")) {
@@ -99,6 +138,6 @@ export const config = {
     "/referrals/:path*",
     "/appointments/:path*",
     "/admin/:path*",
-    "/event/:path*"
+    "/event/:path*",
   ],
 };

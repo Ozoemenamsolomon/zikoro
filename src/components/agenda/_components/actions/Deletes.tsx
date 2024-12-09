@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components";
 import { useDeleteAgenda } from "@/hooks";
-import { DeleteCard } from "..";
+import { ActionCard } from "@/components/custom_ui/ActionCard";
 import { DeleteOutline } from "@styled-icons/material/DeleteOutline";
 export function Deletes({
   agendaId,
@@ -36,7 +36,7 @@ export function Deletes({
         <DeleteOutline size={22} />
       </Button>
       {isDelete && (
-          <DeleteCard close={onClose} loading={isLoading} deletes={deletes} />
+          <ActionCard close={onClose} loading={isLoading} deletes={deletes} />
     
       )}
     </>

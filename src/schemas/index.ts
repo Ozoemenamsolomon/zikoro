@@ -8,3 +8,4 @@ export * from "./partners";
 export * from "./tags";
 export * from "./agenda";
 export * from "./quiz";
+export * from "./engagement"

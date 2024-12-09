@@ -9,7 +9,14 @@ import { CollapsibleWidget } from "./CollapsibleWidget";
 import { BoothStaffWidget } from "@/components/partners/sponsors/_components";
 import { useForm } from "react-hook-form";
 import { cn } from "@/lib";
-import { TAgenda, TAttendee, TFeedBack, TOrgEvent, TReview } from "@/types";
+import {
+  TAgenda,
+  TAttendee,
+  TFeedBack,
+  TOrgEvent,
+  TReview,
+  TSessionFile,
+} from "@/types";
 import { useSendReview } from "@/hooks";
 import { Like } from "styled-icons/foundation";
 import useUserStore from "@/store/globalUserStore";
@@ -18,12 +25,55 @@ import { EngagementsSettings } from "@/types/engagements";
 import { FilePdf } from "styled-icons/fa-regular";
 import Image from "next/image";
 import Link from "next/link";
+import { ActionCard } from "../../custom_ui/ActionCard";
 
 const tabs = [
   { name: "Description", id: 1 },
   { name: "Review", id: 2 },
   { name: "Engagement", id: 3 },
 ];
+
+function AddedFiles({ file }: { file: TSessionFile<string> }) {
+  const [isDownloadFile, setOpenDownLoadModal] = useState(false);
+
+  function onTogglemodal() {
+    setOpenDownLoadModal((p) => !p);
+  }
+
+  async function download() {
+    window.open(file.file);
+    onTogglemodal();
+  }
+
+  return (
+    <>
+      <div
+        onClick={onTogglemodal}
+        key={file?.id}
+        className="w-full group border relative rounded-lg p-3 flex items-start justify-start gap-x-2"
+      >
+        <FilePdf size={25} className="text-red-500" />
+        <div className="space-y-1 w-full">
+          <p className="text-[13px] w-full text-ellipsis whitespace-nowrap overflow-hidden sm:text-sm text-gray-500">
+            {file?.name}
+          </p>
+          <p className="text-[11px] w-full sm:text-xs text-gray-400">
+            {file?.size}
+          </p>
+        </div>
+      </div>
+      {isDownloadFile && (
+        <ActionCard
+          close={onTogglemodal}
+          loading={false}
+          buttonText="Download"
+          deletes={download}
+          className="bg-basePrimary w-fit"
+        />
+      )}
+    </>
+  );
+}
 
 export function Engagement({
   agenda,
@@ -49,6 +99,7 @@ export function Engagement({
   const [rating, setRating] = useState(0);
   const { user, setUser } = useUserStore();
   const [active, setActive] = useState(1);
+
   //const { reviews } = useGetEventReviews(id);
   const [isSent, setSent] = useState(false);
   const { data: engagementsSettings } = useGetData<EngagementsSettings>(
@@ -70,6 +121,7 @@ export function Engagement({
       setSent(false);
     }
   }, [attendeeId, reviews]);
+
   return (
     <div className=" w-full">
       <div className="w-full flex bg-gray-100 items-center  gap-x-8 border-b border-gray-300 px-4 pt-4">
@@ -262,24 +314,7 @@ export function Engagement({
                   </div>
                 )}
               {Array.isArray(agenda?.sessionFiles) &&
-                agenda?.sessionFiles.map((item) => (
-                  <Link
-                    target="_blank"
-                    href={item?.file}
-                    key={item?.id}
-                    className="w-full group border relative rounded-lg p-3 flex items-start justify-start gap-x-2"
-                  >
-                    <FilePdf size={25} className="text-red-500" />
-                    <div className="space-y-1 w-full">
-                      <p className="text-[13px] w-full text-ellipsis whitespace-nowrap overflow-hidden sm:text-sm text-gray-500">
-                        {item?.name}
-                      </p>
-                      <p className="text-[11px] w-full sm:text-xs text-gray-400">
-                        {item?.size}
-                      </p>
-                    </div>
-                  </Link>
-                ))}
+                agenda?.sessionFiles.map((item) => <AddedFiles file={item} />)}
             </div>
           </CollapsibleWidget>
         </>

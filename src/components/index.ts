@@ -17,3 +17,4 @@ export * from "./ui/select"
 export * from "./auth/AuthLayout";
 export * from "./custom_ui/portal/Portal"
 export * from "./custom_ui/CopyLink"
+export * from "./custom_ui/Pagination"

@@ -181,6 +181,11 @@ export function FormAppearance({
     name: "formSettings.buttonText",
   });
 
+  const prevStartButtonText = useWatch({
+    control: form.control,
+    name: "formSettings.startButtonText",
+  });
+
   // console.log(displayType)
 
   return (
@@ -298,6 +303,22 @@ export function FormAppearance({
               type="text"
               defaultValue={prevButtonText}
               {...form.register("formSettings.buttonText")}
+              className="placeholder:text-sm h-11 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+            />
+          </InputOffsetLabel>
+        )}
+      />
+
+<FormField
+        control={form.control}
+        name="formSettings.startButtonText"
+        render={({ field }) => (
+          <InputOffsetLabel className="w-[150px]" label="Button Text">
+            <Input
+              placeholder=""
+              type="text"
+              defaultValue={prevStartButtonText}
+              {...form.register("formSettings.startButtonText")}
               className="placeholder:text-sm h-11 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
             />
           </InputOffsetLabel>

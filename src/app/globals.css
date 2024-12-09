@@ -348,9 +348,9 @@ input::-webkit-inner-spin-button {
 }
 
 /* Firefox */
-input[type="number"] {
+/* input[type="number"] {
   -moz-appearance: textfield;
-}
+} */
 
 .agenda-slider .slick-dots {
   position: absolute;
@@ -402,20 +402,20 @@ input[type="number"] {
 /* Unordered List */
 .innerhtml ul {
   list-style-type: disc; /* Default filled circle */
-  padding-left: 2rem;
+  padding-left: 0.6rem;
 }
 
 /* Ordered List */
 .innerhtml ol {
   list-style-type: decimal; /* Default decimal numbers */
-  padding-left: 2rem;
+  padding-left: 0.6rem;
 }
 .innerhtml ul li {
-  padding-bottom: 2rem;
+  padding-left: 0.6rem;
 }
 
 .innerhtml ol li {
-  padding-bottom: 2rem;
+  padding-left: 0.6rem;
 }
 
 /* DatePicker.css */

@@ -9,14 +9,13 @@ export async function GET(
 ) {
   const { certificateAlias } = params;
   const { searchParams } = new URL(req.url);
-  const isAlias = searchParams.get("isAlias");
   const supabase = createRouteHandlerClient({ cookies });
   if (req.method === "GET") {
     try {
       const { data, error, status } = await supabase
         .from("certificate")
         .select("*")
-        .eq(isAlias === "true" ? "certificateAlias" : "id", certificateAlias)
+        .eq("certificateAlias", certificateAlias)
         .maybeSingle();
 
       console.log(data, "certificate");
@@ -45,17 +44,23 @@ export async function GET(
   }
 }
 
-export async function PATCH(req: NextRequest) {
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: { certificateAlias: string } }
+) {
   const supabase = createRouteHandlerClient({ cookies });
   if (req.method === "PATCH") {
     try {
-      const params = await req.json();
+      const { certificateAlias } = params;
 
-      console.log(params);
+      const payload = await req.json();
+
+      console.log(payload);
 
       const { data, error } = await supabase
         .from("certificate")
-        .update(params)
+        .update(payload)
+        .eq("certificateAlias", certificateAlias)
         .select()
         .maybeSingle();
 

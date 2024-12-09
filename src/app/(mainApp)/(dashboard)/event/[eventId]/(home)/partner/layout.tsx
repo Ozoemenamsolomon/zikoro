@@ -1,10 +1,9 @@
 
-import type { Metadata } from "next";
+import { metaGenerator } from "../../../meta";
+import { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: "Partners",
-  description: "The sponsors and exhibitors of an event",
-};
+export const generateMetadata = async ({ params }: { params: { eventId: string } }): Promise<Metadata> =>
+	await metaGenerator({ params });
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return children

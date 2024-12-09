@@ -3,10 +3,7 @@
 import { RouteHeader } from "../_components";
 import { useState, useEffect } from "react";
 import { formatDate } from "@/utils";
-import {
-  useGetAdminEventTransactions,
-  useInfiniteScrollPagination,
-} from "@/hooks";
+import { useGetAdminEventTransactions } from "@/hooks";
 import { EventTransactionWidget } from "./_components";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { CiSearch } from "react-icons/ci";
@@ -16,6 +13,7 @@ import { InlineIcon } from "@iconify/react";
 import _ from "lodash";
 import { usePostRequest } from "@/hooks/services/request";
 import { MdClose } from "react-icons/md";
+import { Pagination } from "@/components/custom_ui/Pagination";
 
 function FilterMod({
   onSelected,
@@ -28,12 +26,12 @@ function FilterMod({
     {
       label: "Completed Registration",
       value: true,
-      name: "eventRegistrationRef",
+      name: "registrationCompleted",
     },
     {
-      label: "Completed Registration",
+      label: "InComplete Registration",
       value: false,
-      name: "eventRegistrationRef",
+      name: "registrationCompleted",
     },
     { label: "Sent Email", value: true, name: "emailSent" },
     { label: "Not Sent Email", value: false, name: "emailSent" },
@@ -43,7 +41,7 @@ function FilterMod({
       <div onClick={close} className="w-full h-full inset-0 fixed z-40 "></div>
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative z-50 flex flex-col items-start justify-start w-[180px] bg-white rounded-lg py-4 text-mobile sm:text-sm"
+        className="relative z-50 flex flex-col items-start justify-start w-[200px] bg-white rounded-lg py-4 text-mobile sm:text-sm"
       >
         {filters?.map((v) => (
           <button
@@ -71,7 +69,7 @@ export default function AdminTransactions({
 }) {
   const [from, setFrom] = useState(0);
   const [to, setTo] = useState(50);
-  const [initialLoading, setInitialLoading] = useState(true);
+  // const [initialLoading, setInitialLoading] = useState(true);
   const [filteredData, setFilteredData] = useState<Transactions[]>([]);
   const [isFilter, setOpenFilterModal] = useState(false);
   const [transactionIds, setTransactionIds] = useState<number[]>([]);
@@ -92,36 +90,38 @@ export default function AdminTransactions({
     setOpenFilterModal((p) => !p);
   }
 
-  const { hasReachedLastPage, getTransactions, transactions, isLoading } =
-    useGetAdminEventTransactions({
-      eventAlias: e,
-      from,
-      to,
-      initialLoading,
-    });
-
-  const { ref: infiniteScrollRef } = useInfiniteScrollPagination(
+  const {
     hasReachedLastPage,
-    setFrom,
-    setTo,
-    setInitialLoading
-  );
+    getTransactions,
+    transactions,
+    isLoading,
+    total,
+  } = useGetAdminEventTransactions({
+    eventAlias: e,
+    from,
+    to,
+  });
+
+  // const { ref: infiniteScrollRef } = useInfiniteScrollPagination(
+  //   hasReachedLastPage,
+  //   setFrom,
+  //   setTo,
+  //   setInitialLoading
+  // );
 
   useEffect(() => {
     if (Array.isArray(transactions)) {
       const filtered = transactions.filter((transaction) => {
-        console.log("qwdwfwfwe", selectedOptions);
-        if (selectedOptions.length <= 2) {
-          return selectedOptions.every((option) => {
-            return (
-              transaction[option.name as keyof Transactions] === option.value
-            );
-          });
-        }
-        return true;
+        if (selectedOptions.length === 0) return true;
+
+        return selectedOptions.every((option) => {
+          return (
+            transaction[option.name as keyof Transactions] === option.value
+          );
+        });
       });
       setFilteredData(filtered);
-      console.log("dfwfwefwe", filtered);
+      // console.log("dfwfwefwe", filtered);
       setTransactionIds([]);
     }
   }, [transactions, selectedOptions]);
@@ -132,7 +132,13 @@ export default function AdminTransactions({
   });
 
   function onSelected(val: { label: string; value: boolean; name: string }) {
-    setSelectedOptions((prev) => _.uniqBy([...prev, val], "name"));
+    setSelectedOptions((prev) => {
+      const filtered = prev.filter((option) => option.name !== val.name);
+
+      const updatedOptions = [...filtered, val];
+
+      return updatedOptions.slice(-2);
+    });
     onToggle();
   }
 
@@ -197,6 +203,15 @@ export default function AdminTransactions({
     }
   }
 
+  function changePage(n: number) {
+    // 1 * 50 // 1 * 50 -50
+    // 2 * 50 // 2 * 50 - 50
+    // 3 & 50 // 3 * 50 -50
+    // 4 & 50 //
+   // console.log("number of page", n);
+    setFrom(n * 50 - 50);
+    setTo(n * 50);
+  }
   return (
     <div className="w-full pt-12 sm:pt-16">
       <RouteHeader
@@ -226,21 +241,7 @@ export default function AdminTransactions({
             />
           </div>
         </div>
-        <div className="flex juatify-center mb-4 items-center gap-x-2">
-          {selectedOptions?.length > 0 &&
-            selectedOptions?.map((v) => (
-              <button
-                onClick={() =>
-                  setSelectedOptions(
-                    selectedOptions?.filter((val) => val?.name !== v?.name)
-                  )
-                }
-                className="flex items-center gap-x-2"
-              >
-                {v?.label} <MdClose size={20} />
-              </button>
-            ))}
-        </div>
+       
         {/**visible when length od selectedid is greater than zero */}
         {transactionIds?.length > 0 && (
           <button
@@ -256,6 +257,21 @@ export default function AdminTransactions({
           </button>
         )}
       </div>
+      <div className="flex  justify-center my-4 items-center gap-x-2">
+          {selectedOptions?.length > 0 &&
+            selectedOptions?.map((v) => (
+              <button
+                onClick={() =>
+                  setSelectedOptions(
+                    selectedOptions?.filter((val) => val?.name !== v?.name)
+                  )
+                }
+                className="flex text-mobile sm:text-sm bg-[#001fcc]/30 p-2 items-center gap-x-2"
+              >
+                {v?.label} <MdClose size={20} className="text-[#001fcc]" />
+              </button>
+            ))}
+        </div>
       <div className="w-full pt-6 px-4 sm:pt-18">
         <table className="w-full min-w-[1000px]  overflow-x-auto no-scrollbar">
           <thead className="w-full">
@@ -289,10 +305,7 @@ export default function AdminTransactions({
             {!isLoading &&
               Array.isArray(searchedData) &&
               searchedData?.map((transaction) => (
-                <tr
-                  ref={!hasReachedLastPage ? infiniteScrollRef : null}
-                  className="w-full"
-                >
+                <tr className="w-full">
                   <EventTransactionWidget
                     updateTransactionIds={updateTransactionIds}
                     transactionIds={transactionIds}
@@ -304,6 +317,8 @@ export default function AdminTransactions({
           </tbody>
         </table>
       </div>
+
+      <Pagination totalPages={total} setPage={changePage} />
     </div>
   );
 }

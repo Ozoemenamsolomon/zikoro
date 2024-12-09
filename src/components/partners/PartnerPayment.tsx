@@ -33,6 +33,7 @@ type TEventData = {
   currency: string;
   organizerPhoneNumber: string;
   organizerWhatsappNumber: string;
+  organizerEmail:string;
 };
  export default function PartnerPayment({searchParams:{p,e,discountAmount}}:{searchParams: any}) {
   const router = useRouter();
