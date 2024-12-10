@@ -574,6 +574,7 @@ const buildEditor = ({
       );
       addToCanvas(object);
     },
+  
     canvas,
     getActiveFontWeight: () => {
       const selectedObject = selectedObjects[0];
