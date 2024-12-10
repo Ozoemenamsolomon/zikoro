@@ -1,14 +1,10 @@
 import { useState } from "react";
 import { AskandReplyCard } from "./AskandReplyCard";
 import { InlineIcon } from "@iconify/react";
-import { Button } from "@/components/custom_ui/Button";
-import Image from "next/image";
-import { Input } from "@/components/ui/input";
+import { cn } from "@/lib";
 
 export function MyQuestions({ isAttendee }: { isAttendee?: boolean }) {
   const [replyQuestion, setReplyQuestion] = useState<any | null>(null);
-  const [reply, setReply] = useState("");
-  const [isAnonymous, setIsAnonymous] = useState(false);
 
   function initiateReply(question: any) {
     setReplyQuestion(question);
@@ -18,7 +14,7 @@ export function MyQuestions({ isAttendee }: { isAttendee?: boolean }) {
     e.preventDefault();
   }
   return (
-    <div className="w-full max-w-2xl overflow-y-auto bg-white no-scrollbar h-full mx-auto">
+    <div className={cn("w-full max-w-2xl overflow-y-auto  no-scrollbar h-full mx-auto", replyQuestion && "bg-white p-4")}>
       {!replyQuestion ? (
         <div className="w-full flex flex-col items-start justify-start gap-3 sm:gap-4">
           {[1, 2, 3, 4, 5, 6].map((_) => (
@@ -32,7 +28,7 @@ export function MyQuestions({ isAttendee }: { isAttendee?: boolean }) {
       ) : (
         <div className="w-full flex flex-col items-start justify-start gap-4 ">
           <button
-            //onClick={() => router.back()}
+            onClick={() => setReplyQuestion(null)}
             className="flex items-center gap-x-1 text-mobile sm:text-sm"
           >
             <InlineIcon
@@ -43,14 +39,13 @@ export function MyQuestions({ isAttendee }: { isAttendee?: boolean }) {
           </button>
           <AskandReplyCard isReply />
 
-            <h2 className="font-semibold text-desktop sm:text-lg">Replies</h2>
+          <h2 className="font-semibold text-desktop sm:text-lg">Replies</h2>
 
           <div className="w-full flex flex-col items-start justify-start gap-3 sm:gap-4">
             {[1, 2, 3, 4, 5, 6].map((_) => (
               <AskandReplyCard
                 key={_}
                 className="border bg-[#F9FAFF]"
-                
                 isReply
               />
             ))}
