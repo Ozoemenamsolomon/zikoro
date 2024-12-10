@@ -10,7 +10,7 @@ interface ColorPickerProps {
 
 export const ColorPicker = ({ value, onChange }: ColorPickerProps) => {
   return (
-    <div className="w-full space-y-4">
+    <div className="w-full gap-y-4 flex flex-col items-center">
       <ChromePicker
         color={value}
         onChange={(color) => {
