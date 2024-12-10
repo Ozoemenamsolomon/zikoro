@@ -255,6 +255,8 @@ export interface Editor {
   changeFillColor: (value: string) => void;
   changeStrokeColor: (value: string) => void;
   changeStrokeDashArray: (value: number[]) => void;
+  addHorizontalLine: () => void;
+  addVerticalLine: () => void;
   addCircle: () => void;
   addSoftRectangle: () => void;
   addRectangle: () => void;

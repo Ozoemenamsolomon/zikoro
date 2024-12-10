@@ -8,9 +8,10 @@ const page = ({
   params: { alias: string };
   searchParams: { orgId: string; eventAlias: string; type: string };
 }) => {
+  console.log(params);
   return (
     <CreateCredentialsPage
-      certificateAlias={params.alias}
+      alias={params.alias}
       organizationId={searchParams.orgId}
       eventAlias={searchParams.eventAlias}
       type={searchParams.type}

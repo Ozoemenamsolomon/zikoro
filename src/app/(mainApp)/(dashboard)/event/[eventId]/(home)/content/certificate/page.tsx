@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/select";
 import { TCertificate } from "@/types/certificates";
 import useOrganizationStore from "@/store/globalOrganizationStore";
+import Link from "next/link";
 
 const Certificates = () => {
   const router = useRouter();
@@ -54,9 +55,10 @@ const Certificates = () => {
     });
 
     if (!data) return;
-    router.push(
-      `/credentials/create/${data.certificateAlias}?eventAlias=${eventId}&orgId=${organization.id}&type=certificate`
-    );
+    global?.window &&
+      window.open(
+        `/credentials/create/${data.certificateAlias}?eventAlias=${eventId}&orgId=${organization.id}&type=certificate`
+      );
   };
 
   const {
@@ -842,22 +844,16 @@ const Certificates = () => {
                   </ul>
                 </DropdownMenuContent>
               </DropdownMenu>
-              <button
-                disabled={
-                  !!certificateSettings?.publishOn &&
-                  !!isPast(certificateSettings?.publishOn)
-                }
+              <Link
                 className={`border rounded-md relative w-full h-full overflow-hidden ${
                   certificateSettings?.publishOn &&
                   isPast(certificateSettings?.publishOn)
                     ? "border-green-500"
                     : "border-gray-200"
                 }`}
-                onClick={() =>
-                  router.push(
-                    `/credentials/create/${certificateAlias}?eventAlias=${eventId}&orgId=${organization.id}&type=certificate`
-                  )
-                }
+                href={`/credentials/create/${certificateAlias}?eventAlias=${eventId}&orgId=${organization.id}&type=certificate`}
+                rel="noopener noreferrer"
+                target="_blank"
               >
                 <div className="w-full h-[250px] overflow-hidden">
                   <img className="object-fill" src={cerificateUrl || ""} />
@@ -890,7 +886,7 @@ const Certificates = () => {
                     </span>
                   </div>
                 </div>
-              </button>
+              </Link>
             </div>
           );
         })}
