@@ -70,7 +70,10 @@ export const Navbar = ({
 
   return (
     <nav className="flex h-[68px] w-full items-center gap-x-8 border-b p-4 lg:pl-[34px]">
-      <Logo />
+      <button onClick={() => router.back()} className="flex gap-2 items-center">
+        <ArrowLeft className="px-1 h-fit w-fit" size={16} />
+        <span>Back</span>
+      </button>
       <div className="flex h-full w-full items-center gap-x-1">
         <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
@@ -89,19 +92,6 @@ export const Navbar = ({
                 <p>Open</p>
                 <p className="text-xs text-muted-foreground">
                   Open a JSON file
-                </p>
-              </div>
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => router.back()}
-              className="flex items-center gap-x-2"
-            >
-              <ArrowLeft className="px-1 h-fit w-fit" size={16} />
-
-              <div>
-                <p>Back</p>
-                <p className="text-xs text-muted-foreground">
-                  Go to certificate menu
                 </p>
               </div>
             </DropdownMenuItem>

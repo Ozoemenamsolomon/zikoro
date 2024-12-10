@@ -1,20 +1,29 @@
 "use client";
 import { Editor } from "@/components/editor/components/editor";
-import { useGetCertificate, useGetEvent, useSaveCertificate } from "@/hooks";
+import {
+  useGetBadge,
+  useGetCertificate,
+  useGetEvent,
+  useSaveCertificate,
+} from "@/hooks";
 import React, { useEffect, useState } from "react";
 
 const CreateCredentialsPage = ({
-  certificateAlias,
+  alias,
   organizationId,
   eventAlias,
+  type,
 }: {
-  certificateAlias: string;
+  alias: string;
   organizationId: string;
   eventAlias: string;
+  type: "badge" | "certificate";
 }) => {
-  console.log(certificateAlias);
-  const { certificate, isLoading } = useGetCertificate({
-    certificateAlias,
+  console.log(alias);
+  const credentialFetchFn =
+    type === "certificate" ? useGetCertificate : useGetBadge;
+  const { data, isLoading } = credentialFetchFn({
+    alias,
   });
 
   const {
@@ -22,53 +31,53 @@ const CreateCredentialsPage = ({
     isLoading: saving,
     error,
   } = useSaveCertificate({
-    certificateAlias,
+    certificateAlias: alias,
   });
 
-  const saveCertificateFn = async (values: {
+  const saveCredentialsFn = async (values: {
     json: string;
     height: number;
     width: number;
   }) => {
     const data = await saveCertificate({
       payload: {
-        ...certificate,
-        certificateAlias,
-        certificateName,
-        certificateJSON: values,
+        certificateAlias: alias,
+        name,
+        JSON: values,
       },
     });
   };
 
-  console.log(certificate);
+  console.log(data);
 
   const { event, isLoading: eventLoading } = useGetEvent({
     eventId: eventAlias,
     isAlias: true,
   });
 
-  const [certificateName, setName] = useState<string>("Untitled Certificate");
+  const [name, setName] = useState<string>("Untitled Certificate");
 
   //   const {} = useS
 
   useEffect(() => {
-    if (certificate?.certificateName) {
-      setName(certificate?.certificateName);
+    if (data?.name) {
+      setName(data?.name);
     }
-  }, [certificate]);
+  }, [data]);
 
-  if(isLoading) return <div>Loading...</div>
+  if (isLoading || eventLoading) return <div>Loading...</div>;
 
   return (
     <Editor
-      initialData={certificate?.certificateJSON}
-      name={certificateName}
+      initialData={data?.JSON}
+      name={name}
       setName={setName}
       organizationId={organizationId}
       eventAlias={eventAlias}
-      save={saveCertificateFn}
+      save={saveCredentialsFn}
       isSaving={saving}
       isError={error}
+      event={event}
     />
   );
 };

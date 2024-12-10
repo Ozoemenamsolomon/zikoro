@@ -284,11 +284,11 @@ function AttendeeFillFormComp({
               backgroundColor: data?.formSettings?.buttonColor || "",
             }}
             className={cn(
-              "self-center w-[150px] gap-x-2  text-white font-medium h-12 ",
+              "self-center w-fit gap-x-2  text-white font-medium h-12 ",
               !data?.formSettings?.buttonColor && "bg-basePrimary"
             )}
           >
-            <p>View Form</p>
+            <p>Start</p>
           </Button>
         </div>
       )}

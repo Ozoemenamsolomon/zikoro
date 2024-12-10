@@ -48,9 +48,6 @@ const Certificates = () => {
   const { createCertificate, isLoading: certificateIsCreating } =
     useCreateCertificate();
 
-  // const { saveCertificate, isLoading: certificateIsSaving } =
-  //   useSaveCertificate();
-
   const createCertificateFn = async () => {
     const data = await createCertificate({
       payload: { eventId },
@@ -58,7 +55,7 @@ const Certificates = () => {
 
     if (!data) return;
     router.push(
-      `/credentials/create/${data.certificateAlias}?eventAlias=${eventId}&orgId=${organization.id}`
+      `/credentials/create/${data.certificateAlias}?eventAlias=${eventId}&orgId=${organization.id}&type=certificate`
     );
   };
 
@@ -75,7 +72,7 @@ const Certificates = () => {
     const payload: TCertificate = {
       ...certificate,
       eventId,
-      certificateName: certificate.certificateName + " copy",
+      name: certificate.certificateName + " copy",
     };
 
     const newCertificate = await createCertificate({ payload });
@@ -858,7 +855,7 @@ const Certificates = () => {
                 }`}
                 onClick={() =>
                   router.push(
-                    `/credentials/create/${certificateAlias}?eventAlias=${eventId}&orgId=${organization.id}`
+                    `/credentials/create/${certificateAlias}?eventAlias=${eventId}&orgId=${organization.id}&type=certificate`
                   )
                 }
               >

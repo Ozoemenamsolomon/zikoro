@@ -55,6 +55,7 @@ function FormSettingsComp({ eventId }: { eventId: string }) {
         textFontSize: "14",
         isCoverImage: true,
         buttonText: "Submit",
+        startButtonText:"Start"
       },
     },
   });

@@ -71,6 +71,8 @@ export const selectionDependentTools = [
 ];
 
 export const colors = [
+  material.black,
+  material.white,
   material.red["500"],
   material.pink["500"],
   material.purple["500"],

@@ -42,6 +42,7 @@ export const formSettingSchema = z.object({
         textColor:z.string(),
         buttonColor:z.string(),
         buttonText:z.string(),
+        startButtonText:z.string(),
         textFontSize:z.string(),
         isCoverImage: z.boolean()
     })

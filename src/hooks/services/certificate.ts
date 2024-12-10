@@ -121,10 +121,10 @@ export const useDeleteCertificate = () => {
 };
 
 export const useGetCertificate = ({
-  certificateAlias,
+  alias,
 }: {
-  certificateAlias: string;
-}): UseGetResult<TCertificate, "certificate", "getCertificate"> => {
+  alias: string;
+}): UseGetResult<TCertificate, "data", "getCertificate"> => {
   const [certificate, setCertificates] = useState<TCertificate | null>(null);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
@@ -134,7 +134,7 @@ export const useGetCertificate = ({
 
     try {
       const { data, status } = await getRequest<TCertificate>({
-        endpoint: `/certificates/${certificateAlias}`,
+        endpoint: `/certificates/${alias}`,
       });
 
       if (status !== 200) {
@@ -150,9 +150,9 @@ export const useGetCertificate = ({
 
   useEffect(() => {
     getCertificate();
-  }, [certificateAlias]);
+  }, [alias]);
 
-  return { certificate, isLoading, error, getCertificate };
+  return { data:certificate, isLoading, error, getCertificate };
 };
 
 export const useGetCertificates = ({

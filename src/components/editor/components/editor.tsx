@@ -29,6 +29,7 @@ import { RemoveBgSidebar } from "@/components/editor/components/remove-bg-sideba
 import { SettingsSidebar } from "@/components/editor/components/settings-sidebar";
 import { BackgroundSidebar } from "./background-sidebar";
 import { VerificationSidebar } from "./verification-sidebar";
+import { Event } from "@/types";
 
 interface EditorProps {
   initialData: ResponseType["data"];
@@ -39,6 +40,7 @@ interface EditorProps {
   save: (values: { json: string; height: number; width: number }) => void;
   isSaving: boolean;
   isError: boolean;
+  event: Event;
 }
 
 export const Editor = ({
@@ -50,12 +52,14 @@ export const Editor = ({
   save,
   isSaving,
   isError,
+  event
 }: EditorProps) => {
   // const { mutate } = useUpdateProject(initialData.id);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSave = useCallback(
     debounce((values: { json: string; height: number; width: number }) => {
+
       save(values);
     }, 1500),
     [save]
@@ -216,6 +220,7 @@ export const Editor = ({
           editor={editor}
           activeTool={activeTool}
           onChangeActiveTool={onChangeActiveTool}
+          event={event}
         />
         <main className="relative flex flex-1 flex-col overflow-auto bg-muted">
           <Toolbar
