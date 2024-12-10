@@ -472,6 +472,20 @@ const buildEditor = ({
       });
       canvas.renderAll();
     },
+    addHorizontalLine: () => {
+      const object = new fabric.Line([50, 100, 250, 100], {
+        stroke: strokeColor,
+      });
+
+      addToCanvas(object);
+    },
+    addVerticalLine: () => {
+      const object = new fabric.Line([150, 50, 150, 250], {
+        stroke: strokeColor,
+      });
+
+      addToCanvas(object);
+    },
     addCircle: () => {
       const object = new fabric.Circle({
         ...CIRCLE_OPTIONS,
