@@ -12,7 +12,7 @@ export type TAttendeeCertificate = {
   certificateId: string;
   CertificateGroupId: number;
   certificateURL: string;
-  certificateName: string;
+  CertificateName: string;
   attendeeId: number;
 };
 

@@ -112,11 +112,13 @@ const CertificateDialog: React.FC<MoreOptionsProps> = ({
         certificateInfo: {
           eventAlias: eventId,
           CertificateGroupId: selectedCertificate.id,
-          certificateName: selectedCertificate.name,
+          CertificateName: selectedCertificate.name,
         },
       },
     });
   };
+
+  console.log(eventCertificates);
 
   return (
     <div className="space-y-6 max-h-[80vh] overflow-auto hide-scrollbar py-4 pl-4 pr-1">
@@ -175,11 +177,7 @@ const CertificateDialog: React.FC<MoreOptionsProps> = ({
                 // )
                 .map(
                   ({ id, name }) =>
-                    id && (
-                      <SelectItem value={id?.toString()}>
-                        {name}
-                      </SelectItem>
-                    )
+                    id && <SelectItem value={id?.toString()}>{name}</SelectItem>
                 )}
           </SelectContent>
         </Select>
