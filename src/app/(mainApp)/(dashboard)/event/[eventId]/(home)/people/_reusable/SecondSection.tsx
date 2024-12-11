@@ -442,6 +442,8 @@ export default function SecondSection({
 
   console.log(eventCertificates, "eventCertificates");
 
+  console.log(attendeeCertificates, "attendeeCertificates");
+
   return (
     <div className="overflow-auto no-scrollbar space-y-4 pb-48" ref={divRef}>
       <Dialog open={open} onOpenChange={setOpen}>
@@ -949,7 +951,7 @@ export default function SecondSection({
                     <Link
                       href={`/credentials/verify/certificate/${certificate.certificateId}`}
                     >
-                      {certificate.certificateName}
+                      {certificate.CertificateName}
                     </Link>
                   </DropdownMenuItem>
                 ))}
