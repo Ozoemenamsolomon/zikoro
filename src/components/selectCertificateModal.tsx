@@ -67,7 +67,7 @@ const SelectCertificateModal = ({
               htmlFor="terms2"
               className="capitalize text-gray-500 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             >
-              {certificate.CertificateName}
+              {certificate.name}
             </label>
           </div>
         ))}

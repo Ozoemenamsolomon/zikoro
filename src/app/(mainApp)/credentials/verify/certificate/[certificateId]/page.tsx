@@ -100,7 +100,7 @@ const CertificateView = ({ certificate }: { certificate: TCertificate }) => {
 
   console.log(certificate);
 
-  const shareText = `Excited to share my ${certificate?.CertificateName} certificate from ${certificate?.originalCertificate.event.eventTitle} with you! Check it out here: ${window.location.href}`;
+  const shareText = `Excited to share my ${certificate?.name} certificate from ${certificate?.originalCertificate.event.eventTitle} with you! Check it out here: ${window.location.href}`;
 
   return (
     <div className="flex-[60%] flex flex-col-reverse md:flex-col items-center gap-4 px-8">
@@ -112,7 +112,7 @@ const CertificateView = ({ certificate }: { certificate: TCertificate }) => {
                 certificate?.attendee.firstName +
                 "_" +
                 certificate?.attendee.lastName
-              }_${certificate?.CertificateName}.pdf`
+              }_${certificate?.name}.pdf`
             )
           }
           className="bg-basePrimary"
@@ -282,7 +282,7 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
                   </b>
                 </span>
                 <h1 className="text-lg md:text-xl text-gray-900 font-medium uppercase">
-                  {certificate?.CertificateName}
+                  {certificate?.name}
                 </h1>
               </div>
             </div>

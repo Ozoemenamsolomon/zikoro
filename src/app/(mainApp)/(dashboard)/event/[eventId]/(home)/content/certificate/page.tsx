@@ -74,7 +74,7 @@ const Certificates = () => {
     const payload: TCertificate = {
       ...certificate,
       eventId,
-      name: certificate.certificateName + " copy",
+      name: certificate.name + " copy",
     };
 
     const newCertificate = await createCertificate({ payload });
@@ -788,7 +788,7 @@ const Certificates = () => {
         {certificates?.map((certificate) => {
           const {
             cerificateUrl,
-            certificateName,
+            name,
             created_at,
             id,
             eventId,
@@ -860,7 +860,7 @@ const Certificates = () => {
                 </div>
                 <div className="space-y-1 px-4 py-2 border-t border-gray-200">
                   <h2 className="text-gray-800 font-bold text-left">
-                    {certificateName}
+                    {name}
                   </h2>
                   <div className="flex gap-2 items-center text-sm text-gray-600 font-medium">
                     <svg
