@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
         const {
           attendeeEmail,
           certificateURL,
-          CertificateName: name,
+          CertificateName,
           attendee: { firstName },
         } = certificate;
 
@@ -99,7 +99,7 @@ export async function POST(req: NextRequest) {
           <body>
               <div class="container">
                   <div class="heading">Dear ${firstName},</div>
-                  <div class="content">Great news! Your ${name} certificate is ready for download. Access it now through this link: <a href="${certificateURL}" class="link">Download Certificate</a>.</div>
+                  <div class="content">Great news! Your ${CertificateName} certificate is ready for download. Access it now through this link: <a href="${certificateURL}" class="link">Download Certificate</a>.</div>
                   <div class="content">Congratulations!</div>
                   <div class="content">Best,<br>Event Team</div>
               </div>
