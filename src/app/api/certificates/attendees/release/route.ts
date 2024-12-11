@@ -13,7 +13,8 @@ export async function POST(req: NextRequest) {
       const body = {
         ...params,
         certificateId,
-        certificateURL: "www.zikoro.com/credentials/verify/certificate/" + certificateId,
+        certificateURL:
+          "www.zikoro.com/credentials/verify/certificate/" + certificateId,
       };
 
       const { data: certificate, error } = await supabase
@@ -21,14 +22,14 @@ export async function POST(req: NextRequest) {
         .insert(body)
         .select("*, attendee:attendees!inner(*)")
         .maybeSingle();
-        
+
       if (error) throw error;
 
       try {
         const {
           attendeeEmail,
           certificateURL,
-          name,
+          CertificateName: name,
           attendee: { firstName },
         } = certificate;
 
