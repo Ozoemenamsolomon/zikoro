@@ -313,7 +313,7 @@ export function FormAppearance({
         control={form.control}
         name="formSettings.startButtonText"
         render={({ field }) => (
-          <InputOffsetLabel className="w-[150px]" label="Button Text">
+          <InputOffsetLabel className="w-[150px]" label="Start Button Text">
             <Input
               placeholder=""
               type="text"

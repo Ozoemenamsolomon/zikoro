@@ -1,27 +1,28 @@
 "use client";
 
 import { Switch } from "@/components/ui/switch";
-import { useUpdateQuiz } from "@/hooks";
-import { TQuestion, TQuiz } from "@/types";
 
-export function ActivateQuiz({
-  quiz,
+import { usePostRequest } from "@/hooks/services/request";
+import {  TEventQa } from "@/types/engagements";
+
+export function ActivateQA({
+  eventQa,
   refetch,
 }: {
   refetch: () => Promise<any>;
-  quiz: TQuiz<TQuestion[]>;
+  eventQa: TEventQa;
 }) {
-  const { updateQuiz, isLoading } = useUpdateQuiz();
+  const { postData, isLoading } = usePostRequest("/engagements/qa");
   async function updateStatus() {
-    const payload: Partial<TQuiz<TQuestion[]>> = {
-      ...quiz,
+    const payload: Partial<TEventQa> = {
+      ...eventQa,
       accessibility: {
-        ...quiz?.accessibility,
-        disable: !quiz.accessibility?.disable,
+        ...eventQa?.accessibility,
+        disable: !eventQa.accessibility?.disable,
       },
     };
 
-    await updateQuiz({ payload });
+    await postData({ payload });
     refetch();
   }
   return (
@@ -30,7 +31,7 @@ export function ActivateQuiz({
         <p>Disabled</p>
         <Switch
           onClick={updateStatus}
-          checked={quiz.accessibility?.disable}
+          checked={eventQa.accessibility?.disable}
           disabled={isLoading}
           className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
         />

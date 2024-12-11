@@ -94,7 +94,8 @@ export interface TFormattedEngagementFormAnswer {
 
 export interface TEventQa {
   id: number;
-  qaAlias: string;
+  lastUpdated_at:string;
+  QandAAlias: string;
   coverImage: string;
   eventAlias: string;
   coverTitle:string;
@@ -106,3 +107,4 @@ export interface TEventQa {
     disable: boolean;
   };
 }
+
