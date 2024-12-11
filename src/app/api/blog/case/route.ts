@@ -11,7 +11,9 @@ export async function GET(req: NextRequest) {
         .from("blog")
         .select()
         .eq("status", "publish")
-        .eq("category", "case");
+        .eq("category", "case")
+        .order("created_at", { ascending: false }) // Order by created_at in descending order
+
 
       if (error) throw error;
 
