@@ -50,7 +50,7 @@ const AttendeeCertificate = ({
       
       const link = document.createElement("a");
       link.download =
-        certificate?.certificateName +
+        certificate?.name +
         "_certificate_for_" +
         attendee.firstName +
         "_" +

@@ -32,6 +32,7 @@ import { useCanvasEvents } from "@/components/editor/hooks/use-canvas-events";
 import { useWindowEvents } from "@/components/editor/hooks/use-window-events";
 import { useLoadState } from "@/components/editor/hooks/use-load-state";
 import jsPDF from "jspdf";
+import QRCode from "../QRCode/QRCode";
 
 const buildEditor = ({
   save,
@@ -249,6 +250,13 @@ const buildEditor = ({
           crossOrigin: "anonymous",
         }
       );
+    },
+    addQRCode: (value: string) => {
+      const qr = new QRCode({
+        text: value,
+      });
+      addToCanvas(qr);
+      qr.set("text", value);
     },
     delete: () => {
       canvas.getActiveObjects().forEach((object) => canvas.remove(object));
@@ -472,6 +480,20 @@ const buildEditor = ({
       });
       canvas.renderAll();
     },
+    addHorizontalLine: () => {
+      const object = new fabric.Line([50, 100, 250, 100], {
+        stroke: strokeColor,
+      });
+
+      addToCanvas(object);
+    },
+    addVerticalLine: () => {
+      const object = new fabric.Line([150, 50, 150, 250], {
+        stroke: strokeColor,
+      });
+
+      addToCanvas(object);
+    },
     addCircle: () => {
       const object = new fabric.Circle({
         ...CIRCLE_OPTIONS,
@@ -560,6 +582,7 @@ const buildEditor = ({
       );
       addToCanvas(object);
     },
+
     canvas,
     getActiveFontWeight: () => {
       const selectedObject = selectedObjects[0];

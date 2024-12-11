@@ -39,7 +39,7 @@ export function CertificateWidget({
       <div className="w-full flex items-start justify-between gap-x-3 p-3 sm:p-4 border rounded-b-lg">
         <div className="flex gap-y-1 flex-col items-start justify-start">
           <p className="font-semibold capitalize text-base sm:text-lg">
-            {certificate?.CertificateName ?? ""}
+            {certificate?.name ?? ""}
           </p>
           <AboutWidget
             Icon={Users}

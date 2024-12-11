@@ -71,6 +71,8 @@ export const selectionDependentTools = [
 ];
 
 export const colors = [
+  material.black,
+  material.white,
   material.red["500"],
   material.pink["500"],
   material.purple["500"],
@@ -229,6 +231,7 @@ export interface Editor {
   onPaste: () => void;
   changeImageFilter: (value: string) => void;
   addImage: (value: string) => void;
+  addQRCode: (value: string) => void;
   delete: () => void;
   changeFontSize: (value: number) => void;
   getActiveFontSize: () => number;
@@ -253,6 +256,8 @@ export interface Editor {
   changeFillColor: (value: string) => void;
   changeStrokeColor: (value: string) => void;
   changeStrokeDashArray: (value: number[]) => void;
+  addHorizontalLine: () => void;
+  addVerticalLine: () => void;
   addCircle: () => void;
   addSoftRectangle: () => void;
   addRectangle: () => void;

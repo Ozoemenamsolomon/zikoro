@@ -5,14 +5,16 @@ const page = ({
   params,
   searchParams,
 }: {
-  params: { certificateAlias: string };
-  searchParams: { orgId: string; eventAlias: string };
+  params: { alias: string };
+  searchParams: { orgId: string; eventAlias: string; type: string };
 }) => {
+  console.log(params);
   return (
     <CreateCredentialsPage
-      certificateAlias={params.certificateAlias}
+      alias={params.alias}
       organizationId={searchParams.orgId}
       eventAlias={searchParams.eventAlias}
+      type={searchParams.type}
     />
   );
 };

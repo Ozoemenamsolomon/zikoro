@@ -20,7 +20,6 @@ import { TCertificate } from "@/types/certificates";
 // import { DialogClose } from "../ui/dialog";
 import { DialogClose } from "../ui/dialog";
 import { useParams } from "next/navigation";
-import { isPast } from "date-fns";
 import { MoreOptionsProps } from "@/app/(mainApp)/(dashboard)/event/[eventId]/(home)/people/_reusable/FirstSection";
 
 const CertificateDialog: React.FC<MoreOptionsProps> = ({
@@ -113,11 +112,13 @@ const CertificateDialog: React.FC<MoreOptionsProps> = ({
         certificateInfo: {
           eventAlias: eventId,
           CertificateGroupId: selectedCertificate.id,
-          CertificateName: selectedCertificate.certificateName,
+          CertificateName: selectedCertificate.name,
         },
       },
     });
   };
+
+  console.log(eventCertificates);
 
   return (
     <div className="space-y-6 max-h-[80vh] overflow-auto hide-scrollbar py-4 pl-4 pr-1">
@@ -175,12 +176,8 @@ const CertificateDialog: React.FC<MoreOptionsProps> = ({
                 //   isPast(publishOn)
                 // )
                 .map(
-                  ({ id, certificateName }) =>
-                    id && (
-                      <SelectItem value={id?.toString()}>
-                        {certificateName}
-                      </SelectItem>
-                    )
+                  ({ id, name }) =>
+                    id && <SelectItem value={id?.toString()}>{name}</SelectItem>
                 )}
           </SelectContent>
         </Select>
