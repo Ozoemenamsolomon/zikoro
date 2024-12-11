@@ -20,7 +20,6 @@ import { TCertificate } from "@/types/certificates";
 // import { DialogClose } from "../ui/dialog";
 import { DialogClose } from "../ui/dialog";
 import { useParams } from "next/navigation";
-import { isPast } from "date-fns";
 import { MoreOptionsProps } from "@/app/(mainApp)/(dashboard)/event/[eventId]/(home)/people/_reusable/FirstSection";
 
 const CertificateDialog: React.FC<MoreOptionsProps> = ({
@@ -113,7 +112,7 @@ const CertificateDialog: React.FC<MoreOptionsProps> = ({
         certificateInfo: {
           eventAlias: eventId,
           CertificateGroupId: selectedCertificate.id,
-          name: selectedCertificate.name,
+          certificateName: selectedCertificate.name,
         },
       },
     });

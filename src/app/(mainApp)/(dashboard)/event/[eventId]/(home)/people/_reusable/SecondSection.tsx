@@ -326,7 +326,7 @@ export default function SecondSection({
         attendeeId: id,
         CertificateGroupId: eventCertificate.id,
         attendeeEmail: email,
-        name: eventCertificate.name,
+        certificateName: eventCertificate.name,
       },
     });
 
@@ -949,7 +949,7 @@ export default function SecondSection({
                     <Link
                       href={`/credentials/verify/certificate/${certificate.certificateId}`}
                     >
-                      {certificate.name}
+                      {certificate.certificateName}
                     </Link>
                   </DropdownMenuItem>
                 ))}
