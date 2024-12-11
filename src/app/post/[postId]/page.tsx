@@ -8,7 +8,7 @@ export const generateMetadata = async ({
 }): Promise<Metadata> => {
   const Id = (await params).postId;
 
-  const response = fetch(`http://localhost:3000/api/post/${Id}`, {
+  const response = fetch(`https://www.zikoro.com/api/post/${Id}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
