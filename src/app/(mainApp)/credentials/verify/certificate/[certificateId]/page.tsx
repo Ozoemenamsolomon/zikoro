@@ -54,7 +54,7 @@ const style = {
 };
 
 const CertificateView = ({ certificate }: { certificate: TCertificate }) => {
-  const initialData = certificate?.originalCertificate.certificateJSON;
+  const initialData = certificate?.originalCertificate.JSON;
 
   const [isShareDropDown, showShareDropDown] = useState(false);
 
@@ -282,7 +282,7 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
                   </b>
                 </span>
                 <h1 className="text-lg md:text-xl text-gray-900 font-medium uppercase">
-                  {certificate?.name}
+                  {certificate?.certificateName}
                 </h1>
               </div>
             </div>
