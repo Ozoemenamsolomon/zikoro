@@ -113,7 +113,7 @@ const CertificateDialog: React.FC<MoreOptionsProps> = ({
         certificateInfo: {
           eventAlias: eventId,
           CertificateGroupId: selectedCertificate.id,
-          CertificateName: selectedCertificate.certificateName,
+          name: selectedCertificate.name,
         },
       },
     });
@@ -175,10 +175,10 @@ const CertificateDialog: React.FC<MoreOptionsProps> = ({
                 //   isPast(publishOn)
                 // )
                 .map(
-                  ({ id, certificateName }) =>
+                  ({ id, name }) =>
                     id && (
                       <SelectItem value={id?.toString()}>
-                        {certificateName}
+                        {name}
                       </SelectItem>
                     )
                 )}

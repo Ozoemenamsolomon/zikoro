@@ -126,7 +126,7 @@ export async function POST(
             const {
               attendeeEmail,
               certificateURL,
-              CertificateName,
+              name,
               attendee: { firstName },
             } = certificate;
 
@@ -197,7 +197,7 @@ export async function POST(
                 <body>
                     <div class="container">
                         <div class="heading">Dear ${firstName},</div>
-                        <div class="content">Great news! Your ${CertificateName} certificate is ready for download. Access it now through this link: <a href="${certificateURL}" class="link">Download Certificate</a>.</div>
+                        <div class="content">Great news! Your ${name} certificate is ready for download. Access it now through this link: <a href="${certificateURL}" class="link">Download Certificate</a>.</div>
                         <div class="content">Congratulations!</div>
                         <div class="content">Best,<br>Event Team</div>
                     </div>
@@ -255,7 +255,7 @@ export async function POST(
               //   <body>
               //     <div class="container">
               //       <div class="heading">Dear ${firstName},</div>
-              //       <div class="content">Great news! Your ${CertificateName} certificate is ready for download. Access it now through this link: <a href="${certificateURL}" class="link">Download Certificate</a>.</div>
+              //       <div class="content">Great news! Your ${name} certificate is ready for download. Access it now through this link: <a href="${certificateURL}" class="link">Download Certificate</a>.</div>
               //       <div class="content">Congratulations!</div>
               //       <div class="content">Best,<br>Event Team</div>
               //     </div>

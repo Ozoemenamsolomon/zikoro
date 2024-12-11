@@ -72,6 +72,16 @@ export const VerificationSidebar = ({
           </Button>
           <Button
             className="w-full"
+            onClick={() =>
+              editor?.addQRCode(
+                "www.zikoro.com/credentials/certificate/verify/#{certificate_id#}"
+              )
+            }
+          >
+            Add a QR Code
+          </Button>
+          <Button
+            className="w-full"
             onClick={() => editor?.addText("#{city#} #{country#}")}
           >
             Add a location

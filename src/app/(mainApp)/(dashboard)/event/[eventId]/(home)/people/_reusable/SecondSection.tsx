@@ -313,7 +313,7 @@ export default function SecondSection({
     //     certificateInfo: {
     //       eventAlias: eventCertificate.eventId,
     //       CertificateGroupId: eventCertificate.id,
-    //       CertificateName: eventCertificate.certificateName,
+    //       name: eventCertificate.name,
     //     },
     //   },
     // });
@@ -326,7 +326,7 @@ export default function SecondSection({
         attendeeId: id,
         CertificateGroupId: eventCertificate.id,
         attendeeEmail: email,
-        CertificateName: eventCertificate.certificateName,
+        name: eventCertificate.name,
       },
     });
 
@@ -903,7 +903,7 @@ export default function SecondSection({
                       <button
                         onClick={() => releaseCertificate(eventCertificate)}
                       >
-                        {eventCertificate.certificateName}
+                        {eventCertificate.name}
                       </button>
                     </DropdownMenuItem>
                   ))}
@@ -949,7 +949,7 @@ export default function SecondSection({
                     <Link
                       href={`/credentials/verify/certificate/${certificate.certificateId}`}
                     >
-                      {certificate.CertificateName}
+                      {certificate.name}
                     </Link>
                   </DropdownMenuItem>
                 ))}
