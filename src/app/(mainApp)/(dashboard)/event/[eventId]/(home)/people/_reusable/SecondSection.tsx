@@ -326,7 +326,7 @@ export default function SecondSection({
         attendeeId: id,
         CertificateGroupId: eventCertificate.id,
         attendeeEmail: email,
-        certificateName: eventCertificate.name,
+        CertificateName: eventCertificate.name,
       },
     });
 

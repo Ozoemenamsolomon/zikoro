@@ -10,7 +10,9 @@ export async function GET(req: NextRequest) {
       const { data, error } = await supabase
         .from("blog")
         .select()
-        .eq("status", "publish");
+        .eq("status", "publish")
+        .order("created_at", { ascending: false }) // Order by created_at in descending order
+
 
       if (error) throw error;
 
