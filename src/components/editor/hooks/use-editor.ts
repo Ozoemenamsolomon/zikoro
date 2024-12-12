@@ -236,8 +236,15 @@ const buildEditor = ({
       });
     },
     addImage: (value: string) => {
+      const newImage =
+        value === "#{placeholder_profile}#"
+          ? "https://www.seekpng.com/png/detail/966-9665317_placeholder-image-person-jpg.png"
+          : value;
+
+      console.log(newImage);
+
       fabric.Image.fromURL(
-        value,
+        newImage,
         (image) => {
           const workspace = getWorkspace();
 

@@ -4,9 +4,6 @@ import { fabric } from "fabric";
 import debounce from "lodash.debounce";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-// import { ResponseType } from "@/components/projects/api/use-get-project";
-// import { useUpdateProject } from "@/components/projects/api/use-update-project";
-
 import { ActiveTool, selectionDependentTools } from "@/components/editor/types";
 import { Navbar } from "@/components/editor/components/navbar";
 import { Footer } from "@/components/editor/components/footer";
@@ -23,7 +20,7 @@ import { FontSidebar } from "@/components/editor/components/font-sidebar";
 import { ImageSidebar } from "@/components/editor/components/image-sidebar";
 import { FilterSidebar } from "@/components/editor/components/filter-sidebar";
 import { DrawSidebar } from "@/components/editor/components/draw-sidebar";
-// import { AiSidebar } from "@/components/editor/components/ai-sidebar";
+
 import { TemplateSidebar } from "@/components/editor/components/template-sidebar";
 import { RemoveBgSidebar } from "@/components/editor/components/remove-bg-sidebar";
 import { SettingsSidebar } from "@/components/editor/components/settings-sidebar";
@@ -41,6 +38,8 @@ interface EditorProps {
   isSaving: boolean;
   isError: boolean;
   event: Event;
+  settings: any;
+  setSettings: (settings: any) => void;
 }
 
 export const Editor = ({
@@ -52,14 +51,15 @@ export const Editor = ({
   save,
   isSaving,
   isError,
-  event
+  event,
+  settings,
+  setSettings,
 }: EditorProps) => {
   // const { mutate } = useUpdateProject(initialData.id);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSave = useCallback(
     debounce((values: { json: string; height: number; width: number }) => {
-
       save(values);
     }, 1500),
     [save]
@@ -221,6 +221,12 @@ export const Editor = ({
           activeTool={activeTool}
           onChangeActiveTool={onChangeActiveTool}
           event={event}
+          onChangeSettings={(value: any) => {
+            setSettings((prev) => ({ ...prev, ...value }));
+          }}
+          saveSettings={debouncedSave}
+          settings={settings}
+          isSaving={isSaving}
         />
         <main className="relative flex flex-1 flex-col overflow-auto bg-muted">
           <Toolbar
