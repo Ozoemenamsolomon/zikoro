@@ -27,6 +27,10 @@ interface SettingsSidebarProps {
   activeTool: ActiveTool;
   onChangeActiveTool: (tool: ActiveTool) => void;
   event: Event;
+  onChangeSettings: (settings: any) => void;
+  settings: any;
+  saveSettings: () => void;
+  isSaving: boolean;
 }
 
 export const SettingsSidebar = ({
@@ -34,6 +38,10 @@ export const SettingsSidebar = ({
   activeTool,
   onChangeActiveTool,
   event,
+  onChangeSettings,
+  settings,
+  saveSettings,
+  isSaving,
 }: SettingsSidebarProps) => {
   const workspace = editor?.getWorkspace();
 
@@ -47,7 +55,9 @@ export const SettingsSidebar = ({
   const [width, setWidth] = useState(initialWidth);
   const [height, setHeight] = useState(initialHeight);
   const [background, setBackground] = useState(initialBackground);
-  const [skills, setSkills] = useState<{ value: string; color: string }[]>([]);
+  const [skills, setSkills] = useState<{ value: string; color: string }[]>(
+    settings.skills
+  );
 
   const [newSkill, setNewSkill] = useState<string>("");
   const [color, setColor] = useState<string>("");
@@ -94,17 +104,17 @@ export const SettingsSidebar = ({
           <div className="pt-4 pb-2">
             <div className="relative">
               <Label className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
-                Availability Date
+                Publish On
               </Label>
               <Input
                 placeholder="Enter event title"
                 type="datetime-local"
                 defaultValue={event?.endDateTime}
-                // value={settings.publishOn}
+                value={settings.publishOn}
                 className="placeholder:text-sm h-12 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700 accent-basePrimary"
-                // onInput={(e) =>
-                //   editSettings("publishOn", e.currentTarget.value)
-                // }
+                onInput={(e) =>
+                  onChangeSettings({ publishOn: e.currentTarget.value })
+                }
               />
             </div>
           </div>
@@ -189,9 +199,11 @@ export const SettingsSidebar = ({
                       skills.some(({ value }) => newSkill === value)
                     }
                     onClick={() => {
-                      setSkills([...skills, { value: newSkill, color }]);
+                      const newSkills = [...skills, { value: newSkill, color }];
+                      setSkills(newSkills);
                       setNewSkill("");
                       setColor("");
+                      onChangeSettings({ skills: newSkills });
                     }}
                     className="bg-basePrimary"
                   >
@@ -234,8 +246,13 @@ export const SettingsSidebar = ({
               ))}
             </div>
           </div>
-          <Button type="submit" className="w-full">
-            Save
+          <Button
+            onClick={saveSettings}
+            type="submit"
+            className="w-full"
+            disabled={isSaving}
+          >
+            {isSaving ? "Saving..." : "Save"}
           </Button>
         </form>
         <div className="p-4">

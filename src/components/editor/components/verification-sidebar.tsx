@@ -70,7 +70,7 @@ export const VerificationSidebar = ({
           >
             Add a Verification URL
           </Button>
-          <Button
+          {/* <Button
             className="w-full"
             onClick={() =>
               editor?.addQRCode(
@@ -79,13 +79,19 @@ export const VerificationSidebar = ({
             }
           >
             Add a QR Code
-          </Button>
+          </Button> */}
           <Button
             className="w-full"
             onClick={() => editor?.addText("#{city#} #{country#}")}
           >
             Add a location
           </Button>
+          {/* <Button
+            className="w-full"
+            onClick={() => editor?.addImage("#{placeholder_profile}#")}
+          >
+            Add a Profile Image
+          </Button> */}
         </div>
       </ScrollArea>
       <ToolSidebarClose onClick={onClose} />

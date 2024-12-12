@@ -44,6 +44,7 @@ const CreateCredentialsPage = ({
         certificateAlias: alias,
         name,
         JSON: values,
+        certificateSettings: settings,
       },
     });
   };
@@ -57,11 +58,25 @@ const CreateCredentialsPage = ({
 
   const [name, setName] = useState<string>("Untitled Certificate");
 
+  const [settings, setSettings] = useState({
+    skills: [],
+    publishOn: new Date(),
+  });
+
   //   const {} = useS
 
   useEffect(() => {
     if (data?.name) {
       setName(data?.name);
+    }
+
+    if (data?.certificateSettings) {
+      setSettings(data?.certificateSettings);
+    } else {
+      setSettings({
+        skills: [],
+        publishOn: event?.endDateTime,
+      });
     }
   }, [data]);
 
@@ -78,6 +93,8 @@ const CreateCredentialsPage = ({
       isSaving={saving}
       isError={error}
       event={event}
+      settings={settings}
+      setSettings={setSettings}
     />
   );
 };
