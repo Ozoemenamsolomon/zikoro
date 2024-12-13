@@ -36,8 +36,11 @@ export default function EventQaAttendeeView({
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [active, setActive] = useState(1);
   const [isOpen, setIsOpen] = useState(false);
-  const [filterValue, setFilterValue] = useState("Recent")
+  const [filterValue, setFilterValue] = useState("Recent");
   const [userDetail, setUserDetail] = useState<UserDetail | null>(null);
+  const [replyQuestion, setReplyQuestion] = useState<TEventQAQuestion | null>(
+    null
+  );
   const { eventQAQuestions, setEventQAQuestions, isLoading, getQAQUestions } =
     useGetQAQuestions({ qaId });
   useQARealtimePresence();
@@ -60,15 +63,15 @@ export default function EventQaAttendeeView({
   const filteredEventQaQuestions = useMemo(() => {
     if (Array.isArray(eventQAQuestions)) {
       if (filterValue === "Recent") {
-        return eventQAQuestions.sort((a, b) => 
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        return eventQAQuestions.sort(
+          (a, b) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
         );
       } else if (filterValue === "Top Liked") {
         return eventQAQuestions.sort((a, b) => b.vote - a.vote);
       }
-    }
-    else return []
-  },[eventQAQuestions, filterValue])
+    } else return [];
+  }, [eventQAQuestions, filterValue]);
 
   const myQuestions = useMemo(() => {
     if (Array.isArray(filteredEventQaQuestions) && userDetail) {
@@ -83,7 +86,7 @@ export default function EventQaAttendeeView({
   // subscribe to qa
   useEffect(() => {
     // function subscribeToUpdate() {
-console.log("in it")
+    console.log("in it");
     const channel = supabase
       .channel("live-quiz")
       .on(
@@ -95,12 +98,29 @@ console.log("in it")
           filter: `QandAAlias=eq.${qaId}`,
         },
         (payload) => {
-          console.log("payload from live", payload);
-          // setEventQAQuestions(payload.new as TEventQAQuestion[]);
+        // console.log("payload from live", payload);
+          const updated = payload.new as TEventQAQuestion;
+          if (eventQAQuestions) {
+            const updatedQuestions = eventQAQuestions?.map((item) => {
+              if (item.id === updated.id) {
+                return {
+                  ...updated,
+                };
+              }
+              return item;
+            });
+            setEventQAQuestions(updatedQuestions);
+           //  console.log("payload from live", payload.new, {replyQuestion});
+            if (replyQuestion !== null && replyQuestion?.id === updated.id) {
+
+           //   console.log("yes")
+              setReplyQuestion(updated)
+            }
+          }
         }
       )
       .subscribe((status) => {
-        console.log("Subscription status:", status); // Log subscription status
+        console.log("Subscription status:", status); 
       });
 
     return () => {
@@ -110,7 +130,7 @@ console.log("in it")
 
   useEffect(() => {
     // function subscribeToUpdate() {
-    console.log("in it Insert")
+    console.log("in it Insert");
     const channel = supabase
       .channel("live-quiz")
       .on(
@@ -134,6 +154,14 @@ console.log("in it")
   }, [supabase]);
 
   console.log("qas ", eventQAQuestions);
+
+  function initiateReply(question: TEventQAQuestion) {
+    setReplyQuestion(question);
+  }
+
+  function replyToNull()  {
+    setReplyQuestion(null)
+  }
 
   if (isLoading) {
     return (
@@ -165,6 +193,9 @@ console.log("in it")
               isAttendee
               eventQAQuestions={eventQAQuestions || []}
               userDetail={userDetail}
+              initiateReply={initiateReply}
+              replyQuestion={replyQuestion}
+              replyToNull={replyToNull}
             />
           )}
           {active === 2 && (

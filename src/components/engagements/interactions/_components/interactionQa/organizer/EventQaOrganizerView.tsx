@@ -20,6 +20,7 @@ import { generateAlias } from "@/utils";
 import { useFetchSingleEvent } from "@/hooks";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { TEventQAQuestion } from "@/types";
 
 const supabase = createClientComponentClient();
 export default function EventQaOrganizerView({
@@ -35,6 +36,9 @@ export default function EventQaOrganizerView({
   const { data, loading } = useFetchSingleEvent(eventId);
   const [isLeftBox, setIsLeftBox] = useState(true);
   const [filterValue, setFilterValue] = useState("Recent")
+  const [replyQuestion, setReplyQuestion] = useState<TEventQAQuestion | null>(
+    null
+  );
   const { eventQAQuestions, setEventQAQuestions, isLoading, getQAQUestions } =
     useGetQAQuestions({ qaId });
   useQARealtimePresence();
@@ -54,8 +58,23 @@ export default function EventQaOrganizerView({
           filter: `QandAAlias=eq.${qaId}`,
         },
         (payload) => {
-          console.log("payload from live", payload);
-          // setEventQAQuestions(payload.new as TEventQAQuestion[]);
+          //console.log("payload from live", payload);
+          const updated = payload.new as TEventQAQuestion;
+          if (eventQAQuestions) {
+            const updatedQuestions = eventQAQuestions?.map((item) => {
+              if (item.id === updated.id) {
+                return {
+                  ...updated,
+                };
+              }
+              return item;
+            });
+            setEventQAQuestions(updatedQuestions);
+
+            if (replyQuestion !== null && replyQuestion?.id === updated.id) {
+              setReplyQuestion(updated)
+            }
+          }
         }
       )
       .subscribe();
@@ -129,6 +148,13 @@ export default function EventQaOrganizerView({
     }
   }, [filteredEventQaQuestions]);
 
+  function initiateReply(question: TEventQAQuestion) {
+    setReplyQuestion(question);
+  }
+  function replyToNull()  {
+    setReplyQuestion(null)
+  }
+
   if (!data && isLoading) {
     return (
       <div className="w-full h-[300px] flex items-center justify-center">
@@ -171,6 +197,9 @@ export default function EventQaOrganizerView({
           >
             {active === 1 && (
               <AllQuestions
+              initiateReply={initiateReply}
+              replyQuestion={replyQuestion}
+              replyToNull={replyToNull}
                 refetch={getQAQUestions}
                 eventQAQuestions={filteredEventQaQuestions || []}
                 userDetail={{
