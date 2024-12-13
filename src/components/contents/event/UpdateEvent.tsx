@@ -174,6 +174,7 @@ function UpdateEventComp({ eventId }: { eventId: string }) {
   const [isEndDate, setEndDate] = useState(false);
   const { loading: updating, update } = useUpdateEvent();
   const [isShowPublishModal, setShowPublishModal] = useState(false);
+  const [isAfterPublishedModal, setIsAfterPublishedModal] = useState(false)
   const [isOpen, setOpen] = useState(false);
   const form = useForm<z.infer<typeof updateEventSchema>>({
     resolver: zodResolver(updateEventSchema),
@@ -193,6 +194,9 @@ function UpdateEventComp({ eventId }: { eventId: string }) {
 
   function onClose() {
     setOpen((prev) => !prev);
+  }
+  function toggleAfterPublish() {
+    setIsAfterPublishedModal((p)  => !p)
   }
   function showPublishModal() {
     setShowPublishModal((prev) => !prev);
@@ -421,7 +425,8 @@ function UpdateEventComp({ eventId }: { eventId: string }) {
     );
     setIsPublishing(false);
     showPublishModal();
-    window.open(window.location.href, "_self");
+    toggleAfterPublish()
+   // window.open(window.location.href, "_self");
   }
 
   async function unpublishEvent() {
@@ -1040,6 +1045,21 @@ function UpdateEventComp({ eventId }: { eventId: string }) {
             }
           />
         )}
+
+      {!isAfterPublishedModal && data&&
+        <PreviewModal
+        close={onClose}
+        type={""}
+        title={data?.eventTitle}
+        url={
+          data?.published
+            ? `/live-events/${data?.eventAlias}`
+            : `/preview/${data?.eventAlias}`
+        }
+        isAfterPublished
+      />
+      }
+        
       </>
     </DateAndTimeAdapter>
   );

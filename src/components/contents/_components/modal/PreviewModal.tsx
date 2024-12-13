@@ -19,6 +19,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { TriangleDown } from "styled-icons/entypo";
 import { Event } from "@/types";
+import { cn } from "@/lib";
 
 function CopyLink({ link }: { link: string }) {
   const [isCopy, setCopy] = useState(false);
@@ -58,17 +59,18 @@ function CopyLink({ link }: { link: string }) {
   );
 }
 
-
 export function PreviewModal({
   close,
   type,
   title,
   url,
+  isAfterPublished,
 }: {
-type:string;
-title:string;
+  type: string;
+  title: string;
   close: () => void;
   url: string;
+  isAfterPublished?: boolean;
 }) {
   const form = useForm({});
 
@@ -83,21 +85,21 @@ title:string;
       <div
         onClick={(e) => e.stopPropagation()}
         role="button"
-        className="w-[95%] sm:w-[500px] box-animation h-fit flex flex-col gap-y-6 rounded-lg bg-white m-auto absolute inset-0 py-6 px-3 sm:px-4"
+        className={cn("w-[95%] sm:w-[500px] box-animation h-fit flex flex-col gap-y-6 rounded-lg bg-white m-auto absolute inset-0 py-6 px-3 sm:px-4", isAfterPublished && " bg-success-confetti")}
       >
         <div className="w-full flex items-center justify-between">
-          <h2 className="font-medium text-lg sm:text-xl">
-            {type}
-          </h2>
+          <h2 className="font-medium text-lg sm:text-xl">{type}</h2>
           <Button onClick={close} className="px-1 h-fit w-fit">
             <CloseOutline size={22} />
           </Button>
         </div>
         <Form {...form}>
           <form className="flex items-start w-full flex-col gap-y-3">
-            <p className="text-mobile sm:text-sm">{`Open link to view ${
-             title || ""
-            }`}</p>
+            <p className="text-mobile sm:text-sm">
+              {isAfterPublished
+                ? `Congratulations! Your event is now live!`
+                : `Open link to view ${title || ""}`}
+            </p>
             <FormField
               control={form.control}
               name="name"
@@ -126,10 +128,13 @@ title:string;
             />
             <div className="w-full flex mt-6 items-center justify-between">
               <p className="text-xs sm:text-sm flex flex-col items-start ">
-                <span> Scan QRCode to view</span>
-                <span className="font-semibold capitalize">
-                  {title}
+                <span>
+                  {" "}
+                  {isAfterPublished
+                    ? "Share this link or QR code with attendees to register for"
+                    : "Scan QRCode to view"}
                 </span>
+                <span className="font-semibold capitalize">{title}</span>
               </p>
               <QRCode size={150} value={`${window.location.origin}${url}`} />
             </div>
@@ -150,4 +155,3 @@ title:string;
     </div>
   );
 }
-

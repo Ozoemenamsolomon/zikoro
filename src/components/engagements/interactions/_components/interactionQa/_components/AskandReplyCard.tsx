@@ -59,12 +59,21 @@ export function AskandReplyCard({
   }, [eventQa]);
 
   const formatVotesCount = useMemo(() => {
-    if (eventQa && Array.isArray(eventQa?.vote)) {
-      return formatReviewNumber(eventQa?.vote);
-    } else {
+    if (eventQa) {
+      return formatReviewNumber(eventQa?.vote || 0);
+    }
+    
+    else {
       return "0";
     }
-  }, [eventQa]);
+  }, [eventQa, responseId]);
+
+  /**
+    if (responseId && originalQuestion) {
+      return formatReviewNumber(originalQuestion?.vote);
+    }
+    else
+   */
 
   async function voteFn() {
     const payload: Partial<TEventQAQuestion> = responseId
@@ -115,7 +124,7 @@ export function AskandReplyCard({
 
     await postData({ payload });
 
-    refetch?.();
+   // refetch?.();
   }
   return (
     <div
