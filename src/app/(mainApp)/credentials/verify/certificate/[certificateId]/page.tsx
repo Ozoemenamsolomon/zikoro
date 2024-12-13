@@ -90,7 +90,7 @@ const CertificateView = ({
 
   return (
     <div className="flex-[60%] flex flex-col-reverse md:flex-col items-center gap-4 px-8">
-      <div className="flex gap-2 w-3/4">
+      <div className="flex gap-2 w-3/4 flex-col md:flex-row items-center justify-between">
         <Button
           onClick={() =>
             editor?.savePdf(
@@ -150,7 +150,7 @@ const CertificateView = ({
           </Button>
         </div>
       </div>
-      <div className="relative h-[calc(100%-124px)] w-full" ref={containerRef}>
+      <div className="relative h-[500px] md:h-[calc(100%-124px)] w-full" ref={containerRef}>
         <div className="absolute inset-0 bg-transparent z-50" />
         <canvas ref={canvasRef} />
       </div>
@@ -159,22 +159,22 @@ const CertificateView = ({
 };
 
 const Page = ({ params }: { params: { certificateId: string } }) => {
-  function enforceDesktopView() {
-    if (window.innerWidth < 1024) {
-      document
-        .querySelector("meta[name=viewport]")
-        .setAttribute("content", "width=1024");
-    }
-  }
+  // function enforceDesktopView() {
+  //   if (window.innerWidth < 1024) {
+  //     document
+  //       .querySelector("meta[name=viewport]")
+  //       .setAttribute("content", "width=1024");
+  //   }
+  // }
 
-  useEffect(() => {
-    enforceDesktopView();
-    window.addEventListener("resize", enforceDesktopView);
+  // useEffect(() => {
+  //   enforceDesktopView();
+  //   window.addEventListener("resize", enforceDesktopView);
 
-    return () => {
-      window.removeEventListener("resize", enforceDesktopView);
-    };
-  }, []);
+  //   return () => {
+  //     window.removeEventListener("resize", enforceDesktopView);
+  //   };
+  // }, []);
 
   const router = useRouter();
 
@@ -204,7 +204,7 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
   }, [isLoading, certificate]);
 
   return (
-    <section className="min-h-screen flex flex-col-reverse md:flex-row justify-center gap-6 pt-20 pb-8 bg-[#F9FAFF]">
+    <section className="min-h-screen flex flex-col md:flex-row justify-center gap-6 pt-20 pb-8 bg-[#F9FAFF]">
       {!isLoading && certificate ? (
         <>
           <CertificateView certificate={certificate} />
