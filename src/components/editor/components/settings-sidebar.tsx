@@ -122,7 +122,7 @@ export const SettingsSidebar = ({
             <Label className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
               Height
             </Label>
-            <Input
+          <Input
               placeholder="Height"
               value={height}
               type="number"
