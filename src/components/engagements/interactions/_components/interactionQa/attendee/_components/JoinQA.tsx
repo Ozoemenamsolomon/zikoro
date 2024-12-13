@@ -7,8 +7,10 @@ import Avatar, { genConfig, AvatarFullConfig } from "react-nice-avatar";
 import { Plus } from "styled-icons/bootstrap";
 import { AvatarModal } from "../../../presentation/attendee/AvatarModal";
 import toast from "react-hot-toast";
+import { generateAlias } from "@/utils";
+import { UserDetail } from "../EventQaAttendeeView";
 
-export function JoinQA({ joined }: { joined: () => void }) {
+export function JoinQA({ joined, addUser }: {addUser:(user: UserDetail) => void; joined: () => void }) {
   const router = useRouter();
   const [attendeeDetail, setAttendeeDetail] = useState("");
   const [isAvatarModal, setAvatarModal] = useState(false);
@@ -47,7 +49,13 @@ export function JoinQA({ joined }: { joined: () => void }) {
       toast.error("Pls select an avatar");
       return;
     }
-
+    const userId = generateAlias();
+    const userDetail: UserDetail = {
+      userId,
+      userNickName:attendeeDetail,
+      userImage:chosenAvatar
+    }
+    addUser(userDetail)
     joined();
   }
   return (

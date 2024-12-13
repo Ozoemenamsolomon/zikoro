@@ -14,6 +14,7 @@ const includedPaths = [
   "/create",
   "/admin",
   "/event/:eventId/reception",
+  "engagements/:eventId/qa/:qaId/organizer"
 ];
 
 const eventAttendeePaths = [
@@ -69,7 +70,9 @@ export async function middleware(req: NextRequest) {
       if (
         response.data?.organization?.subscriptionPlan.toLowerCase() === "free"
       ) {
-        console.log("On free sub");
+        const redirectUrl = new URL(`/expired/subscription`, req.url);
+
+        return NextResponse.redirect(redirectUrl);
       } else if (response.data?.organization?.subscriptionExpiryDate) {
         const expiryDate = new Date(
           response.data.organization.subscriptionExpiryDate
@@ -78,13 +81,14 @@ export async function middleware(req: NextRequest) {
 
         // Check if the subscription has expired
         if (expiryDate < currentDate) {
-          console.log("Subscription has expired");
+          const redirectUrl = new URL(`/expired/subscription`, req.url);
+
+        return NextResponse.redirect(redirectUrl);
         }
       }
 
       if (!session) {
-        const pathLength = path.split("/").length;
-
+        // const pathLength = path.split("/").length;
         const redirectUrl = new URL(`/request/access/${eventId}`, req.url);
 
         return NextResponse.redirect(redirectUrl);
@@ -105,7 +109,7 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  // Check if the request path is included in the protected paths
+ // Check if the request path is included in the protected paths
   const isIncludedPath = includedPaths.some((includedPath) =>
     path.startsWith(includedPath)
   );

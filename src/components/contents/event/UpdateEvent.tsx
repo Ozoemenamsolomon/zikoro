@@ -410,6 +410,7 @@ function UpdateEventComp({ eventId }: { eventId: string }) {
     await update(
       {
         ...restData,
+        published: true,
         eventStatus: "published",
         eventStatusDetails:
           data?.eventStatusDetails && data?.eventStatusDetails !== null

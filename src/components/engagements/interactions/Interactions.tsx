@@ -16,15 +16,17 @@ import {
   QuizSettings,
   FormCard,
   StaticInteractionModal,
+  EventQaSetting,
 } from "./_components";
 import { useMemo, useState } from "react";
 import Image from "next/image";
 import { verifyingAccess } from "@/utils";
 import { useRouter } from "next/navigation";
 import { useGetData } from "@/hooks/services/request";
-import { TEngagementFormQuestion } from "@/types/engagements";
+import { TEngagementFormQuestion, TEventQa } from "@/types/engagements";
 import useOrganizationStore from "@/store/globalOrganizationStore";
 import { TOrganization } from "@/types";
+import { EventQaCard } from "./_components/cards/EventQaCard";
 export default function Interactions({ eventId }: { eventId: string }) {
   const [isOpen, setOpen] = useState(false);
   const [isOpenInteractionModal, setOpenInteractionModal] = useState(false);
@@ -33,12 +35,17 @@ export default function Interactions({ eventId }: { eventId: string }) {
   const [interactionType, setInteractionType] = useState("");
   const { organization } = useOrganizationStore();
   const { quizzes, isLoading, getQuizzes } = useGetQuizzes(eventId);
-  const [isEventQa, setIsEventQa] = useState(false)
+  const [isEventQa, setIsEventQa] = useState(false);
   const {
     data,
     isLoading: loading,
     getData,
   } = useGetData<TEngagementFormQuestion[]>(`/engagements/${eventId}/form`);
+  const {
+    data: eventQas,
+    isLoading: loadingEventQas,
+    getData: getEventQas,
+  } = useGetData<TEventQa[]>(`/engagements/${eventId}/qa`);
   const router = useRouter();
 
   function onClose() {
@@ -72,18 +79,29 @@ export default function Interactions({ eventId }: { eventId: string }) {
     }
   }, [data, isIdPresent, isOrganizer]);
 
+  const visibleQas = useMemo(() => {
+    if (!isIdPresent && !isOrganizer) {
+      const filteredQas = eventQas?.filter((qa) => !qa?.accessibility?.disable);
+
+      return filteredQas;
+    } else {
+      return eventQas;
+    }
+  }, [eventQas, isIdPresent, isOrganizer]);
+
   const interactioDataLength = useMemo(() => {
     if (visibleForm && visibleQuizzes) {
-      return [...visibleForm, ...visibleQuizzes].length;
+      return [...visibleForm, ...visibleQuizzes, ...visibleQas].length;
     } else {
       return 0;
     }
-  }, [visibleForm, visibleQuizzes]);
+  }, [visibleForm, visibleQuizzes, visibleQas]);
 
   //console.log({ visibleQuizzes, quizzes, isIdPresent, isOrganizer });
-function toggleQa() {
-  setIsEventQa((p) => !p)
-}
+  function toggleQa() {
+    setIsEventQa((p) => !p);
+    setOpenInteractionModal(false);
+  }
   function toggleQuiz() {
     const liveQuizCount = quizzes?.filter(
       ({ accessibility }) => accessibility?.live
@@ -114,6 +132,8 @@ function toggleQa() {
     setInteractionType("poll");
     onClose();
   }
+
+  async function refetchAll() {}
 
   function goToForm() {
     router.push(`/event/${eventId}/engagements/interactions/form/create`);
@@ -154,6 +174,7 @@ function toggleQa() {
           )}
           {!isLoading &&
             !loading &&
+            !loadingEventQas &&
             Array.isArray(visibleQuizzes) &&
             visibleQuizzes.map((quiz, index) => (
               <InteractionCard
@@ -165,6 +186,7 @@ function toggleQa() {
             ))}
           {!isLoading &&
             !loading &&
+            !loadingEventQas &&
             Array.isArray(visibleForm) &&
             visibleForm.map((form, index) => (
               <FormCard
@@ -172,6 +194,18 @@ function toggleQa() {
                 isNotAttendee={isIdPresent || isOrganizer}
                 key={form.formAlias}
                 form={form}
+              />
+            ))}
+          {!isLoading &&
+            !loading &&
+            !loadingEventQas &&
+            Array.isArray(visibleQas) &&
+            visibleQas.map((qa, index) => (
+              <EventQaCard
+                refetch={getEventQas}
+                isNotAttendee={isIdPresent || isOrganizer}
+                key={qa.QandAAlias}
+                eventQa={qa}
               />
             ))}
         </div>
@@ -191,6 +225,13 @@ function toggleQa() {
           togglePoll={togglePoll}
           goToForm={goToForm}
           toggleQa={toggleQa}
+        />
+      )}
+      {isEventQa && (
+        <EventQaSetting
+          eventAlias={eventId}
+          close={toggleQa}
+          refetch={getEventQas}
         />
       )}
     </InteractionLayout>
