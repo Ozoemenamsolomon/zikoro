@@ -1,3 +1,5 @@
+import { AvatarFullConfig } from "react-nice-avatar";
+
 export interface EngagementsSettings {
   id: number;
   created_at: string;
@@ -50,7 +52,7 @@ export interface TEngagementFormQuestion {
     textFontSize: string;
     isCoverImage: boolean;
     buttonText: string;
-    startButtonText:string;
+    startButtonText: string;
   };
 }
 
@@ -94,11 +96,11 @@ export interface TFormattedEngagementFormAnswer {
 
 export interface TEventQa {
   id: number;
-  lastUpdated_at:string;
+  lastUpdated_at: string;
   QandAAlias: string;
   coverImage: string;
   eventAlias: string;
-  coverTitle:string;
+  coverTitle: string;
   created_at: string;
   description: string;
   branding: { poweredBy: boolean; eventName: boolean };
@@ -108,3 +110,29 @@ export interface TEventQa {
   };
 }
 
+export type TEventQAQuestionResponse = Omit<
+  TEventQAQuestion,
+  "moderationDetails" | "Responses" | "questionStatus" | "QandAAlias" | "id"
+>;
+
+export interface TEventQAQuestion {
+  id: number;
+  questionAlias: string;
+  QandAAlias: string;
+  userId: string;
+  userNickname: string;
+  userImage: Required<AvatarFullConfig> | string;
+  content: string;
+  isAnswered: string;
+  Responses: TEventQAQuestionResponse[];
+  vote: number;
+  voters: {
+    userId: string;
+    userNickName: string;
+  }[];
+  anonymous: boolean;
+  questionStatus: string;
+  isPinned: boolean;
+  moderationDetails: JSON;
+  created_at: string;
+}

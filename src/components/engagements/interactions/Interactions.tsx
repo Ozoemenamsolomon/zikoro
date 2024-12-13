@@ -26,6 +26,7 @@ import { useGetData } from "@/hooks/services/request";
 import { TEngagementFormQuestion, TEventQa } from "@/types/engagements";
 import useOrganizationStore from "@/store/globalOrganizationStore";
 import { TOrganization } from "@/types";
+import { EventQaCard } from "./_components/cards/EventQaCard";
 export default function Interactions({ eventId }: { eventId: string }) {
   const [isOpen, setOpen] = useState(false);
   const [isOpenInteractionModal, setOpenInteractionModal] = useState(false);
@@ -80,9 +81,7 @@ export default function Interactions({ eventId }: { eventId: string }) {
 
   const visibleQas = useMemo(() => {
     if (!isIdPresent && !isOrganizer) {
-      const filteredQas = eventQas?.filter(
-        (qa) => !qa?.accessibility?.disable
-      );
+      const filteredQas = eventQas?.filter((qa) => !qa?.accessibility?.disable);
 
       return filteredQas;
     } else {
@@ -134,6 +133,8 @@ export default function Interactions({ eventId }: { eventId: string }) {
     onClose();
   }
 
+  async function refetchAll() {}
+
   function goToForm() {
     router.push(`/event/${eventId}/engagements/interactions/form/create`);
   }
@@ -173,6 +174,7 @@ export default function Interactions({ eventId }: { eventId: string }) {
           )}
           {!isLoading &&
             !loading &&
+            !loadingEventQas &&
             Array.isArray(visibleQuizzes) &&
             visibleQuizzes.map((quiz, index) => (
               <InteractionCard
@@ -184,6 +186,7 @@ export default function Interactions({ eventId }: { eventId: string }) {
             ))}
           {!isLoading &&
             !loading &&
+            !loadingEventQas &&
             Array.isArray(visibleForm) &&
             visibleForm.map((form, index) => (
               <FormCard
@@ -191,6 +194,18 @@ export default function Interactions({ eventId }: { eventId: string }) {
                 isNotAttendee={isIdPresent || isOrganizer}
                 key={form.formAlias}
                 form={form}
+              />
+            ))}
+          {!isLoading &&
+            !loading &&
+            !loadingEventQas &&
+            Array.isArray(visibleQas) &&
+            visibleQas.map((qa, index) => (
+              <EventQaCard
+                refetch={getEventQas}
+                isNotAttendee={isIdPresent || isOrganizer}
+                key={qa.QandAAlias}
+                eventQa={qa}
               />
             ))}
         </div>

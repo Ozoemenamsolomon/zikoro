@@ -14,6 +14,7 @@ const includedPaths = [
   "/create",
   "/admin",
   "/event/:eventId/reception",
+  "engagements/:eventId/qa/:qaId/organizer"
 ];
 
 const eventAttendeePaths = [
@@ -109,7 +110,7 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  // Check if the request path is included in the protected paths
+ // Check if the request path is included in the protected paths
   const isIncludedPath = includedPaths.some((includedPath) =>
     path.startsWith(includedPath)
   );

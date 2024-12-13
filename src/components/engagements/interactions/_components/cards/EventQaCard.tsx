@@ -43,7 +43,7 @@ export function EventQaCard({
       <div className="w-full relative">
         <div className="absolute flex items-center justify-between inset-x-0 w-full  top-3 px-3">
           <p className="text-xs w-fit sm:text-sm rounded-3xl bg-basePrimary text-white px-3 py-1">
-            form
+            Q & A
           </p>
           {isNotAttendee && (
             <Button
@@ -80,7 +80,7 @@ export function EventQaCard({
           </div>
         )}
       </div>
-      <div className="w-full flex flex-col rounded-b-md items-start justify-start gap-y-3 border-x border-b">
+      <div className="w-full flex flex-col pb-3 rounded-b-md items-start justify-start gap-y-3 border-x border-b">
         <p className="font-medium px-3 pt-3 w-full line-clamp-2">
           {eventQa?.coverTitle}
         </p>
