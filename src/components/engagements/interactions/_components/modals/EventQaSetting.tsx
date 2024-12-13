@@ -29,7 +29,8 @@ export function EventQaSetting({
   eventQa,
   refetch,
 }: QaSettingProp) {
-  const { postData } = usePostRequest("/engagements");
+  const { postData } = usePostRequest<Partial<TEventQa>>("/engagements/qa");
+
   const {
     data: event,
   }: {
@@ -68,8 +69,29 @@ export function EventQaSetting({
     });
 
     const promise: any = await image;
+    const payload: Partial<TEventQa> = eventQa?.QandAAlias
+      ? {
+          ...eventQa,
+          ...values,
+          coverImage: promise,
+          branding,
+          accessibility,
+          eventAlias,
+          lastUpdated_at: new Date().toISOString()
+        }
+      : {
+          ...values,
+          QandAAlias: qaAlias,
+          eventAlias,
+          coverImage: promise,
+          branding,
+          accessibility,
+          lastUpdated_at: new Date().toISOString()
+        };
 
-    // if (refetch) refetch();
+    await postData({ payload });
+    if (refetch) refetch();
+    setLoading(false)
     close();
   }
 
@@ -90,14 +112,11 @@ export function EventQaSetting({
         coverTitle: eventQa?.coverTitle,
         description: eventQa?.description,
       });
-      // setShowPooweredBy(eventQa?.branding?.poweredBy);
-      // setShowEventName(eventQa?.branding?.eventName);
+
       setBranding(eventQa?.branding);
       setAccessibility(eventQa?.accessibility);
     }
   }, [eventQa]);
-
-
 
   // console.log('wdqd', selectedFormId);
   return (
@@ -247,8 +266,6 @@ export function EventQaSetting({
           </form>
         </Form>
       </div>
-
-     
     </div>
   );
 }

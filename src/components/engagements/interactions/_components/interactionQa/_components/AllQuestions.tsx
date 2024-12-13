@@ -5,30 +5,118 @@ import { Button } from "@/components/custom_ui/Button";
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib";
+import { TEventQAQuestion } from "@/types";
+import { UserDetail } from "../attendee/EventQaAttendeeView";
+import toast from "react-hot-toast";
+import { usePostRequest } from "@/hooks/services/request";
+import { HiDotsHorizontal } from "react-icons/hi";
+import { generateAlias } from "@/utils";
+import { EmptyQaState } from "./EmptyQaState";
 
-export function AllQuestions({ isAttendee }: { isAttendee?: boolean }) {
-  const [replyQuestion, setReplyQuestion] = useState<any | null>(null);
+export function AllQuestions({
+  isAttendee,
+  userDetail,
+  eventQAQuestions,
+  refetch,
+}: {
+  userDetail: UserDetail;
+  isAttendee?: boolean;
+  eventQAQuestions: TEventQAQuestion[];
+  refetch: () => Promise<any>;
+}) {
+  const [replyQuestion, setReplyQuestion] = useState<TEventQAQuestion | null>(
+    null
+  );
   const [reply, setReply] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAnonymous, setIsAnonymous] = useState(false);
+  const { postData } = usePostRequest("/engagements/qa/qaQuestion");
 
-  function initiateReply(question: any) {
+  function initiateReply(question: TEventQAQuestion) {
     setReplyQuestion(question);
   }
 
   async function submitReply(e: any) {
     e.preventDefault();
+    if (!reply) {
+      return toast.error("Pls add your reply");
+    }
+    if (!replyQuestion) return;
+    setIsSubmitting(true);
+
+    const {
+      moderationDetails,
+      Responses,
+      questionStatus,
+      QandAAlias,
+      id,
+      ...restData
+    } = replyQuestion;
+    const payload: Partial<TEventQAQuestion> = {
+      ...replyQuestion,
+      Responses: Array.isArray(replyQuestion?.Responses)
+        ? [
+            ...replyQuestion?.Responses,
+            {
+              ...restData,
+              ...userDetail,
+              questionAlias: generateAlias(),
+              content: reply,
+              anonymous: isAnonymous,
+              vote: 0,
+              voters: [],
+              created_at: new Date().toISOString(),
+            },
+          ]
+        : [
+            {
+              ...restData,
+              ...userDetail,
+              questionAlias: generateAlias(),
+              content: reply,
+              anonymous: isAnonymous,
+              vote: 0,
+              voters: [],
+              created_at: new Date().toISOString(),
+            },
+          ],
+    };
+
+    await postData({ payload });
+    setReply("");
+    // refetch()
+    setIsSubmitting(false);
+  }
+
+  if (eventQAQuestions?.length === 0) {
+    return (
+      <EmptyQaState
+        title="No Question Yet!"
+        description="All Questions will appear here. You can ask your question"
+      />
+    );
   }
   return (
-    <div className={cn("w-full max-w-2xl overflow-y-auto  no-scrollbar h-full mx-auto", replyQuestion !== null && "bg-white p-4")}>
+    <div
+      className={cn(
+        "w-full max-w-2xl overflow-y-auto  no-scrollbar h-full mx-auto",
+        replyQuestion !== null && "bg-white p-4"
+      )}
+    >
       {!replyQuestion ? (
         <div className="w-full flex flex-col items-start justify-start gap-3 sm:gap-4">
-          {[1, 2, 3, 4, 5, 6].map((_) => (
-            <AskandReplyCard
-              key={_}
-              className="bg-white border"
-              showReply={initiateReply}
-            />
-          ))}
+          {Array.isArray(eventQAQuestions) &&
+            eventQAQuestions.map((qa, index) => (
+              <AskandReplyCard
+                key={qa.questionAlias}
+                eventQa={qa}
+                className="bg-white border"
+                showReply={initiateReply}
+                isAttendee={isAttendee}
+                refetch={refetch}
+                userDetail={userDetail}
+              />
+            ))}
         </div>
       ) : (
         <div className="w-full flex flex-col items-start justify-start gap-4 ">
@@ -42,19 +130,21 @@ export function AllQuestions({ isAttendee }: { isAttendee?: boolean }) {
             />
             <p>Replying</p>
           </button>
-          <AskandReplyCard isReply />
+          <AskandReplyCard eventQa={replyQuestion} isReply />
           <form
             onSubmit={submitReply}
             className="w-full flex items-center justify-center gap-3 flex-col"
           >
             <div className="w-full flex items-end gap-x-2">
-              <Image
-                src="/zikoro.png"
-                alt=""
-                className="rounded-full h-12 w-12 border object-contain"
-                width={100}
-                height={100}
-              />
+              {(replyQuestion?.userImage as string).includes("/") && (
+                <Image
+                  src={(replyQuestion?.userImage as string) || "/zikoro.png"}
+                  alt=""
+                  className="rounded-full h-12 object-contain border w-12"
+                  width={100}
+                  height={100}
+                />
+              )}
               <div className="w-[80%]">
                 <Input
                   value={reply}
@@ -67,16 +157,21 @@ export function AllQuestions({ isAttendee }: { isAttendee?: boolean }) {
                 />
               </div>
               <Button
+                disabled={isSubmitting}
                 type="submit"
                 className="h-10 w-10 bg-basePrimary rounded-full px-0 "
               >
-                <InlineIcon icon="prime:send" color="#ffffff" fontSize={30} />
+                {isSubmitting ? (
+                  <HiDotsHorizontal size={20} className="animate-pulse" />
+                ) : (
+                  <InlineIcon icon="prime:send" color="#ffffff" fontSize={30} />
+                )}
               </Button>
             </div>
             <label htmlFor="isAnonymous" className="flex items-center gap-x-2">
               <input
-                id="isAnonymous"
-                name="isAnonymous"
+                id="anonymous"
+                name="anonymous"
                 type="checkbox"
                 checked={isAnonymous}
                 onChange={(e) => setIsAnonymous(!isAnonymous)}
@@ -87,13 +182,19 @@ export function AllQuestions({ isAttendee }: { isAttendee?: boolean }) {
           </form>
 
           <div className="w-full flex flex-col items-start justify-start gap-3 sm:gap-4">
-            {[1, 2, 3, 4, 5, 6].map((_) => (
-              <AskandReplyCard
-                key={_}
-                className="border bg-[#F9FAFF]"
-                isReply
-              />
-            ))}
+            {Array.isArray(replyQuestion?.Responses) &&
+              replyQuestion?.Responses.map((qa, index) => (
+                <AskandReplyCard
+                  key={index}
+                  className="border bg-[#F9FAFF]"
+                  isReply
+                  eventQa={qa}
+                  refetch={refetch}
+                  responseId={qa?.questionAlias}
+                  originalQuestion={replyQuestion}
+                  userDetail={userDetail}
+                />
+              ))}
           </div>
         </div>
       )}

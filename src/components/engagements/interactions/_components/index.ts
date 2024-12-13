@@ -28,3 +28,6 @@ export * from "./presentation/attendee/AvatarModal";
 export * from "./formactions/ActivateForm";
 export * from "./formactions/CopyForm";
 export * from "./formactions/DeleteForm";
+export * from "./qaActions/DeleteQA"
+export * from "./qaActions/CopyQA"
+export * from "./qaActions/ActivateQA"

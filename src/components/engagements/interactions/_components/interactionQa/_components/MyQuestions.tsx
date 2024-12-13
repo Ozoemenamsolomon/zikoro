@@ -2,28 +2,53 @@ import { useState } from "react";
 import { AskandReplyCard } from "./AskandReplyCard";
 import { InlineIcon } from "@iconify/react";
 import { cn } from "@/lib";
+import { TEventQAQuestion } from "@/types";
+import { EmptyQaState } from "./EmptyQaState";
 
-export function MyQuestions({ isAttendee }: { isAttendee?: boolean }) {
-  const [replyQuestion, setReplyQuestion] = useState<any | null>(null);
+export function MyQuestions({
+  isAttendee,
+  myQuestions,
+  refetch,
+}: {
+  refetch: () => Promise<any>;
+  isAttendee?: boolean;
+  myQuestions: TEventQAQuestion[];
+}) {
+  const [replyQuestion, setReplyQuestion] = useState<TEventQAQuestion | null>(
+    null
+  );
 
   function initiateReply(question: any) {
     setReplyQuestion(question);
   }
 
-  async function submitReply(e: any) {
-    e.preventDefault();
+
+  if (myQuestions?.length === 0) {
+    return <EmptyQaState
+    title="It looks like you haven't asked a auestion yet"
+    description="All your Questions will appear here."
+    />
   }
   return (
-    <div className={cn("w-full max-w-2xl overflow-y-auto  no-scrollbar h-full mx-auto", replyQuestion && "bg-white p-4")}>
+    <div
+      className={cn(
+        "w-full max-w-2xl overflow-y-auto  no-scrollbar h-full mx-auto",
+        replyQuestion && "bg-white p-4"
+      )}
+    >
       {!replyQuestion ? (
         <div className="w-full flex flex-col items-start justify-start gap-3 sm:gap-4">
-          {[1, 2, 3, 4, 5, 6].map((_) => (
-            <AskandReplyCard
-              key={_}
-              className="bg-white border"
-              showReply={initiateReply}
-            />
-          ))}
+          {Array.isArray(myQuestions) &&
+            myQuestions.map((qa, index) => (
+              <AskandReplyCard
+                key={qa?.questionAlias}
+                className="bg-white border"
+                showReply={initiateReply}
+                isAttendee={isAttendee}
+                eventQa={qa}
+                refetch={refetch}
+              />
+            ))}
         </div>
       ) : (
         <div className="w-full flex flex-col items-start justify-start gap-4 ">
@@ -37,18 +62,21 @@ export function MyQuestions({ isAttendee }: { isAttendee?: boolean }) {
             />
             <p>Back</p>
           </button>
-          <AskandReplyCard isReply />
+          <AskandReplyCard isReply eventQa={replyQuestion} />
 
           <h2 className="font-semibold text-desktop sm:text-lg">Replies</h2>
 
           <div className="w-full flex flex-col items-start justify-start gap-3 sm:gap-4">
-            {[1, 2, 3, 4, 5, 6].map((_) => (
-              <AskandReplyCard
-                key={_}
-                className="border bg-[#F9FAFF]"
-                isReply
-              />
-            ))}
+            {Array.isArray(replyQuestion?.Responses) &&
+              replyQuestion?.Responses.map((qa, index) => (
+                <AskandReplyCard
+                  key={index}
+                  className="border bg-[#F9FAFF]"
+                  isReply
+                  eventQa={qa}
+                  refetch={refetch}
+                />
+              ))}
           </div>
         </div>
       )}
