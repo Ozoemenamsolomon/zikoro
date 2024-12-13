@@ -44,7 +44,14 @@ export function AllQuestions({
     if (!replyQuestion) return;
     setIsSubmitting(true);
 
-    const {moderationDetails, Responses, questionStatus, QandAAlias, id, ...restData} = replyQuestion;
+    const {
+      moderationDetails,
+      Responses,
+      questionStatus,
+      QandAAlias,
+      id,
+      ...restData
+    } = replyQuestion;
     const payload: Partial<TEventQAQuestion> = {
       ...replyQuestion,
       Responses: Array.isArray(replyQuestion?.Responses)
@@ -58,7 +65,7 @@ export function AllQuestions({
               anonymous: isAnonymous,
               vote: 0,
               voters: [],
-              created_at: new Date().toISOString()
+              created_at: new Date().toISOString(),
             },
           ]
         : [
@@ -70,23 +77,24 @@ export function AllQuestions({
               anonymous: isAnonymous,
               vote: 0,
               voters: [],
-              created_at: new Date().toISOString()
-          
+              created_at: new Date().toISOString(),
             },
           ],
     };
 
     await postData({ payload });
     setReply("");
-    refetch()
+    // refetch()
     setIsSubmitting(false);
   }
 
   if (eventQAQuestions?.length === 0) {
-    return <EmptyQaState
-    title="No Question Yet!"
-    description="All Questions will appear here. You can ask your question"
-    />
+    return (
+      <EmptyQaState
+        title="No Question Yet!"
+        description="All Questions will appear here. You can ask your question"
+      />
+    );
   }
   return (
     <div

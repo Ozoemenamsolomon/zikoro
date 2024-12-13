@@ -91,7 +91,7 @@ console.log("in it")
         {
           event: "UPDATE",
           schema: "public",
-          table: "Q&AQuestions",
+          table: "QandAQuestions",
           filter: `QandAAlias=eq.${qaId}`,
         },
         (payload) => {
@@ -108,30 +108,30 @@ console.log("in it")
     };
   }, [supabase, eventQAQuestions]);
 
-  // useEffect(() => {
-  //   // function subscribeToUpdate() {
-  //   console.log("in it")
-  //   const channel = supabase
-  //     .channel("live-quiz")
-  //     .on(
-  //       "postgres_changes",
-  //       {
-  //         event: "INSERT",
-  //         schema: "public",
-  //         table: "Q&AQuestions",
-  //         filter: `QandAAlias=eq.${qaId}`,
-  //       },
-  //       (payload) => {
-  //         console.log("payload from live INSERT", payload);
-  //         // setEventQAQuestions(payload.new as TEventQAQuestion[]);
-  //       }
-  //     )
-  //     .subscribe();
+  useEffect(() => {
+    // function subscribeToUpdate() {
+    console.log("in it Insert")
+    const channel = supabase
+      .channel("live-quiz")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "Q&AQuestions",
+          filter: `QandAAlias=eq.${qaId}`,
+        },
+        (payload) => {
+          console.log("payload from live INSERT", payload);
+          // setEventQAQuestions(payload.new as TEventQAQuestion[]);
+        }
+      )
+      .subscribe();
 
-  //   return () => {
-  //     supabase.removeChannel(channel);
-  //   };
-  // }, [supabase]);
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [supabase]);
 
   console.log("qas ", eventQAQuestions);
 

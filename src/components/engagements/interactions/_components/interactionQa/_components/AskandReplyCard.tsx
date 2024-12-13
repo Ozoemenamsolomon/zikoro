@@ -10,6 +10,7 @@ import { format, isToday, isYesterday } from "date-fns";
 import { formatReviewNumber } from "@/utils";
 import { UserDetail } from "../attendee/EventQaAttendeeView";
 import { usePostRequest } from "@/hooks/services/request";
+import Avatar from "react-nice-avatar";
 
 export function AskandReplyCard({
   className,
@@ -125,7 +126,12 @@ export function AskandReplyCard({
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-x-2">
-          {(eventQa?.userImage as string).includes("/") && (
+          {eventQa?.userImage  && typeof eventQa?.userImage !== "string" ?
+            <Avatar
+            className="h-12 w-12 rounded-full"
+            {...eventQa?.userImage}
+          />
+          : (
             <Image
               src={(eventQa?.userImage as string) || "/zikoro.png"}
               alt=""

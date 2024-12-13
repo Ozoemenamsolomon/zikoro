@@ -89,7 +89,6 @@ export async function middleware(req: NextRequest) {
 
       if (!session) {
         // const pathLength = path.split("/").length;
-
         const redirectUrl = new URL(`/request/access/${eventId}`, req.url);
 
         return NextResponse.redirect(redirectUrl);

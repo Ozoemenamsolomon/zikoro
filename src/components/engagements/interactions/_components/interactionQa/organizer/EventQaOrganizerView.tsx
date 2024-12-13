@@ -50,7 +50,7 @@ export default function EventQaOrganizerView({
         {
           event: "UPDATE",
           schema: "public",
-          table: "Q&AQuestions",
+          table: "QandAQuestions",
           filter: `QandAAlias=eq.${qaId}`,
         },
         (payload) => {
@@ -75,7 +75,7 @@ export default function EventQaOrganizerView({
         {
           event: "INSERT",
           schema: "public",
-          table: "Q&AQuestions",
+          table: "QandAQuestions",
           filter: `QandAAlias=eq.${qaId}`,
         },
         (payload) => {
