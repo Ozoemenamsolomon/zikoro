@@ -70,12 +70,28 @@ export const VerificationSidebar = ({
           >
             Add a Verification URL
           </Button>
+          {/* <Button
+            className="w-full"
+            onClick={() =>
+              editor?.addQRCode(
+                "www.zikoro.com/credentials/certificate/verify/#{certificate_id#}"
+              )
+            }
+          >
+            Add a QR Code
+          </Button> */}
           <Button
             className="w-full"
             onClick={() => editor?.addText("#{city#} #{country#}")}
           >
             Add a location
           </Button>
+          {/* <Button
+            className="w-full"
+            onClick={() => editor?.addImage("#{placeholder_profile}#")}
+          >
+            Add a Profile Image
+          </Button> */}
         </div>
       </ScrollArea>
       <ToolSidebarClose onClick={onClose} />

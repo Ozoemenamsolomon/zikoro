@@ -9,7 +9,6 @@ export async function GET(
 
   if (req.method === "GET") {
    
-
     try {
         const currentDate = new Date().toISOString();
   

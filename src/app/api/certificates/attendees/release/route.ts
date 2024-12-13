@@ -13,7 +13,8 @@ export async function POST(req: NextRequest) {
       const body = {
         ...params,
         certificateId,
-        certificateURL: "www.zikoro.com/credentials/verify/certificate/" + certificateId,
+        certificateURL:
+          "www.zikoro.com/credentials/verify/certificate/" + certificateId,
       };
 
       const { data: certificate, error } = await supabase
@@ -21,7 +22,7 @@ export async function POST(req: NextRequest) {
         .insert(body)
         .select("*, attendee:attendees!inner(*)")
         .maybeSingle();
-        
+
       if (error) throw error;
 
       try {
@@ -156,7 +157,7 @@ export async function POST(req: NextRequest) {
         //   <body>
         //     <div class="container">
         //       <div class="heading">Dear ${firstName},</div>
-        //       <div class="content">Great news! Your ${CertificateName} certificate is ready for download. Access it now through this link: <a href="${certificateURL}" class="link">Download Certificate</a>.</div>
+        //       <div class="content">Great news! Your ${name} certificate is ready for download. Access it now through this link: <a href="${certificateURL}" class="link">Download Certificate</a>.</div>
         //       <div class="content">Congratulations!</div>
         //       <div class="content">Best,<br>Event Team</div>
         //     </div>

@@ -123,7 +123,7 @@ export default function Page({
   const certificateDivRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const pathName = usePathname() || "/";
-  const [certificateJSON, setJson] =
+  const [JSON, setJson] =
     useState<Record<string, any>>(DEFAULT_JSON);
   const [title, setTitle] = useState<string>("untitled");
   const [settings, setSettings] = useState<TCertificateSettings>({
@@ -244,7 +244,7 @@ export default function Page({
             />
           </section>
           {/* <Editor
-            json={certificateJSON}
+            json={JSON}
             onSave={onSubmit}
             isLoading={isLoading || pending}
           /> */}

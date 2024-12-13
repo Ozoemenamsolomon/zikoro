@@ -111,12 +111,10 @@ export const useDeleteBadge = () => {
 };
 
 export const useGetBadge = ({
-  badgeId,
-  isAlias,
+  alias,
 }: {
-  badgeId: string;
-  isAlias?: boolean;
-}): UseGetResult<TBadge, "badge", "getBadge"> => {
+  alias: string;
+}): UseGetResult<TBadge, "data", "getBadge"> => {
   const [badge, setBadges] = useState<TBadge | null>(null);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
@@ -126,7 +124,7 @@ export const useGetBadge = ({
 
     try {
       const { data, status } = await getRequest<TBadge>({
-        endpoint: `/badge/${badgeId}?isAlias=${isAlias ? "true" : "false"}`,
+        endpoint: `/badge/${alias}`,
       });
 
       if (status !== 200) {
@@ -142,9 +140,9 @@ export const useGetBadge = ({
 
   useEffect(() => {
     getBadge();
-  }, [badgeId]);
+  }, [alias]);
 
-  return { badge, isLoading, error, getBadge };
+  return { data: badge, isLoading, error, getBadge };
 };
 
 export const useGetBadges = ({

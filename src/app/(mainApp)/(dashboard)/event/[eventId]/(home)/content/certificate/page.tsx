@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/select";
 import { TCertificate } from "@/types/certificates";
 import useOrganizationStore from "@/store/globalOrganizationStore";
+import Link from "next/link";
 
 const Certificates = () => {
   const router = useRouter();
@@ -48,18 +49,16 @@ const Certificates = () => {
   const { createCertificate, isLoading: certificateIsCreating } =
     useCreateCertificate();
 
-  // const { saveCertificate, isLoading: certificateIsSaving } =
-  //   useSaveCertificate();
-
   const createCertificateFn = async () => {
     const data = await createCertificate({
       payload: { eventId },
     });
 
     if (!data) return;
-    router.push(
-      `/credentials/create/${data.certificateAlias}?eventAlias=${eventId}&orgId=${organization.id}`
-    );
+    global?.window &&
+      window.open(
+        `/credentials/create/${data.certificateAlias}?eventAlias=${eventId}&orgId=${organization.id}&type=certificate`
+      );
   };
 
   const {
@@ -75,7 +74,7 @@ const Certificates = () => {
     const payload: TCertificate = {
       ...certificate,
       eventId,
-      certificateName: certificate.certificateName + " copy",
+      name: certificate.name + " copy",
     };
 
     const newCertificate = await createCertificate({ payload });
@@ -789,7 +788,7 @@ const Certificates = () => {
         {certificates?.map((certificate) => {
           const {
             cerificateUrl,
-            certificateName,
+            name,
             created_at,
             id,
             eventId,
@@ -845,29 +844,23 @@ const Certificates = () => {
                   </ul>
                 </DropdownMenuContent>
               </DropdownMenu>
-              <button
-                disabled={
-                  !!certificateSettings?.publishOn &&
-                  !!isPast(certificateSettings?.publishOn)
-                }
+              <Link
                 className={`border rounded-md relative w-full h-full overflow-hidden ${
                   certificateSettings?.publishOn &&
                   isPast(certificateSettings?.publishOn)
                     ? "border-green-500"
                     : "border-gray-200"
                 }`}
-                onClick={() =>
-                  router.push(
-                    `/credentials/create/${certificateAlias}?eventAlias=${eventId}&orgId=${organization.id}`
-                  )
-                }
+                href={`/credentials/create/${certificateAlias}?eventAlias=${eventId}&orgId=${organization.id}&type=certificate`}
+                rel="noopener noreferrer"
+                target="_blank"
               >
                 <div className="w-full h-[250px] overflow-hidden">
                   <img className="object-fill" src={cerificateUrl || ""} />
                 </div>
                 <div className="space-y-1 px-4 py-2 border-t border-gray-200">
                   <h2 className="text-gray-800 font-bold text-left">
-                    {certificateName}
+                    {name}
                   </h2>
                   <div className="flex gap-2 items-center text-sm text-gray-600 font-medium">
                     <svg
@@ -893,7 +886,7 @@ const Certificates = () => {
                     </span>
                   </div>
                 </div>
-              </button>
+              </Link>
             </div>
           );
         })}

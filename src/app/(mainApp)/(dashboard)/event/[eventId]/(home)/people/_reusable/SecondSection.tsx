@@ -313,7 +313,7 @@ export default function SecondSection({
     //     certificateInfo: {
     //       eventAlias: eventCertificate.eventId,
     //       CertificateGroupId: eventCertificate.id,
-    //       CertificateName: eventCertificate.certificateName,
+    //       name: eventCertificate.name,
     //     },
     //   },
     // });
@@ -326,7 +326,7 @@ export default function SecondSection({
         attendeeId: id,
         CertificateGroupId: eventCertificate.id,
         attendeeEmail: email,
-        CertificateName: eventCertificate.certificateName,
+        CertificateName: eventCertificate.name,
       },
     });
 
@@ -441,6 +441,8 @@ export default function SecondSection({
   }, [attendee]);
 
   console.log(eventCertificates, "eventCertificates");
+
+  console.log(attendeeCertificates, "attendeeCertificates");
 
   return (
     <div className="overflow-auto no-scrollbar space-y-4 pb-48" ref={divRef}>
@@ -903,7 +905,7 @@ export default function SecondSection({
                       <button
                         onClick={() => releaseCertificate(eventCertificate)}
                       >
-                        {eventCertificate.certificateName}
+                        {eventCertificate.name}
                       </button>
                     </DropdownMenuItem>
                   ))}
