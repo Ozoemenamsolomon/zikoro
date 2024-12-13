@@ -1057,11 +1057,7 @@ function UpdateEventComp({ eventId }: { eventId: string }) {
             }}
             type={""}
             title={data?.eventTitle}
-            url={
-              data?.published
-                ? `/live-events/${data?.eventAlias}`
-                : `/preview/${data?.eventAlias}`
-            }
+            url={`/live-events/${data?.eventAlias}`}
             isAfterPublished
           />
         )}
