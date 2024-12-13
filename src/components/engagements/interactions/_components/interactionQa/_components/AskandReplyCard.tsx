@@ -5,7 +5,7 @@ import { InlineIcon } from "@iconify/react";
 import Image from "next/image";
 import { useMemo } from "react";
 import { toZonedTime } from "date-fns-tz";
-import { LoaderAlt } from "styled-icons/boxicons-regular";
+// import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { format, isToday, isYesterday } from "date-fns";
 import { formatReviewNumber } from "@/utils";
 import { UserDetail } from "../attendee/EventQaAttendeeView";
@@ -124,7 +124,7 @@ export function AskandReplyCard({
 
     await postData({ payload });
 
-   // refetch?.();
+   refetch?.();
   }
   return (
     <div

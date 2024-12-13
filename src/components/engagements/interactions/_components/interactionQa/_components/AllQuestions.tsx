@@ -88,7 +88,7 @@ export function AllQuestions({
 
     await postData({ payload });
     setReply("");
-    // refetch()
+     refetch()
     setIsSubmitting(false);
   }
 
