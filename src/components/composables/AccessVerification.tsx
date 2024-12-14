@@ -10,7 +10,6 @@ import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib";
 import useUserStore from "@/store/globalUserStore";
-import useAccessStore from "@/store/globalAcessStore";
 import useOrganizationStore from "@/store/globalOrganizationStore";
 
 export function AccessVerification({ id }: { id?: string | any }) {
@@ -86,6 +85,19 @@ export function AccessVerification({ id }: { id?: string | any }) {
         return;
       } else {
         if (!isPresent) {
+          if (data?.organization?.subscriptionPlan.toLowerCase() === "free") {
+            window.open("/expired/subscription", "_self");
+          } else if (data?.organization?.subscriptionExpiryDate) {
+            const expiryDate = new Date(
+              data.organization.subscriptionExpiryDate
+            );
+            const currentDate = new Date();
+
+            // Check if the subscription has expired
+            if (expiryDate < currentDate) {
+              window.open("/expired/subscription", "_self");
+            }
+          }
           window.open(`/live-events/${id}`, "_self");
         }
         // router.push("/login");
@@ -106,49 +118,6 @@ export function AccessVerification({ id }: { id?: string | any }) {
     pathname,
   ]);
 
-  // const isLoadedAll = useMemo(() => {
-  //   return (
-  //     !isLoading &&
-  //     user !== null &&
-  //     !eventLoading &&
-  //     !singleEventLoading &&
-  //     data !== null
-  //   );
-  // }, [isLoading, user, eventLoading, singleEventLoading, data]);
-  // console.log(
-  //   "sdf==",
-  //   userAccess?.isTeamMember,
-  //   userAccess?.isOrganizer,
-  //   loading
-  // );
-  // const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
-  // const hours = Math.floor(
-  //   (timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-  // );
-  // const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
-  // const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
-
-  // const appAccess = data?.eventAppAccess;
-
-  // let remainder = remainingTime;
-
-  // let interval: NodeJS.Timeout | undefined;
-  // // Calculate the time difference between eventDate and daysBeforeEvent
-
-  // if (data?.eventAppAccess !== "now") {
-  //   interval = setInterval(() => {
-  //     remainder = remainder - new Date().getTime();
-
-  //     if (remainder <= 0) {
-  //       clearInterval(interval);
-
-  //       setTimeRemaining(0);
-  //     } else {
-  //       // setRemainingTime(remainder);
-  //       setTimeRemaining(remainder);
-  //     }
-  //   }, 1000);
-  // }
   return (
     <div
       className={cn(
@@ -205,3 +174,47 @@ timeRemaining > 0 ? (
         </div>
       ) :
  */
+
+// const isLoadedAll = useMemo(() => {
+//   return (
+//     !isLoading &&
+//     user !== null &&
+//     !eventLoading &&
+//     !singleEventLoading &&
+//     data !== null
+//   );
+// }, [isLoading, user, eventLoading, singleEventLoading, data]);
+// console.log(
+//   "sdf==",
+//   userAccess?.isTeamMember,
+//   userAccess?.isOrganizer,
+//   loading
+// );
+// const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+// const hours = Math.floor(
+//   (timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+// );
+// const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+// const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+
+// const appAccess = data?.eventAppAccess;
+
+// let remainder = remainingTime;
+
+// let interval: NodeJS.Timeout | undefined;
+// // Calculate the time difference between eventDate and daysBeforeEvent
+
+// if (data?.eventAppAccess !== "now") {
+//   interval = setInterval(() => {
+//     remainder = remainder - new Date().getTime();
+
+//     if (remainder <= 0) {
+//       clearInterval(interval);
+
+//       setTimeRemaining(0);
+//     } else {
+//       // setRemainingTime(remainder);
+//       setTimeRemaining(remainder);
+//     }
+//   }, 1000);
+// }

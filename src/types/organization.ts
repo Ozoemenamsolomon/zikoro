@@ -26,6 +26,7 @@ export interface TOrganization {
   subDomain: string;
   certificateAsset: TCertificateAsset;
   teamMembers: TOrganizationTeamMember[];
+  subscriptionExpiryDate:string;
 }
 
 export interface IPayoutAccountDetails {
