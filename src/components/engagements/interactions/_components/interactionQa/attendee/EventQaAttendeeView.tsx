@@ -15,10 +15,11 @@ import {
   useQARealtimePresence,
 } from "@/hooks/services/eventQa";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { TEventQAQuestion } from "@/types";
+import { TEventQa, TEventQAQuestion } from "@/types";
 import { AvatarFullConfig } from "react-nice-avatar";
 import { useMemo } from "react";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
+import { useGetData } from "@/hooks/services/request";
 
 export type UserDetail = {
   userId: string;
@@ -36,8 +37,12 @@ export default function EventQaAttendeeView({
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [active, setActive] = useState(1);
   const [isOpen, setIsOpen] = useState(false);
-  const [filterValue, setFilterValue] = useState("Recent")
+  const [filterValue, setFilterValue] = useState("Recent");
+  const {data: qa} = useGetData<TEventQa>(`/engagements/qa/${qaId}`)
   const [userDetail, setUserDetail] = useState<UserDetail | null>(null);
+  const [replyQuestion, setReplyQuestion] = useState<TEventQAQuestion | null>(
+    null
+  );
   const { eventQAQuestions, setEventQAQuestions, isLoading, getQAQUestions } =
     useGetQAQuestions({ qaId });
   useQARealtimePresence();
@@ -60,15 +65,15 @@ export default function EventQaAttendeeView({
   const filteredEventQaQuestions = useMemo(() => {
     if (Array.isArray(eventQAQuestions)) {
       if (filterValue === "Recent") {
-        return eventQAQuestions.sort((a, b) => 
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        return eventQAQuestions.sort(
+          (a, b) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
         );
       } else if (filterValue === "Top Liked") {
         return eventQAQuestions.sort((a, b) => b.vote - a.vote);
       }
-    }
-    else return []
-  },[eventQAQuestions, filterValue])
+    } else return [];
+  }, [eventQAQuestions, filterValue]);
 
   const myQuestions = useMemo(() => {
     if (Array.isArray(filteredEventQaQuestions) && userDetail) {
@@ -83,7 +88,8 @@ export default function EventQaAttendeeView({
   // subscribe to qa
   useEffect(() => {
     // function subscribeToUpdate() {
-console.log("in it")
+      if (!qa?.accessibility?.live) return;
+    console.log("in it");
     const channel = supabase
       .channel("live-quiz")
       .on(
@@ -95,12 +101,28 @@ console.log("in it")
           filter: `QandAAlias=eq.${qaId}`,
         },
         (payload) => {
-          console.log("payload from live", payload);
-          // setEventQAQuestions(payload.new as TEventQAQuestion[]);
+          // console.log("payload from live", payload);
+          const updated = payload.new as TEventQAQuestion;
+          if (eventQAQuestions) {
+            const updatedQuestions = eventQAQuestions?.map((item) => {
+              if (item.id === updated.id) {
+                return {
+                  ...updated,
+                };
+              }
+              return item;
+            });
+            setEventQAQuestions(updatedQuestions);
+            //  console.log("payload from live", payload.new, {replyQuestion});
+            if (replyQuestion !== null && replyQuestion?.id === updated.id) {
+              //   console.log("yes")
+              setReplyQuestion(updated);
+            }
+          }
         }
       )
       .subscribe((status) => {
-        console.log("Subscription status:", status); // Log subscription status
+        console.log("Subscription status:", status);
       });
 
     return () => {
@@ -110,7 +132,7 @@ console.log("in it")
 
   useEffect(() => {
     // function subscribeToUpdate() {
-    console.log("in it Insert")
+      if (!qa?.accessibility?.live) return;
     const channel = supabase
       .channel("live-quiz")
       .on(
@@ -118,12 +140,16 @@ console.log("in it")
         {
           event: "INSERT",
           schema: "public",
-          table: "Q&AQuestions",
+          table: "QandAQuestions",
           filter: `QandAAlias=eq.${qaId}`,
         },
         (payload) => {
-          console.log("payload from live INSERT", payload);
-          // setEventQAQuestions(payload.new as TEventQAQuestion[]);
+          //  console.log("payload from live INSERT", payload);
+          if (eventQAQuestions)
+            setEventQAQuestions([
+              ...eventQAQuestions,
+              payload.new as TEventQAQuestion,
+            ]);
         }
       )
       .subscribe();
@@ -131,9 +157,17 @@ console.log("in it")
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [supabase]);
+  }, [supabase, eventQAQuestions]);
 
   console.log("qas ", eventQAQuestions);
+
+  function initiateReply(question: TEventQAQuestion) {
+    setReplyQuestion(question);
+  }
+
+  function replyToNull() {
+    setReplyQuestion(null);
+  }
 
   if (isLoading) {
     return (
@@ -161,15 +195,18 @@ console.log("in it")
         <div className="w-full h-[95vh] rounded-lg pt-5 sm:pt-6 bg-[#F9FAFF]">
           {active === 1 && userDetail && (
             <AllQuestions
-              refetch={getQAQUestions}
+              refetch={qa?.accessibility?.live ?  async () => {}: getQAQUestions}
               isAttendee
               eventQAQuestions={eventQAQuestions || []}
               userDetail={userDetail}
+              initiateReply={initiateReply}
+              replyQuestion={replyQuestion}
+              replyToNull={replyToNull}
             />
           )}
           {active === 2 && (
             <MyQuestions
-              refetch={getQAQUestions}
+              refetch={qa?.accessibility?.live ?  async () => {}:getQAQUestions}
               isAttendee
               myQuestions={myQuestions}
             />
@@ -190,7 +227,7 @@ console.log("in it")
           QandAAlias={qaId}
           isAttendee
           close={onShowQuestionModal}
-          refetch={getQAQUestions}
+          refetch={qa?.accessibility?.live ?  async () => {}:getQAQUestions}
         />
       )}
     </>

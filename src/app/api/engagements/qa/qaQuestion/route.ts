@@ -47,7 +47,7 @@ export async function GET(req: NextRequest) {
 
   if (req.method === "GET") {
     try {
-      const { data, error } = await supabase.from("Q&AQuestions").select("*");
+      const { data, error } = await supabase.from("QandAQuestions").select("*");
 
       if (error) {
         return NextResponse.json(

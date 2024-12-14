@@ -12,29 +12,33 @@ import { usePostRequest } from "@/hooks/services/request";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { generateAlias } from "@/utils";
 import { EmptyQaState } from "./EmptyQaState";
-
+import Avatar from "react-nice-avatar";
 export function AllQuestions({
   isAttendee,
   userDetail,
   eventQAQuestions,
   refetch,
+  initiateReply,
+  replyQuestion,
+  replyToNull
 }: {
   userDetail: UserDetail;
   isAttendee?: boolean;
   eventQAQuestions: TEventQAQuestion[];
   refetch: () => Promise<any>;
+  initiateReply:(t: TEventQAQuestion) => void;
+  replyQuestion: TEventQAQuestion | null;
+  replyToNull: () => void;
 }) {
-  const [replyQuestion, setReplyQuestion] = useState<TEventQAQuestion | null>(
-    null
-  );
+  // const [replyQuestion, setReplyQuestion] = useState<TEventQAQuestion | null>(
+  //   null
+  // );
   const [reply, setReply] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAnonymous, setIsAnonymous] = useState(false);
   const { postData } = usePostRequest("/engagements/qa/qaQuestion");
 
-  function initiateReply(question: TEventQAQuestion) {
-    setReplyQuestion(question);
-  }
+
 
   async function submitReply(e: any) {
     e.preventDefault();
@@ -84,7 +88,7 @@ export function AllQuestions({
 
     await postData({ payload });
     setReply("");
-    // refetch()
+     refetch()
     setIsSubmitting(false);
   }
 
@@ -121,7 +125,7 @@ export function AllQuestions({
       ) : (
         <div className="w-full flex flex-col items-start justify-start gap-4 ">
           <button
-            onClick={() => setReplyQuestion(null)}
+            onClick={() => replyToNull()}
             className="flex items-center gap-x-1 text-mobile sm:text-sm"
           >
             <InlineIcon
@@ -136,7 +140,10 @@ export function AllQuestions({
             className="w-full flex items-center justify-center gap-3 flex-col"
           >
             <div className="w-full flex items-end gap-x-2">
-              {(replyQuestion?.userImage as string).includes("/") && (
+              {userDetail && typeof userDetail?.userImage !== "string" ? <Avatar
+            className="h-12 w-12 rounded-full"
+            {...userDetail?.userImage}
+          /> : (
                 <Image
                   src={(replyQuestion?.userImage as string) || "/zikoro.png"}
                   alt=""
@@ -162,7 +169,7 @@ export function AllQuestions({
                 className="h-10 w-10 bg-basePrimary rounded-full px-0 "
               >
                 {isSubmitting ? (
-                  <HiDotsHorizontal size={20} className="animate-pulse" />
+                  <HiDotsHorizontal size={20} className="animate-pulse text-white" />
                 ) : (
                   <InlineIcon icon="prime:send" color="#ffffff" fontSize={30} />
                 )}

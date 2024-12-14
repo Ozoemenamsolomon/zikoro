@@ -21,7 +21,7 @@ import { Form, FormField, Input, Button, ReactSelect } from "@/components";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { PublishCard } from "@/components/composables";
 import DatePicker from "react-datepicker";
-import { useFetchSingleEvent, useUpdateEvent } from "@/hooks";
+import { useFetchSingleEvent, usePublishEvent, useUpdateEvent } from "@/hooks";
 import { toast } from "@/components/ui/use-toast";
 import { PreviewModal } from "../_components/modal/PreviewModal";
 import { formateJSDate, parseFormattedDate } from "@/utils";
@@ -173,7 +173,10 @@ function UpdateEventComp({ eventId }: { eventId: string }) {
   const [isStartDate, setStartDate] = useState(false);
   const [isEndDate, setEndDate] = useState(false);
   const { loading: updating, update } = useUpdateEvent();
+  const { isLoading: publishingEvent, publishEvent: pubEvent } =
+    usePublishEvent();
   const [isShowPublishModal, setShowPublishModal] = useState(false);
+  const [isAfterPublishedModal, setIsAfterPublishedModal] = useState(false);
   const [isOpen, setOpen] = useState(false);
   const form = useForm<z.infer<typeof updateEventSchema>>({
     resolver: zodResolver(updateEventSchema),
@@ -193,6 +196,9 @@ function UpdateEventComp({ eventId }: { eventId: string }) {
 
   function onClose() {
     setOpen((prev) => !prev);
+  }
+  function toggleAfterPublish() {
+    setIsAfterPublishedModal((p) => !p);
   }
   function showPublishModal() {
     setShowPublishModal((prev) => !prev);
@@ -407,8 +413,8 @@ function UpdateEventComp({ eventId }: { eventId: string }) {
       user: userData?.userEmail!,
     };
     const { organization, ...restData } = data;
-    await update(
-      {
+    await pubEvent({
+      payload: {
         ...restData,
         published: true,
         eventStatus: "published",
@@ -417,11 +423,13 @@ function UpdateEventComp({ eventId }: { eventId: string }) {
             ? [...data?.eventStatusDetails, statusDetail]
             : [statusDetail],
       },
-      eventId
-    );
+      eventId,
+      email: data?.organization?.eventContactEmail,
+    });
     setIsPublishing(false);
     showPublishModal();
-    window.open(window.location.href, "_self");
+    toggleAfterPublish();
+    // window.open(window.location.href, "_self");
   }
 
   async function unpublishEvent() {
@@ -1038,6 +1046,19 @@ function UpdateEventComp({ eventId }: { eventId: string }) {
                 ? `/live-events/${data?.eventAlias}`
                 : `/preview/${data?.eventAlias}`
             }
+          />
+        )}
+
+        {isAfterPublishedModal && data && (
+          <PreviewModal
+            close={() => {
+              toggleAfterPublish();
+              window.open(window.location.href, "_self");
+            }}
+            type={""}
+            title={data?.eventTitle}
+            url={`/live-events/${data?.eventAlias}`}
+            isAfterPublished
           />
         )}
       </>

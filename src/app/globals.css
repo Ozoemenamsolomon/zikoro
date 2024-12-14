@@ -535,6 +535,19 @@ input::-webkit-inner-spin-button {
   background-position: center;
 }
 
+.bg-success-confetti {
+  background: url("/success-confetti.jpg");
+  background-size: cover;
+  height: 100%;
+  width: 100%;
+  z-index: -1;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/*/Users/macintoshhd/Downloads/success-confetti.jpg**/
+
 /* make the left side pointed on the choose plan section */
 .clip-triangle {
   clip-path: polygon(100% 0, 0 50%, 100% 100%);

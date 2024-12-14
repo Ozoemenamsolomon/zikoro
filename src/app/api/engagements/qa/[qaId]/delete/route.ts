@@ -11,7 +11,7 @@ export async function DELETE(
     if (req.method === "DELETE") {
       try {
         const { data, error, status } = await supabase
-          .from("Q&A")
+          .from("QandA")
           .delete()
           .eq("QandAAlias", qaId);
   

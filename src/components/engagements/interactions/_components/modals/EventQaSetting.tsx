@@ -44,6 +44,7 @@ export function EventQaSetting({
   const [accessibility, setAccessibility] = useState({
     visible: false,
     disable: false,
+    live: false,
   });
   const form = useForm<z.infer<typeof eventQaSettingSchema>>({
     resolver: zodResolver(eventQaSettingSchema),
@@ -77,7 +78,7 @@ export function EventQaSetting({
           branding,
           accessibility,
           eventAlias,
-          lastUpdated_at: new Date().toISOString()
+          lastUpdated_at: new Date().toISOString(),
         }
       : {
           ...values,
@@ -86,12 +87,12 @@ export function EventQaSetting({
           coverImage: promise,
           branding,
           accessibility,
-          lastUpdated_at: new Date().toISOString()
+          lastUpdated_at: new Date().toISOString(),
         };
 
     await postData({ payload });
     if (refetch) refetch();
-    setLoading(false)
+    setLoading(false);
     close();
   }
 
@@ -249,6 +250,29 @@ export function EventQaSetting({
                   setAccessibility({
                     ...accessibility,
                     visible: !accessibility.visible,
+                  })
+                }
+                className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
+              />
+            </div>
+
+            <div className="flex w-full text-mobile sm:text-sm items-center justify-between">
+              <div className="flex flex-col items-start justify-start">
+                <p>Live Mode</p>
+                <p className="text-xs text-gray-500">
+                  {event &&
+                  event?.organization?.subscriptionPlan.toLowerCase() === "free"
+                    ? `Upgrade to higher subscription to use this feature.`
+                    : `All  attendees will attempt at the same time.`}
+                </p>
+              </div>
+              <Switch
+                disabled={loading}
+                checked={accessibility?.live}
+                onClick={() =>
+                  setAccessibility({
+                    ...accessibility,
+                    live: !accessibility.live,
                   })
                 }
                 className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"

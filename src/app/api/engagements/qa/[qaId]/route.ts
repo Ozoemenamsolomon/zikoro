@@ -1,17 +1,27 @@
+// engagements/qa/id/questions
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
-
-
-
-export async function GET(req: NextRequest,  { params }: { params: { eventId: string } }) {
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { qaId: string } }
+) {
   const supabase = createRouteHandlerClient({ cookies });
 
   if (req.method === "GET") {
     try {
-        const {eventId} = params
-      const { data, error } = await supabase.from("QandA").select("*").eq('eventAlias', eventId);
+      const { qaId } = params;
+    
+
+      const query = supabase
+        .from("QandA")
+        .select("*")
+        .eq("QandAAlias", qaId)
+        .single()
+       
+
+      const { data, error, status } = await query;
 
       if (error) {
         return NextResponse.json(
@@ -23,6 +33,7 @@ export async function GET(req: NextRequest,  { params }: { params: { eventId: st
           }
         );
       }
+
       if (error) throw error;
 
       return NextResponse.json(
@@ -48,5 +59,6 @@ export async function GET(req: NextRequest,  { params }: { params: { eventId: st
     return NextResponse.json({ error: "Method not allowed" });
   }
 }
+
 
 export const dynamic = "force-dynamic";

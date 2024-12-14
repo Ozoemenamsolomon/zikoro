@@ -107,6 +107,7 @@ export interface TEventQa {
   accessibility: {
     visible: boolean;
     disable: boolean;
+    live:boolean;
   };
 }
 

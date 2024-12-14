@@ -101,7 +101,7 @@ export async function PATCH(req: NextRequest) {
          <p>Let us know if you have any questions or need further assistance.</p>
          
          <p>Best,</p>
-        <p> Tola From Zikoro</p>
+        <p>Zikoro Team</p>
          <p>Phone/Whatsapp: +2347041497076 </p>
              
              </div>`,
