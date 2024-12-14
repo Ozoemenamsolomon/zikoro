@@ -70,18 +70,31 @@ const buildEditor = ({
     };
   };
 
-  const savePdf = (name?: string) => {
+  const savePdf = (
+    name?: string,
+    {
+      width,
+      height,
+    }: {
+      width: number;
+      height: number;
+    }
+  ) => {
     const options = generateSaveOptions();
 
     canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
     const dataUrl = canvas.toDataURL(options);
 
-    const pdf = new jsPDF();
-    const imgProperties = pdf.getImageProperties(dataUrl);
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = pdf.internal.pageSize.getHeight();
+    const pdf = new jsPDF({
+      orientation: "portrait",
+      unit: "pt",
+      format: [width, height],
+    });
+    // const imgProperties = pdf.getImageProperties(dataUrl);
+    // const pdfWidth = pdf.internal.pageSize.getWidth();
+    // const pdfHeight = pdf.internal.pageSize.getHeight();
 
-    pdf.addImage(dataUrl, "PNG", 0, 0, pdfWidth, pdfHeight);
+    pdf.addImage(dataUrl, "PNG", 0, 0, width, height);
     pdf.save(name || "untitled.pdf");
 
     autoZoom();
@@ -105,6 +118,18 @@ const buildEditor = ({
 
     downloadFile(dataUrl, "svg");
     autoZoom();
+  };
+
+  const generateLink = () => {
+    console.log(canvas, "here");
+    const options = generateSaveOptions();
+
+    canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
+    const dataUrl = canvas.toDataURL(options);
+
+    console.log(dataUrl);
+
+    return dataUrl;
   };
 
   const saveJpg = () => {
@@ -156,6 +181,7 @@ const buildEditor = ({
   };
 
   return {
+    generateLink,
     savePdf,
     savePng,
     saveJpg,

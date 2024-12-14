@@ -122,7 +122,7 @@ export async function POST(req: NextRequest) {
     />
   </div>
   <p style="font-size: 14px; margin-bottom: 10px">
-    You have officially been invited to ${eventTitle} by ${organizationName}
+    ${message}
   </p>
   <p style="font-size: 14px; margin-bottom: 10px">
     To respond to this email, choose one of the following options

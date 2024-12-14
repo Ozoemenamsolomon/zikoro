@@ -65,6 +65,7 @@ type FormValue = {
   selfCheckInAllowed: boolean;
   affiliateSettings: Omit<TAffiliateLink, "affiliateId"> & { enabled: boolean };
   includeJoinEventLink: boolean;
+  eventEmailContent: string;
 };
 
 export function ContentSetting({
@@ -91,10 +92,11 @@ export function ContentSetting({
         commissionValue: 5,
       },
       includeJoinEventLink: false,
+      eventEmailContent: "",
     },
   });
 
-  const { watch } = form;
+  const { watch, setValue } = form;
 
   const { user, setUser } = useUserStore();
   const { organization, setOrganization } = useOrganizationStore();
@@ -146,7 +148,6 @@ export function ContentSetting({
   const includeJoinEventLink = form.watch("includeJoinEventLink");
   const processingFeeStatus = form.watch("attendeePayProcessingFee");
   const exploreStatus = form.watch("explore");
-  // const appAccess = form.watch("eventAppAccess");
   const selfCheckInAllowed = form.watch("selfCheckInAllowed");
 
   function handleChange(title: string) {
@@ -179,6 +180,7 @@ export function ContentSetting({
         affiliateSettings: data.affiliateSettings,
         selfCheckInAllowed: data.selfCheckInAllowed,
         includeJoinEventLink: data.includeJoinEventLink,
+        eventEmailContent: data.eventEmailContent,
       });
 
       if (data?.eventWebsiteSettings === null) {
@@ -196,8 +198,14 @@ export function ContentSetting({
     organization?.subscriptionPlan !== "Professional" && (
       <TooltipProvider>
         <Tooltip>
-          <TooltipTrigger className="flex items-center">
-            <ExclamationCircle className="h-5 w-5 text-red-500" />
+          <TooltipTrigger className="flex items-center" asChild>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            >
+              <ExclamationCircle className="h-5 w-5 text-red-500" />
+            </button>
           </TooltipTrigger>
           <TooltipContent>
             <p>Not available for free plan</p>
@@ -205,6 +213,10 @@ export function ContentSetting({
         </Tooltip>
       </TooltipProvider>
     );
+
+  const setMessage = (content: string) => {
+    setValue("eventEmailContent", content);
+  };
 
   return (
     <div
@@ -665,6 +677,14 @@ export function ContentSetting({
                 </p>
               </div>
             </div>
+
+            {includeJoinEventLink && (
+              <>
+                <InputOffsetLabel label="Email Message">
+                  <Editor onChangeContent={setMessage} />
+                </InputOffsetLabel>
+              </>
+            )}
 
             <Button
               type="submit"
