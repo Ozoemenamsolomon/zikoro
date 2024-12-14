@@ -14,16 +14,15 @@ const includedPaths = [
   "/create",
   "/admin",
   "/event/:eventId/reception",
-  "engagements/:eventId/qa/:qaId/organizer"
 ];
 
 const eventAttendeePaths = [
   "reception",
-  "engagements",
   "people/all",
-  "market-place",
-  "partners",
   "agenda",
+  "engagements",
+  "partners",
+  "market-place"
 ];
 
 export async function middleware(req: NextRequest) {

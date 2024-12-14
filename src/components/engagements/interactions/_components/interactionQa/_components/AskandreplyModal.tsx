@@ -46,7 +46,7 @@ export function AskandReplyModal({
       questionStatus: isAttendee ? "pending" : "verified",
     };
     await postData({ payload });
-   // refetch?.();
+    refetch?.();
     close();
   }
   return (
