@@ -37,7 +37,7 @@ export default function EventQaOrganizerView({
   const { data, loading } = useFetchSingleEvent(eventId);
   const [isLeftBox, setIsLeftBox] = useState(true);
   const [filterValue, setFilterValue] = useState("Recent");
-  const {data: qa} = useGetData<TEventQa>(`/engagements/qa/${qaId}`)
+  const { data: qa } = useGetData<TEventQa>(`/engagements/qa/${qaId}`);
   const [replyQuestion, setReplyQuestion] = useState<TEventQAQuestion | null>(
     null
   );
@@ -88,7 +88,7 @@ export default function EventQaOrganizerView({
 
   useEffect(() => {
     // function subscribeToUpdate() {
-      if (!qa?.accessibility?.live) return;
+    if (!qa?.accessibility?.live) return;
     const channel = supabase
       .channel("live-quiz")
       .on(
@@ -100,7 +100,7 @@ export default function EventQaOrganizerView({
           filter: `QandAAlias=eq.${qaId}`,
         },
         (payload) => {
-        //  console.log("payload from live INSERT", payload);
+          //  console.log("payload from live INSERT", payload);
           if (eventQAQuestions)
             setEventQAQuestions([
               ...eventQAQuestions,
@@ -181,6 +181,8 @@ export default function EventQaOrganizerView({
           allQuestionsCount={filteredEventQaQuestions?.length || 0}
           myQuestionsCount={myQuestions?.length || 0}
           awaitingReviewCount={awaitingReview?.length || 0}
+          qa={qa}
+          eventAlias={eventId}
         />
         <div
           className={cn(
@@ -208,8 +210,9 @@ export default function EventQaOrganizerView({
                 initiateReply={initiateReply}
                 replyQuestion={replyQuestion}
                 replyToNull={replyToNull}
-                refetch={qa?.accessibility?.live ?  async () => {}:getQAQUestions}
-                
+                refetch={
+                  qa?.accessibility?.live ? async () => {} : getQAQUestions
+                }
                 eventQAQuestions={filteredEventQaQuestions || []}
                 userDetail={{
                   userId: String(data?.organization?.id),
@@ -220,11 +223,18 @@ export default function EventQaOrganizerView({
               />
             )}
             {active === 2 && (
-              <MyQuestions refetch={qa?.accessibility?.live ?  async () => {}:getQAQUestions} myQuestions={myQuestions} />
+              <MyQuestions
+                refetch={
+                  qa?.accessibility?.live ? async () => {} : getQAQUestions
+                }
+                myQuestions={myQuestions}
+              />
             )}
             {active === 3 && (
               <AwaitingReview
-                refetch={qa?.accessibility?.live ?  async () => {}:getQAQUestions}
+                refetch={
+                  qa?.accessibility?.live ? async () => {} : getQAQUestions
+                }
                 awaitingReview={awaitingReview}
               />
             )}
@@ -255,7 +265,7 @@ export default function EventQaOrganizerView({
             userImage: data?.organization?.organizationLogo || "/zikoro.png",
           }}
           QandAAlias={qaId}
-          refetch={qa?.accessibility?.live ?  async () => {}:getQAQUestions}
+          refetch={qa?.accessibility?.live ? async () => {} : getQAQUestions}
           close={onShowQuestionModal}
         />
       )}

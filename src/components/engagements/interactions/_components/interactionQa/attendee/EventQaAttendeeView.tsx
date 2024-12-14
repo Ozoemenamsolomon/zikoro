@@ -190,6 +190,7 @@ export default function EventQaAttendeeView({
           activeState={active}
           filterValue={filterValue}
           setFilterValue={setFilterValue}
+          eventAlias={eventId}
         />
 
         <div className="w-full h-[95vh] rounded-lg pt-5 sm:pt-6 bg-[#F9FAFF]">

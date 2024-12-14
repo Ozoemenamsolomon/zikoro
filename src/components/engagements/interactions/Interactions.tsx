@@ -58,7 +58,7 @@ export default function Interactions({ eventId }: { eventId: string }) {
   }
 
   const visibleQuizzes = useMemo(() => {
-    if (!isIdPresent && !isOrganizer) {
+    if (!isIdPresent && !isOrganizer && Array.isArray(quizzes)) {
       const filteredQuizzes = quizzes?.filter(
         (quiz) => !quiz?.accessibility?.disable
       );
@@ -70,7 +70,7 @@ export default function Interactions({ eventId }: { eventId: string }) {
   }, [quizzes, isIdPresent, isOrganizer]);
 
   const visibleForm = useMemo(() => {
-    if (!isIdPresent && !isOrganizer) {
+    if (!isIdPresent && !isOrganizer && Array.isArray(data)) {
       const filteredQuizzes = data?.filter((form) => !form?.isActive);
 
       return filteredQuizzes;
@@ -80,7 +80,7 @@ export default function Interactions({ eventId }: { eventId: string }) {
   }, [data, isIdPresent, isOrganizer]);
 
   const visibleQas = useMemo(() => {
-    if (!isIdPresent && !isOrganizer) {
+    if (!isIdPresent && !isOrganizer && Array.isArray(eventQas)) {
       const filteredQas = eventQas?.filter((qa) => !qa?.accessibility?.disable);
 
       return filteredQas;
@@ -90,7 +90,7 @@ export default function Interactions({ eventId }: { eventId: string }) {
   }, [eventQas, isIdPresent, isOrganizer]);
 
   const interactioDataLength = useMemo(() => {
-    if (visibleForm && visibleQuizzes) {
+    if (visibleForm && visibleQuizzes && visibleQas) {
       return [...visibleForm, ...visibleQuizzes, ...visibleQas].length;
     } else {
       return 0;
@@ -103,9 +103,9 @@ export default function Interactions({ eventId }: { eventId: string }) {
     setOpenInteractionModal(false);
   }
   function toggleQuiz() {
-    const liveQuizCount = quizzes?.filter(
-      ({ accessibility }) => accessibility?.live
-    )?.length;
+    // const liveQuizCount = quizzes?.filter(
+    //   ({ accessibility }) => accessibility?.live
+    // )?.length;
     // if (liveQuizCount >= 3) {
     //   verifyingAccess({
     //     textContent:
@@ -119,9 +119,9 @@ export default function Interactions({ eventId }: { eventId: string }) {
   }
 
   function togglePoll() {
-    const pollCount = quizzes?.filter(
-      ({ interactionType }) => interactionType === "poll"
-    )?.length;
+    // const pollCount = quizzes?.filter(
+    //   ({ interactionType }) => interactionType === "poll"
+    // )?.length;
     // if (pollCount >= 3) {
     //   verifyingAccess({
     //     textContent: "You have reached the maximum limit of 3 polls. ",
@@ -132,8 +132,6 @@ export default function Interactions({ eventId }: { eventId: string }) {
     setInteractionType("poll");
     onClose();
   }
-
-  async function refetchAll() {}
 
   function goToForm() {
     router.push(`/event/${eventId}/engagements/interactions/form/create`);

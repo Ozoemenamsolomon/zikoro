@@ -9,7 +9,9 @@ import {
   SelectGroup,
   SelectValue,
 } from "@/components/ui/select";
-import React from "react";
+import React, { useState } from "react";
+import { TEventQa } from "@/types";
+import { EventQaSetting } from "../../modals/EventQaSetting";
 
 type TopSectionProp = {
   allQuestionsCount: number;
@@ -19,6 +21,8 @@ type TopSectionProp = {
   activeState: number;
   setActiveState: (i: number) => void;
   filterValue: string;
+  qa?: TEventQa;
+  eventAlias:string;
   setFilterValue: React.Dispatch<React.SetStateAction<string>>;
 };
 
@@ -31,11 +35,23 @@ export function TopSection({
   setActiveState,
   filterValue,
   setFilterValue,
+  qa,
+  eventAlias
 }: TopSectionProp) {
+
+  const [isOpen, setOpen] = useState(false)
   const filters = [
     { value: "Recent", label: "Recent" },
     { value: "Top Liked", label: "Top Liked" },
   ];
+
+  function onClose() {
+    setOpen((p) => !p)
+  }
+
+ async function refetch() {
+    window.location.reload()
+  }
   return (
     <div className="w-full overflow-x-auto no-scrollbar min-w-[900px] bg-white px-4 sm:px-6 flex items-center text-sm justify-center gap-10 sm:gap-20">
       {!isAttendee && (
@@ -108,6 +124,8 @@ export function TopSection({
           </SelectGroup>
         </SelectContent>
       </Select>
+
+      {isOpen && <EventQaSetting close={onClose} eventAlias={eventAlias} eventQa={qa} refetch={refetch}/>}
     </div>
   );
 }
