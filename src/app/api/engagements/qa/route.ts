@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
     try {
       const params = await req.json();
 
-      const { error } = await supabase.from("Q&A").upsert(params);
+      const { error } = await supabase.from("QandA").upsert(params);
 
       if (error) {
         return NextResponse.json(
@@ -47,7 +47,7 @@ export async function GET(req: NextRequest) {
 
   if (req.method === "GET") {
     try {
-      const { data, error } = await supabase.from("Q&A").select("*");
+      const { data, error } = await supabase.from("QandA").select("*");
 
       if (error) {
         return NextResponse.json(

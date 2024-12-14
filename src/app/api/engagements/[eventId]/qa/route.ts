@@ -11,7 +11,7 @@ export async function GET(req: NextRequest,  { params }: { params: { eventId: st
   if (req.method === "GET") {
     try {
         const {eventId} = params
-      const { data, error } = await supabase.from("Q&A").select("*").eq('eventAlias', eventId);
+      const { data, error } = await supabase.from("QandA").select("*").eq('eventAlias', eventId);
 
       if (error) {
         return NextResponse.json(

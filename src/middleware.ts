@@ -18,6 +18,11 @@ const includedPaths = [
 
 const eventAttendeePaths = [
   "reception",
+  "people/all",
+  "agenda",
+  "engagements",
+  "partners",
+  "market-place"
 ];
 
 export async function middleware(req: NextRequest) {

@@ -15,7 +15,7 @@ export async function GET(
     
 
       const query = supabase
-        .from("Q&A")
+        .from("QandA")
         .select("*")
         .eq("QandAAlias", qaId)
         .single()
