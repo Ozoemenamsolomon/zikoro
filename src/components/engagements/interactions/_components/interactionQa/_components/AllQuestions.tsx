@@ -12,7 +12,7 @@ import { usePostRequest } from "@/hooks/services/request";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { generateAlias } from "@/utils";
 import { EmptyQaState } from "./EmptyQaState";
-import Avatar from "react-nice-avatar";
+
 export function AllQuestions({
   isAttendee,
   userDetail,
