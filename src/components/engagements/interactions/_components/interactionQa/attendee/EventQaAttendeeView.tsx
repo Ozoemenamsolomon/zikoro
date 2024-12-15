@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { JoinQA } from "./_components";
 import {
   AllQuestions,
   AskandReplyModal,
@@ -16,17 +15,13 @@ import {
 } from "@/hooks/services/eventQa";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { TEventQa, TEventQAQuestion } from "@/types";
-import { AvatarFullConfig } from "react-nice-avatar";
 import { useMemo } from "react";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { useGetData } from "@/hooks/services/request";
 import { useVerifyUserAccess } from "@/hooks";
+import useAccessStore from "@/store/globalAcessStore";
 
-export type UserDetail = {
-  userId: string;
-  userImage: string;
-  userNickName: string;
-};
+
 const supabase = createClientComponentClient();
 export default function EventQaAttendeeView({
   qaId,
@@ -35,22 +30,20 @@ export default function EventQaAttendeeView({
   qaId: string;
   eventId: string;
 }) {
-  const [isSignedIn, setIsSignedIn] = useState(false);
   const [active, setActive] = useState(1);
   const [isOpen, setIsOpen] = useState(false);
   const [filterValue, setFilterValue] = useState("Recent");
-  const {data: qa} = useGetData<TEventQa>(`/engagements/qa/${qaId}`)
-  const [userDetail, setUserDetail] = useState<UserDetail | null>(null);
-  const  {attendee, loading} = useVerifyUserAccess(eventId)
+  const { data: qa } = useGetData<TEventQa>(`/engagements/qa/${qaId}`);
+ const {userAccess, setUserAccess} = useAccessStore()
+
+  const { attendee, loading } = useVerifyUserAccess(eventId);
   const [replyQuestion, setReplyQuestion] = useState<TEventQAQuestion | null>(
     null
   );
   const { eventQAQuestions, setEventQAQuestions, isLoading, getQAQUestions } =
     useGetQAQuestions({ qaId });
   useQARealtimePresence();
-  function toggleJoin() {
-    setIsSignedIn((p) => !p);
-  }
+ 
 
   function setActiveState(n: number) {
     setActive(n);
@@ -60,9 +53,7 @@ export default function EventQaAttendeeView({
     setIsOpen((p) => !p);
   }
 
-  function addUser(user: UserDetail) {
-    setUserDetail(user);
-  }
+  
 
   const filteredEventQaQuestions = useMemo(() => {
     if (Array.isArray(eventQAQuestions)) {
@@ -83,7 +74,7 @@ export default function EventQaAttendeeView({
   }, [eventQAQuestions, filterValue]);
 
   const myQuestions = useMemo(() => {
-    if (Array.isArray(eventQAQuestions) && userDetail) {
+    if (Array.isArray(eventQAQuestions)) {
       if (filterValue === "Recent") {
         return eventQAQuestions
           .sort(
@@ -91,24 +82,19 @@ export default function EventQaAttendeeView({
               new Date(b.created_at).getTime() -
               new Date(a.created_at).getTime()
           )
-          .filter(
-            (qa) => qa?.userId === userDetail?.userId
-          );
+          .filter((qa) => qa?.userId === ( attendee?.attendeeAlias||userAccess?.userId));
       } else if (filterValue === "Top Liked") {
         return eventQAQuestions
           .sort((a, b) => b.vote - a.vote)
-          .filter(
-            (qa) => qa?.userId === userDetail?.userId
-          );
-      }
-      else return  []
+          .filter((qa) => qa?.userId === ( attendee?.attendeeAlias||userAccess?.userId));
+      } else return [];
     } else return [];
-  }, [eventQAQuestions, userDetail, filterValue]);
+  }, [eventQAQuestions, userAccess, attendee, filterValue]);
 
   // subscribe to qa
   useEffect(() => {
     // function subscribeToUpdate() {
-      if (!qa?.accessibility?.live) return;
+    if (!qa?.accessibility?.live) return;
     console.log("in it");
     const channel = supabase
       .channel("live-quiz")
@@ -152,7 +138,7 @@ export default function EventQaAttendeeView({
 
   useEffect(() => {
     // function subscribeToUpdate() {
-      if (!qa?.accessibility?.live) return;
+    if (!qa?.accessibility?.live) return;
     const channel = supabase
       .channel("live-quiz")
       .on(
@@ -214,12 +200,14 @@ export default function EventQaAttendeeView({
         />
 
         <div className="w-full h-[95vh] rounded-lg pt-5 sm:pt-6 bg-[#F9FAFF]">
-          {active === 1 && userDetail && (
+          {active === 1 && (
             <AllQuestions
-              refetch={qa?.accessibility?.live ?  async () => {}: getQAQUestions}
+              refetch={
+                qa?.accessibility?.live ? async () => {} : getQAQUestions
+              }
               isAttendee
-              eventQAQuestions={eventQAQuestions || []}
-              userDetail={userDetail}
+              eventQAQuestions={filteredEventQaQuestions || []}
+              userDetail={userAccess}
               initiateReply={initiateReply}
               replyQuestion={replyQuestion}
               replyToNull={replyToNull}
@@ -227,9 +215,12 @@ export default function EventQaAttendeeView({
           )}
           {active === 2 && (
             <MyQuestions
-              refetch={qa?.accessibility?.live ?  async () => {}:getQAQUestions}
+              refetch={
+                qa?.accessibility?.live ? async () => {} : getQAQUestions
+              }
               isAttendee
               myQuestions={myQuestions}
+            //  userDetail={userAccess}
             />
           )}
           {/*** floating button */}
@@ -245,15 +236,19 @@ export default function EventQaAttendeeView({
       {isOpen && (
         <AskandReplyModal
           userDetail={{
-            userId: attendee?.attendeeAlias || "",
-            userImage: `${attendee?.firstName} ${attendee?.lastName}` || "",
-            userNickName:  `${attendee?.firstName} ${attendee?.lastName}` || "",
+            userId: attendee?.attendeeAlias || userAccess?.userId || "",
+            userImage: attendee
+              ? `${attendee?.firstName} ${attendee?.lastName}`
+              : userAccess?.userImage || "",
+            userNickName: attendee
+              ? `${attendee?.firstName} ${attendee?.lastName}`
+              : userAccess?.userNickName || "",
           }}
           QandAAlias={qaId}
-          
           isAttendee
           close={onShowQuestionModal}
-          refetch={qa?.accessibility?.live ?  async () => {}:getQAQUestions}
+          setUserAccess={setUserAccess}
+          refetch={qa?.accessibility?.live ? async () => {} : getQAQUestions}
         />
       )}
     </>

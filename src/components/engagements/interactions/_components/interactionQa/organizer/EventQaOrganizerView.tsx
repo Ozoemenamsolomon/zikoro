@@ -225,7 +225,7 @@ export default function EventQaOrganizerView({
                 eventQAQuestions={filteredEventQaQuestions || []}
                 userDetail={{
                   userId: String(user?.id),
-                  userNickName: user?.firstName!,
+                  userNickName: `${user?.firstName} ${user?.lastName}`,
                   userImage: `${user?.firstName} ${user?.lastName}`,
                 }}
               />

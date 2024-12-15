@@ -130,7 +130,6 @@ export interface TEventQAQuestion {
   vote: number;
   voters: {
     userId: string;
-    userNickName: string;
   }[];
   anonymous: boolean;
   questionStatus: string;

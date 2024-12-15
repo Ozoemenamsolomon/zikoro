@@ -2,13 +2,13 @@ import { useState } from "react";
 import { AskandReplyCard } from "./AskandReplyCard";
 import { InlineIcon } from "@iconify/react";
 import { cn } from "@/lib";
-import { TEventQAQuestion } from "@/types";
+import { TEventQAQuestion, TUserAccess } from "@/types";
 import { EmptyQaState } from "./EmptyQaState";
 
 export function MyQuestions({
   isAttendee,
   myQuestions,
-  refetch,
+  refetch
 }: {
   refetch: () => Promise<any>;
   isAttendee?: boolean;
@@ -33,7 +33,7 @@ export function MyQuestions({
     <div
       className={cn(
         "w-full max-w-2xl overflow-y-auto  no-scrollbar h-full mx-auto",
-        replyQuestion && "bg-white p-4"
+        replyQuestion && "bg-white p-4 h-fit"
       )}
     >
       {!replyQuestion ? (
@@ -47,6 +47,7 @@ export function MyQuestions({
                 isAttendee={isAttendee}
                 eventQa={qa}
                 refetch={refetch}
+              //  userDetail={userDetail}
               />
             ))}
         </div>

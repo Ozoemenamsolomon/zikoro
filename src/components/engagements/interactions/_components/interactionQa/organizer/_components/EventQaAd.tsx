@@ -65,7 +65,7 @@ export function EventQaAdvert({
           <p>Or join at</p>
           <div className="gap-2 grid grid-cols-10">
             <p className="w-full col-span-9 text-ellipsis whitespace-nowrap overflow-hidden text-xl">
-              www.zikoro.com/interaction
+              www.zikoro.com/interaction/qa
             </p>
           </div>
           <p className="font-semibold text-lg sm:text-3xl">{qa?.QandAAlias}</p>

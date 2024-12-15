@@ -1,3 +1,5 @@
+"use client";
+
 import { useMemo, useState } from "react";
 import { AskandReplyCard } from "./AskandReplyCard";
 import { InlineIcon } from "@iconify/react";
@@ -5,13 +7,14 @@ import { Button } from "@/components/custom_ui/Button";
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib";
-import { TEventQAQuestion } from "@/types";
-import { UserDetail } from "../attendee/EventQaAttendeeView";
+import { TEventQAQuestion, TUserAccess } from "@/types";
+
 import toast from "react-hot-toast";
 import { usePostRequest } from "@/hooks/services/request";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { generateAlias } from "@/utils";
 import { EmptyQaState } from "./EmptyQaState";
+import useAccessStore from "@/store/globalAcessStore";
 
 export function AllQuestions({
   isAttendee,
@@ -20,25 +23,26 @@ export function AllQuestions({
   refetch,
   initiateReply,
   replyQuestion,
-  replyToNull
+  replyToNull,
 }: {
-  userDetail: UserDetail;
+  userDetail: TUserAccess | null;
   isAttendee?: boolean;
   eventQAQuestions: TEventQAQuestion[];
   refetch: () => Promise<any>;
-  initiateReply:(t: TEventQAQuestion | null) => void;
+  initiateReply: (t: TEventQAQuestion | null) => void;
   replyQuestion: TEventQAQuestion | null;
   replyToNull: () => void;
 }) {
   // const [replyQuestion, setReplyQuestion] = useState<TEventQAQuestion | null>(
   //   null
   // );
+
   const [reply, setReply] = useState("");
+  const [name, setName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAnonymous, setIsAnonymous] = useState(false);
   const { postData } = usePostRequest("/engagements/qa/qaQuestion");
-
-
+  const { setUserAccess } = useAccessStore();
 
   async function submitReply(e: any) {
     e.preventDefault();
@@ -56,6 +60,14 @@ export function AllQuestions({
       id,
       ...restData
     } = replyQuestion;
+
+    const user = isAttendee
+      ? {
+          userId: userDetail?.userId || generateAlias(),
+          userNickName: userDetail?.userNickName || name || "",
+          userImage: userDetail?.userImage || name || "",
+        }
+      : userDetail;
     const payload: Partial<TEventQAQuestion> = {
       ...replyQuestion,
       Responses: Array.isArray(replyQuestion?.Responses)
@@ -63,7 +75,7 @@ export function AllQuestions({
             ...replyQuestion?.Responses,
             {
               ...restData,
-              ...userDetail,
+              ...user,
               questionAlias: generateAlias(),
               content: reply,
               anonymous: isAnonymous,
@@ -75,7 +87,7 @@ export function AllQuestions({
         : [
             {
               ...restData,
-              ...userDetail,
+              ...user,
               questionAlias: generateAlias(),
               content: reply,
               anonymous: isAnonymous,
@@ -88,8 +100,16 @@ export function AllQuestions({
 
     await postData({ payload });
     setReply("");
-    initiateReply(null)
-     refetch()
+    setName("");
+    if (isAttendee && userDetail !== null) {
+      setUserAccess({
+        userId: userDetail?.userId || generateAlias(),
+        userNickName: userDetail?.userNickName || name || "",
+        userImage: userDetail?.userImage || name || "",
+      });
+    }
+    initiateReply(null);
+    refetch();
     setIsSubmitting(false);
   }
 
@@ -155,24 +175,32 @@ export function AllQuestions({
             className="w-full flex items-center justify-center gap-3 flex-col"
           >
             <div className="w-full flex items-end gap-x-2">
-          
-            {userDetail?.userImage?.startsWith("https://") ? (
-              <Image
-                src={(userDetail?.userImage as string) || "/zikoro.png"}
-                alt=""
-                className="rounded-full h-12 object-contain border w-12"
-                width={100}
-                height={100}
-              />
-            ) : (
-              <div className="w-[3rem] bg-gradient-to-tr border-basePrimary from-custom-bg-gradient-start border to-custom-bg-gradient-end h-[3rem] rounded-full flex items-center justify-center">
-                <p className="gradient-text  bg-basePrimary text-lg uppercase">
-                  {useAcronym}
-                </p>
-              </div>
-            )}
-          
-              <div className="w-[80%]">
+              {userDetail?.userImage?.startsWith("https://") ? (
+                <Image
+                  src={(userDetail?.userImage as string) || "/zikoro.png"}
+                  alt=""
+                  className="rounded-full h-12 object-contain border w-12"
+                  width={100}
+                  height={100}
+                />
+              ) : (
+                <div className="w-[3rem] bg-gradient-to-tr border-basePrimary from-custom-bg-gradient-start border to-custom-bg-gradient-end h-[3rem] rounded-full flex items-center justify-center">
+                  <p className="gradient-text  bg-basePrimary text-lg uppercase">
+                    {useAcronym}
+                  </p>
+                </div>
+              )}
+
+              <div className="w-[80%] flex flex-col gap-y-2 items-start">
+                <Input
+                  value={name}
+                  onChange={(e) => {
+                    setName(e.target.value);
+                  }}
+                  className="border-0 border-b rounded-none w-full"
+                  placeholder="Enter a nickname"
+                  type="text"
+                />
                 <Input
                   value={reply}
                   onChange={(e) => {
@@ -189,7 +217,10 @@ export function AllQuestions({
                 className="h-10 w-10 bg-basePrimary rounded-full px-0 "
               >
                 {isSubmitting ? (
-                  <HiDotsHorizontal size={20} className="animate-pulse text-white" />
+                  <HiDotsHorizontal
+                    size={20}
+                    className="animate-pulse text-white"
+                  />
                 ) : (
                   <InlineIcon icon="prime:send" color="#ffffff" fontSize={30} />
                 )}

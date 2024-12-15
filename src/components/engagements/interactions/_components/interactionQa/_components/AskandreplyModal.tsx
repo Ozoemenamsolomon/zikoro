@@ -9,65 +9,74 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { usePostRequest } from "@/hooks/services/request";
 import { generateAlias } from "@/utils";
-import { TEventQAQuestion } from "@/types";
-import { UserDetail } from "../attendee/EventQaAttendeeView";
+import { TEventQAQuestion, TUserAccess } from "@/types";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import toast from "react-hot-toast";
+import { MdClose } from "react-icons/md";
 
 export function AskandReplyModal({
   close,
   QandAAlias,
   refetch,
   userDetail,
+  setUserAccess,
   isAttendee,
 }: {
   QandAAlias: string;
   close: () => void;
   refetch?: () => void;
-  userDetail: UserDetail;
+  userDetail: TUserAccess;
   isAttendee?: boolean;
+  setUserAccess?: (c:TUserAccess | null) => void
 }) {
   const form = useForm<z.infer<typeof eventQaAskAndReplySchema>>({
     resolver: zodResolver(eventQaAskAndReplySchema),
-    defaultValues:{
+    defaultValues: {
       anonymous: false,
-      userNickName: userDetail?.userNickName
-
-    }
+      userNickName: userDetail?.userNickName,
+    },
   });
   const { postData, isLoading } = usePostRequest("/engagements/qa/qaQuestion");
 
   async function onSubmit(values: z.infer<typeof eventQaAskAndReplySchema>) {
     if (!values?.anonymous && !values?.userNickName) {
-      return toast.error("Pls add a name")
+      return toast.error("Pls add a name");
     }
 
     if (values?.userNickName && values?.userNickName?.length < 2) {
-      return toast.error("Name must be at least two letters")
+      return toast.error("Name must be at least two letters");
     }
 
     const questionAlias = generateAlias();
-
+    const user = {
+      userId: userDetail?.userId || generateAlias(),
+      userImage: userDetail?.userNickName || values?.userNickName,
+      userNickName: userDetail?.userNickName || values?.userNickName,
+    }
     const payload: Partial<TEventQAQuestion> = {
-      ...userDetail,
+      ...user,
       ...values,
       QandAAlias: QandAAlias,
       questionAlias: questionAlias,
       questionStatus: isAttendee ? "pending" : "verified",
     };
     await postData({ payload });
+    setUserAccess?.(user)
+   
     refetch?.();
     close();
   }
   return (
-    <div
-      onClick={close}
-      className="w-full h-full z-[100] inset-0 bg-black/50 fixed"
-    >
+    <div className="w-full h-full z-[100] inset-0 bg-black/50 fixed">
       <div
         onClick={(e) => e.stopPropagation()}
         className="w-[95%] max-w-3xl p-4 h-fit sm:p-6 m-auto absolute inset-0 bg-white rounded-lg"
       >
+        <div className="w-full flex items-end justify-end">
+          <button onClick={close}>
+            <MdClose size={22} />
+          </button>
+        </div>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -86,7 +95,7 @@ export function AskandReplyModal({
                 </InputOffsetLabel>
               )}
             />
-               <FormField
+            <FormField
               control={form.control}
               name="userNickName"
               render={({ field }) => (
@@ -117,7 +126,7 @@ export function AskandReplyModal({
               >
                 <p>Send</p>
                 <InlineIcon icon="prime:send" color="#ffffff" fontSize={22} />
-                {isLoading &&<LoaderAlt size={20} className="animate-spin" />}
+                {isLoading && <LoaderAlt size={20} className="animate-spin" />}
               </Button>
             </div>
           </form>

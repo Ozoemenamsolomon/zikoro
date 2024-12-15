@@ -1,15 +1,15 @@
 import { Button } from "@/components/custom_ui/Button";
 import { cn } from "@/lib";
-import { TEventQAQuestion } from "@/types";
+import { TEventQAQuestion, TUserAccess } from "@/types";
 import { InlineIcon } from "@iconify/react";
 import Image from "next/image";
 import { useMemo, useState } from "react";
 import { toZonedTime } from "date-fns-tz";
 import { format, isToday, isYesterday } from "date-fns";
-import { formatReviewNumber } from "@/utils";
-import { UserDetail } from "../attendee/EventQaAttendeeView";
+import { formatReviewNumber, generateAlias } from "@/utils";
 import { usePostRequest } from "@/hooks/services/request";
 import { AiOutlineLike, AiFillLike } from "react-icons/ai";
+import useAccessStore from "@/store/globalAcessStore";
 
 export function AskandReplyCard({
   className,
@@ -28,11 +28,12 @@ export function AskandReplyCard({
   eventQa?: Partial<TEventQAQuestion>;
   isAttendee?: boolean;
   refetch?: () => Promise<any>;
-  userDetail?: UserDetail;
+  userDetail?: TUserAccess | null;
   originalQuestion?: TEventQAQuestion;
   responseId?: string;
 }) {
   const { postData, isLoading } = usePostRequest("/engagements/qa/qaQuestion");
+  const {setUserAccess} = useAccessStore()
   const [isLiked, setLiked] = useState(false);
   const formattedTime = useMemo(() => {
     const utcDate = new Date(eventQa?.created_at as string);
@@ -75,6 +76,7 @@ export function AskandReplyCard({
 
   async function voteFn() {
     setLiked(true);
+    const id = generateAlias()
     const payload: Partial<TEventQAQuestion> = responseId
       ? {
           ...originalQuestion,
@@ -87,14 +89,14 @@ export function AskandReplyCard({
                   ? [
                       ...resp?.voters,
                       {
-                        userId: userDetail?.userId!,
-                        userNickName: userDetail?.userNickName!,
+                        userId: userDetail?.userId || id,
+                       
                       },
                     ]
                   : [
                       {
-                        userId: userDetail?.userId!,
-                        userNickName: userDetail?.userNickName!,
+                        userId: userDetail?.userId || id,
+                        
                       },
                     ],
               };
@@ -109,26 +111,27 @@ export function AskandReplyCard({
             ? [
                 ...eventQa?.voters,
                 {
-                  userId: userDetail?.userId!,
-                  userNickName: userDetail?.userNickName!,
+                  userId: userDetail?.userId || id,
+                  
                 },
               ]
             : [
                 {
-                  userId: userDetail?.userId!,
-                  userNickName: userDetail?.userNickName!,
+                  userId: userDetail?.userId || id,
+                  
                 },
               ],
         };
 
     await postData({ payload });
+    setUserAccess({userId: id})
 
     refetch?.();
   }
 
   const useAcronym = useMemo(() => {
-    if (typeof userDetail?.userImage === "string") {
-      const splittedName = userDetail?.userImage?.split(" ");
+    if (typeof eventQa?.userImage === "string") {
+      const splittedName = eventQa?.userImage?.split(" ");
       if (splittedName?.length > 1) {
         return `${splittedName[0].charAt(0) ?? ""}${
           splittedName[1].charAt(0) ?? ""
@@ -138,10 +141,10 @@ export function AskandReplyCard({
           splittedName[0].charAt(1) ?? ""
         }`;
     } else return "";
-  }, [userDetail]);
+  }, [eventQa]);
 
   useMemo(() => {
-    if (userDetail?.userId === eventQa?.userId) {
+    if (eventQa?.voters?.some((qa) => qa?.userId === userDetail?.userId)) {
       setLiked(true);
     }
   }, [userDetail, eventQa]);
