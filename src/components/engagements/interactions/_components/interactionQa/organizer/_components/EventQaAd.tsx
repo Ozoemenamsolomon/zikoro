@@ -4,20 +4,23 @@ import { Button } from "@/components";
 import QRCode from "react-qr-code";
 import { cn } from "@/lib";
 import copy from "copy-to-clipboard";
+import { TEventQa } from "@/types";
 export function EventQaAdvert({
   isRightBox,
   close,
   isLeftBox,
   eventName,
+  qa
 }: {
 
   isLeftBox: boolean;
   close: () => void;
   isRightBox: boolean;
   eventName: string;
+  qa: TEventQa
 }) {
  // console.log("ileft", isLeftBox, isRightBox);
-  const qaLink = "https://zikoro.com"
+  const qaLink = `${window.location.origin}/engagements/${qa?.eventAlias}/qaa/${qa?.QandAAlias}`
   return (
     <div
       className={cn(
@@ -65,7 +68,7 @@ export function EventQaAdvert({
               www.zikoro.com/interaction
             </p>
           </div>
-          <p className="font-semibold text-lg sm:text-3xl">{"7JG943"}</p>
+          <p className="font-semibold text-lg sm:text-3xl">{qa?.QandAAlias}</p>
         </div>
       </div>
 

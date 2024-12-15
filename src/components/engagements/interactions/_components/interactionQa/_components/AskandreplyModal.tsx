@@ -13,6 +13,7 @@ import { TEventQAQuestion } from "@/types";
 import { AvatarFullConfig } from "react-nice-avatar";
 import { UserDetail } from "../attendee/EventQaAttendeeView";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
+import toast from "react-hot-toast";
 
 export function AskandReplyModal({
   close,
@@ -30,17 +31,27 @@ export function AskandReplyModal({
   const form = useForm<z.infer<typeof eventQaAskAndReplySchema>>({
     resolver: zodResolver(eventQaAskAndReplySchema),
     defaultValues:{
-      anonymous: false
+      anonymous: false,
+      userNickName: userDetail?.userNickName
+
     }
   });
   const { postData, isLoading } = usePostRequest("/engagements/qa/qaQuestion");
 
   async function onSubmit(values: z.infer<typeof eventQaAskAndReplySchema>) {
+    if (!values?.anonymous && !values?.userNickName) {
+      return toast.error("Pls add a name")
+    }
+
+    if (values?.userNickName && values?.userNickName?.length < 2) {
+      return toast.error("Name must be at least two letters")
+    }
+
     const questionAlias = generateAlias();
 
     const payload: Partial<TEventQAQuestion> = {
-      ...values,
       ...userDetail,
+      ...values,
       QandAAlias: QandAAlias,
       questionAlias: questionAlias,
       questionStatus: isAttendee ? "pending" : "verified",
@@ -70,6 +81,19 @@ export function AskandReplyModal({
                 <InputOffsetLabel label="">
                   <Textarea
                     placeholder="Enter the question"
+                    {...form.register("content")}
+                    className="placeholder:text-sm h-96  placeholder:text-gray-400 text-gray-700"
+                  ></Textarea>
+                </InputOffsetLabel>
+              )}
+            />
+               <FormField
+              control={form.control}
+              name="userNickName"
+              render={({ field }) => (
+                <InputOffsetLabel label="">
+                  <Textarea
+                    placeholder="Enter your nickname"
                     {...form.register("content")}
                     className="placeholder:text-sm h-96  placeholder:text-gray-400 text-gray-700"
                   ></Textarea>

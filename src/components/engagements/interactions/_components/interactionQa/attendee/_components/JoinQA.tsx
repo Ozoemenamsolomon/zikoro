@@ -11,7 +11,7 @@ import { generateAlias } from "@/utils";
 import { UserDetail } from "../EventQaAttendeeView";
 
 export function JoinQA({ joined, addUser }: {addUser:(user: UserDetail) => void; joined: () => void }) {
-  const router = useRouter();
+
   const [attendeeDetail, setAttendeeDetail] = useState("");
   const [isAvatarModal, setAvatarModal] = useState(false);
   const [isAvatar, setIsAvatar] = useState(false);
@@ -62,16 +62,7 @@ export function JoinQA({ joined, addUser }: {addUser:(user: UserDetail) => void;
     <>
       <div className="w-full h-full inset-0 fixed bg-[#F9FAFF]">
         <div className="w-[95%] max-w-xl rounded-lg absolute h-fit flex flex-col items-start justify-start gap-8 bg-white border p-4 sm:p-6 m-auto inset-0">
-          <button
-            onClick={() => router.back()}
-            className="flex mb-3 items-center gap-x-1 text-mobile sm:text-sm"
-          >
-            <InlineIcon
-              fontSize={20}
-              icon="material-symbols-light:arrow-back"
-            />
-            <p>Go Back</p>
-          </button>
+   
           <form 
           onSubmit={submit}
           className="w-full flex flex-col items-center justify-center gap-6">

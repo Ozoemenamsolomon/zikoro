@@ -107,7 +107,8 @@ export interface TEventQa {
   accessibility: {
     visible: boolean;
     disable: boolean;
-    live:boolean;
+    live: boolean;
+    allowAnonymous: boolean;
   };
 }
 
@@ -121,8 +122,8 @@ export interface TEventQAQuestion {
   questionAlias: string;
   QandAAlias: string;
   userId: string;
-  userNickname: string;
-  userImage: Required<AvatarFullConfig> | string;
+  userNickName: string;
+  userImage: string;
   content: string;
   isAnswered: string;
   Responses: TEventQAQuestionResponse[];

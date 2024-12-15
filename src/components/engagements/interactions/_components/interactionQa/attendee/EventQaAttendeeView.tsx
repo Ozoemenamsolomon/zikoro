@@ -20,10 +20,11 @@ import { AvatarFullConfig } from "react-nice-avatar";
 import { useMemo } from "react";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { useGetData } from "@/hooks/services/request";
+import { useVerifyUserAccess } from "@/hooks";
 
 export type UserDetail = {
   userId: string;
-  userImage: Required<AvatarFullConfig> | string;
+  userImage: string;
   userNickName: string;
 };
 const supabase = createClientComponentClient();
@@ -40,6 +41,7 @@ export default function EventQaAttendeeView({
   const [filterValue, setFilterValue] = useState("Recent");
   const {data: qa} = useGetData<TEventQa>(`/engagements/qa/${qaId}`)
   const [userDetail, setUserDetail] = useState<UserDetail | null>(null);
+  const  {attendee, loading} = useVerifyUserAccess(eventId)
   const [replyQuestion, setReplyQuestion] = useState<TEventQAQuestion | null>(
     null
   );
@@ -65,25 +67,43 @@ export default function EventQaAttendeeView({
   const filteredEventQaQuestions = useMemo(() => {
     if (Array.isArray(eventQAQuestions)) {
       if (filterValue === "Recent") {
-        return eventQAQuestions.sort(
-          (a, b) =>
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-        );
+        return eventQAQuestions
+          .sort(
+            (a, b) =>
+              new Date(b.created_at).getTime() -
+              new Date(a.created_at).getTime()
+          )
+          .filter((v) => v?.questionStatus !== "pending");
       } else if (filterValue === "Top Liked") {
-        return eventQAQuestions.sort((a, b) => b.vote - a.vote);
+        return eventQAQuestions
+          .sort((a, b) => b.vote - a.vote)
+          .filter((v) => v?.questionStatus !== "pending");
       }
     } else return [];
   }, [eventQAQuestions, filterValue]);
 
   const myQuestions = useMemo(() => {
-    if (Array.isArray(filteredEventQaQuestions) && userDetail) {
-      return filteredEventQaQuestions?.filter(
-        (qa) => qa?.userId === userDetail?.userId
-      );
-    } else {
-      return [];
-    }
-  }, [eventQAQuestions]);
+    if (Array.isArray(eventQAQuestions) && userDetail) {
+      if (filterValue === "Recent") {
+        return eventQAQuestions
+          .sort(
+            (a, b) =>
+              new Date(b.created_at).getTime() -
+              new Date(a.created_at).getTime()
+          )
+          .filter(
+            (qa) => qa?.userId === userDetail?.userId
+          );
+      } else if (filterValue === "Top Liked") {
+        return eventQAQuestions
+          .sort((a, b) => b.vote - a.vote)
+          .filter(
+            (qa) => qa?.userId === userDetail?.userId
+          );
+      }
+      else return  []
+    } else return [];
+  }, [eventQAQuestions, userDetail, filterValue]);
 
   // subscribe to qa
   useEffect(() => {
@@ -161,7 +181,7 @@ export default function EventQaAttendeeView({
 
   console.log("qas ", eventQAQuestions);
 
-  function initiateReply(question: TEventQAQuestion) {
+  function initiateReply(question: TEventQAQuestion | null) {
     setReplyQuestion(question);
   }
 
@@ -169,7 +189,7 @@ export default function EventQaAttendeeView({
     setReplyQuestion(null);
   }
 
-  if (isLoading) {
+  if (isLoading && loading) {
     return (
       <div className="w-full h-[300px] flex items-center justify-center">
         <LoaderAlt size={30} className="animate-spin" />
@@ -179,7 +199,7 @@ export default function EventQaAttendeeView({
 
   return (
     <>
-      {!isSignedIn && <JoinQA joined={toggleJoin} addUser={addUser} />}
+      {/* {!isSignedIn && <JoinQA joined={toggleJoin} addUser={addUser} />} */}
 
       <div className="w-full h-full">
         <TopSection
@@ -224,8 +244,13 @@ export default function EventQaAttendeeView({
 
       {isOpen && userDetail && (
         <AskandReplyModal
-          userDetail={userDetail}
+          userDetail={{
+            userId: attendee?.attendeeAlias || "",
+            userImage: `${attendee?.firstName} ${attendee?.lastName}` || "",
+            userNickName:  `${attendee?.firstName} ${attendee?.lastName}` || "",
+          }}
           QandAAlias={qaId}
+          
           isAttendee
           close={onShowQuestionModal}
           refetch={qa?.accessibility?.live ?  async () => {}:getQAQUestions}

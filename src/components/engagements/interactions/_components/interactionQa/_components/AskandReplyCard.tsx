@@ -3,14 +3,13 @@ import { cn } from "@/lib";
 import { TEventQAQuestion } from "@/types";
 import { InlineIcon } from "@iconify/react";
 import Image from "next/image";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { toZonedTime } from "date-fns-tz";
-// import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { format, isToday, isYesterday } from "date-fns";
 import { formatReviewNumber } from "@/utils";
 import { UserDetail } from "../attendee/EventQaAttendeeView";
 import { usePostRequest } from "@/hooks/services/request";
-import Avatar from "react-nice-avatar";
+import { AiOutlineLike, AiFillLike } from "react-icons/ai";
 
 export function AskandReplyCard({
   className,
@@ -34,6 +33,7 @@ export function AskandReplyCard({
   responseId?: string;
 }) {
   const { postData, isLoading } = usePostRequest("/engagements/qa/qaQuestion");
+  const [isLiked, setLiked] = useState(false);
   const formattedTime = useMemo(() => {
     const utcDate = new Date(eventQa?.created_at as string);
     const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -61,9 +61,7 @@ export function AskandReplyCard({
   const formatVotesCount = useMemo(() => {
     if (eventQa) {
       return formatReviewNumber(eventQa?.vote || 0);
-    }
-    
-    else {
+    } else {
       return "0";
     }
   }, [eventQa, responseId]);
@@ -76,6 +74,7 @@ export function AskandReplyCard({
    */
 
   async function voteFn() {
+    setLiked(true);
     const payload: Partial<TEventQAQuestion> = responseId
       ? {
           ...originalQuestion,
@@ -124,8 +123,28 @@ export function AskandReplyCard({
 
     await postData({ payload });
 
-   refetch?.();
+    refetch?.();
   }
+
+  const useAcronym = useMemo(() => {
+    if (typeof userDetail?.userImage === "string") {
+      const splittedName = userDetail?.userImage?.split(" ");
+      if (splittedName?.length > 1) {
+        return `${splittedName[0].charAt(0) ?? ""}${
+          splittedName[1].charAt(0) ?? ""
+        }`;
+      } else
+        return `${splittedName[0].charAt(0) ?? ""}${
+          splittedName[0].charAt(1) ?? ""
+        }`;
+    } else return "";
+  }, [userDetail]);
+
+  useMemo(() => {
+    if (userDetail?.userId === eventQa?.userId) {
+      setLiked(true);
+    }
+  }, [userDetail, eventQa]);
   return (
     <div
       className={cn(
@@ -133,31 +152,43 @@ export function AskandReplyCard({
         className
       )}
     >
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-x-2">
-          {eventQa?.userImage  && typeof eventQa?.userImage !== "string" ?
-            <Avatar
-            className="h-12 w-12 rounded-full"
-            {...eventQa?.userImage}
-          />
-          : (
-            <Image
-              src={(eventQa?.userImage as string) || "/zikoro.png"}
-              alt=""
-              className="rounded-full h-12 object-contain border w-12"
-              width={100}
-              height={100}
-            />
-          )}
-          <div className="flex items-start flex-col justify-start gap-1">
-            <p className="font-semibold text-sm sm:text-desktop">
-              {eventQa?.anonymous ? "Anonymous" : eventQa?.userNickname ?? ""}
-            </p>
-            <p className="text-tiny sm:text-mobile text-gray-500">
-              {formattedTime}
-            </p>
+      <div
+        className={cn(
+          "flex w-full items-center justify-between",
+          isAttendee &&
+            eventQa?.anonymous &&
+            eventQa?.questionStatus === "pending" &&
+            "items-end justify-end"
+        )}
+      >
+        {!eventQa?.anonymous && (
+          <div className="flex items-center gap-x-2">
+            {eventQa?.userImage?.startsWith("https://") ? (
+              <Image
+                src={(eventQa?.userImage as string) || "/zikoro.png"}
+                alt=""
+                className="rounded-full h-12 object-contain border w-12"
+                width={100}
+                height={100}
+              />
+            ) : (
+              <div className="w-[3rem] bg-gradient-to-tr border-basePrimary from-custom-bg-gradient-start border to-custom-bg-gradient-end h-[3rem] rounded-full flex items-center justify-center">
+                <p className="gradient-text  bg-basePrimary text-lg uppercase">
+                  {useAcronym}
+                </p>
+              </div>
+            )}
+
+            <div className="flex items-start flex-col justify-start gap-1">
+              <p className="font-semibold text-sm sm:text-desktop">
+                {eventQa?.userNickName ?? ""}
+              </p>
+              <p className="text-tiny sm:text-mobile text-gray-500">
+                {formattedTime}
+              </p>
+            </div>
           </div>
-        </div>
+        )}
         {isAttendee && (
           <p>{eventQa?.questionStatus === "pending" ? "In Review" : ""}</p>
         )}
@@ -167,11 +198,20 @@ export function AskandReplyCard({
       <div className="flex items-center justify-center w-full gap-x-3">
         <Button
           onClick={voteFn}
-          disabled={!userDetail || isLoading || userDetail?.userId === eventQa?.userId}
+          disabled={
+            !userDetail ||
+            isLoading ||
+            userDetail?.userId === eventQa?.userId ||
+            isLiked
+          }
           className="rounded-3xl bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end gap-x-2 px-2 py-1 h-fit"
         >
           <span className="text-mobile">{formatVotesCount}</span>
-          <InlineIcon fontSize={20} icon="iconamoon:like-thin" />
+          {isLiked ? (
+            <AiFillLike color="#001fcc" size={20} />
+          ) : (
+            <AiOutlineLike size={20} />
+          )}
         </Button>
 
         {!isReply && eventQa && (

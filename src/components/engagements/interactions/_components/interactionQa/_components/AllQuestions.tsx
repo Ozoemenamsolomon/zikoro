@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { AskandReplyCard } from "./AskandReplyCard";
 import { InlineIcon } from "@iconify/react";
 import { Button } from "@/components/custom_ui/Button";
@@ -26,7 +26,7 @@ export function AllQuestions({
   isAttendee?: boolean;
   eventQAQuestions: TEventQAQuestion[];
   refetch: () => Promise<any>;
-  initiateReply:(t: TEventQAQuestion) => void;
+  initiateReply:(t: TEventQAQuestion | null) => void;
   replyQuestion: TEventQAQuestion | null;
   replyToNull: () => void;
 }) {
@@ -88,9 +88,24 @@ export function AllQuestions({
 
     await postData({ payload });
     setReply("");
+    initiateReply(null)
      refetch()
     setIsSubmitting(false);
   }
+
+  const useAcronym = useMemo(() => {
+    if (typeof userDetail?.userImage === "string") {
+      const splittedName = userDetail?.userImage?.split(" ");
+      if (splittedName?.length > 1) {
+        return `${splittedName[0].charAt(0) ?? ""}${
+          splittedName[1].charAt(0) ?? ""
+        }`;
+      } else
+        return `${splittedName[0].charAt(0) ?? ""}${
+          splittedName[0].charAt(1) ?? ""
+        }`;
+    } else return "";
+  }, [userDetail]);
 
   if (eventQAQuestions?.length === 0) {
     return (
@@ -104,7 +119,7 @@ export function AllQuestions({
     <div
       className={cn(
         "w-full max-w-2xl overflow-y-auto  no-scrollbar h-full mx-auto",
-        replyQuestion !== null && "bg-white p-4"
+        replyQuestion !== null && "bg-white p-4 h-fit"
       )}
     >
       {!replyQuestion ? (
@@ -140,18 +155,23 @@ export function AllQuestions({
             className="w-full flex items-center justify-center gap-3 flex-col"
           >
             <div className="w-full flex items-end gap-x-2">
-              {userDetail && typeof userDetail?.userImage !== "string" ? <Avatar
-            className="h-12 w-12 rounded-full"
-            {...userDetail?.userImage}
-          /> : (
-                <Image
-                  src={(replyQuestion?.userImage as string) || "/zikoro.png"}
-                  alt=""
-                  className="rounded-full h-12 object-contain border w-12"
-                  width={100}
-                  height={100}
-                />
-              )}
+          
+            {userDetail?.userImage?.startsWith("https://") ? (
+              <Image
+                src={(userDetail?.userImage as string) || "/zikoro.png"}
+                alt=""
+                className="rounded-full h-12 object-contain border w-12"
+                width={100}
+                height={100}
+              />
+            ) : (
+              <div className="w-[3rem] bg-gradient-to-tr border-basePrimary from-custom-bg-gradient-start border to-custom-bg-gradient-end h-[3rem] rounded-full flex items-center justify-center">
+                <p className="gradient-text  bg-basePrimary text-lg uppercase">
+                  {useAcronym}
+                </p>
+              </div>
+            )}
+          
               <div className="w-[80%]">
                 <Input
                   value={reply}
