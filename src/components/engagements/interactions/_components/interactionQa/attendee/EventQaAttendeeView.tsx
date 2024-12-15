@@ -211,6 +211,7 @@ export default function EventQaAttendeeView({
               initiateReply={initiateReply}
               replyQuestion={replyQuestion}
               replyToNull={replyToNull}
+              qa={qa}
             />
           )}
           {active === 2 && (
@@ -220,6 +221,7 @@ export default function EventQaAttendeeView({
               }
               isAttendee
               myQuestions={myQuestions}
+              qa={qa}
             //  userDetail={userAccess}
             />
           )}
@@ -249,6 +251,7 @@ export default function EventQaAttendeeView({
           close={onShowQuestionModal}
           setUserAccess={setUserAccess}
           refetch={qa?.accessibility?.live ? async () => {} : getQAQUestions}
+          
         />
       )}
     </>

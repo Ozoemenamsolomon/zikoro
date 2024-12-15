@@ -14,6 +14,7 @@ const includedPaths = [
   "/create",
   "/admin",
   "/event/:eventId/reception",
+  "/engagements/:eventId/qao/:qaId"
 ];
 
 const eventAttendeePaths = [

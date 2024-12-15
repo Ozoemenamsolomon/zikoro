@@ -1,6 +1,6 @@
 import { Button } from "@/components/custom_ui/Button";
 import { cn } from "@/lib";
-import { TEventQAQuestion, TUserAccess } from "@/types";
+import { TEventQa, TEventQAQuestion, TUserAccess } from "@/types";
 import { InlineIcon } from "@iconify/react";
 import Image from "next/image";
 import { useMemo, useState } from "react";
@@ -21,6 +21,7 @@ export function AskandReplyCard({
   userDetail,
   originalQuestion,
   responseId,
+  qa
 }: {
   className?: string;
   showReply?: (q: TEventQAQuestion) => void;
@@ -31,9 +32,10 @@ export function AskandReplyCard({
   userDetail?: TUserAccess | null;
   originalQuestion?: TEventQAQuestion;
   responseId?: string;
+  qa: TEventQa
 }) {
   const { postData, isLoading } = usePostRequest("/engagements/qa/qaQuestion");
-  const {setUserAccess} = useAccessStore()
+  const { setUserAccess } = useAccessStore();
   const [isLiked, setLiked] = useState(false);
   const formattedTime = useMemo(() => {
     const utcDate = new Date(eventQa?.created_at as string);
@@ -76,7 +78,7 @@ export function AskandReplyCard({
 
   async function voteFn() {
     setLiked(true);
-    const id = generateAlias()
+    const id = generateAlias();
     const payload: Partial<TEventQAQuestion> = responseId
       ? {
           ...originalQuestion,
@@ -90,13 +92,11 @@ export function AskandReplyCard({
                       ...resp?.voters,
                       {
                         userId: userDetail?.userId || id,
-                       
                       },
                     ]
                   : [
                       {
                         userId: userDetail?.userId || id,
-                        
                       },
                     ],
               };
@@ -112,25 +112,25 @@ export function AskandReplyCard({
                 ...eventQa?.voters,
                 {
                   userId: userDetail?.userId || id,
-                  
                 },
               ]
             : [
                 {
                   userId: userDetail?.userId || id,
-                  
                 },
               ],
         };
 
     await postData({ payload });
-    setUserAccess({userId: id})
+    setUserAccess({ userId: id });
 
     refetch?.();
   }
 
   const useAcronym = useMemo(() => {
-    if (typeof eventQa?.userImage === "string") {
+    if (eventQa?.anonymous || qa?.accessibility?.allowAnonymous) {
+      return "A";
+    } else if (typeof eventQa?.userImage === "string") {
       const splittedName = eventQa?.userImage?.split(" ");
       if (splittedName?.length > 1) {
         return `${splittedName[0].charAt(0) ?? ""}${
@@ -140,7 +140,7 @@ export function AskandReplyCard({
         return `${splittedName[0].charAt(0) ?? ""}${
           splittedName[0].charAt(1) ?? ""
         }`;
-    } else return "";
+    } else return "A";
   }, [eventQa]);
 
   useMemo(() => {
@@ -155,43 +155,36 @@ export function AskandReplyCard({
         className
       )}
     >
-      <div
-        className={cn(
-          "flex w-full items-center justify-between",
-          isAttendee &&
-            eventQa?.anonymous &&
-            eventQa?.questionStatus === "pending" &&
-            "items-end justify-end"
-        )}
-      >
-        {!eventQa?.anonymous && (
-          <div className="flex items-center gap-x-2">
-            {eventQa?.userImage?.startsWith("https://") ? (
-              <Image
-                src={(eventQa?.userImage as string) || "/zikoro.png"}
-                alt=""
-                className="rounded-full h-12 object-contain border w-12"
-                width={100}
-                height={100}
-              />
-            ) : (
-              <div className="w-[3rem] bg-gradient-to-tr border-basePrimary from-custom-bg-gradient-start border to-custom-bg-gradient-end h-[3rem] rounded-full flex items-center justify-center">
-                <p className="gradient-text  bg-basePrimary text-lg uppercase">
-                  {useAcronym}
-                </p>
-              </div>
-            )}
-
-            <div className="flex items-start flex-col justify-start gap-1">
-              <p className="font-semibold text-sm sm:text-desktop">
-                {eventQa?.userNickName ?? ""}
-              </p>
-              <p className="text-tiny sm:text-mobile text-gray-500">
-                {formattedTime}
+      <div className={cn("flex w-full items-center justify-between")}>
+        <div className="flex items-center gap-x-2">
+          {(!eventQa?.anonymous && !qa?.accessibility?.allowAnonymous) && eventQa?.userImage?.startsWith("https://") ? (
+            <Image
+              src={(eventQa?.userImage as string) || "/zikoro.png"}
+              alt=""
+              className="rounded-full h-12 object-contain border w-12"
+              width={100}
+              height={100}
+            />
+          ) : (
+            <div className="w-[3rem] bg-gradient-to-tr border-basePrimary from-custom-bg-gradient-start border to-custom-bg-gradient-end h-[3rem] rounded-full flex items-center justify-center">
+              <p className="gradient-text  bg-basePrimary text-lg uppercase">
+                {useAcronym}
               </p>
             </div>
+          )}
+
+          <div className="flex items-start flex-col justify-start gap-1">
+            <p className="font-semibold text-sm sm:text-desktop">
+              {eventQa?.anonymous ||qa?.accessibility?.allowAnonymous
+                ? "Anonymous"
+                : eventQa?.userNickName ?? "Anonymous"}
+            </p>
+            <p className="text-tiny sm:text-mobile text-gray-500">
+              {formattedTime}
+            </p>
           </div>
-        )}
+        </div>
+
         {isAttendee && (
           <p>{eventQa?.questionStatus === "pending" ? "In Review" : ""}</p>
         )}

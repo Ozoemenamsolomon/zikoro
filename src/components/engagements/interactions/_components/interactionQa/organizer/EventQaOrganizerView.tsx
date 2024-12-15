@@ -225,9 +225,10 @@ export default function EventQaOrganizerView({
                 eventQAQuestions={filteredEventQaQuestions || []}
                 userDetail={{
                   userId: String(user?.id),
-                  userNickName: `${user?.firstName} ${user?.lastName}`,
-                  userImage: `${user?.firstName} ${user?.lastName}`,
+                  userNickName: `${user?.firstName ?? ''} ${user?.lastName ?? ''}`,
+                  userImage: `${user?.firstName ?? ''} ${user?.lastName ?? ''}`,
                 }}
+                qa={qa}
               />
             )}
             {active === 2 && (
@@ -235,6 +236,7 @@ export default function EventQaOrganizerView({
                 refetch={
                   qa?.accessibility?.live ? async () => {} : getQAQUestions
                 }
+                qa={qa}
                 myQuestions={myQuestions}
               />
             )}
@@ -244,6 +246,7 @@ export default function EventQaOrganizerView({
                   qa?.accessibility?.live ? async () => {} : getQAQUestions
                 }
                 awaitingReview={awaitingReview}
+                qa={qa}
               />
             )}
             {/*** floating button */}

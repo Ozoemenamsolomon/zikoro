@@ -7,7 +7,7 @@ import { Button } from "@/components/custom_ui/Button";
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib";
-import { TEventQAQuestion, TUserAccess } from "@/types";
+import { TEventQa, TEventQAQuestion, TUserAccess } from "@/types";
 
 import toast from "react-hot-toast";
 import { usePostRequest } from "@/hooks/services/request";
@@ -24,6 +24,7 @@ export function AllQuestions({
   initiateReply,
   replyQuestion,
   replyToNull,
+  qa
 }: {
   userDetail: TUserAccess | null;
   isAttendee?: boolean;
@@ -32,6 +33,7 @@ export function AllQuestions({
   initiateReply: (t: TEventQAQuestion | null) => void;
   replyQuestion: TEventQAQuestion | null;
   replyToNull: () => void;
+  qa: TEventQa
 }) {
   // const [replyQuestion, setReplyQuestion] = useState<TEventQAQuestion | null>(
   //   null
@@ -114,7 +116,10 @@ export function AllQuestions({
   }
 
   const useAcronym = useMemo(() => {
-    if (typeof userDetail?.userImage === "string") {
+    if (qa?.accessibility?.allowAnonymous) {
+      return "A"
+    }
+   else if (typeof userDetail?.userImage === "string") {
       const splittedName = userDetail?.userImage?.split(" ");
       if (splittedName?.length > 1) {
         return `${splittedName[0].charAt(0) ?? ""}${
@@ -124,7 +129,7 @@ export function AllQuestions({
         return `${splittedName[0].charAt(0) ?? ""}${
           splittedName[0].charAt(1) ?? ""
         }`;
-    } else return "";
+    } else return "A";
   }, [userDetail]);
 
   if (eventQAQuestions?.length === 0) {
@@ -145,15 +150,16 @@ export function AllQuestions({
       {!replyQuestion ? (
         <div className="w-full flex flex-col items-start justify-start gap-3 sm:gap-4">
           {Array.isArray(eventQAQuestions) &&
-            eventQAQuestions.map((qa, index) => (
+            eventQAQuestions.map((quest, index) => (
               <AskandReplyCard
-                key={qa.questionAlias}
-                eventQa={qa}
+                key={quest.questionAlias}
+                eventQa={quest}
                 className="bg-white border"
                 showReply={initiateReply}
                 isAttendee={isAttendee}
                 refetch={refetch}
                 userDetail={userDetail}
+                qa={qa}
               />
             ))}
         </div>
@@ -169,13 +175,13 @@ export function AllQuestions({
             />
             <p>Replying</p>
           </button>
-          <AskandReplyCard eventQa={replyQuestion} isReply />
+          <AskandReplyCard eventQa={replyQuestion}  qa={qa} isReply />
           <form
             onSubmit={submitReply}
             className="w-full flex items-center border-y py-3 justify-center gap-3 flex-col"
           >
             <div className="w-full flex items-end gap-x-2">
-              {userDetail?.userImage?.startsWith("https://") ? (
+              {!qa?.accessibility?.allowAnonymous && userDetail?.userImage?.startsWith("https://") ? (
                 <Image
                   src={(userDetail?.userImage as string) || "/zikoro.png"}
                   alt=""
@@ -241,16 +247,17 @@ export function AllQuestions({
 
           <div className="w-full flex flex-col items-start justify-start gap-3 sm:gap-4">
             {Array.isArray(replyQuestion?.Responses) &&
-              replyQuestion?.Responses.map((qa, index) => (
+              replyQuestion?.Responses.map((quest, index) => (
                 <AskandReplyCard
                   key={index}
                   className="border bg-[#F9FAFF]"
                   isReply
-                  eventQa={qa}
+                  eventQa={quest}
                   refetch={refetch}
-                  responseId={qa?.questionAlias}
+                  responseId={quest?.questionAlias}
                   originalQuestion={replyQuestion}
                   userDetail={userDetail}
+                  qa={qa}
                 />
               ))}
           </div>
