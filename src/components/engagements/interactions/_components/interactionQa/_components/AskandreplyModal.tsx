@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Form, FormField, Textarea } from "@/components";
+import { Button, Form, FormField, Input, Textarea } from "@/components";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { InlineIcon } from "@iconify/react";
 import { useForm } from "react-hook-form";
@@ -91,11 +91,11 @@ export function AskandReplyModal({
               name="userNickName"
               render={({ field }) => (
                 <InputOffsetLabel label="">
-                  <Textarea
+                  <Input
                     placeholder="Enter your nickname"
-                    {...form.register("content")}
-                    className="placeholder:text-sm h-96  placeholder:text-gray-400 text-gray-700"
-                  ></Textarea>
+                    {...form.register("userNickName")}
+                    className="placeholder:text-sm h-12 placeholder:text-gray-400 text-gray-700"
+                  />
                 </InputOffsetLabel>
               )}
             />

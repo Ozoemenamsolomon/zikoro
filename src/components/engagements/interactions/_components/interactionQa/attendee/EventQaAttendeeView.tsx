@@ -242,7 +242,7 @@ export default function EventQaAttendeeView({
         </div>
       </div>
 
-      {isOpen && userDetail && (
+      {isOpen && (
         <AskandReplyModal
           userDetail={{
             userId: attendee?.attendeeAlias || "",
