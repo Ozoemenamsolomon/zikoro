@@ -1344,7 +1344,6 @@ export function useVerifyUserAccess(eventId: string) {
   const [attendeeId, setAttendeeId] = useState<number | undefined>();
   const [attendee, setAttendee] = useState<TAttendee | undefined>();
   const [isOrganizer, setIsOrganizer] = useState(false);
-  const { userAccess, setUserAccess } = useAccessStore();
   const { user } = useUserStore();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -1367,12 +1366,12 @@ export function useVerifyUserAccess(eventId: string) {
           id === atId && attendeeType.includes("organizer")
       );
       setIsOrganizer(isPresent);
-      setUserAccess({
-        ...userAccess,
-        isOrganizer: isPresent,
-        attendeeId: atId,
-        attendee,
-      });
+      // setUserAccess({
+      //   ...userAccess,
+      //   isOrganizer: isPresent,
+      //   attendeeId: atId,
+      //   attendee,
+      // });
       setIsLoading(false);
       // console.log("attendee", isPresent);
     }

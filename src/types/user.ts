@@ -20,10 +20,9 @@ export interface TAuthUser {
 
 
 export interface TUserAccess {
-  isOrganizer?:boolean;
-  isTeamMember?:boolean;
-  attendeeId?: number;
-  attendee?: TAttendee
+  userId:string;
+  userNickName?:string;
+  userImage?:string;
 
   
 }

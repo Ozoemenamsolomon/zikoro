@@ -3,20 +3,15 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import { TUserAccess } from "@/types";
 
 interface accessState {
-  userAccess: TUserAccess;
-  setUserAccess: (access: TUserAccess) => void;
+  userAccess: TUserAccess | null;
+  setUserAccess: (access: TUserAccess | null) => void;
 }
 
 const useAccessStore = create<accessState>()(
   persist(
     (set) => ({
-      userAccess: {
-        isOrganizer: undefined,
-        isTeamMember: undefined,
-        attendeeId: undefined,
-        attendee: undefined,
-      },
-      setUserAccess: (userAccess: TUserAccess) => set({ userAccess }),
+      userAccess: null,
+      setUserAccess: (userAccess: TUserAccess | null) => set({ userAccess }),
     }),
     {
       name: "access", // name of the item in the storage (must be unique)

@@ -1,6 +1,5 @@
 import { Button } from "@/components/custom_ui/Button";
 import { cn } from "@/lib";
-import { InlineIcon } from "@iconify/react";
 import {
   Select,
   SelectContent,
@@ -54,16 +53,7 @@ export function TopSection({
   }
   return (
     <div className="w-full overflow-x-auto no-scrollbar min-w-[900px] bg-white px-4 sm:px-6 flex items-center text-sm justify-center gap-10 sm:gap-20">
-      {!isAttendee && (
-        <Button className="gap-x-2 bg-basePrimary text-white font-medium rounded-lg ">
-          <InlineIcon
-            icon="mdi-light:television"
-            fontSize={22}
-            color="#ffffff"
-          />
-          <p>Open Presentation Mode</p>
-        </Button>
-      )}
+    
       <button
         onClick={() => setActiveState(1)}
         className={cn(

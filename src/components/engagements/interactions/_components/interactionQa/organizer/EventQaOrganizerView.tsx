@@ -17,11 +17,12 @@ import {
   useQARealtimePresence,
 } from "@/hooks/services/eventQa";
 import { generateAlias } from "@/utils";
-import { useFetchSingleEvent } from "@/hooks";
+import { useFetchSingleEvent, useVerifyUserAccess } from "@/hooks";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { TEventQa, TEventQAQuestion } from "@/types";
 import { useGetData } from "@/hooks/services/request";
+import useUserStore from "@/store/globalUserStore";
 
 const supabase = createClientComponentClient();
 export default function EventQaOrganizerView({
@@ -36,6 +37,8 @@ export default function EventQaOrganizerView({
   const [isRightBox, setIsRightBox] = useState(true);
   const { data, loading } = useFetchSingleEvent(eventId);
   const [isLeftBox, setIsLeftBox] = useState(true);
+  const { user } = useUserStore();
+
   const [filterValue, setFilterValue] = useState("Recent");
   const { data: qa } = useGetData<TEventQa>(`/engagements/qa/${qaId}`);
   const [replyQuestion, setReplyQuestion] = useState<TEventQAQuestion | null>(
@@ -126,25 +129,30 @@ export default function EventQaOrganizerView({
   const filteredEventQaQuestions = useMemo(() => {
     if (Array.isArray(eventQAQuestions)) {
       if (filterValue === "Recent") {
-        return eventQAQuestions.sort(
-          (a, b) =>
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-        );
+        return eventQAQuestions
+          .sort(
+            (a, b) =>
+              new Date(b.created_at).getTime() -
+              new Date(a.created_at).getTime()
+          )
+          .filter((v) => v?.questionStatus !== "pending");
       } else if (filterValue === "Top Liked") {
-        return eventQAQuestions.sort((a, b) => b.vote - a.vote);
+        return eventQAQuestions
+          .sort((a, b) => b.vote - a.vote)
+          .filter((v) => v?.questionStatus !== "pending");
       }
     } else return [];
   }, [eventQAQuestions, filterValue]);
 
   const myQuestions = useMemo(() => {
-    if (Array.isArray(filteredEventQaQuestions) && data) {
+    if (Array.isArray(filteredEventQaQuestions) && user) {
       return filteredEventQaQuestions?.filter(
-        (qa) => qa?.userId === String(data?.organisationId)
+        (qa) => qa?.userId === String(user?.id)
       );
     } else {
       return [];
     }
-  }, [filteredEventQaQuestions, data]);
+  }, [filteredEventQaQuestions, user]);
 
   const awaitingReview = useMemo(() => {
     if (Array.isArray(filteredEventQaQuestions)) {
@@ -156,7 +164,7 @@ export default function EventQaOrganizerView({
     }
   }, [filteredEventQaQuestions]);
 
-  function initiateReply(question: TEventQAQuestion) {
+  function initiateReply(question: TEventQAQuestion | null) {
     setReplyQuestion(question);
   }
   function replyToNull() {
@@ -197,6 +205,7 @@ export default function EventQaOrganizerView({
             }}
             isLeftBox={isLeftBox}
             isRightBox={isRightBox}
+            qa={qa}
           />
           <div
             className={cn(
@@ -215,11 +224,11 @@ export default function EventQaOrganizerView({
                 }
                 eventQAQuestions={filteredEventQaQuestions || []}
                 userDetail={{
-                  userId: String(data?.organization?.id),
-                  userNickName: data?.organization?.organizationName!,
-                  userImage:
-                    data?.organization?.organizationLogo || "/zikoro.png",
+                  userId: String(user?.id),
+                  userNickName: `${user?.firstName ?? ''} ${user?.lastName ?? ''}`,
+                  userImage: `${user?.firstName ?? ''} ${user?.lastName ?? ''}`,
                 }}
+                qa={qa}
               />
             )}
             {active === 2 && (
@@ -227,6 +236,7 @@ export default function EventQaOrganizerView({
                 refetch={
                   qa?.accessibility?.live ? async () => {} : getQAQUestions
                 }
+                qa={qa}
                 myQuestions={myQuestions}
               />
             )}
@@ -236,6 +246,7 @@ export default function EventQaOrganizerView({
                   qa?.accessibility?.live ? async () => {} : getQAQUestions
                 }
                 awaitingReview={awaitingReview}
+                qa={qa}
               />
             )}
             {/*** floating button */}
@@ -260,9 +271,9 @@ export default function EventQaOrganizerView({
       {isOpen && data && (
         <AskandReplyModal
           userDetail={{
-            userId: String(data?.organization?.id),
-            userNickName: data?.organization?.organizationName,
-            userImage: data?.organization?.organizationLogo || "/zikoro.png",
+            userId: String(user?.id),
+            userNickName: `${user?.firstName ?? ""} ${user?.lastName ?? ""}`,
+            userImage: `${user?.firstName ?? ""} ${user?.lastName ?? ""}`,
           }}
           QandAAlias={qaId}
           refetch={qa?.accessibility?.live ? async () => {} : getQAQUestions}

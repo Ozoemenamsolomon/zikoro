@@ -44,6 +44,7 @@ export function EventQaSetting({
     visible: false,
     disable: false,
     live: false,
+    allowAnonymous: false,
   });
   const form = useForm<z.infer<typeof eventQaSettingSchema>>({
     resolver: zodResolver(eventQaSettingSchema),
@@ -272,6 +273,26 @@ export function EventQaSetting({
                   setAccessibility({
                     ...accessibility,
                     live: !accessibility.live,
+                  })
+                }
+                className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
+              />
+            </div>
+
+            <div className="flex w-full text-mobile sm:text-sm items-center justify-between">
+              <div className="flex flex-col items-start justify-start">
+                <p>Anonymous Reply Only</p>
+                <p className="text-xs text-gray-500">
+                 User/ Attendee can only reply anonymously
+                </p>
+              </div>
+              <Switch
+                disabled={loading}
+                checked={accessibility?.allowAnonymous}
+                onClick={() =>
+                  setAccessibility({
+                    ...accessibility,
+                    allowAnonymous: !accessibility.allowAnonymous,
                   })
                 }
                 className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
