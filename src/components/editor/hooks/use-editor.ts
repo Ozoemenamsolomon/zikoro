@@ -32,7 +32,7 @@ import { useCanvasEvents } from "@/components/editor/hooks/use-canvas-events";
 import { useWindowEvents } from "@/components/editor/hooks/use-window-events";
 import { useLoadState } from "@/components/editor/hooks/use-load-state";
 import jsPDF from "jspdf";
-import QRCode from "../QRCode/QRCode";
+import { rgbaToHex } from "@/utils/helpers";
 
 const buildEditor = ({
   save,
@@ -285,12 +285,42 @@ const buildEditor = ({
         }
       );
     },
-    addQRCode: (value: string) => {
-      const qr = new QRCode({
-        text: value,
-      });
-      addToCanvas(qr);
-      qr.set("text", value);
+    addQRCode: (value: string, color: string, bgcolor: string) => {
+      try {
+        console.log(
+          rgbaToHex(color),
+          rgbaToHex(bgcolor),
+          "https://api.qrserver.com/v1/create-qr-code/?size=150x150&format=svg" +
+            "&bgcolor=" +
+            (rgbaToHex(bgcolor) || "#ffffff") +
+            "&color=" +
+            (rgbaToHex(color) || "#000000") +
+            "&data=" +
+            encodeURIComponent(value)
+        );
+        fabric.Image.fromURL(
+          "https://api.qrserver.com/v1/create-qr-code/?size=150x150&format=svg" +
+            "&bgcolor=" +
+            (rgbaToHex(bgcolor) || "#ffffff") +
+            "&color=" +
+            (rgbaToHex(color) || "#000000") +
+            "&data=" +
+            encodeURIComponent(value),
+          (image) => {
+            const workspace = getWorkspace();
+
+            image.scaleToWidth(workspace?.width || 0);
+            image.scaleToHeight(workspace?.height || 0);
+
+            addToCanvas(image);
+          },
+          {
+            crossOrigin: "anonymous",
+          }
+        );
+      } catch (error) {
+        console.log(error);
+      }
     },
     delete: () => {
       canvas.getActiveObjects().forEach((object) => canvas.remove(object));
