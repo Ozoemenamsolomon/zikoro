@@ -123,7 +123,10 @@ export const ImageSidebar = ({
     return (
       <Dialog>
         <DialogTrigger asChild>
-          <button className="absolute text-red-500 -top-1 -right-1">
+          <button
+            className="absolute text-red-500 -top-1 -right-1 opacity-0 group-hover:opacity-100"
+            onClick={(e) => e.stopPropagation()}
+          >
             <svg
               stroke="currentColor"
               fill="currentColor"
@@ -286,9 +289,8 @@ export const ImageSidebar = ({
               organization.certificateAsset?.elements.map((image, index) => {
                 return (
                   <button
-                    onClick={() => editor?.addImage(image)}
                     key={image}
-                    className="group relative h-[200px] w-full overflow-hidden rounded-sm border bg-muted transition hover:opacity-75"
+                    className="group relative h-[200px] w-full overflow-hidden rounded-sm border bg-muted transition"
                   >
                     <Delete url={image} />
 
@@ -297,13 +299,14 @@ export const ImageSidebar = ({
                       alt={"Image " + index}
                       className="object-cover"
                     />
-                    <Link
-                      target="_blank"
-                      href={image}
+                    <button
+                      onClick={() => {
+                        editor?.addImage(image);
+                      }}
                       className="absolute bottom-0 left-0 w-full truncate bg-black/50 p-1 text-left text-[10px] text-white opacity-0 hover:underline group-hover:opacity-100"
                     >
-                      {image}
-                    </Link>
+                      Add Image
+                    </button>
                   </button>
                 );
               })}

@@ -96,15 +96,15 @@ const CertificateView = ({
         <Button
           onClick={() =>
             editor?.savePdf(
+              {
+                width: initialData?.width ?? 900,
+                height: initialData?.height ?? 1200,
+              },
               `${
                 certificate?.attendee.firstName +
                 "_" +
                 certificate?.attendee.lastName
-              }_${certificate?.CertificateName}.pdf`, 
-              {
-                width: initialData?.width ?? 900,
-                height: initialData?.height ?? 1200,
-              }
+              }_${certificate?.CertificateName}.pdf`
             )
           }
           className="bg-basePrimary"
@@ -160,9 +160,7 @@ const CertificateView = ({
       <div className="md:hidden w-full flex gap-2 justify-around items-center">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button className="bg-basePrimary w-fit px-4">
-              Download
-            </Button>
+            <Button className="bg-basePrimary w-fit px-4">Download</Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-full">
             <DropdownMenuItem
@@ -357,9 +355,9 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
                 About Zikoro
               </h2>
               <p className="text-gray-700 text-sm md:text-base">
-                Zikoro credentials empower event organizers to create and
-                distribute certificates to attendees of conferences, workshops,
-                and seminars, enabling them to define their award criteria.
+                Zikoro credentials empowers organizations to create and
+                distribute certificates and badges, enabling them to define
+                their award criteria.
               </p>
             </div>
             <div className="space-y-4 w-3/4">
