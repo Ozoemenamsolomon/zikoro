@@ -531,7 +531,7 @@ export function BookEvent({
                   <p>---</p>
                 )}
               </div>
-              <div className=" flex items-center text-sm justify-between w-full">
+             {!event?.attendeePayProcessingFee && <div className=" flex items-center text-sm justify-between w-full">
                 <p>{`${fields.length}x Processing fee:`}</p>
                 {processingFee ? (
                   <p>
@@ -541,7 +541,7 @@ export function BookEvent({
                 ) : (
                   <p>---</p>
                 )}
-              </div>
+              </div>}
 
               <div className="border-t border-gray-300 font-semibold py-2 mt-3 w-full flex items-center justify-between">
                 <p className="">Total</p>
