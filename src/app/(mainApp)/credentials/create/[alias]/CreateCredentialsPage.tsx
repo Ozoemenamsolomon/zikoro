@@ -95,6 +95,7 @@ const CreateCredentialsPage = ({
       event={event}
       settings={settings}
       setSettings={setSettings}
+      type={type}
     />
   );
 };
