@@ -21,7 +21,6 @@ type QaSettingProp = {
   close: () => void;
   eventQa?: TEventQa | null;
   refetch?: () => Promise<any>;
-  interactionType?: string;
 };
 export function EventQaSetting({
   close,

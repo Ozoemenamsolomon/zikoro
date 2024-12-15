@@ -21,6 +21,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import COLORTAG from "@/utils/colorTag";
+import { ArrowUpDownIcon } from "lucide-react";
 
 interface SettingsSidebarProps {
   editor: Editor | undefined;
@@ -118,18 +119,28 @@ export const SettingsSidebar = ({
               />
             </div>
           </div>
-          <div className="relative">
+          <div className="relative border">
             <Label className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
               Height
             </Label>
-          <Input
+            <Input
               placeholder="Height"
               value={height}
               type="number"
               onChange={(e) => changeHeight(e.target.value)}
             />
           </div>
-          <div className="relative">
+          <button
+            onClick={() => {
+              const oldHeight = height;
+              changeHeight(width);
+              changeWidth(oldHeight);
+            }}
+            className="flex justify-center items-center text-gray-400 mx-auto w-fit"
+          >
+            <ArrowUpDownIcon className="w-6 h-6" />
+          </button>
+          <div className="relative border flex">
             <Label className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
               Width
             </Label>
@@ -137,6 +148,7 @@ export const SettingsSidebar = ({
               placeholder="Width"
               value={width}
               type="number"
+              className="flex-1"
               onChange={(e) => changeWidth(e.target.value)}
             />
           </div>

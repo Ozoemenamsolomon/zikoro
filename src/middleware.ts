@@ -54,37 +54,40 @@ export async function middleware(req: NextRequest) {
     if (!email || !isPasswordless) {
       const eventId = path.split("/")[2];
 
-      // fetch an event using its id, and chcck if the organizer subscription is valid
-      const response = await fetch(
-        `https://zikoro.com/api/events/${eventId}/event`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      ).then((res) => res.json());
+      // // fetch an event using its id, and chcck if the organizer subscription is valid
+      // const response = await fetch(
+      //   `https://zikoro.com/api/events/${eventId}/event`,
+      //   {
+      //     method: "GET",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //   }
+      // ).then((res) => res.json());
+
+
+      // console.log("wf23f23",response?.data)
 
       // check if the orgamization has subscription
-      if (
-        response.data?.organization?.subscriptionPlan.toLowerCase() === "free"
-      ) {
-        const redirectUrl = new URL(`/expired/subscription`, req.url);
+      // if (
+      //   response.data?.organization?.subscriptionPlan.toLowerCase() === "free"
+      // ) {
+      //   const redirectUrl = new URL(`/expired/subscription`, req.url);
 
-        return NextResponse.redirect(redirectUrl);
-      } else if (response.data?.organization?.subscriptionExpiryDate) {
-        const expiryDate = new Date(
-          response.data.organization.subscriptionExpiryDate
-        );
-        const currentDate = new Date();
+      //   return NextResponse.redirect(redirectUrl);
+      // } else if (response.data?.organization?.subscriptionExpiryDate) {
+      //   const expiryDate = new Date(
+      //     response.data.organization.subscriptionExpiryDate
+      //   );
+      //   const currentDate = new Date();
 
-        // Check if the subscription has expired
-        if (expiryDate < currentDate) {
-          const redirectUrl = new URL(`/expired/subscription`, req.url);
+      //   // Check if the subscription has expired
+      //   if (expiryDate < currentDate) {
+      //     const redirectUrl = new URL(`/expired/subscription`, req.url);
 
-        return NextResponse.redirect(redirectUrl);
-        }
-      }
+      //   return NextResponse.redirect(redirectUrl);
+      //   }
+      // }
 
       if (!session) {
         // const pathLength = path.split("/").length;

@@ -9,7 +9,10 @@ import {
   SelectGroup,
   SelectValue,
 } from "@/components/ui/select";
-import React from "react";
+import React, { useState } from "react";
+import { TEventQa } from "@/types";
+import { EventQaSetting } from "../../modals/EventQaSetting";
+import { Settings } from "styled-icons/feather";
 
 type TopSectionProp = {
   allQuestionsCount: number;
@@ -19,6 +22,8 @@ type TopSectionProp = {
   activeState: number;
   setActiveState: (i: number) => void;
   filterValue: string;
+  qa?: TEventQa;
+  eventAlias: string;
   setFilterValue: React.Dispatch<React.SetStateAction<string>>;
 };
 
@@ -31,11 +36,22 @@ export function TopSection({
   setActiveState,
   filterValue,
   setFilterValue,
+  qa,
+  eventAlias,
 }: TopSectionProp) {
+  const [isOpen, setOpen] = useState(false);
   const filters = [
     { value: "Recent", label: "Recent" },
     { value: "Top Liked", label: "Top Liked" },
   ];
+
+  function onClose() {
+    setOpen((p) => !p);
+  }
+
+  async function refetch() {
+    window.location.reload();
+  }
   return (
     <div className="w-full overflow-x-auto no-scrollbar min-w-[900px] bg-white px-4 sm:px-6 flex items-center text-sm justify-center gap-10 sm:gap-20">
       {!isAttendee && (
@@ -87,27 +103,43 @@ export function TopSection({
         </button>
       )}
 
-      <Select
-        onValueChange={(value) => setFilterValue(value)}
-        defaultValue={filterValue}
-      >
-        <SelectTrigger className="h-11 w-[180px]">
-          <SelectValue placeholder="Select Filter" />
-        </SelectTrigger>
-        <SelectContent className="bg-white">
-          <SelectGroup>
-            {filters.map(({ value, label }, index) => (
-              <SelectItem
-                key={index}
-                className="h-12 items-center justify-start focus:bg-gray-100"
-                value={value}
-              >
-                {label}
-              </SelectItem>
-            ))}
-          </SelectGroup>
-        </SelectContent>
-      </Select>
+      <div className="flex items-center gap-x-3">
+        {!isAttendee && (
+          <button onClick={onClose}>
+            <Settings size={22} />
+          </button>
+        )}
+        <Select
+          onValueChange={(value) => setFilterValue(value)}
+          defaultValue={filterValue}
+        >
+          <SelectTrigger className="h-11 w-[180px]">
+            <SelectValue placeholder="Select Filter" />
+          </SelectTrigger>
+          <SelectContent className="bg-white">
+            <SelectGroup>
+              {filters.map(({ value, label }, index) => (
+                <SelectItem
+                  key={index}
+                  className="h-12 items-center justify-start focus:bg-gray-100"
+                  value={value}
+                >
+                  {label}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </div>
+
+      {isOpen && (
+        <EventQaSetting
+          close={onClose}
+          eventAlias={eventAlias}
+          eventQa={qa}
+          refetch={refetch}
+        />
+      )}
     </div>
   );
 }

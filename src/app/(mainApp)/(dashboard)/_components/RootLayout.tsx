@@ -5,7 +5,8 @@ import { SideBarLayout } from "@/components/SideBarLayout";
 import useEventStore from "@/store/globalEventStore";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { useAttendee } from "@/hooks";
-import { useSearchParams } from "next/navigation";
+import {  useSearchParams } from "next/navigation";
+
 
 export default function RootLayout({
   children,
@@ -21,7 +22,6 @@ export default function RootLayout({
     isPasswordless,
   });
 
- 
   const divRef = useRef<HTMLDivElement>(null);
 
   const { event } = useEventStore();
@@ -42,7 +42,6 @@ export default function RootLayout({
   }, []);
 
   if (!userData && !user) {
-   
     return (
       <div className="fixed inset-0 z-[5000] flex items-center justify-center bg-white bg-opacity-80 backdrop-blur-2xl">
         <div className="flex flex-col items-center gap-y-2">

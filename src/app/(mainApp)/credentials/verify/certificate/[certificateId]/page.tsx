@@ -1,9 +1,9 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
+  DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { useVerifyAttendeeCertificate } from "@/hooks";
 import { formatDateToHumanReadable } from "@/utils/date";
@@ -29,9 +29,9 @@ import {
   TwitterIcon,
 } from "@/constants";
 import { LinkedinShareButton } from "next-share";
-import Link from "next/link";
 import { useEditor } from "../../../../../../components/editor/hooks/use-editor";
-import { TAttendeeCertificate, TCertificate } from "@/types";
+import { TAttendeeCertificate } from "@/types";
+import { Button } from "@/components/ui/button";
 
 // import { ShareSocial } from "react-share-social";
 
@@ -64,6 +64,8 @@ const CertificateView = ({
     defaultHeight: initialData?.height ?? 1200,
   });
 
+  console.log(editor?.generateLink());
+
   useEffect(() => {
     const canvas = new fabric.Canvas(canvasRef.current, {
       controlsAboveOverlay: true,
@@ -90,7 +92,7 @@ const CertificateView = ({
 
   return (
     <div className="flex-[60%] flex flex-col-reverse md:flex-col items-center gap-4 px-8">
-      <div className="flex gap-2 w-3/4 flex-col md:flex-row items-center justify-between">
+      <div className="hidden md:flex gap-2 w-3/4 flex-col md:flex-row items-center justify-between">
         <Button
           onClick={() =>
             editor?.savePdf(
@@ -98,7 +100,11 @@ const CertificateView = ({
                 certificate?.attendee.firstName +
                 "_" +
                 certificate?.attendee.lastName
-              }_${certificate?.CertificateName}.pdf`
+              }_${certificate?.CertificateName}.pdf`, 
+              {
+                width: initialData?.width ?? 900,
+                height: initialData?.height ?? 1200,
+              }
             )
           }
           className="bg-basePrimary"
@@ -150,9 +156,83 @@ const CertificateView = ({
           </Button>
         </div>
       </div>
-      <div className="relative h-[500px] md:h-[calc(100%-124px)] w-full" ref={containerRef}>
+      {/* mobile version dropdown shadcn*/}
+      <div className="md:hidden w-full flex gap-2 justify-around items-center">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button className="bg-basePrimary w-fit px-4">
+              Download
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-full">
+            <DropdownMenuItem
+              onClick={() =>
+                editor?.savePdf(
+                  `${
+                    certificate?.attendee.firstName +
+                    "_" +
+                    certificate?.attendee.lastName
+                  }_${certificate?.CertificateName}.pdf`
+                )
+              }
+            >
+              Download PDF
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => editor?.savePng()}>
+              Download PNG
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => editor?.saveSvg()}>
+              Download SVG
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <div className="relative">
+          <Button
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleShareDropDown();
+            }}
+            className="border-basePrimary border-2 text-basePrimary bg-transparent hover:bg-basePrimary/20"
+          >
+            <svg
+              stroke="currentColor"
+              fill="currentColor"
+              strokeWidth={0}
+              viewBox="0 0 24 24"
+              height="1em"
+              width="1em"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle fill="none" cx="17.5" cy="18.5" r="1.5" />
+              <circle fill="none" cx="5.5" cy="11.5" r="1.5" />
+              <circle fill="none" cx="17.5" cy="5.5" r="1.5" />
+              <path d="M5.5,15c0.91,0,1.733-0.358,2.357-0.93l6.26,3.577C14.048,17.922,14,18.204,14,18.5c0,1.93,1.57,3.5,3.5,3.5 s3.5-1.57,3.5-3.5S19.43,15,17.5,15c-0.91,0-1.733,0.358-2.357,0.93l-6.26-3.577c0.063-0.247,0.103-0.502,0.108-0.768l6.151-3.515 C15.767,8.642,16.59,9,17.5,9C19.43,9,21,7.43,21,5.5S19.43,2,17.5,2S14,3.57,14,5.5c0,0.296,0.048,0.578,0.117,0.853L8.433,9.602 C7.808,8.64,6.729,8,5.5,8C3.57,8,2,9.57,2,11.5S3.57,15,5.5,15z M17.5,17c0.827,0,1.5,0.673,1.5,1.5S18.327,20,17.5,20 S16,19.327,16,18.5S16.673,17,17.5,17z M17.5,4C18.327,4,19,4.673,19,5.5S18.327,7,17.5,7S16,6.327,16,5.5S16.673,4,17.5,4z M5.5,10C6.327,10,7,10.673,7,11.5S6.327,13,5.5,13S4,12.327,4,11.5S4.673,10,5.5,10z" />
+            </svg>
+            <h3 className="font-medium">Share This Certificate</h3>
+            {isShareDropDown && (
+              <ActionModal
+                close={toggleShareDropDown}
+                url={certificate?.certificateURL}
+                shareText={shareText}
+              />
+            )}
+          </Button>
+        </div>
+      </div>
+
+      {/* <div
+        className="relative h-[500px] md:h-[calc(100%-124px)] w-full"
+        ref={containerRef}
+      >
         <div className="absolute inset-0 bg-transparent z-50" />
         <canvas ref={canvasRef} />
+      </div> */}
+      <div className="relative h-auto w-full">
+        <img
+          alt="certificate"
+          src={editor?.generateLink()}
+          className="w-full h-full"
+        />{" "}
       </div>
     </div>
   );
@@ -276,7 +356,6 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
               <h2 className="text-gray-800 text-xl font-medium">
                 About Zikoro
               </h2>
-
               <p className="text-gray-700 text-sm md:text-base">
                 Zikoro credentials empower event organizers to create and
                 distribute certificates to attendees of conferences, workshops,

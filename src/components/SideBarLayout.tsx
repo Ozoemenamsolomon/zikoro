@@ -252,7 +252,12 @@ function SideNavs({
               </div>
             </div>
             <button
-              onClick={logOut}
+              onClick={() => {
+                localStorage.clear();
+                setTimeout(() => {
+                  window.open("/", "_self");
+                }, 2000);
+              }}
               className="flex items-center h-fit gap-x-2"
             >
               <LogOutIcon />

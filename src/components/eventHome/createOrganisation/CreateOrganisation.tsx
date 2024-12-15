@@ -218,6 +218,7 @@ export function CreateOrganization({
         organizationName: values?.organizationName,
         organizationType: values?.organizationType,
         subscriptionPlan: values?.subscriptionPlan,
+        
       };
       const url = `/payment/create?data=${encodeURIComponent(
         JSON.stringify(data)

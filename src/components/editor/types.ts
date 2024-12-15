@@ -208,6 +208,7 @@ export type BuildEditorProps = {
 };
 
 export interface Editor {
+  generateLink: () => string;
   savePdf: (name?: string) => void;
   savePng: () => void;
   saveJpg: () => void;
