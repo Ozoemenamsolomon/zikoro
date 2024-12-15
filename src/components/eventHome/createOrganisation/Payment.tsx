@@ -76,7 +76,9 @@ export default function Payment({
           organizationName: parsedData?.organizationName,
           organizationType: parsedData?.organizationType,
           subscriptionPlan: parsedData?.subscriptionPlan,
-        });
+        },
+        expiryDate.toISOString().split("T")[0],
+      );
         router.push(parsedData?.redirectUrl);
       }
     } catch (error) {

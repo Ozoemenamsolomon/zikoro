@@ -211,7 +211,7 @@ export function useCreateOrganisation() {
   const [loading, setLoading] = useState(false);
 
   async function organisation(
-    values: Partial<z.infer<typeof organizationSchema>>
+    values: Partial<z.infer<typeof organizationSchema>>, exp?:string
   ) {
     setLoading(true);
     const { firstName, lastName, userEmail, ...restData } = values;
@@ -221,6 +221,7 @@ export function useCreateOrganisation() {
           ...restData,
           organizationOwner: userData?.userEmail,
           organizationOwnerId: userData?.id,
+          subscriptionExpiryDate: exp || null,
           teamMembers: [
             {
               userId: userData?.id,
