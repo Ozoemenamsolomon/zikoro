@@ -40,6 +40,7 @@ interface EditorProps {
   event: Event;
   settings: any;
   setSettings: (settings: any) => void;
+  type: "certificate" | "badge";
 }
 
 export const Editor = ({
@@ -54,6 +55,7 @@ export const Editor = ({
   event,
   settings,
   setSettings,
+  type,
 }: EditorProps) => {
   // const { mutate } = useUpdateProject(initialData.id);
 
@@ -133,6 +135,8 @@ export const Editor = ({
         name={name}
         isSaving={isSaving}
         isError={isError}
+        eventAlias={eventAlias}
+        type={type}
       />
       <div className="absolute top-[68px] flex h-[calc(100%-68px)] w-full">
         <Sidebar

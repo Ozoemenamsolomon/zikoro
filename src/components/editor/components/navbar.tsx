@@ -41,6 +41,8 @@ interface NavbarProps {
   name: string;
   isSaving: boolean;
   isError: boolean;
+  eventAlias: string;
+  type: "certificate" | "badge";
 }
 
 export const Navbar = ({
@@ -52,6 +54,8 @@ export const Navbar = ({
   name,
   isSaving,
   isError,
+  eventAlias,
+  type,
 }: NavbarProps) => {
   const router = useRouter();
   const { openFilePicker } = useFilePicker({
@@ -70,7 +74,12 @@ export const Navbar = ({
 
   return (
     <nav className="flex h-[68px] w-full items-center gap-x-8 border-b p-4 lg:pl-[34px]">
-      <button onClick={() => router.back()} className="flex gap-2 items-center">
+      <button
+        onClick={() =>
+          router.push("/event/" + eventAlias + "/content/" + type)
+        }
+        className="flex gap-2 items-center"
+      >
         <ArrowLeft className="px-1 h-fit w-fit" size={16} />
         <span>Back</span>
       </button>

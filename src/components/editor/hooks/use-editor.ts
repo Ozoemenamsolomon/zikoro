@@ -71,22 +71,23 @@ const buildEditor = ({
   };
 
   const savePdf = (
-    name?: string,
     {
       width,
       height,
     }: {
       width: number;
       height: number;
-    }
+    },
+    name?: string
   ) => {
+    console.log(width, height);
     const options = generateSaveOptions();
 
     canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
     const dataUrl = canvas.toDataURL(options);
 
     const pdf = new jsPDF({
-      orientation: "portrait",
+      orientation: width > height ? "l" : "p",
       unit: "pt",
       format: [width, height],
     });
