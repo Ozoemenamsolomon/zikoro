@@ -10,7 +10,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { usePostRequest } from "@/hooks/services/request";
 import { generateAlias } from "@/utils";
 import { TEventQAQuestion } from "@/types";
-import { AvatarFullConfig } from "react-nice-avatar";
 import { UserDetail } from "../attendee/EventQaAttendeeView";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import toast from "react-hot-toast";
