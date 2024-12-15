@@ -213,7 +213,7 @@ export const ImageSidebar = ({
     >
       <ToolSidebarHeader
         title="Images"
-        description="Add images to your canvas"
+        description="Add images to your credential"
       />
       <div className="flex flex-col gap-2 items-center py-4">
         {" "}
@@ -303,9 +303,9 @@ export const ImageSidebar = ({
                       onClick={() => {
                         editor?.addImage(image);
                       }}
-                      className="absolute bottom-0 left-0 w-full truncate bg-black/50 p-1 text-left text-[10px] text-white opacity-0 hover:underline group-hover:opacity-100"
+                      className="absolute bottom-0 left-0 w-full truncate bg-black/50 p-1 text-center text-[10px] text-white opacity-0 hover:underline group-hover:opacity-100"
                     >
-                      Add Image
+                      Click here to add image
                     </button>
                   </button>
                 );

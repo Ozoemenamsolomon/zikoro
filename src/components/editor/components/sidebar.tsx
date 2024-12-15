@@ -9,11 +9,14 @@ import {
   Sparkles,
   Type,
   Lock,
+  QrCode,
 } from "lucide-react";
 
 import { ActiveTool } from "@/components/editor/types";
 import { SidebarItem } from "@/components/editor/components/sidebar-item";
 import { PiSelectionBackground } from "react-icons/pi";
+import { Signature } from "styled-icons/fluentui-system-filled";
+
 
 interface SidebarProps {
   activeTool: ActiveTool;
@@ -49,8 +52,14 @@ export const Sidebar = ({ activeTool, onChangeActiveTool }: SidebarProps) => {
           onClick={() => onChangeActiveTool("text")}
         />
         <SidebarItem
+          icon={QrCode}
+          label="QR Code"
+          isActive={activeTool === "qrCode"}
+          onClick={() => onChangeActiveTool("qrCode")}
+        />
+        <SidebarItem
           icon={Lock}
-          label="Verification"
+          label="Attributes"
           isActive={activeTool === "verification"}
           onClick={() => onChangeActiveTool("verification")}
         />
@@ -61,8 +70,8 @@ export const Sidebar = ({ activeTool, onChangeActiveTool }: SidebarProps) => {
           onClick={() => onChangeActiveTool("shapes")}
         />
         <SidebarItem
-          icon={Pencil}
-          label="Draw"
+          icon={Signature}
+          label="Signature"
           isActive={activeTool === "draw"}
           onClick={() => onChangeActiveTool("draw")}
         />

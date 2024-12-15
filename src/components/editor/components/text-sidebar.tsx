@@ -28,7 +28,7 @@ export const TextSidebar = ({
         activeTool === "text" ? "visible" : "hidden",
       )}
     >
-      <ToolSidebarHeader title="Text" description="Add text to your canvas" />
+      <ToolSidebarHeader title="Text" description="Add text to your credential" />
       <ScrollArea>
         <div className="space-y-4 border-b p-4">
           <Button className="w-full" onClick={() => editor?.addText("Textbox")}>

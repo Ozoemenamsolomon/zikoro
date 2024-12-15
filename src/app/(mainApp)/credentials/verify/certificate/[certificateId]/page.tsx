@@ -64,8 +64,6 @@ const CertificateView = ({
     defaultHeight: initialData?.height ?? 1200,
   });
 
-  console.log(editor?.generateLink());
-
   useEffect(() => {
     const canvas = new fabric.Canvas(canvasRef.current, {
       controlsAboveOverlay: true,
@@ -218,13 +216,13 @@ const CertificateView = ({
         </div>
       </div>
 
-      {/* <div
+      <div
         className="relative h-[500px] md:h-[calc(100%-124px)] w-full"
         ref={containerRef}
       >
         <div className="absolute inset-0 bg-transparent z-50" />
         <canvas ref={canvasRef} />
-      </div> */}
+      </div>
       <div className="relative h-auto w-full">
         <img
           alt="certificate"

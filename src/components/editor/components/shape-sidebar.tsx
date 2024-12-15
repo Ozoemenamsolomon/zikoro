@@ -40,7 +40,7 @@ export const ShapeSidebar = ({
     >
       <ToolSidebarHeader
         title="Shapes"
-        description="Add shapes to your canvas"
+        description="Add shapes to your credential"
       />
       <ScrollArea>
         <div className="grid grid-cols-3 gap-4 p-4">

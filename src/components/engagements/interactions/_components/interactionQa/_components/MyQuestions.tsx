@@ -2,17 +2,19 @@ import { useState } from "react";
 import { AskandReplyCard } from "./AskandReplyCard";
 import { InlineIcon } from "@iconify/react";
 import { cn } from "@/lib";
-import { TEventQAQuestion } from "@/types";
+import { TEventQa, TEventQAQuestion, TUserAccess } from "@/types";
 import { EmptyQaState } from "./EmptyQaState";
 
 export function MyQuestions({
   isAttendee,
   myQuestions,
   refetch,
+  qa
 }: {
   refetch: () => Promise<any>;
   isAttendee?: boolean;
   myQuestions: TEventQAQuestion[];
+  qa: TEventQa
 }) {
   const [replyQuestion, setReplyQuestion] = useState<TEventQAQuestion | null>(
     null
@@ -33,20 +35,22 @@ export function MyQuestions({
     <div
       className={cn(
         "w-full max-w-2xl overflow-y-auto  no-scrollbar h-full mx-auto",
-        replyQuestion && "bg-white p-4"
+        replyQuestion && "bg-white p-4 h-fit"
       )}
     >
       {!replyQuestion ? (
         <div className="w-full flex flex-col items-start justify-start gap-3 sm:gap-4">
           {Array.isArray(myQuestions) &&
-            myQuestions.map((qa, index) => (
+            myQuestions.map((quest, index) => (
               <AskandReplyCard
-                key={qa?.questionAlias}
+                key={quest?.questionAlias}
                 className="bg-white border"
                 showReply={initiateReply}
                 isAttendee={isAttendee}
-                eventQa={qa}
+                eventQa={quest}
+                qa={qa}
                 refetch={refetch}
+              //  userDetail={userDetail}
               />
             ))}
         </div>
@@ -62,18 +66,19 @@ export function MyQuestions({
             />
             <p>Back</p>
           </button>
-          <AskandReplyCard isReply eventQa={replyQuestion} />
+          <AskandReplyCard qa={qa} isReply eventQa={replyQuestion} />
 
           <h2 className="font-semibold text-desktop sm:text-lg">Replies</h2>
 
           <div className="w-full flex flex-col items-start justify-start gap-3 sm:gap-4">
             {Array.isArray(replyQuestion?.Responses) &&
-              replyQuestion?.Responses.map((qa, index) => (
+              replyQuestion?.Responses.map((quest, index) => (
                 <AskandReplyCard
                   key={index}
                   className="border bg-[#F9FAFF]"
                   isReply
-                  eventQa={qa}
+                  qa={qa}
+                  eventQa={quest}
                   refetch={refetch}
                 />
               ))}

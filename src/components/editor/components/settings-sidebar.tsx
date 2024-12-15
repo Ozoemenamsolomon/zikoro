@@ -103,9 +103,9 @@ export const SettingsSidebar = ({
       <ScrollArea>
         <form className="space-y-4 p-4" onSubmit={onSubmit}>
           <div className="pt-4 pb-2">
-            <div className="relative">
+            <div className="relative border">
               <Label className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
-                Publish On
+                Issue date
               </Label>
               <Input
                 placeholder="Enter event title"
@@ -269,7 +269,7 @@ export const SettingsSidebar = ({
         </form>
         <div className="p-4">
           <ColorPicker
-            value={background as string} // We dont support gradients or patterns
+            value={background as string}
             onChange={changeBackground}
           />
         </div>

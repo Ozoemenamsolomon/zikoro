@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/custom_ui/Button";
 import { cn } from "@/lib";
-import { TEventQAQuestion } from "@/types";
+import { TEventQa, TEventQAQuestion } from "@/types";
 import { InlineIcon } from "@iconify/react";
 import Image from "next/image";
 import { useState, useMemo } from "react";
@@ -88,9 +88,11 @@ function ActionModal({
 function AwaitingReviewCard({
   refetch,
   eventQa,
+  qa
 }: {
   eventQa: TEventQAQuestion;
   refetch: () => Promise<any>;
+  qa: TEventQa
 }) {
   const [isDelete, setIsDelete] = useState(false);
   const [isApprove, setIsApprove] = useState(false);
@@ -137,23 +139,45 @@ function AwaitingReviewCard({
     setIsDelete(false);
   }
 
+  const useAcronym = useMemo(() => {
+    if (eventQa?.anonymous || qa?.accessibility?.allowAnonymous) {
+      return "A";
+    } else if (typeof eventQa?.userImage === "string") {
+      const splittedName = eventQa?.userImage?.split(" ");
+      if (splittedName?.length > 1) {
+        return `${splittedName[0].charAt(0) ?? ""}${
+          splittedName[1].charAt(0) ?? ""
+        }`;
+      } else
+        return `${splittedName[0].charAt(0) ?? ""}${
+          splittedName[0].charAt(1) ?? ""
+        }`;
+    } else return "A";
+  }, [eventQa]);
+
   return (
     <>
       <div className="w-full p-4 bg-white rounded-lg border h-fit flex gap-y-3 sm:gap-y-4 flex-col items-start justify-start">
         <div className="w-full flex items-start justify-between ">
           <div className="flex items-center gap-x-2">
-            {(eventQa?.userImage as string).includes("/") && (
-              <Image
-                src={(eventQa?.userImage as string) || "/zikoro.png"}
-                alt=""
-                className="rounded-full h-12 object-contain border w-12"
-                width={100}
-                height={100}
-              />
-            )}
+          {(!eventQa?.anonymous && !qa?.accessibility?.allowAnonymous) && eventQa?.userImage?.startsWith("https://") ? (
+            <Image
+              src={(eventQa?.userImage as string) || "/zikoro.png"}
+              alt=""
+              className="rounded-full h-12 object-contain border w-12"
+              width={100}
+              height={100}
+            />
+          ) : (
+            <div className="w-[3rem] bg-gradient-to-tr border-basePrimary from-custom-bg-gradient-start border to-custom-bg-gradient-end h-[3rem] rounded-full flex items-center justify-center">
+              <p className="gradient-text  bg-basePrimary text-lg uppercase">
+                {useAcronym}
+              </p>
+            </div>
+          )}
             <div className="flex items-start flex-col justify-start gap-1">
               <p className="font-semibold text-sm sm:text-desktop">
-                {eventQa?.anonymous ? "Anonymous" : eventQa?.userNickname ?? ""}
+                {eventQa?.anonymous ? "Anonymous" : eventQa?.userNickName ?? ""}
               </p>
               <p className="text-tiny sm:text-mobile text-gray-500">
                 {formattedTime}
@@ -218,9 +242,11 @@ function AwaitingReviewCard({
 export function AwaitingReview({
   awaitingReview,
   refetch,
+  qa
 }: {
   awaitingReview: TEventQAQuestion[];
   refetch: () => Promise<any>;
+  qa: TEventQa
 }) {
   if (awaitingReview?.length === 0) {
     return (
@@ -231,10 +257,11 @@ export function AwaitingReview({
   return (
     <div className="w-full max-w-2xl overflow-y-auto  no-scrollbar h-full mx-auto">
       <div className="w-full flex flex-col items-start justify-start gap-3 sm:gap-4">
-        {awaitingReview.map((qa, index) => (
+        {awaitingReview.map((quest, index) => (
           <AwaitingReviewCard
-            key={qa.questionAlias}
-            eventQa={qa}
+            key={quest.questionAlias}
+            eventQa={quest}
+            qa={qa}
             refetch={refetch}
           />
         ))}

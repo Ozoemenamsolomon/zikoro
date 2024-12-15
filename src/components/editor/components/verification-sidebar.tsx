@@ -29,8 +29,8 @@ export const VerificationSidebar = ({
       )}
     >
       <ToolSidebarHeader
-        title="Verification"
-        description="Add verification to your canvas"
+        title="Attributes"
+        description="Add attributes to your credential"
       />
       <ScrollArea>
         <div className="space-y-4 border-b p-4">

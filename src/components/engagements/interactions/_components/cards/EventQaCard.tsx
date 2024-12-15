@@ -29,11 +29,11 @@ export function EventQaCard({
       onClick={() => {
         if (isNotAttendee) {
           router.push(
-            `/engagements/${eventQa?.eventAlias}/qa/${eventQa?.QandAAlias}/organizer`
+            `/engagements/${eventQa?.eventAlias}/qao/${eventQa?.QandAAlias}`
           );
         } else {
           router.push(
-            `/engagements/${eventQa?.eventAlias}/qa/${eventQa?.QandAAlias}/attendee`
+            `/engagements/${eventQa?.eventAlias}/qaa/${eventQa?.QandAAlias}`
           );
         }
       }}

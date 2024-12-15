@@ -1,136 +1,84 @@
-import { InlineIcon } from "@iconify/react";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/custom_ui/Button";
-import { Input } from "@/components/ui/input";
-import { useMemo, useState } from "react";
-import Avatar, { genConfig, AvatarFullConfig } from "react-nice-avatar";
-import { Plus } from "styled-icons/bootstrap";
-import { AvatarModal } from "../../../presentation/attendee/AvatarModal";
-import toast from "react-hot-toast";
-import { generateAlias } from "@/utils";
-import { UserDetail } from "../EventQaAttendeeView";
+"use client";
 
-export function JoinQA({ joined, addUser }: {addUser:(user: UserDetail) => void; joined: () => void }) {
-  const router = useRouter();
-  const [attendeeDetail, setAttendeeDetail] = useState("");
-  const [isAvatarModal, setAvatarModal] = useState(false);
-  const [isAvatar, setIsAvatar] = useState(false);
-  const [chosenAvatar, setChosenAvatar] =
-    useState<Required<AvatarFullConfig> | null>(null);
+import Image from "next/image";
+import {
+  Button,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+  Input,
+} from "@/components";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { joinLiveQuizSchema } from "@/schemas";
+import { useFetchQuiz } from "@/hooks";
+import { useFetchData } from "@/hooks/services/request";
+import { TEventQa } from "@/types";
+export default function JoinQA() {
+  const { getData } = useFetchData<TEventQa>("/engagements/qa/");
+  const form = useForm<z.infer<typeof joinLiveQuizSchema>>({
+    resolver: zodResolver(joinLiveQuizSchema),
+  });
 
-  function toggleAvatarModal() {
-    setAvatarModal((prev) => !prev);
-  }
-  function toggleIsAvatar() {
-    setIsAvatar((prev) => !prev);
-  }
+  async function onSubmit(value: z.infer<typeof joinLiveQuizSchema>) {
+    // window.open(`${pathname}/${value.code}`, "_self");
+    const response = await getData(value.code);
 
-  function generateAvatars() {
-    const avatars = Array.from({ length: 10 }).map((_, index) => {
-      return {
-        avatar: genConfig(),
-      };
-    });
-
-    return avatars;
-  }
-
-  const avatars = useMemo(() => {
-    return generateAvatars();
-  }, [isAvatar]);
-
-  async function submit(e: any) {
-    e.preventDefault();
-    if (!attendeeDetail) {
-      toast.error("Pls add a nickName");
-      return;
-    }
-    if (chosenAvatar === null) {
-      toast.error("Pls select an avatar");
-      return;
-    }
-    const userId = generateAlias();
-    const userDetail: UserDetail = {
-      userId,
-      userNickName:attendeeDetail,
-      userImage:chosenAvatar
-    }
-    addUser(userDetail)
-    joined();
+    window.open(
+      `/engagements/${response?.eventAlias}/qaa/${response?.QandAAlias}`,
+      "_self"
+    );
   }
   return (
-    <>
-      <div className="w-full h-full inset-0 fixed bg-[#F9FAFF]">
-        <div className="w-[95%] max-w-xl rounded-lg absolute h-fit flex flex-col items-start justify-start gap-8 bg-white border p-4 sm:p-6 m-auto inset-0">
-          <button
-            onClick={() => router.back()}
-            className="flex mb-3 items-center gap-x-1 text-mobile sm:text-sm"
-          >
-            <InlineIcon
-              fontSize={20}
-              icon="material-symbols-light:arrow-back"
-            />
-            <p>Go Back</p>
-          </button>
-          <form 
-          onSubmit={submit}
-          className="w-full flex flex-col items-center justify-center gap-6">
-            <h2 className="font-semibold text-2xl text-center sm:text-3xl">
-              Event Q & A
+    <div className="w-full bg-gradient-to-t from-[#001fcc]/30 fixed inset-0 h-full">
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="flex flex-col-reverse gap-6 items-center justify-center w-full px-8 sm:px-4 sm:flex-row h-full mx-auto max-w-4xl"
+        >
+          <div className="flex flex-col w-full sm:w-[50%] items-start justify-start gap-y-2">
+            <h2 className="font-semibold text-lg sm:text-2xl">
+              Join Event Interaction
             </h2>
+            <p className="mb-4">Enter the code to join the interaction</p>
 
-            <div className="w-full flex items-end gap-x-2">
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  toggleAvatarModal();
-                }}
-                className="text-white rounded-full h-20 w-20 flex items-center justify-center bg-black/50 flex-col"
-              >
-                {chosenAvatar ? (
-                  <Avatar
-                    className="h-20 w-20 rounded-full"
-                    {...chosenAvatar}
-                  />
-                ) : (
-                  <>
-                    <Plus size={24} />
-                    <p className="text-xs font-medium">Avatar</p>
-                  </>
-                )}
-              </button>
-              <div className="w-[70%] max-w-[26em] space-y-2">
-                <Input
-                  value={attendeeDetail}
-                  onChange={(e) => {
-                    setAttendeeDetail(e.target.value);
-                  }}
-                  className="border-0 border-b rounded-none w-full"
-                  placeholder="Enter Name"
-                  type="text"
-                />
-              </div>
-            </div>
-
+            <FormField
+              control={form.control}
+              name="code"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormControl>
+                    <Input
+                      type="text"
+                      placeholder="Enter the code"
+                      {...form.register("code")}
+                      className=" placeholder:text-sm h-11 sm:h-12 border-basePrimary bg-transparent  placeholder:text-zinc-500 text-zinv-700"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <Button
               type="submit"
-              className="bg-basePrimary w-[110px] text-white font-medium "
+              className="w-fit  mt-2 px-4 h-11 sm:h-12 text-white bg-basePrimary rounded-lg"
             >
-              Let's Go
+              Join Interaction
             </Button>
-          </form>
-        </div>
-      </div>
-      {isAvatarModal && (
-        <AvatarModal
-          close={toggleAvatarModal}
-          chosenAvatar={chosenAvatar}
-          setChosenAvatar={setChosenAvatar}
-          toggleIsAvatar={toggleIsAvatar}
-          avatars={avatars}
-        />
-      )}
-    </>
+          </div>
+
+          <Image
+            src="/entrypoint.png"
+            alt=""
+            className="w-[50%] max-h-[350px]"
+            width={500}
+            height={500}
+          />
+        </form>
+      </Form>
+    </div>
   );
 }

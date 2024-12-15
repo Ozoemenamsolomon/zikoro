@@ -21,7 +21,8 @@ export const formQuestionSchema = z.object({
 
 export const eventQaAskAndReplySchema = z.object({
     anonymous: z.boolean(),
-    content: z.string().min(1, {message:"Field is rewuired"})
+    content: z.string().min(1, {message:"Field is rewuired"}),
+    userNickName: z.string().optional()
 })
 
 export const formSettingSchema = z.object({

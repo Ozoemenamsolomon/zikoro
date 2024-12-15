@@ -5,6 +5,25 @@ import { Event } from "@/types/events";
 import { TOrganization } from "@/types/organization";
 import * as crypto from "crypto";
 
+export function rgbaToHex(rgba: string): string {
+  const match = rgba.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)\)$/);
+
+  if (!match) {
+    throw new Error("Invalid RGBA format");
+  }
+
+  let [_, r, g, b, a] = match;
+
+  r = parseInt(r).toString(16).padStart(2, "0");
+  g = parseInt(g).toString(16).padStart(2, "0");
+  b = parseInt(b).toString(16).padStart(2, "0");
+  a = Math.round(parseFloat(a) * 255)
+    .toString(16)
+    .padStart(2, "0");
+
+  return `${r}${g}${b}${a === "ff" ? "" : a}`;
+}
+
 export function extractUniqueTypes<T>(
   arr: T[],
   ppty: keyof T

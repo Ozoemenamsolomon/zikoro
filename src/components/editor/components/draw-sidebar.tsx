@@ -48,8 +48,8 @@ export const DrawSidebar = ({
       )}
     >
       <ToolSidebarHeader
-        title="Drawing mode"
-        description="Modify brush settings"
+        title="Signature"
+        description="Add Signature to your credential"
       />
       <ScrollArea>
         <div className="space-y-6 border-b p-4">
