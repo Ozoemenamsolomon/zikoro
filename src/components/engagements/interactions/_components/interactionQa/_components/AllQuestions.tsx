@@ -178,7 +178,7 @@ export function AllQuestions({
           <AskandReplyCard eventQa={replyQuestion}  qa={qa} isReply />
           <form
             onSubmit={submitReply}
-            className="w-full flex items-center border-y py-3 justify-center gap-3 flex-col"
+            className="w-full flex items-center border rounded-lg p-3 justify-center gap-3 flex-col"
           >
             <div className="w-full flex items-end gap-x-2">
               {!qa?.accessibility?.allowAnonymous && userDetail?.userImage?.startsWith("https://") ? (

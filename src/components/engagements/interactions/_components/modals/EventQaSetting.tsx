@@ -288,7 +288,7 @@ export function EventQaSetting({
               </div>
               <Switch
                 disabled={loading}
-                checked={accessibility?.live}
+                checked={accessibility?.allowAnonymous}
                 onClick={() =>
                   setAccessibility({
                     ...accessibility,
