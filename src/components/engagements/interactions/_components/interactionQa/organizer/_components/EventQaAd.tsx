@@ -1,3 +1,5 @@
+"use client"
+
 import { Link45deg } from "styled-icons/bootstrap";
 import { Minimize2 } from "styled-icons/feather";
 import { Button } from "@/components";

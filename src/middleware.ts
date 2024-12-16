@@ -13,9 +13,13 @@ const includedPaths = [
   "/appointments",
   "/create",
   "/admin",
-  "/event/:eventId/reception",
-  "/engagements/:eventId/qao/:qaId"
+  
 ];
+//  "/event/:eventId/reception",
+const dynamicPaths  = [
+
+  "/engagements/:eventId/qao/:qaId"
+]
 
 const eventAttendeePaths = [
   "reception",
@@ -55,7 +59,90 @@ export async function middleware(req: NextRequest) {
     if (!email || !isPasswordless) {
       const eventId = path.split("/")[2];
 
-      // // fetch an event using its id, and chcck if the organizer subscription is valid
+    
+
+      if (!session) {
+        // const pathLength = path.split("/").length;
+        const redirectUrl = new URL(`/request/access/${eventId}`, req.url);
+
+        return NextResponse.redirect(redirectUrl);
+      }
+    }
+  }
+
+  // Check if the request path starts with /appointments
+  if (path.startsWith("/appointments")) {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      const redirectUrl = new URL("/bookings", req.url);
+      // redirectUrl.searchParams.set("redirectedFrom", path);
+      return NextResponse.redirect(redirectUrl);
+    }
+  }
+
+  // check if the requested path is included in protected paths
+  const isDynamicPathIncluded = dynamicPaths.some((included) => 
+    new RegExp(`^${included.replace(/:\w+/g, '\\w+')}`).test(path)
+  )
+  console.log("outside the condition", isDynamicPathIncluded)
+  if (isDynamicPathIncluded && !session) {
+    console.log("it works")
+    // If user is not authenticated and path is included, redirect to the login page
+    if (path.startsWith("/api")) {
+      return NextResponse.json(
+        { error: "Authorization failed" },
+        { status: 403 }
+      );
+    } else {
+      const redirectUrl = new URL("/login", req.url);
+      redirectUrl.searchParams.set("redirectedFrom", path);
+      return NextResponse.redirect(redirectUrl);
+    }
+  }
+ // Check if the request path is included in the protected paths
+  const isIncludedPath = includedPaths.some((includedPath) =>
+    path.startsWith(includedPath)
+  );
+
+  if (isIncludedPath && !session) {
+    console.log("it works")
+    // If user is not authenticated and path is included, redirect to the login page
+    if (path.startsWith("/api")) {
+      return NextResponse.json(
+        { error: "Authorization failed" },
+        { status: 403 }
+      );
+    } else {
+      const redirectUrl = new URL("/login", req.url);
+      redirectUrl.searchParams.set("redirectedFrom", path);
+      return NextResponse.redirect(redirectUrl);
+    }
+  }
+
+  // Allow the request to proceed if the user is authenticated or the path is not included
+  return res;
+}
+
+export const config = {
+  matcher: [
+    "/affiliates/:path*",
+    "/billing/:path*",
+    "/events/:path*",
+    "/home/:path*",
+    "/profile/:path*",
+    "/referrals/:path*",
+    "/appointments/:path*",
+    "/admin/:path*",
+    "/event/:path*",
+    "/engagements/:path*",
+  ],
+};
+
+
+  // // fetch an event using its id, and chcck if the organizer subscription is valid
       // const response = await fetch(
       //   `https://zikoro.com/api/events/${eventId}/event`,
       //   {
@@ -89,62 +176,3 @@ export async function middleware(req: NextRequest) {
       //   return NextResponse.redirect(redirectUrl);
       //   }
       // }
-
-      if (!session) {
-        // const pathLength = path.split("/").length;
-        const redirectUrl = new URL(`/request/access/${eventId}`, req.url);
-
-        return NextResponse.redirect(redirectUrl);
-      }
-    }
-  }
-
-  // Check if the request path starts with /appointments
-  if (path.startsWith("/appointments")) {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      const redirectUrl = new URL("/bookings", req.url);
-      // redirectUrl.searchParams.set("redirectedFrom", path);
-      return NextResponse.redirect(redirectUrl);
-    }
-  }
-
- // Check if the request path is included in the protected paths
-  const isIncludedPath = includedPaths.some((includedPath) =>
-    path.startsWith(includedPath)
-  );
-
-  if (isIncludedPath && !session) {
-    // If user is not authenticated and path is included, redirect to the login page
-    if (path.startsWith("/api")) {
-      return NextResponse.json(
-        { error: "Authorization failed" },
-        { status: 403 }
-      );
-    } else {
-      const redirectUrl = new URL("/login", req.url);
-      redirectUrl.searchParams.set("redirectedFrom", path);
-      return NextResponse.redirect(redirectUrl);
-    }
-  }
-
-  // Allow the request to proceed if the user is authenticated or the path is not included
-  return res;
-}
-
-export const config = {
-  matcher: [
-    "/affiliates/:path*",
-    "/billing/:path*",
-    "/events/:path*",
-    "/home/:path*",
-    "/profile/:path*",
-    "/referrals/:path*",
-    "/appointments/:path*",
-    "/admin/:path*",
-    "/event/:path*",
-  ],
-};

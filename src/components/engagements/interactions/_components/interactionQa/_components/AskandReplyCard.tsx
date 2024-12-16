@@ -21,10 +21,11 @@ export function AskandReplyCard({
   userDetail,
   originalQuestion,
   responseId,
-  qa
+  qa,
+  isMyQuestion
 }: {
   className?: string;
-  showReply?: (q: TEventQAQuestion) => void;
+  showReply?: (q: TEventQAQuestion | null) => void;
   isReply?: boolean;
   eventQa?: Partial<TEventQAQuestion>;
   isAttendee?: boolean;
@@ -32,11 +33,14 @@ export function AskandReplyCard({
   userDetail?: TUserAccess | null;
   originalQuestion?: TEventQAQuestion;
   responseId?: string;
-  qa: TEventQa
+  qa: TEventQa;
+  isMyQuestion?:boolean;
+  
 }) {
   const { postData, isLoading } = usePostRequest("/engagements/qa/qaQuestion");
   const { setUserAccess } = useAccessStore();
   const [isLiked, setLiked] = useState(false);
+
   const formattedTime = useMemo(() => {
     const utcDate = new Date(eventQa?.created_at as string);
     const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -76,9 +80,13 @@ export function AskandReplyCard({
     else
    */
 
+    const id = useMemo(() => {
+      return generateAlias()
+    },[]);
+
   async function voteFn() {
     setLiked(true);
-    const id = generateAlias();
+    
     const payload: Partial<TEventQAQuestion> = responseId
       ? {
           ...originalQuestion,
@@ -123,7 +131,9 @@ export function AskandReplyCard({
 
     await postData({ payload });
     setUserAccess({ userId: id });
-
+        if (!qa?.accessibility?.live) {
+          showReply?.(null)
+        }
     refetch?.();
   }
 
@@ -144,10 +154,13 @@ export function AskandReplyCard({
   }, [eventQa]);
 
   useMemo(() => {
-    if (eventQa?.voters?.some((qa) => qa?.userId === userDetail?.userId)) {
+    if (userDetail && eventQa?.voters?.some((qa) => qa?.userId === userDetail?.userId)) {
       setLiked(true);
     }
   }, [userDetail, eventQa]);
+
+  console.log("user", userDetail)
+
   return (
     <div
       className={cn(
@@ -174,7 +187,7 @@ export function AskandReplyCard({
           )}
 
           <div className="flex items-start flex-col justify-start gap-1">
-            <p className="font-semibold text-sm sm:text-desktop">
+            <p className="font-semibold capitalize text-sm sm:text-desktop">
               {eventQa?.anonymous ||qa?.accessibility?.allowAnonymous
                 ? "Anonymous"
                 : eventQa?.userNickName ?? "Anonymous"}
@@ -195,7 +208,6 @@ export function AskandReplyCard({
         <Button
           onClick={voteFn}
           disabled={
-            !userDetail ||
             isLoading ||
             userDetail?.userId === eventQa?.userId ||
             isLiked

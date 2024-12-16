@@ -46,7 +46,7 @@ export default function EventQaOrganizerView({
   );
   const { eventQAQuestions, setEventQAQuestions, isLoading, getQAQUestions } =
     useGetQAQuestions({ qaId });
-  useQARealtimePresence();
+  useQARealtimePresence(qa?.accessibility?.live);
 
   // subscribe to qa
   useEffect(() => {
@@ -63,7 +63,7 @@ export default function EventQaOrganizerView({
           filter: `QandAAlias=eq.${qaId}`,
         },
         (payload) => {
-          //console.log("payload from live", payload);
+        console.log("payload from live", payload);
           const updated = payload.new as TEventQAQuestion;
           if (eventQAQuestions) {
             const updatedQuestions = eventQAQuestions?.map((item) => {
@@ -87,7 +87,7 @@ export default function EventQaOrganizerView({
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [supabase, eventQAQuestions]);
+  }, [supabase, eventQAQuestions, qa]);
 
   useEffect(() => {
     // function subscribeToUpdate() {
@@ -111,12 +111,14 @@ export default function EventQaOrganizerView({
             ]);
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        console.log("Subscription status insert:", status);
+      });
 
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [supabase, eventQAQuestions]);
+  }, [supabase, eventQAQuestions, qa]);
 
   function setActiveState(n: number) {
     setActive(n);
@@ -155,14 +157,14 @@ export default function EventQaOrganizerView({
   }, [filteredEventQaQuestions, user]);
 
   const awaitingReview = useMemo(() => {
-    if (Array.isArray(filteredEventQaQuestions)) {
-      return filteredEventQaQuestions?.filter(
+    if (Array.isArray(eventQAQuestions)) {
+      return eventQAQuestions?.filter(
         (qa) => qa?.questionStatus === "pending"
       );
     } else {
       return [];
     }
-  }, [filteredEventQaQuestions]);
+  }, [eventQAQuestions]);
 
   function initiateReply(question: TEventQAQuestion | null) {
     setReplyQuestion(question);
@@ -238,6 +240,11 @@ export default function EventQaOrganizerView({
                 }
                 qa={qa}
                 myQuestions={myQuestions}
+                userDetail={{
+                  userId: String(user?.id),
+                  userNickName: `${user?.firstName ?? ''} ${user?.lastName ?? ''}`,
+                  userImage: `${user?.firstName ?? ''} ${user?.lastName ?? ''}`,
+                }}
               />
             )}
             {active === 3 && (
@@ -247,6 +254,7 @@ export default function EventQaOrganizerView({
                 }
                 awaitingReview={awaitingReview}
                 qa={qa}
+                
               />
             )}
             {/*** floating button */}

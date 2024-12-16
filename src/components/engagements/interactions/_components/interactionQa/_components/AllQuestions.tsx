@@ -40,11 +40,16 @@ export function AllQuestions({
   // );
 
   const [reply, setReply] = useState("");
-  const [name, setName] = useState("");
+  const [name, setName] = useState(userDetail?.userNickName || "");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAnonymous, setIsAnonymous] = useState(false);
   const { postData } = usePostRequest("/engagements/qa/qaQuestion");
   const { setUserAccess } = useAccessStore();
+
+
+  const alias = useMemo(() => {
+    return generateAlias()
+  },[])
 
   async function submitReply(e: any) {
     e.preventDefault();
@@ -65,7 +70,7 @@ export function AllQuestions({
 
     const user = isAttendee
       ? {
-          userId: userDetail?.userId || generateAlias(),
+          userId: userDetail?.userId ||alias,
           userNickName: userDetail?.userNickName || name || "",
           userImage: userDetail?.userImage || name || "",
         }
@@ -105,12 +110,14 @@ export function AllQuestions({
     setName("");
     if (isAttendee && userDetail !== null) {
       setUserAccess({
-        userId: userDetail?.userId || generateAlias(),
+        userId: userDetail?.userId || alias,
         userNickName: userDetail?.userNickName || name || "",
         userImage: userDetail?.userImage || name || "",
       });
     }
+   if(!qa?.accessibility?.live) {
     initiateReply(null);
+   }
     refetch();
     setIsSubmitting(false);
   }
@@ -175,7 +182,7 @@ export function AllQuestions({
             />
             <p>Replying</p>
           </button>
-          <AskandReplyCard eventQa={replyQuestion}  qa={qa} isReply />
+          <AskandReplyCard eventQa={replyQuestion} showReply={initiateReply}  userDetail={userDetail}  qa={qa} isReply />
           <form
             onSubmit={submitReply}
             className="w-full flex items-center border rounded-lg p-3 justify-center gap-3 flex-col"
@@ -257,6 +264,7 @@ export function AllQuestions({
                   responseId={quest?.questionAlias}
                   originalQuestion={replyQuestion}
                   userDetail={userDetail}
+                  showReply={initiateReply}
                   qa={qa}
                 />
               ))}

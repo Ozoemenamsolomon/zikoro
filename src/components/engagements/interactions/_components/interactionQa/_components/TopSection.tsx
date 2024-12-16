@@ -52,8 +52,8 @@ export function TopSection({
     window.location.reload();
   }
   return (
-    <div className="w-full overflow-x-auto no-scrollbar min-w-[900px] bg-white px-4 sm:px-6 flex items-center text-sm justify-center gap-10 sm:gap-20">
-    
+    <div className="w-full overflow-x-auto no-scrollbar ">
+      <div className=" min-w-[900px] w-full bg-white px-4 sm:px-6 flex items-center text-sm justify-center gap-10 sm:gap-20">
       <button
         onClick={() => setActiveState(1)}
         className={cn(
@@ -120,6 +120,7 @@ export function TopSection({
             </SelectGroup>
           </SelectContent>
         </Select>
+      </div>
       </div>
 
       {isOpen && (
