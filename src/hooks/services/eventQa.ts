@@ -54,6 +54,7 @@ export const useQARealtimePresence = () => {
 
     useEffect(() => {
     // console.log("real presence")
+    //if (!isLive) return;
         const channel = supabase.channel("live-quiz");
   
         channel

@@ -1,3 +1,5 @@
+"use client"
+
 import { Link45deg } from "styled-icons/bootstrap";
 import { Minimize2 } from "styled-icons/feather";
 import { Button } from "@/components";
@@ -10,7 +12,8 @@ export function EventQaAdvert({
   close,
   isLeftBox,
   eventName,
-  qa
+  qa,
+  closeMobile
 }: {
 
   isLeftBox: boolean;
@@ -18,14 +21,15 @@ export function EventQaAdvert({
   isRightBox: boolean;
   eventName: string;
   qa: TEventQa
+  closeMobile:() => void;
 }) {
  // console.log("ileft", isLeftBox, isRightBox);
   const qaLink = `${window.location.origin}/engagements/${qa?.eventAlias}/qaa/${qa?.QandAAlias}`
   return (
     <div
       className={cn(
-        "w-full flex-col  rounded-l-xl h-[95vh] flex  items-start justify-between  col-span-2 ",
-        isLeftBox && !isRightBox &&  "col-span-full mx-auto max-w-xl",
+        "w-full flex-col  rounded-l-xl h-[100vh] md:flex  items-start justify-between hidden  col-span-2 ",
+        isLeftBox && !isRightBox &&  "col-span-full mx-auto max-w-xl flex",
         !isLeftBox && "hidden"
       )}
     >
@@ -76,7 +80,13 @@ export function EventQaAdvert({
         <Button onClick={(e) => {
           e.stopPropagation()
           close()
-        }} className="px-0 h-fit w-fit">
+        }} className="px-0 h-fit w-fit hidden md:flex">
+          <Minimize2 size={20} />
+        </Button>
+        <Button onClick={(e) => {
+          e.stopPropagation()
+          closeMobile()
+        }} className="px-0 h-fit w-fit flex md:hidden">
           <Minimize2 size={20} />
         </Button>
       </div>

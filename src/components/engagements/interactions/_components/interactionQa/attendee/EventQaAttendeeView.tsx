@@ -20,7 +20,7 @@ import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { useGetData } from "@/hooks/services/request";
 import { useVerifyUserAccess } from "@/hooks";
 import useAccessStore from "@/store/globalAcessStore";
-
+import { InlineIcon } from "@iconify/react";
 
 const supabase = createClientComponentClient();
 export default function EventQaAttendeeView({
@@ -33,8 +33,10 @@ export default function EventQaAttendeeView({
   const [active, setActive] = useState(1);
   const [isOpen, setIsOpen] = useState(false);
   const [filterValue, setFilterValue] = useState("Recent");
-  const { data: qa } = useGetData<TEventQa>(`/engagements/qa/${qaId}`);
- const {userAccess, setUserAccess} = useAccessStore()
+  const { data: qa, isLoading: qaLoading } = useGetData<TEventQa>(
+    `/engagements/qa/${qaId}`
+  );
+  const { userAccess, setUserAccess } = useAccessStore();
 
   const { attendee, loading } = useVerifyUserAccess(eventId);
   const [replyQuestion, setReplyQuestion] = useState<TEventQAQuestion | null>(
@@ -43,7 +45,6 @@ export default function EventQaAttendeeView({
   const { eventQAQuestions, setEventQAQuestions, isLoading, getQAQUestions } =
     useGetQAQuestions({ qaId });
   useQARealtimePresence();
- 
 
   function setActiveState(n: number) {
     setActive(n);
@@ -52,8 +53,6 @@ export default function EventQaAttendeeView({
   function onShowQuestionModal() {
     setIsOpen((p) => !p);
   }
-
-  
 
   const filteredEventQaQuestions = useMemo(() => {
     if (Array.isArray(eventQAQuestions)) {
@@ -82,11 +81,17 @@ export default function EventQaAttendeeView({
               new Date(b.created_at).getTime() -
               new Date(a.created_at).getTime()
           )
-          .filter((qa) => qa?.userId === ( attendee?.attendeeAlias||userAccess?.userId));
+          .filter(
+            (qa) =>
+              qa?.userId === (attendee?.attendeeAlias || userAccess?.userId)
+          );
       } else if (filterValue === "Top Liked") {
         return eventQAQuestions
           .sort((a, b) => b.vote - a.vote)
-          .filter((qa) => qa?.userId === ( attendee?.attendeeAlias||userAccess?.userId));
+          .filter(
+            (qa) =>
+              qa?.userId === (attendee?.attendeeAlias || userAccess?.userId)
+          );
       } else return [];
     } else return [];
   }, [eventQAQuestions, userAccess, attendee, filterValue]);
@@ -119,7 +124,7 @@ export default function EventQaAttendeeView({
               return item;
             });
             setEventQAQuestions(updatedQuestions);
-            //  console.log("payload from live", payload.new, {replyQuestion});
+            console.log("payload from live", payload.new, { replyQuestion });
             if (replyQuestion !== null && replyQuestion?.id === updated.id) {
               //   console.log("yes")
               setReplyQuestion(updated);
@@ -134,7 +139,7 @@ export default function EventQaAttendeeView({
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [supabase, eventQAQuestions]);
+  }, [supabase, eventQAQuestions, qa]);
 
   useEffect(() => {
     // function subscribeToUpdate() {
@@ -158,12 +163,14 @@ export default function EventQaAttendeeView({
             ]);
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        console.log("Subscription status insert:", status);
+      });
 
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [supabase, eventQAQuestions]);
+  }, [supabase, eventQAQuestions, qa]);
 
   console.log("qas ", eventQAQuestions);
 
@@ -175,7 +182,7 @@ export default function EventQaAttendeeView({
     setReplyQuestion(null);
   }
 
-  if (isLoading && loading) {
+  if (isLoading || loading || qaLoading) {
     return (
       <div className="w-full h-[300px] flex items-center justify-center">
         <LoaderAlt size={30} className="animate-spin" />
@@ -186,8 +193,35 @@ export default function EventQaAttendeeView({
   return (
     <>
       {/* {!isSignedIn && <JoinQA joined={toggleJoin} addUser={addUser} />} */}
+      {!loading &&
+        typeof attendee !== "object" &&
+        !qa?.accessibility?.visible && (
+          <div className="w-full h-full inset-0 fixed z-[100] bg-white">
+            <div className="w-[95%] max-w-xl border rounded-lg bg-gradient-to-b gap-y-6 from-white  to-basePrimary/20  h-[400px] flex flex-col items-center justify-center shadow absolute inset-0 m-auto">
+              <InlineIcon
+                icon="fluent:emoji-sad-20-regular"
+                fontSize={60}
+                color="#001fcc"
+              />
+              <div className="w-fit flex flex-col items-center justify-center gap-y-3">
+                <p>You are not a registered attendee for this event</p>
 
-      <div className="w-full h-full">
+                <Button
+                  onClick={() => {
+                    window.open(
+                      `${window.location.origin}/live-events/${eventId}`
+                    );
+                  }}
+                  className="bg-basePrimary h-12 text-white font-medium"
+                >
+                  Register for the event
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+
+      <div className="w-full h-full pt-6 px-4">
         <TopSection
           isAttendee={true}
           allQuestionsCount={filteredEventQaQuestions?.length || 0}
@@ -222,16 +256,18 @@ export default function EventQaAttendeeView({
               isAttendee
               myQuestions={myQuestions}
               qa={qa}
-            //  userDetail={userAccess}
+              userDetail={userAccess}
             />
           )}
           {/*** floating button */}
-          <Button
-            onClick={onShowQuestionModal}
-            className="h-14 w-14 fixed z-50 right-8 px-0 bottom-16 sm:right-10 sm:bottom-20 rounded-full bg-basePrimary"
-          >
-            <Plus size={40} className="text-white" />
-          </Button>
+          {active === 1 && (
+            <Button
+              onClick={onShowQuestionModal}
+              className="h-14 w-14 fixed z-50 right-8 px-0 bottom-16 sm:right-10 sm:bottom-20 rounded-full bg-basePrimary"
+            >
+              <Plus size={40} className="text-white" />
+            </Button>
+          )}
         </div>
       </div>
 
@@ -251,7 +287,6 @@ export default function EventQaAttendeeView({
           close={onShowQuestionModal}
           setUserAccess={setUserAccess}
           refetch={qa?.accessibility?.live ? async () => {} : getQAQUestions}
-          
         />
       )}
     </>

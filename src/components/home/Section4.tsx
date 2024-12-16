@@ -155,7 +155,7 @@ export default function Section3() {
               interactive polls, social walls, photos and discussion channels.
             </p>
             <button
-              onClick={() => router.push("/home")}
+              onClick={() => router.push("/register")}
               className="text-white font-montserrat text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-4 px-5 rounded-lg mt-12 font-bold"
             >
               Get Started for Free
