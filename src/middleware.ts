@@ -61,12 +61,12 @@ export async function middleware(req: NextRequest) {
 
     
 
-      // if (!session) {
-      //   // const pathLength = path.split("/").length;
-      //   const redirectUrl = new URL(`/request/access/${eventId}`, req.url);
+      if (!session) {
+        // const pathLength = path.split("/").length;
+        const redirectUrl = new URL(`/request/access/${eventId}`, req.url);
 
-      //   return NextResponse.redirect(redirectUrl);
-      // }
+        return NextResponse.redirect(redirectUrl);
+      }
     }
   }
 
@@ -84,43 +84,43 @@ export async function middleware(req: NextRequest) {
   }
 
   // check if the requested path is included in protected paths
-  // const isDynamicPathIncluded = dynamicPaths.some((included) => 
-  //   new RegExp(`^${included.replace(/:\w+/g, '\\w+')}`).test(path)
-  // )
-  // console.log("outside the condition", isDynamicPathIncluded)
-  // if (isDynamicPathIncluded && !session) {
-  //   console.log("it works")
-  //   // If user is not authenticated and path is included, redirect to the login page
-  //   if (path.startsWith("/api")) {
-  //     return NextResponse.json(
-  //       { error: "Authorization failed" },
-  //       { status: 403 }
-  //     );
-  //   } else {
-  //     const redirectUrl = new URL("/login", req.url);
-  //     redirectUrl.searchParams.set("redirectedFrom", path);
-  //     return NextResponse.redirect(redirectUrl);
-  //   }
-  // }
+  const isDynamicPathIncluded = dynamicPaths.some((included) => 
+    new RegExp(`^${included.replace(/:\w+/g, '\\w+')}`).test(path)
+  )
+  console.log("outside the condition", isDynamicPathIncluded)
+  if (isDynamicPathIncluded && !session) {
+    console.log("it works")
+    // If user is not authenticated and path is included, redirect to the login page
+    if (path.startsWith("/api")) {
+      return NextResponse.json(
+        { error: "Authorization failed" },
+        { status: 403 }
+      );
+    } else {
+      const redirectUrl = new URL("/login", req.url);
+      redirectUrl.searchParams.set("redirectedFrom", path);
+      return NextResponse.redirect(redirectUrl);
+    }
+  }
  // Check if the request path is included in the protected paths
-  // const isIncludedPath = includedPaths.some((includedPath) =>
-  //   path.startsWith(includedPath)
-  // );
+  const isIncludedPath = includedPaths.some((includedPath) =>
+    path.startsWith(includedPath)
+  );
 
-  // if (isIncludedPath && !session) {
-  //   console.log("it works")
-  //   // If user is not authenticated and path is included, redirect to the login page
-  //   if (path.startsWith("/api")) {
-  //     return NextResponse.json(
-  //       { error: "Authorization failed" },
-  //       { status: 403 }
-  //     );
-  //   } else {
-  //     const redirectUrl = new URL("/login", req.url);
-  //     redirectUrl.searchParams.set("redirectedFrom", path);
-  //     return NextResponse.redirect(redirectUrl);
-  //   }
-  // }
+  if (isIncludedPath && !session) {
+    console.log("it works")
+    // If user is not authenticated and path is included, redirect to the login page
+    if (path.startsWith("/api")) {
+      return NextResponse.json(
+        { error: "Authorization failed" },
+        { status: 403 }
+      );
+    } else {
+      const redirectUrl = new URL("/login", req.url);
+      redirectUrl.searchParams.set("redirectedFrom", path);
+      return NextResponse.redirect(redirectUrl);
+    }
+  }
 
   // Allow the request to proceed if the user is authenticated or the path is not included
   return res;
