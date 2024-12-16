@@ -9,12 +9,14 @@ export function MyQuestions({
   isAttendee,
   myQuestions,
   refetch,
-  qa
+  qa,
+  userDetail
 }: {
   refetch: () => Promise<any>;
   isAttendee?: boolean;
   myQuestions: TEventQAQuestion[];
-  qa: TEventQa
+  qa: TEventQa;
+  userDetail: TUserAccess | null
 }) {
   const [replyQuestion, setReplyQuestion] = useState<TEventQAQuestion | null>(
     null
@@ -24,12 +26,13 @@ export function MyQuestions({
     setReplyQuestion(question);
   }
 
-
   if (myQuestions?.length === 0) {
-    return <EmptyQaState
-    title="It looks like you haven't asked a auestion yet"
-    description="All your Questions will appear here."
-    />
+    return (
+      <EmptyQaState
+        title="It looks like you haven't asked a auestion yet"
+        description="All your Questions will appear here."
+      />
+    );
   }
   return (
     <div
@@ -50,7 +53,8 @@ export function MyQuestions({
                 eventQa={quest}
                 qa={qa}
                 refetch={refetch}
-              //  userDetail={userDetail}
+                isMyQuestion
+               userDetail={userDetail}
               />
             ))}
         </div>
@@ -66,7 +70,7 @@ export function MyQuestions({
             />
             <p>Back</p>
           </button>
-          <AskandReplyCard qa={qa} isReply eventQa={replyQuestion} />
+          <AskandReplyCard qa={qa} isReply  userDetail={userDetail} eventQa={replyQuestion} />
 
           <h2 className="font-semibold text-desktop sm:text-lg">Replies</h2>
 
@@ -80,6 +84,8 @@ export function MyQuestions({
                   qa={qa}
                   eventQa={quest}
                   refetch={refetch}
+                  isMyQuestion
+                  userDetail={userDetail}
                 />
               ))}
           </div>

@@ -42,7 +42,7 @@ export default function EventQaAttendeeView({
   );
   const { eventQAQuestions, setEventQAQuestions, isLoading, getQAQUestions } =
     useGetQAQuestions({ qaId });
-  useQARealtimePresence();
+  useQARealtimePresence(qa?.accessibility?.live);
  
 
   function setActiveState(n: number) {
@@ -222,7 +222,7 @@ export default function EventQaAttendeeView({
               isAttendee
               myQuestions={myQuestions}
               qa={qa}
-            //  userDetail={userAccess}
+            userDetail={userAccess}
             />
           )}
           {/*** floating button */}

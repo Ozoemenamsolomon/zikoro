@@ -13,6 +13,7 @@ import { TEventQAQuestion, TUserAccess } from "@/types";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import toast from "react-hot-toast";
 import { MdClose } from "react-icons/md";
+import { useMemo } from "react";
 
 export function AskandReplyModal({
   close,
@@ -37,7 +38,9 @@ export function AskandReplyModal({
     },
   });
   const { postData, isLoading } = usePostRequest("/engagements/qa/qaQuestion");
-
+const alias = useMemo(() => {
+  return generateAlias()
+},[])
   async function onSubmit(values: z.infer<typeof eventQaAskAndReplySchema>) {
     if (!values?.anonymous && !values?.userNickName) {
       return toast.error("Pls add a name");
@@ -49,7 +52,7 @@ export function AskandReplyModal({
 
     const questionAlias = generateAlias();
     const user = {
-      userId: userDetail?.userId || generateAlias(),
+      userId: userDetail?.userId || alias,
       userImage: userDetail?.userNickName || values?.userNickName,
       userNickName: userDetail?.userNickName || values?.userNickName,
     }
@@ -72,7 +75,7 @@ export function AskandReplyModal({
         onClick={(e) => e.stopPropagation()}
         className="w-[95%] max-w-3xl p-4 h-fit sm:p-6 m-auto absolute inset-0 bg-white rounded-lg"
       >
-        <div className="w-full flex items-end justify-end">
+        <div className="w-full flex items-end mb-3 justify-end">
           <button onClick={close}>
             <MdClose size={22} />
           </button>

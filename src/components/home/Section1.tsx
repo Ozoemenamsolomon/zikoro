@@ -21,7 +21,7 @@ export default function Section1() {
 
         <div className="mt-10 flex items-center justify-center mx-auto">
           <button
-            onClick={() => router.push("/home")}
+            onClick={() => router.push("/register")}
             className="text-white font-montserrat text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-4 px-5 rounded-lg"
           >
             Get Started For Free!
