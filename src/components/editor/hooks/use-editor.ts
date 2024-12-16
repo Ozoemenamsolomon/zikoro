@@ -89,13 +89,13 @@ const buildEditor = ({
     const pdf = new jsPDF({
       orientation: width > height ? "l" : "p",
       unit: "pt",
-      format: [width, height],
+      format: [options.width, options.height],
     });
     // const imgProperties = pdf.getImageProperties(dataUrl);
     // const pdfWidth = pdf.internal.pageSize.getWidth();
     // const pdfHeight = pdf.internal.pageSize.getHeight();
 
-    pdf.addImage(dataUrl, "PNG", 0, 0, width, height);
+    pdf.addImage(dataUrl, "png", 0, 0, width, height);
     pdf.save(name || "untitled.pdf");
 
     autoZoom();
