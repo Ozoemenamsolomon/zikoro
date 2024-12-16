@@ -27,7 +27,7 @@ import { SettingsSidebar } from "@/components/editor/components/settings-sidebar
 import { BackgroundSidebar } from "./background-sidebar";
 import { VerificationSidebar } from "./verification-sidebar";
 import { Event } from "@/types";
-import { QRCodeSidebar } from "./qrCode-sidebar";
+import { QRCodeSidebar } from "./qrcode-sidebar";
 
 interface EditorProps {
   initialData: ResponseType["data"];

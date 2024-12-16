@@ -80,6 +80,12 @@ const CertificateView = ({
     };
   }, [init]);
 
+  const [image, setImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    setImage(editor?.generateLink());
+  }, [editor]);
+
   function toggleShareDropDown() {
     showShareDropDown((prev) => !prev);
   }
@@ -224,11 +230,7 @@ const CertificateView = ({
         <canvas ref={canvasRef} />
       </div>
       <div className="relative h-auto w-full">
-        <img
-          alt="certificate"
-          src={editor?.generateLink()}
-          className="w-full h-full"
-        />{" "}
+        <img alt="certificate" src={image} className="w-full h-full" />{" "}
       </div>
     </div>
   );
