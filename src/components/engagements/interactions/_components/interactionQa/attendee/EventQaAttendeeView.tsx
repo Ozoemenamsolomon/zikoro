@@ -124,7 +124,7 @@ export default function EventQaAttendeeView({
               return item;
             });
             setEventQAQuestions(updatedQuestions);
-              console.log("payload from live", payload.new, {replyQuestion});
+            console.log("payload from live", payload.new, { replyQuestion });
             if (replyQuestion !== null && replyQuestion?.id === updated.id) {
               //   console.log("yes")
               setReplyQuestion(updated);
@@ -260,12 +260,14 @@ export default function EventQaAttendeeView({
             />
           )}
           {/*** floating button */}
-          <Button
-            onClick={onShowQuestionModal}
-            className="h-14 w-14 fixed z-50 right-8 px-0 bottom-16 sm:right-10 sm:bottom-20 rounded-full bg-basePrimary"
-          >
-            <Plus size={40} className="text-white" />
-          </Button>
+          {active === 1 && (
+            <Button
+              onClick={onShowQuestionModal}
+              className="h-14 w-14 fixed z-50 right-8 px-0 bottom-16 sm:right-10 sm:bottom-20 rounded-full bg-basePrimary"
+            >
+              <Plus size={40} className="text-white" />
+            </Button>
+          )}
         </div>
       </div>
 

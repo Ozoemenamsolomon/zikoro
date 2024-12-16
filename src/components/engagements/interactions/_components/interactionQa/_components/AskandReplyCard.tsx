@@ -22,7 +22,7 @@ export function AskandReplyCard({
   originalQuestion,
   responseId,
   qa,
-  isMyQuestion
+  isMyQuestion,
 }: {
   className?: string;
   showReply?: (q: TEventQAQuestion | null) => void;
@@ -34,12 +34,12 @@ export function AskandReplyCard({
   originalQuestion?: TEventQAQuestion;
   responseId?: string;
   qa: TEventQa;
-  isMyQuestion?:boolean;
-  
+  isMyQuestion?: boolean;
 }) {
   const { postData, isLoading } = usePostRequest("/engagements/qa/qaQuestion");
   const { setUserAccess } = useAccessStore();
   const [isLiked, setLiked] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const formattedTime = useMemo(() => {
     const utcDate = new Date(eventQa?.created_at as string);
@@ -80,13 +80,13 @@ export function AskandReplyCard({
     else
    */
 
-    const id = useMemo(() => {
-      return generateAlias()
-    },[]);
+  const id = useMemo(() => {
+    return generateAlias();
+  }, []);
 
   async function voteFn() {
     setLiked(true);
-    
+
     const payload: Partial<TEventQAQuestion> = responseId
       ? {
           ...originalQuestion,
@@ -131,9 +131,9 @@ export function AskandReplyCard({
 
     await postData({ payload });
     setUserAccess({ userId: id });
-        if (!qa?.accessibility?.live) {
-          showReply?.(null)
-        }
+    if (!qa?.accessibility?.live) {
+      showReply?.(null);
+    }
     refetch?.();
   }
 
@@ -154,12 +154,15 @@ export function AskandReplyCard({
   }, [eventQa]);
 
   useMemo(() => {
-    if (userDetail && eventQa?.voters?.some((qa) => qa?.userId === userDetail?.userId)) {
+    if (
+      userDetail &&
+      eventQa?.voters?.some((qa) => qa?.userId === userDetail?.userId)
+    ) {
       setLiked(true);
     }
   }, [userDetail, eventQa]);
 
-  console.log("user", userDetail)
+  console.log("user", userDetail);
 
   return (
     <div
@@ -170,7 +173,9 @@ export function AskandReplyCard({
     >
       <div className={cn("flex w-full items-center justify-between")}>
         <div className="flex items-center gap-x-2">
-          {(!eventQa?.anonymous && !qa?.accessibility?.allowAnonymous) && eventQa?.userImage?.startsWith("https://") ? (
+          {!eventQa?.anonymous &&
+          !qa?.accessibility?.allowAnonymous &&
+          eventQa?.userImage?.startsWith("https://") ? (
             <Image
               src={(eventQa?.userImage as string) || "/zikoro.png"}
               alt=""
@@ -188,7 +193,7 @@ export function AskandReplyCard({
 
           <div className="flex items-start flex-col justify-start gap-1">
             <p className="font-semibold capitalize text-sm sm:text-desktop">
-              {eventQa?.anonymous ||qa?.accessibility?.allowAnonymous
+              {eventQa?.anonymous || qa?.accessibility?.allowAnonymous
                 ? "Anonymous"
                 : eventQa?.userNickName ?? "Anonymous"}
             </p>
@@ -203,14 +208,27 @@ export function AskandReplyCard({
         )}
       </div>
 
-      <p className="text-start">{eventQa?.content ?? ""}</p>
+      <p className={cn("text-justify  w-full", !isExpanded && "line-clamp-4")}>
+        {eventQa?.content ?? ""}
+      </p>
+      <div className="w-full flex items-end justify-end">
+        {eventQa?.content && eventQa.content.length > 100 && (
+          <Button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className={cn(
+              "px-0 w-fit text-mobile sm:text-sm h-fit font-medium text-zikoroBlue",
+              isExpanded && "text-gray-500"
+            )}
+          >
+            {isExpanded ? "See Less" : "See More"}
+          </Button>
+        )}
+      </div>
       <div className="flex items-center justify-center w-full gap-x-3">
         <Button
           onClick={voteFn}
           disabled={
-            isLoading ||
-            userDetail?.userId === eventQa?.userId ||
-            isLiked
+            isLoading || userDetail?.userId === eventQa?.userId || isLiked
           }
           className="rounded-3xl bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end gap-x-2 px-2 py-1 h-fit"
         >

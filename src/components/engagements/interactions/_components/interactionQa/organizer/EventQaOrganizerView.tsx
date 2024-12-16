@@ -38,7 +38,6 @@ export default function EventQaOrganizerView({
   const { data, loading } = useFetchSingleEvent(eventId);
   const [isLeftBox, setIsLeftBox] = useState(true);
   const { user } = useUserStore();
-
   const [filterValue, setFilterValue] = useState("Recent");
   const { data: qa } = useGetData<TEventQa>(`/engagements/qa/${qaId}`);
   const [replyQuestion, setReplyQuestion] = useState<TEventQAQuestion | null>(
@@ -183,7 +182,34 @@ export default function EventQaOrganizerView({
   return (
     <>
       <div className="w-full h-full">
-        <TopSection
+      
+        <div
+          className={cn(
+            "w-full rounded-lg h-[100vh] relative bg-white gap-6 grid grid-cols-8"
+          )}
+        >
+          <EventQaAdvert
+            eventName={data?.eventTitle ?? ""}
+            close={() => {
+              setIsRightBox(!isRightBox);
+              // setIsLeftBox(true)
+            }}
+            closeMobile={() => {
+              setIsRightBox(true);
+               setIsLeftBox(false)
+            }}
+            isLeftBox={isLeftBox}
+            isRightBox={isRightBox}
+            qa={qa}
+          />
+          <div
+            className={cn(
+              "w-full h-[100vh] col-span-full md:col-span-6 relative rounded-lg bg-[#F9FAFF]",
+              !isLeftBox && isRightBox && "col-span-full block",
+              !isRightBox && "hidden"
+            )}
+          >
+              <TopSection
           setActiveState={setActiveState}
           activeState={active}
           filterValue={filterValue}
@@ -194,29 +220,8 @@ export default function EventQaOrganizerView({
           qa={qa}
           eventAlias={eventId}
         />
-        <div
-          className={cn(
-            "w-full rounded-lg h-[95vh] relative bg-white gap-6 grid grid-cols-8"
-          )}
-        >
-          <EventQaAdvert
-            eventName="Event Name"
-            close={() => {
-              setIsRightBox(!isRightBox);
-              // setIsLeftBox(true)
-            }}
-            isLeftBox={isLeftBox}
-            isRightBox={isRightBox}
-            qa={qa}
-          />
-          <div
-            className={cn(
-              "w-full h-[95vh] col-span-6 pt-6 relative rounded-lg bg-[#F9FAFF]",
-              !isLeftBox && isRightBox && "col-span-full",
-              !isRightBox && "hidden"
-            )}
-          >
-            {active === 1 && (
+          <div className="w-full">
+          {active === 1 && (
               <AllQuestions
                 initiateReply={initiateReply}
                 replyQuestion={replyQuestion}
@@ -257,22 +262,34 @@ export default function EventQaOrganizerView({
                 
               />
             )}
-            {/*** floating button */}
+          </div>
+               {/*** floating left button mobile*/}
+               <Button
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsLeftBox(true);
+                setIsRightBox(false)
+              }}
+              className="px-0 block md:hidden absolute z-50 left-8  bottom-16 sm:left-10 sm:bottom-20 h-fit w-fit"
+            >
+              <Minimize2 size={20} />
+            </Button>
+            {/*** floating left button desktop */}
             <Button
               onClick={(e) => {
                 e.stopPropagation();
                 setIsLeftBox(!isLeftBox);
               }}
-              className="px-0 absolute z-50 left-8  bottom-16 sm:left-10 sm:bottom-20 h-fit w-fit"
+              className="px-0 hidden md:block absolute z-50 left-8  bottom-16 sm:left-10 sm:bottom-20 h-fit w-fit"
             >
               <Minimize2 size={20} />
             </Button>
-            <Button
+           {active === 1 && <Button
               onClick={onShowQuestionModal}
               className="h-14 w-14 fixed z-50 right-8 px-0 bottom-16 sm:right-10 sm:bottom-20 rounded-full bg-basePrimary"
             >
               <Plus size={40} className="text-white" />
-            </Button>
+            </Button>}
           </div>
         </div>
       </div>
