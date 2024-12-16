@@ -17,7 +17,7 @@ const includedPaths = [
 ];
 //  "/event/:eventId/reception",
 const dynamicPaths  = [
-
+ 
   "/engagements/:eventId/qao/:qaId"
 ]
 
@@ -108,7 +108,7 @@ export async function middleware(req: NextRequest) {
   );
 
   if (isIncludedPath && !session) {
-    console.log("it works")
+    
     // If user is not authenticated and path is included, redirect to the login page
     if (path.startsWith("/api")) {
       return NextResponse.json(
