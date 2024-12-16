@@ -63,7 +63,7 @@ export default function EventQaOrganizerView({
           filter: `QandAAlias=eq.${qaId}`,
         },
         (payload) => {
-          //console.log("payload from live", payload);
+        console.log("payload from live", payload);
           const updated = payload.new as TEventQAQuestion;
           if (eventQAQuestions) {
             const updatedQuestions = eventQAQuestions?.map((item) => {
@@ -87,7 +87,7 @@ export default function EventQaOrganizerView({
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [supabase, eventQAQuestions]);
+  }, [supabase, eventQAQuestions, qa]);
 
   useEffect(() => {
     // function subscribeToUpdate() {
@@ -111,12 +111,14 @@ export default function EventQaOrganizerView({
             ]);
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        console.log("Subscription status insert:", status);
+      });
 
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [supabase, eventQAQuestions]);
+  }, [supabase, eventQAQuestions, qa]);
 
   function setActiveState(n: number) {
     setActive(n);

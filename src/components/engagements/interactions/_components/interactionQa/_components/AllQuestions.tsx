@@ -115,7 +115,9 @@ export function AllQuestions({
         userImage: userDetail?.userImage || name || "",
       });
     }
+   if(!qa?.accessibility?.live) {
     initiateReply(null);
+   }
     refetch();
     setIsSubmitting(false);
   }
