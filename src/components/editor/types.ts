@@ -111,7 +111,8 @@ export type ActiveTool =
   | "remove-bg"
   | "templates"
   | "background"
-  | "verification";
+  | "verification"
+  | "qrCode";
 
 export const FILL_COLOR = "rgba(0,0,0,1)";
 export const STROKE_COLOR = "rgba(0,0,0,1)";
@@ -232,7 +233,7 @@ export interface Editor {
   onPaste: () => void;
   changeImageFilter: (value: string) => void;
   addImage: (value: string) => void;
-  addQRCode: (value: string) => void;
+  addQRCode: (value: string, color?: string, bgcolor?: string) => void;
   delete: () => void;
   changeFontSize: (value: number) => void;
   getActiveFontSize: () => number;

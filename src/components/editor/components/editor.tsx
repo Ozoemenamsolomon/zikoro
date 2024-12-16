@@ -27,6 +27,7 @@ import { SettingsSidebar } from "@/components/editor/components/settings-sidebar
 import { BackgroundSidebar } from "./background-sidebar";
 import { VerificationSidebar } from "./verification-sidebar";
 import { Event } from "@/types";
+import { QRCodeSidebar } from "./qrcode-sidebar";
 
 interface EditorProps {
   initialData: ResponseType["data"];
@@ -169,6 +170,11 @@ export const Editor = ({
           onChangeActiveTool={onChangeActiveTool}
         />
         <TextSidebar
+          editor={editor}
+          activeTool={activeTool}
+          onChangeActiveTool={onChangeActiveTool}
+        />
+        <QRCodeSidebar
           editor={editor}
           activeTool={activeTool}
           onChangeActiveTool={onChangeActiveTool}
