@@ -55,7 +55,12 @@ export function TopSection({
   }
   return (
     <div className="w-full  ">
-      <div className=" w-full bg-white px-4 sm:px-6 flex items-center text-sm justify-between sm:justify-center gap-2 sm:gap-8 md:gap-16">
+      <div
+        className={cn(
+          " w-full bg-white px-4 sm:px-6 flex items-center text-sm justify-between sm:justify-center gap-2 sm:gap-8 md:gap-16",
+          !isAttendee && "justify-around"
+        )}
+      >
         <button
           onClick={() => setActiveState(1)}
           className={cn(
@@ -98,7 +103,7 @@ export function TopSection({
 
         <div className="flex items-center gap-x-3">
           {!isAttendee && (
-            <button onClick={onClose}>
+            <button className="hidden sm:block" onClick={onClose}>
               <Settings size={22} />
             </button>
           )}
@@ -109,20 +114,23 @@ export function TopSection({
             <InlineIcon fontSize={22} icon="material-symbols-light:menu" />
 
             {isShowSelectMobile && (
-              <div className="absolute -left-3 top-7">
+              <div
+                onClick={(e) => e.stopPropagation()}
+                className="absolute right-3 top-7"
+              >
                 <div
                   onClick={() => setShowSelectMobile(false)}
                   className="w-full h-full inset-0 fixed z-[100]"
                 ></div>
-                <div
-                  onClick={(e) => e.stopPropagation()}
-                  className="relative z-[999] p-3 rounded-lg bg-white w-[120px]"
-                >
+                <div className="relative z-[999] p-3 rounded-lg h-fit flex flex-col items-start justify-start gap-y-2 bg-white w-[150px]">
                   <Select
-                    onValueChange={(value) => setFilterValue(value)}
+                    onValueChange={(value) => {
+                      setFilterValue(value);
+                      setShowSelectMobile(false);
+                    }}
                     defaultValue={filterValue}
                   >
-                    <SelectTrigger className="h-11 w-[180px]">
+                    <SelectTrigger className="h-11 w-[150px]">
                       <SelectValue placeholder="Select Filter" />
                     </SelectTrigger>
                     <SelectContent className="bg-white">
@@ -139,6 +147,18 @@ export function TopSection({
                       </SelectGroup>
                     </SelectContent>
                   </Select>
+                  {!isAttendee && (
+                    <button
+                      className="flex sm:hidden text-mobile items-center gap-x-2"
+                      onClick={() => {
+                        onClose();
+                        setShowSelectMobile(false);
+                      }}
+                    >
+                      <Settings size={18} />
+                      <p>Settings</p>
+                    </button>
+                  )}
                 </div>
               </div>
             )}

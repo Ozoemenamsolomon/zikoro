@@ -45,7 +45,7 @@ export default function EventQaOrganizerView({
   );
   const { eventQAQuestions, setEventQAQuestions, isLoading, getQAQUestions } =
     useGetQAQuestions({ qaId });
-  useQARealtimePresence(qa?.accessibility?.live);
+  useQARealtimePresence();
 
   // subscribe to qa
   useEffect(() => {

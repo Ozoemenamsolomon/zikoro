@@ -225,8 +225,8 @@ function AwaitingReviewCard({
           buttonColor="bg-[#001fcc]"
           buttonText="Approve Question"
           close={onToggleApprove}
-          description="Deleted question will not be visible to others"
-          title="You are about to delete this question"
+          description="Approved question will not be visible to others"
+          title="You are about to approve this question"
           transparentColor="bg-[#001fcc]/10"
           iconName="codicon:check-all"
           iconColor="#001fcc"

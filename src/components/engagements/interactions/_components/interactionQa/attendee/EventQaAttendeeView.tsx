@@ -44,7 +44,7 @@ export default function EventQaAttendeeView({
   );
   const { eventQAQuestions, setEventQAQuestions, isLoading, getQAQUestions } =
     useGetQAQuestions({ qaId });
-  useQARealtimePresence(qa?.accessibility?.live);
+  useQARealtimePresence();
 
   function setActiveState(n: number) {
     setActive(n);
@@ -221,7 +221,7 @@ export default function EventQaAttendeeView({
           </div>
         )}
 
-      <div className="w-full h-full">
+      <div className="w-full h-full pt-6 px-4">
         <TopSection
           isAttendee={true}
           allQuestionsCount={filteredEventQaQuestions?.length || 0}

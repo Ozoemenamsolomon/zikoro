@@ -50,7 +50,7 @@ export const useGetQAQuestions = ({ qaId }: { qaId: string }) => {
 };
 
 
-export const useQARealtimePresence = (isLive:boolean) => {
+export const useQARealtimePresence = () => {
 
     useEffect(() => {
     // console.log("real presence")
@@ -88,7 +88,7 @@ export const useQARealtimePresence = (isLive:boolean) => {
           supabase.removeChannel(channel);
         };
       
-    }, [supabase, isLive]);
+    }, [supabase]);
 
   
     
