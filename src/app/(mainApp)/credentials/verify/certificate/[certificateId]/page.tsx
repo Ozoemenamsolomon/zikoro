@@ -227,7 +227,8 @@ const CertificateView = ({
         <img
           alt="certificate"
           src={editor?.generateLink()}
-          className="w-full h-full"
+          className="h-auto"
+          style={{ width: initialData?.width }}
         />{" "}
       </div>
     </div>
