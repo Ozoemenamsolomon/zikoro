@@ -36,9 +36,7 @@ export const VerificationSidebar = ({
         <div className="space-y-4 border-b p-4">
           <Button
             className="w-full"
-            onClick={() =>
-              editor?.addText("Certificate ID: #{certificateId#}")
-            }
+            onClick={() => editor?.addText("Certificate ID: #{certificateId#}")}
           >
             Add Certificate Id
           </Button>
@@ -64,7 +62,7 @@ export const VerificationSidebar = ({
             className="w-full"
             onClick={() =>
               editor?.addText(
-                "www.zikoro.com/credentials/certificate/verify/#{certificateId#}"
+                "https://www.zikoro.com/credentials/certificate/verify/#{certificateId#}"
               )
             }
           >

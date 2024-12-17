@@ -17,7 +17,7 @@ import QRCode from "react-qr-code";
 import { Container, SettingsPanel, Text } from "@/components/certificate";
 import CertificateQRCode from "@/components/certificate/QRCode";
 import { Image as ImageElement } from "@/components/certificate";
-import { replaceSpecialText } from "@/utils/helpers";
+import { replaceSpecialText, replaceURIVariable } from "@/utils/helpers";
 import { Editor, Frame } from "@craftjs/core";
 import { toast } from "@/components/ui/use-toast";
 import { fabric } from "fabric";
@@ -50,12 +50,15 @@ const CertificateView = ({
   console.log(certificate?.originalCertificate, "initialData");
 
   const newState = JSON.parse(
-    replaceSpecialText(JSON.stringify(initialData?.json || {}), {
-      asset: certificate,
-      attendee: certificate?.attendee,
-      event: certificate?.originalCertificate.event,
-      organization: certificate?.originalCertificate.event.organization,
-    })
+    replaceURIVariable(
+      replaceSpecialText(JSON.stringify(initialData?.json || {}), {
+        asset: certificate,
+        attendee: certificate?.attendee,
+        event: certificate?.originalCertificate.event,
+        organization: certificate?.originalCertificate.event.organization,
+      }),
+      certificate?.certificateId
+    )
   );
 
   const { init, editor } = useEditor({

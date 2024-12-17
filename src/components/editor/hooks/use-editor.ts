@@ -89,7 +89,7 @@ const buildEditor = ({
     const pdf = new jsPDF({
       orientation: width > height ? "l" : "p",
       unit: "pt",
-      format: [options.width, options.height],
+      format: [width, height],
     });
     // const imgProperties = pdf.getImageProperties(dataUrl);
     // const pdfWidth = pdf.internal.pageSize.getWidth();
