@@ -45,6 +45,11 @@ export function EventQaSetting({
     disable: false,
     live: false,
     allowAnonymous: false,
+    mustReviewQuestion: true,
+    cannotAskQuestion: false,
+    canRespond: true,
+    canTag: false,
+    indicateAnsweredQuestions: false,
   });
   const form = useForm<z.infer<typeof eventQaSettingSchema>>({
     resolver: zodResolver(eventQaSettingSchema),
@@ -281,9 +286,10 @@ export function EventQaSetting({
 
             <div className="flex w-full text-mobile sm:text-sm items-center justify-between">
               <div className="flex flex-col items-start justify-start">
-                <p>Anonymous Reply Only</p>
+                <p>Anonymized Entries </p>
                 <p className="text-xs text-gray-500">
-                 User/ Attendee can only reply anonymously
+                  Participants can ask and respond to questions as anonymous
+                  when turned on.
                 </p>
               </div>
               <Switch
@@ -293,6 +299,105 @@ export function EventQaSetting({
                   setAccessibility({
                     ...accessibility,
                     allowAnonymous: !accessibility.allowAnonymous,
+                  })
+                }
+                className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
+              />
+            </div>
+            <div className="flex w-full text-mobile sm:text-sm items-center justify-between">
+              <div className="flex flex-col items-start justify-start">
+                <p> Moderation </p>
+                <p className="text-xs text-gray-500">
+                  Review questions before they are visible to all participants.
+                </p>
+              </div>
+              <Switch
+                disabled={loading}
+                checked={accessibility?.mustReviewQuestion}
+                onClick={() =>
+                  setAccessibility({
+                    ...accessibility,
+                    mustReviewQuestion: !accessibility.mustReviewQuestion,
+                  })
+                }
+                className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
+              />
+            </div>
+            <div className="flex w-full text-mobile sm:text-sm items-center justify-between">
+              <div className="flex flex-col items-start justify-start">
+                <p> Close question </p>
+                <p className="text-xs text-gray-500">
+                  Restrict participants from asking new questions.
+                </p>
+              </div>
+              <Switch
+                disabled={loading}
+                checked={accessibility?.cannotAskQuestion}
+                onClick={() =>
+                  setAccessibility({
+                    ...accessibility,
+                    cannotAskQuestion: !accessibility.cannotAskQuestion,
+                  })
+                }
+                className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
+              />
+            </div>
+
+            <div className="flex w-full text-mobile sm:text-sm items-center justify-between">
+              <div className="flex flex-col items-start justify-start">
+                <p>Replies</p>
+                <p className="text-xs text-gray-500">
+                  Participants can respond to any question.
+                </p>
+              </div>
+              <Switch
+                disabled={loading}
+                checked={accessibility?.canRespond}
+                onClick={() =>
+                  setAccessibility({
+                    ...accessibility,
+                    canRespond: !accessibility.canRespond,
+                  })
+                }
+                className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
+              />
+            </div>
+
+            <div className="flex w-full text-mobile sm:text-sm items-center justify-between">
+              <div className="flex flex-col items-start justify-start">
+                <p>Answered questions</p>
+                <p className="text-xs text-gray-500">
+                  Highlight answered questions and make it visible to everyone.
+                </p>
+              </div>
+              <Switch
+                disabled={loading}
+                checked={accessibility?.indicateAnsweredQuestions}
+                onClick={() =>
+                  setAccessibility({
+                    ...accessibility,
+                    indicateAnsweredQuestions:
+                      !accessibility.indicateAnsweredQuestions,
+                  })
+                }
+                className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
+              />
+            </div>
+
+            <div className="flex w-full text-mobile sm:text-sm items-center justify-between">
+              <div className="flex flex-col items-start justify-start">
+                <p>Tags</p>
+                <p className="text-xs text-gray-500">
+                  Admin can add tags to questions.
+                </p>
+              </div>
+              <Switch
+                disabled={loading}
+                checked={accessibility?.canTag}
+                onClick={() =>
+                  setAccessibility({
+                    ...accessibility,
+                    canTag: !accessibility.canTag,
                   })
                 }
                 className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"

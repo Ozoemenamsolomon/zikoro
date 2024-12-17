@@ -9,11 +9,12 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { usePostRequest } from "@/hooks/services/request";
 import { generateAlias } from "@/utils";
-import { TEventQAQuestion, TUserAccess } from "@/types";
+import { TEventQa, TEventQAQuestion, TUserAccess } from "@/types";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import toast from "react-hot-toast";
 import { MdClose } from "react-icons/md";
 import { useMemo } from "react";
+import { cn } from "@/lib";
 
 export function AskandReplyModal({
   close,
@@ -22,25 +23,30 @@ export function AskandReplyModal({
   userDetail,
   setUserAccess,
   isAttendee,
+  qa,
+  qaQuestion
 }: {
   QandAAlias: string;
   close: () => void;
   refetch?: () => void;
-  userDetail: TUserAccess;
+  userDetail: TUserAccess | null;
   isAttendee?: boolean;
-  setUserAccess?: (c:TUserAccess | null) => void
+  setUserAccess?: (c: TUserAccess | null) => void;
+  qa: TEventQa;
+  qaQuestion?: Partial<TEventQAQuestion>
 }) {
   const form = useForm<z.infer<typeof eventQaAskAndReplySchema>>({
     resolver: zodResolver(eventQaAskAndReplySchema),
     defaultValues: {
       anonymous: false,
       userNickName: userDetail?.userNickName,
+      content: qaQuestion?.content
     },
   });
   const { postData, isLoading } = usePostRequest("/engagements/qa/qaQuestion");
-const alias = useMemo(() => {
-  return generateAlias()
-},[])
+  const alias = useMemo(() => {
+    return generateAlias();
+  }, []);
   async function onSubmit(values: z.infer<typeof eventQaAskAndReplySchema>) {
     if (!values?.anonymous && !values?.userNickName) {
       return toast.error("Pls add a name");
@@ -55,17 +61,28 @@ const alias = useMemo(() => {
       userId: userDetail?.userId || alias,
       userImage: userDetail?.userNickName || values?.userNickName,
       userNickName: userDetail?.userNickName || values?.userNickName,
-    }
-    const payload: Partial<TEventQAQuestion> = {
+    };
+    const payload: Partial<TEventQAQuestion> =qaQuestion?.id ? {
+      ...qaQuestion,
+      ...values,
+      QandAAlias: QandAAlias,
+      questionStatus:
+        isAttendee && qa?.accessibility?.mustReviewQuestion
+          ? "pending"
+          : "verified",
+    } : {
       ...user,
       ...values,
       QandAAlias: QandAAlias,
       questionAlias: questionAlias,
-      questionStatus: isAttendee ? "pending" : "verified",
+      questionStatus:
+        isAttendee && qa?.accessibility?.mustReviewQuestion
+          ? "pending"
+          : "verified",
     };
     await postData({ payload });
-    setUserAccess?.(user)
-   
+    setUserAccess?.(user);
+
     refetch?.();
     close();
   }
@@ -104,24 +121,37 @@ const alias = useMemo(() => {
               render={({ field }) => (
                 <InputOffsetLabel label="">
                   <Input
-                    placeholder="Enter your nickname"
+                    placeholder="Enter your name"
+                    readOnly={qaQuestion && typeof qaQuestion === "object"}
                     {...form.register("userNickName")}
                     className="placeholder:text-sm h-12 placeholder:text-gray-400 text-gray-700"
                   />
                 </InputOffsetLabel>
               )}
             />
-            <div className="w-full flex items-center justify-between">
-              <label htmlFor="anonymous" className="flex items-center gap-x-2">
-                <input
-                  id="anonymous"
-                  name="anonymous"
-                  type="checkbox"
-                  onChange={(e) => form.setValue("anonymous", e.target.checked)}
-                  className="accent-basePrimary h-5 w-5 rounded-lg"
-                />
-                <p>Ask as anyonymous</p>
-              </label>
+            <div
+              className={cn(
+                "w-full flex items-center justify-between",
+                !qa?.accessibility?.allowAnonymous && "items-end justify-end"
+              )}
+            >
+              {qa?.accessibility?.allowAnonymous && (
+                <label
+                  htmlFor="anonymous"
+                  className="flex items-center gap-x-2"
+                >
+                  <input
+                    id="anonymous"
+                    name="anonymous"
+                    type="checkbox"
+                    onChange={(e) =>
+                      form.setValue("anonymous", e.target.checked)
+                    }
+                    className="accent-basePrimary h-5 w-5 rounded-lg"
+                  />
+                  <p>Ask as anyonymous</p>
+                </label>
+              )}
               <Button
                 disabled={isLoading}
                 type="submit"
