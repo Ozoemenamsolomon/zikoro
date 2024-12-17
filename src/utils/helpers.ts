@@ -257,7 +257,7 @@ export function replaceSpecialText(input: string, context: Context): string {
         return context.organization.organizationName;
       case "organisation_logo":
         return context.organization.organizationLogo || "";
-      case "certificate_id":
+      case "certificateId":
         return context.asset?.certificateId || "";
       default:
         return match; // Return the original string if no matching value found
