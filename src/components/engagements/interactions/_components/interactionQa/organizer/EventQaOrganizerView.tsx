@@ -220,7 +220,7 @@ export default function EventQaOrganizerView({
           qa={qa}
           eventAlias={eventId}
         />
-          <div className="w-full">
+          <div className="w-full pt-6 px-4">
           {active === 1 && (
               <AllQuestions
                 initiateReply={initiateReply}
