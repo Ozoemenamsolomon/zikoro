@@ -157,7 +157,7 @@ function AwaitingReviewCard({
 
   return (
     <>
-      <div className="w-full p-4 bg-white rounded-lg border h-fit flex gap-y-3 sm:gap-y-4 flex-col items-start justify-start">
+      <div className="w-full p-4 bg-white pb-10  rounded-lg border h-fit flex gap-y-3 sm:gap-y-4 flex-col items-start justify-start">
         <div className="w-full flex items-start justify-between ">
           <div className="flex items-center gap-x-2">
           {(!eventQa?.anonymous && !qa?.accessibility?.allowAnonymous) && eventQa?.userImage?.startsWith("https://") ? (

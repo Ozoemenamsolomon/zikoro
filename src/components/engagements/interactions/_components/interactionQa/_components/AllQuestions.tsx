@@ -148,7 +148,7 @@ export function AllQuestions({
   return (
     <div
       className={cn(
-        "w-full max-w-2xl overflow-y-auto  no-scrollbar h-full mx-auto",
+        "w-full max-w-2xl overflow-y-auto pb-10   no-scrollbar h-full mx-auto",
         replyQuestion !== null && "bg-white p-4 h-fit"
       )}
     >
