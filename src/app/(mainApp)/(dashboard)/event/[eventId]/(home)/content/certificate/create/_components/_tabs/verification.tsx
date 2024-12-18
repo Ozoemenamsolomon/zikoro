@@ -6,7 +6,7 @@ import { Text } from "@/components/certificate";
 
 const Verification = ({ details, setValue }: TabProps) => {
   const { connectors } = useEditor();
-  const url = "https://zikoro.com/credentials/verify/certificate/#{certificate_id#}";
+  const url = "https://zikoro.com/credentials/verify/certificate/#{certificateId#}";
 
   return (
     <>
@@ -26,7 +26,7 @@ const Verification = ({ details, setValue }: TabProps) => {
             connectors.create(
               ref,
               <Text
-                text={"Certificate ID: #{certificate_id#}"}
+                text={"Certificate ID: #{certificateId#}"}
                 isBold
                 isItalic
                 isNotEditable
@@ -88,7 +88,7 @@ const Verification = ({ details, setValue }: TabProps) => {
             connectors.create(
               ref,
               <Text
-                text={"www.zikoro.com/verify/#{certificate_id#}"}
+                text={"www.zikoro.com/verify/#{certificateId#}"}
                 isBold
                 isItalic
                 isNotEditable

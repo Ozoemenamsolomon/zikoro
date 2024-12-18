@@ -17,7 +17,7 @@ import QRCode from "react-qr-code";
 import { Container, SettingsPanel, Text } from "@/components/certificate";
 import CertificateQRCode from "@/components/certificate/QRCode";
 import { Image as ImageElement } from "@/components/certificate";
-import { replaceSpecialText } from "@/utils/helpers";
+import { replaceSpecialText, replaceURIVariable } from "@/utils/helpers";
 import { Editor, Frame } from "@craftjs/core";
 import { toast } from "@/components/ui/use-toast";
 import { fabric } from "fabric";
@@ -50,12 +50,15 @@ const CertificateView = ({
   console.log(certificate?.originalCertificate, "initialData");
 
   const newState = JSON.parse(
-    replaceSpecialText(JSON.stringify(initialData?.json || {}), {
-      asset: certificate,
-      attendee: certificate?.attendee,
-      event: certificate?.originalCertificate.event,
-      organization: certificate?.originalCertificate.event.organization,
-    })
+    replaceURIVariable(
+      replaceSpecialText(JSON.stringify(initialData?.json || {}), {
+        asset: certificate,
+        attendee: certificate?.attendee,
+        event: certificate?.originalCertificate.event,
+        organization: certificate?.originalCertificate.event.organization,
+      }),
+      certificate?.certificateId
+    )
   );
 
   const { init, editor } = useEditor({
@@ -80,17 +83,19 @@ const CertificateView = ({
     };
   }, [init]);
 
-  const [image, setImage] = useState<string | null>(null);
-
-  useEffect(() => {
-    setImage(editor?.generateLink());
-  }, [editor]);
-
   function toggleShareDropDown() {
     showShareDropDown((prev) => !prev);
   }
 
-  console.log(certificate);
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      toggleShareDropDown();
+    }, 1500);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, []);
 
   const shareText = `Excited to share my ${certificate?.CertificateName} certificate from ${certificate?.originalCertificate.event.eventTitle} with you! Check it out here: ${window.location.href}`;
 
@@ -223,14 +228,19 @@ const CertificateView = ({
       </div>
 
       <div
-        className="relative h-[500px] md:h-[calc(100%-124px)] w-full"
+        className="relative h-[500px] md:h-[calc(100%-124px)] w-full hidden"
         ref={containerRef}
       >
         <div className="absolute inset-0 bg-transparent z-50" />
         <canvas ref={canvasRef} />
       </div>
       <div className="relative h-auto w-full">
-        <img alt="certificate" src={image} className="w-full h-full" />{" "}
+        <img
+          alt="certificate"
+          src={editor?.generateLink()}
+          className="h-auto"
+          style={{ width: initialData?.width }}
+        />{" "}
       </div>
     </div>
   );

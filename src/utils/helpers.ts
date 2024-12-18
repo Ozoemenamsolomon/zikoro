@@ -222,6 +222,15 @@ type Context = {
   organization: TOrganization;
 };
 
+export function replaceURIVariable(
+  input: string,
+  certificateId: string
+): string {
+  return input.replaceAll(/%23%7B(.*?)%23%7D/g, (match, value) => {
+    return certificateId;
+  });
+}
+
 export function replaceSpecialText(input: string, context: Context): string {
   const pattern = /#{(.*?)#}/g;
 
@@ -257,7 +266,7 @@ export function replaceSpecialText(input: string, context: Context): string {
         return context.organization.organizationName;
       case "organisation_logo":
         return context.organization.organizationLogo || "";
-      case "certificate_id":
+      case "certificateId":
         return context.asset?.certificateId || "";
       default:
         return match; // Return the original string if no matching value found

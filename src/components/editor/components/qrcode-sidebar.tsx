@@ -18,7 +18,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { ColorPicker } from "@/components/editor/components/color-picker";
-import { useState } from "react";
 
 interface QRCodeSidebarProps {
   editor: Editor | undefined;
@@ -52,7 +51,7 @@ export const QRCodeSidebar = ({
   const form = useForm<z.infer<typeof QRCodeSchema>>({
     resolver: zodResolver(QRCodeSchema),
     defaultValues: {
-      text: "www.zikoro.com/credentials/certificate/verify/#{certificate_id#}",
+      text: "https://www.zikoro.com/credentials/verify/certificate/#{certificateId#}",
       color: "#000000",
       bgcolor: "#ffffff",
     },
@@ -80,14 +79,14 @@ export const QRCodeSidebar = ({
             autoComplete="off"
             onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-6 p-4"
-          > 
+          >
             <div>
               <FormField
                 control={form.control}
                 name="bgcolor"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>BackgroundColor</FormLabel>
+                    <FormLabel>Background Color</FormLabel>
                     <FormControl>
                       <ColorPicker
                         value={field.value as string}
