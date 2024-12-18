@@ -24,7 +24,7 @@ export function AllQuestions({
   initiateReply,
   replyQuestion,
   replyToNull,
-  qa
+  qa,
 }: {
   userDetail: TUserAccess | null;
   isAttendee?: boolean;
@@ -33,7 +33,7 @@ export function AllQuestions({
   initiateReply: (t: TEventQAQuestion | null) => void;
   replyQuestion: TEventQAQuestion | null;
   replyToNull: () => void;
-  qa: TEventQa
+  qa: TEventQa;
 }) {
   // const [replyQuestion, setReplyQuestion] = useState<TEventQAQuestion | null>(
   //   null
@@ -46,10 +46,9 @@ export function AllQuestions({
   const { postData } = usePostRequest("/engagements/qa/qaQuestion");
   const { setUserAccess } = useAccessStore();
 
-
   const alias = useMemo(() => {
-    return generateAlias()
-  },[])
+    return generateAlias();
+  }, []);
 
   async function submitReply(e: any) {
     e.preventDefault();
@@ -70,7 +69,7 @@ export function AllQuestions({
 
     const user = isAttendee
       ? {
-          userId: userDetail?.userId ||alias,
+          userId: userDetail?.userId || alias,
           userNickName: userDetail?.userNickName || name || "",
           userImage: userDetail?.userImage || name || "",
         }
@@ -115,18 +114,17 @@ export function AllQuestions({
         userImage: userDetail?.userImage || name || "",
       });
     }
-   if(!qa?.accessibility?.live) {
-    initiateReply(null);
-   }
+    if (!qa?.accessibility?.live) {
+      initiateReply(null);
+    }
     refetch();
     setIsSubmitting(false);
   }
 
   const useAcronym = useMemo(() => {
     if (qa?.accessibility?.allowAnonymous) {
-      return "A"
-    }
-   else if (typeof userDetail?.userImage === "string") {
+      return "A";
+    } else if (typeof userDetail?.userImage === "string") {
       const splittedName = userDetail?.userImage?.split(" ");
       if (splittedName?.length > 1) {
         return `${splittedName[0].charAt(0) ?? ""}${
@@ -182,13 +180,23 @@ export function AllQuestions({
             />
             <p>Replying</p>
           </button>
-          <AskandReplyCard eventQa={replyQuestion} showReply={initiateReply}  userDetail={userDetail}  qa={qa} isReply />
+          <AskandReplyCard
+            eventQa={replyQuestion}
+            showReply={initiateReply}
+            userDetail={userDetail}
+            qa={qa}
+            isReply
+          />
           <form
             onSubmit={submitReply}
-            className="w-full flex items-center border rounded-lg p-3 justify-center gap-3 flex-col"
+            className={cn(
+              "w-full flex items-center border rounded-lg p-3 justify-center gap-3 flex-col",
+              !qa?.accessibility?.canRespond && "hidden"
+            )}
           >
             <div className="w-full flex items-end gap-x-2">
-              {!qa?.accessibility?.allowAnonymous && userDetail?.userImage?.startsWith("https://") ? (
+              {!qa?.accessibility?.allowAnonymous &&
+              userDetail?.userImage?.startsWith("https://") ? (
                 <Image
                   src={(userDetail?.userImage as string) || "/zikoro.png"}
                   alt=""
@@ -239,17 +247,22 @@ export function AllQuestions({
                 )}
               </Button>
             </div>
-            <label htmlFor="isAnonymous" className="flex items-center gap-x-2">
-              <input
-                id="anonymous"
-                name="anonymous"
-                type="checkbox"
-                checked={isAnonymous}
-                onChange={(e) => setIsAnonymous(!isAnonymous)}
-                className="accent-basePrimary h-4 w-4 rounded-lg"
-              />
-              <p className="text-sm ">Reply as anyonymous</p>
-            </label>
+            {qa?.accessibility?.allowAnonymous && (
+              <label
+                htmlFor="isAnonymous"
+                className="flex items-center gap-x-2"
+              >
+                <input
+                  id="anonymous"
+                  name="anonymous"
+                  type="checkbox"
+                  checked={isAnonymous}
+                  onChange={(e) => setIsAnonymous(!isAnonymous)}
+                  className="accent-basePrimary h-4 w-4 rounded-lg"
+                />
+                <p className="text-sm ">Reply as anyonymous</p>
+              </label>
+            )}
           </form>
 
           <div className="w-full flex flex-col items-start justify-start gap-3 sm:gap-4">

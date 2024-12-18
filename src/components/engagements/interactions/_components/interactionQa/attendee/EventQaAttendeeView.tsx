@@ -57,17 +57,27 @@ export default function EventQaAttendeeView({
   const filteredEventQaQuestions = useMemo(() => {
     if (Array.isArray(eventQAQuestions)) {
       if (filterValue === "Recent") {
-        return eventQAQuestions
+        const filtered = eventQAQuestions
           .sort(
             (a, b) =>
               new Date(b.created_at).getTime() -
               new Date(a.created_at).getTime()
           )
           .filter((v) => v?.questionStatus !== "pending");
+
+        const pinnedQuestion = filtered.filter((q) => q?.isPinned);
+        const unpinnedQuestion = filtered?.filter((q) => !q?.isPinned);
+
+        return [...pinnedQuestion, ...unpinnedQuestion];
       } else if (filterValue === "Top Liked") {
-        return eventQAQuestions
+        const filtered = eventQAQuestions
           .sort((a, b) => b.vote - a.vote)
           .filter((v) => v?.questionStatus !== "pending");
+
+        const pinnedQuestion = filtered.filter((q) => q?.isPinned);
+        const unpinnedQuestion = filtered?.filter((q) => !q?.isPinned);
+
+        return [...pinnedQuestion, ...unpinnedQuestion];
       }
     } else return [];
   }, [eventQAQuestions, filterValue]);
@@ -96,78 +106,67 @@ export default function EventQaAttendeeView({
     } else return [];
   }, [eventQAQuestions, userAccess, attendee, filterValue]);
 
-  // subscribe to qa
   useEffect(() => {
-    // function subscribeToUpdate() {
     if (!qa?.accessibility?.live) return;
-    console.log("in it");
-    const channel = supabase
-      .channel("live-quiz")
-      .on(
-        "postgres_changes",
-        {
-          event: "UPDATE",
-          schema: "public",
-          table: "QandAQuestions",
-          filter: `QandAAlias=eq.${qaId}`,
-        },
-        (payload) => {
-          // console.log("payload from live", payload);
-          const updated = payload.new as TEventQAQuestion;
-          if (eventQAQuestions) {
-            const updatedQuestions = eventQAQuestions?.map((item) => {
-              if (item.id === updated.id) {
-                return {
-                  ...updated,
-                };
-              }
-              return item;
-            });
-            setEventQAQuestions(updatedQuestions);
-            console.log("payload from live", payload.new, { replyQuestion });
-            if (replyQuestion !== null && replyQuestion?.id === updated.id) {
-              //   console.log("yes")
-              setReplyQuestion(updated);
+
+    // Create a single channel for the "live-quiz"
+    const channel = supabase.channel("live-quiz");
+
+    // Listen for UPDATE events
+    channel.on(
+      "postgres_changes",
+      {
+        event: "UPDATE",
+        schema: "public",
+        table: "QandAQuestions",
+        filter: `QandAAlias=eq.${qaId}`,
+      },
+      (payload) => {
+        //  console.log("payload from live UPDATE", payload);
+        const updated = payload.new as TEventQAQuestion;
+        if (eventQAQuestions) {
+          const updatedQuestions = eventQAQuestions.map((item) => {
+            if (item.id === updated.id) {
+              return { ...updated };
             }
+            return item;
+          });
+          setEventQAQuestions(updatedQuestions);
+
+          if (replyQuestion !== null && replyQuestion?.id === updated.id) {
+            setReplyQuestion(updated);
           }
         }
-      )
-      .subscribe((status) => {
-        console.log("Subscription status:", status);
-      });
+      }
+    );
 
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [supabase, eventQAQuestions, qa]);
-
-  useEffect(() => {
-    // function subscribeToUpdate() {
-    if (!qa?.accessibility?.live) return;
-    const channel = supabase
-      .channel("live-quiz")
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "QandAQuestions",
-          filter: `QandAAlias=eq.${qaId}`,
-        },
-        (payload) => {
-          //  console.log("payload from live INSERT", payload);
-          if (eventQAQuestions)
-            setEventQAQuestions([
-              ...eventQAQuestions,
-              payload.new as TEventQAQuestion,
-            ]);
+    // Listen for INSERT events
+    channel.on(
+      "postgres_changes",
+      {
+        event: "INSERT",
+        schema: "public",
+        table: "QandAQuestions",
+        filter: `QandAAlias=eq.${qaId}`,
+      },
+      (payload) => {
+        console.log("payload from live INSERT", payload);
+        if (eventQAQuestions) {
+          setEventQAQuestions([
+            ...eventQAQuestions,
+            payload.new as TEventQAQuestion,
+          ]);
         }
-      )
-      .subscribe((status) => {
-        console.log("Subscription status insert:", status);
-      });
+      }
+    );
+
+    // Subscribe to the channel
+    channel.subscribe((status) => {
+      console.log("Subscription status:", status);
+    });
 
     return () => {
+      // Cleanup the channel on unmount
       supabase.removeChannel(channel);
     };
   }, [supabase, eventQAQuestions, qa]);
@@ -271,7 +270,7 @@ export default function EventQaAttendeeView({
         </div>
       </div>
 
-      {isOpen && (
+      {isOpen && !qa?.accessibility?.cannotAskQuestion && (
         <AskandReplyModal
           userDetail={{
             userId: attendee?.attendeeAlias || userAccess?.userId || "",
@@ -285,6 +284,7 @@ export default function EventQaAttendeeView({
           QandAAlias={qaId}
           isAttendee
           close={onShowQuestionModal}
+          qa={qa}
           setUserAccess={setUserAccess}
           refetch={qa?.accessibility?.live ? async () => {} : getQAQUestions}
         />

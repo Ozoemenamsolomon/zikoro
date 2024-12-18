@@ -109,6 +109,11 @@ export interface TEventQa {
     disable: boolean;
     live: boolean;
     allowAnonymous: boolean;
+    mustReviewQuestion:boolean;
+    cannotAskQuestion:boolean;
+    canRespond:boolean;
+    canTag:boolean;
+    indicateAnsweredQuestions:boolean;
   };
 }
 
@@ -125,7 +130,7 @@ export interface TEventQAQuestion {
   userNickName: string;
   userImage: string;
   content: string;
-  isAnswered: string;
+  isAnswered: boolean;
   Responses: TEventQAQuestionResponse[];
   vote: number;
   voters: {

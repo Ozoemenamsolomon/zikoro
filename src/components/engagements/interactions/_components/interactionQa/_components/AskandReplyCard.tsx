@@ -10,6 +10,10 @@ import { formatReviewNumber, generateAlias } from "@/utils";
 import { usePostRequest } from "@/hooks/services/request";
 import { AiOutlineLike, AiFillLike } from "react-icons/ai";
 import useAccessStore from "@/store/globalAcessStore";
+import {
+  IoCheckmarkCircleOutline,
+  IoCheckmarkCircleSharp,
+} from "react-icons/io5";
 
 export function AskandReplyCard({
   className,
@@ -137,8 +141,41 @@ export function AskandReplyCard({
     refetch?.();
   }
 
+  async function downVote() {
+    setLiked(false);
+    const payload: Partial<TEventQAQuestion> = responseId
+      ? {
+          ...originalQuestion,
+          Responses: originalQuestion?.Responses?.map((resp) => {
+            if (resp?.questionAlias === responseId) {
+              return {
+                ...resp,
+                vote: (resp?.vote || 0) - 1,
+                voters: resp?.voters?.filter(
+                  (v) => v?.userId !== userDetail?.userId
+                ),
+              };
+            }
+            return resp;
+          }),
+        }
+      : {
+          ...eventQa,
+          vote: (eventQa?.vote || 0) - 1,
+          voters: eventQa?.voters?.filter(
+            (v) => v?.userId !== userDetail?.userId
+          ),
+        };
+
+    await postData({ payload });
+    if (!qa?.accessibility?.live) {
+      showReply?.(null);
+    }
+    refetch?.();
+  }
+
   const useAcronym = useMemo(() => {
-    if (eventQa?.anonymous || qa?.accessibility?.allowAnonymous) {
+    if (eventQa?.anonymous && qa?.accessibility?.allowAnonymous) {
       return "A";
     } else if (typeof eventQa?.userImage === "string") {
       const splittedName = eventQa?.userImage?.split(" ");
@@ -162,12 +199,40 @@ export function AskandReplyCard({
     }
   }, [userDetail, eventQa]);
 
-  console.log("user", userDetail);
+  async function toggleIsAnswered() {
+    const payload: Partial<TEventQAQuestion> = eventQa?.isAnswered
+      ? {
+          ...eventQa,
+          isAnswered: false,
+        }
+      : {
+          ...eventQa,
+          isAnswered: true,
+        };
+    await postData({ payload });
+    refetch?.();
+  }
+
+  async function togglePinned() {
+    const payload: Partial<TEventQAQuestion> = eventQa?.isPinned
+      ? {
+          ...eventQa,
+          isPinned: false,
+        }
+      : {
+          ...eventQa,
+          isPinned: true,
+        };
+    await postData({ payload });
+    refetch?.();
+  }
+
+  // console.log("user", userDetail);
 
   return (
     <div
       className={cn(
-        "w-full flex h-fit flex-col items-start p-3 rounded-lg justify-start gap-y-3 sm:gap-y-4",
+        "w-full flex h-fit flex-col items-start p-3 relative rounded-lg justify-start gap-y-3 sm:gap-y-4",
         className
       )}
     >
@@ -193,7 +258,7 @@ export function AskandReplyCard({
 
           <div className="flex items-start flex-col justify-start gap-1">
             <p className="font-semibold capitalize text-sm sm:text-desktop">
-              {eventQa?.anonymous || qa?.accessibility?.allowAnonymous
+              {eventQa?.anonymous && qa?.accessibility?.allowAnonymous
                 ? "Anonymous"
                 : eventQa?.userNickName ?? "Anonymous"}
             </p>
@@ -205,6 +270,19 @@ export function AskandReplyCard({
 
         {isAttendee && (
           <p>{eventQa?.questionStatus === "pending" ? "In Review" : ""}</p>
+        )}
+        {!isAttendee && !isReply && qa?.accessibility?.canTag && (
+          <button onClick={togglePinned} className="absolute top-2 right-3">
+            {eventQa?.isPinned ? (
+              <InlineIcon
+                fontSize={22}
+                color="#001fcc"
+                icon="pepicons-pencil:pin-circle-filled"
+              />
+            ) : (
+              <InlineIcon fontSize={22} icon="pepicons-pencil:pin-circle" />
+            )}
+          </button>
         )}
       </div>
 
@@ -226,10 +304,14 @@ export function AskandReplyCard({
       </div>
       <div className="flex items-center justify-center w-full gap-x-3">
         <Button
-          onClick={voteFn}
-          disabled={
-            isLoading || userDetail?.userId === eventQa?.userId || isLiked
-          }
+          onClick={() => {
+            if (userDetail?.userId === eventQa?.userId) {
+              downVote();
+            } else {
+              voteFn();
+            }
+          }}
+          disabled={isLoading}
           className="rounded-3xl bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end gap-x-2 px-2 py-1 h-fit"
         >
           <span className="text-mobile">{formatVotesCount}</span>
@@ -247,6 +329,26 @@ export function AskandReplyCard({
           >
             <span className="text-mobile">{formatResponsesCount}</span>
             <InlineIcon fontSize={20} icon="mdi-light:message" />
+          </Button>
+        )}
+        {!isReply && qa?.accessibility?.indicateAnsweredQuestions && (
+          <Button
+            disabled={isAttendee}
+            onClick={toggleIsAnswered}
+            className={cn(
+              "rounded-3xl bg-basePrimary text-white gap-x-1 px-2 py-1 h-fit",
+              !eventQa?.isAnswered &&
+                "bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end"
+            )}
+          >
+            {eventQa?.isAnswered ? (
+              <>
+                <p className="text-mobile sm:text-sm"> Answered</p>
+                <IoCheckmarkCircleOutline size={20} />
+              </>
+            ) : (
+              <IoCheckmarkCircleOutline size={20} />
+            )}
           </Button>
         )}
       </div>
