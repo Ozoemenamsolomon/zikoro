@@ -55,6 +55,7 @@ export function MyQuestions({
                 refetch={refetch}
                 isMyQuestion
                userDetail={userDetail}
+               
               />
             ))}
         </div>

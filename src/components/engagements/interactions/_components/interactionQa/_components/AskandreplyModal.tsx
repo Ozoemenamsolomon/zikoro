@@ -24,14 +24,16 @@ export function AskandReplyModal({
   setUserAccess,
   isAttendee,
   qa,
+  qaQuestion
 }: {
   QandAAlias: string;
   close: () => void;
   refetch?: () => void;
-  userDetail: TUserAccess;
+  userDetail: TUserAccess | null;
   isAttendee?: boolean;
   setUserAccess?: (c: TUserAccess | null) => void;
   qa: TEventQa;
+  qaQuestion?: Partial<TEventQAQuestion>
 }) {
   const form = useForm<z.infer<typeof eventQaAskAndReplySchema>>({
     resolver: zodResolver(eventQaAskAndReplySchema),
@@ -59,7 +61,15 @@ export function AskandReplyModal({
       userImage: userDetail?.userNickName || values?.userNickName,
       userNickName: userDetail?.userNickName || values?.userNickName,
     };
-    const payload: Partial<TEventQAQuestion> = {
+    const payload: Partial<TEventQAQuestion> =qaQuestion?.id ? {
+      ...qaQuestion,
+      ...values,
+      QandAAlias: QandAAlias,
+      questionStatus:
+        isAttendee && qa?.accessibility?.mustReviewQuestion
+          ? "pending"
+          : "verified",
+    } : {
       ...user,
       ...values,
       QandAAlias: QandAAlias,
@@ -111,6 +121,7 @@ export function AskandReplyModal({
                 <InputOffsetLabel label="">
                   <Input
                     placeholder="Enter your name"
+                    readOnly={qaQuestion && typeof qaQuestion === "object"}
                     {...form.register("userNickName")}
                     className="placeholder:text-sm h-12 placeholder:text-gray-400 text-gray-700"
                   />

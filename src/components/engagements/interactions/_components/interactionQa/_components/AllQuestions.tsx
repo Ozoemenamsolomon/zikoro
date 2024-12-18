@@ -219,7 +219,7 @@ export function AllQuestions({
                     setName(e.target.value);
                   }}
                   className="border-0 border-b rounded-none w-full"
-                  placeholder="Enter a nickname"
+                  placeholder="Enter a name"
                   type="text"
                 />
                 <Input
