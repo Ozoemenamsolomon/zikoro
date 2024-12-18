@@ -191,7 +191,7 @@ export function AllQuestions({
             onSubmit={submitReply}
             className={cn(
               "w-full flex items-center border rounded-lg p-3 justify-center gap-3 flex-col",
-              !qa?.accessibility?.canRespond && "hidden"
+              !qa?.accessibility?.canRespond && isAttendee && "hidden"
             )}
           >
             <div className="w-full flex items-end gap-x-2">

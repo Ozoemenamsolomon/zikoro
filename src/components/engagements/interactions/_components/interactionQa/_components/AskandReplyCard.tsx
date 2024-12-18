@@ -343,11 +343,7 @@ export function AskandReplyCard({
             <Button
               disabled={isAttendee}
               onClick={toggleIsAnswered}
-              className={cn(
-                "rounded-3xl bg-basePrimary text-white gap-x-1 px-2 py-1 h-fit",
-                !eventQa?.isAnswered &&
-                  "bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end"
-              )}
+              className="rounded-3xl gap-x-1 px-2 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end py-1 h-fit"
             >
               {eventQa?.isAnswered ? (
                 <>

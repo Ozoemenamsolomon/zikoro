@@ -531,7 +531,7 @@ export function BookEvent({
                   <p>---</p>
                 )}
               </div>
-             {!event?.attendeePayProcessingFee && <div className=" flex items-center text-sm justify-between w-full">
+             {event?.attendeePayProcessingFee && <div className=" flex items-center text-sm justify-between w-full">
                 <p>{`${fields.length}x Processing fee:`}</p>
                 {processingFee ? (
                   <p>

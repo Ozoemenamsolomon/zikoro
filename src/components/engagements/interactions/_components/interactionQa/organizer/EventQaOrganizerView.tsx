@@ -67,14 +67,14 @@ export default function EventQaOrganizerView({
         const updated = payload.new as TEventQAQuestion;
         if (eventQAQuestions) {
           const updatedQuestions = eventQAQuestions.map((item) => {
-            if (item.id === updated.id) {
+            if (item.questionAlias === updated.questionAlias) {
               return { ...updated };
             }
             return item;
           });
           setEventQAQuestions(updatedQuestions);
   
-          if (replyQuestion !== null && replyQuestion?.id === updated.id) {
+          if (replyQuestion !== null && replyQuestion?.questionAlias === updated.questionAlias) {
             setReplyQuestion(updated);
           }
         }

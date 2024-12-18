@@ -40,6 +40,7 @@ export function AskandReplyModal({
     defaultValues: {
       anonymous: false,
       userNickName: userDetail?.userNickName,
+      content: qaQuestion?.content
     },
   });
   const { postData, isLoading } = usePostRequest("/engagements/qa/qaQuestion");
