@@ -29,7 +29,7 @@ export function MyQuestions({
   if (myQuestions?.length === 0) {
     return (
       <EmptyQaState
-        title="It looks like you haven't asked a auestion yet"
+        title="It looks like you haven't asked a question yet"
         description="All your Questions will appear here."
       />
     );
