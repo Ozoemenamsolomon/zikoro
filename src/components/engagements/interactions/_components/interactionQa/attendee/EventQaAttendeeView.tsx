@@ -21,6 +21,7 @@ import { useGetData } from "@/hooks/services/request";
 import { useVerifyUserAccess } from "@/hooks";
 import useAccessStore from "@/store/globalAcessStore";
 import { InlineIcon } from "@iconify/react";
+import Link from "next/link";
 
 const supabase = createClientComponentClient();
 export default function EventQaAttendeeView({
@@ -133,7 +134,10 @@ export default function EventQaAttendeeView({
           });
           setEventQAQuestions(updatedQuestions);
 
-          if (replyQuestion !== null && replyQuestion?.questionAlias === updated.questionAlias) {
+          if (
+            replyQuestion !== null &&
+            replyQuestion?.questionAlias === updated.questionAlias
+          ) {
             setReplyQuestion(updated);
           }
         }
@@ -267,6 +271,20 @@ export default function EventQaAttendeeView({
               <Plus size={40} className="text-white" />
             </Button>
           )}
+         {qa?.branding?.poweredBy && <div className="w-full fixed bottom-0 inset-x-0 bg-white p-3 flex items-center justify-center">
+            <Link
+              target="_blank"
+              className="text-mobile gap-x-1 flex items-center sm:text-sm"
+              href={`${window.location.origin}/create`}
+            >
+              <p className="block">Create your own Q&A</p>
+              <InlineIcon
+                icon="material-symbols-light:arrow-insert"
+                fontSize={18}
+                className="rotate-90"
+              />
+            </Link>
+          </div>}
         </div>
       </div>
 

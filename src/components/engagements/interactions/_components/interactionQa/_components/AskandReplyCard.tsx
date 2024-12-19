@@ -231,6 +231,22 @@ export function AskandReplyCard({
     setIsOpen((p) => !p);
   }
 
+  const isEditable = useMemo(() => {
+    if (isAttendee) {
+      return (
+        !isReply &&
+        userDetail?.userId === eventQa?.userId &&
+        (!eventQa?.isAnswered ||
+          eventQa?.questionStatus === "pending" ||
+          eventQa?.Responses === null ||
+          (Array.isArray(eventQa?.Responses) &&
+            eventQa?.Responses?.length === 0))
+      );
+    } else {
+      return !isReply && userDetail?.userId === eventQa?.userId;
+    }
+  }, [isReply, isAttendee, userDetail, eventQa]);
+
   return (
     <>
       <div

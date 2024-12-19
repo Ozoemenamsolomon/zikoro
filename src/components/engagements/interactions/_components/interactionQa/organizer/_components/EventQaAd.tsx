@@ -33,7 +33,7 @@ export function EventQaAdvert({
         !isLeftBox && "hidden"
       )}
     >
-      {true ? (
+      {qa?.branding?.eventName ? (
         <h2 className="font-semibold w-full border-b p-4 text-base sm:text-xl">
           {eventName}
         </h2>

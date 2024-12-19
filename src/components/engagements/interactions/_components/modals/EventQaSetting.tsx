@@ -36,8 +36,8 @@ export function EventQaSetting({
     data: TOrgEvent | null;
   } = useFetchSingleEvent(eventAlias);
   const [branding, setBranding] = useState({
-    eventName: false,
-    poweredBy: false,
+    eventName: true,
+    poweredBy: true,
   });
   const [loading, setLoading] = useState(false);
   const [accessibility, setAccessibility] = useState({
@@ -98,6 +98,12 @@ export function EventQaSetting({
     await postData({ payload });
     if (refetch) refetch();
     setLoading(false);
+    window.open(
+      `/engagements/${eventAlias}/qao/${
+        eventQa?.QandAAlias || qaAlias
+      }`,
+      "_self"
+    );
     close();
   }
 
@@ -228,7 +234,7 @@ export function EventQaSetting({
               />
             </div>
             <div className="flex w-full text-mobile sm:text-sm items-center justify-between">
-              <p>Show Powered by Zikoro</p>
+              <p>Show Create your own Q&A</p>
               <Switch
                 checked={branding?.poweredBy}
                 disabled={loading}
