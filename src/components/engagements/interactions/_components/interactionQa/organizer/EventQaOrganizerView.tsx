@@ -274,7 +274,7 @@ export default function EventQaOrganizerView({
                 setIsLeftBox(true);
                 setIsRightBox(false)
               }}
-              className="px-0 block md:hidden absolute z-50 left-8  bottom-16 sm:left-10 sm:bottom-20 h-fit w-fit"
+              className="px-0 block md:hidden bg-gray-300/40 rounded-full  fixed z-50 left-8  bottom-16 sm:left-10 sm:bottom-20 h-10 w-10"
             >
               <Minimize2 size={20} />
             </Button>
@@ -284,7 +284,7 @@ export default function EventQaOrganizerView({
                 e.stopPropagation();
                 setIsLeftBox(!isLeftBox);
               }}
-              className="px-0 hidden md:block absolute z-50 left-8  bottom-16 sm:left-10 sm:bottom-20 h-fit w-fit"
+              className="px-0 hidden md:block fixed z-50 left-8  bottom-16 sm:left-10 sm:bottom-20 h-fit w-fit"
             >
               <Minimize2 size={20} />
             </Button>
