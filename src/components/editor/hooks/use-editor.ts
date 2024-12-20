@@ -57,6 +57,7 @@ const buildEditor = ({
   setStrokeDashArray,
 }: BuildEditorProps): Editor => {
   const generateSaveOptions = () => {
+    console.log(getWorkspace());
     const { width, height, left, top } = getWorkspace() as fabric.Rect;
 
     return {
@@ -89,7 +90,7 @@ const buildEditor = ({
     const pdf = new jsPDF({
       orientation: width > height ? "l" : "p",
       unit: "pt",
-      format: [width, height],
+      format: [options.width, options.height],
     });
     // const imgProperties = pdf.getImageProperties(dataUrl);
     // const pdfWidth = pdf.internal.pageSize.getWidth();
@@ -265,7 +266,7 @@ const buildEditor = ({
     addImage: (value: string) => {
       const newImage =
         value === "#{placeholder_profile}#"
-          ? "https://www.seekpng.com/png/detail/966-9665317_placeholder-image-person-jpg.png"
+          ? "https://res.cloudinary.com/zikoro/image/upload/v1734007655/ZIKORO/image_placeholder_j25mn4.jpg"
           : value;
 
       console.log(newImage);
@@ -285,8 +286,46 @@ const buildEditor = ({
         }
       );
     },
+    addBackgroundImage: (value: string) => {
+      console.log(value);
+
+      fabric.Image.fromURL(
+        value,
+        (image) => {
+          const workspace = getWorkspace();
+
+          // image.scaleToWidth(workspace?.width || 0);
+          // image.scaleToHeight(workspace?.height || 0);
+          image.scaleToHeight(900);
+          image.scaleToWidth(1200);
+
+          addToCanvas(image);
+          canvas.getActiveObjects().forEach((object) => {
+            canvas.sendToBack(object);
+          });
+
+          canvas.discardActiveObject();
+          canvas.renderAll();
+          workspace?.sendToBack();
+        },
+        {
+          crossOrigin: "anonymous",
+        }
+      );
+    },
     addQRCode: (value: string, color: string, bgcolor: string) => {
       try {
+        console.log(
+          rgbaToHex(color),
+          rgbaToHex(bgcolor),
+          "https://api.qrserver.com/v1/create-qr-code/?size=150x150&format=svg" +
+            "&bgcolor=" +
+            (rgbaToHex(bgcolor) || "#ffffff") +
+            "&color=" +
+            (rgbaToHex(color) || "#000000") +
+            "&data=" +
+            encodeURIComponent(value)
+        );
         fabric.Image.fromURL(
           "https://api.qrserver.com/v1/create-qr-code/?size=150x150&format=svg" +
             "&bgcolor=" +
@@ -848,6 +887,8 @@ export const useEditor = ({
           blur: 5,
         }),
       });
+
+      console.log(initialCanvas);
 
       initialCanvas.setWidth(initialContainer?.offsetWidth);
       initialCanvas.setHeight(initialContainer?.offsetHeight);

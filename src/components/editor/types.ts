@@ -210,7 +210,10 @@ export type BuildEditorProps = {
 
 export interface Editor {
   generateLink: () => string;
-  savePdf: (name?: string) => void;
+  savePdf: (
+    { width, height }: { width: number; height: number },
+    name?: string
+  ) => void;
   savePng: () => void;
   saveJpg: () => void;
   saveSvg: () => void;
@@ -233,6 +236,7 @@ export interface Editor {
   onPaste: () => void;
   changeImageFilter: (value: string) => void;
   addImage: (value: string) => void;
+  addBackgroundImage: (value: string) => void;
   addQRCode: (value: string, color?: string, bgcolor?: string) => void;
   delete: () => void;
   changeFontSize: (value: number) => void;

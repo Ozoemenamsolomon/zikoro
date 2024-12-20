@@ -84,12 +84,12 @@ export const VerificationSidebar = ({
           >
             Add a location
           </Button>
-          {/* <Button
+          <Button
             className="w-full"
             onClick={() => editor?.addImage("#{placeholder_profile}#")}
           >
             Add a Profile Image
-          </Button> */}
+          </Button>
         </div>
       </ScrollArea>
       <ToolSidebarClose onClick={onClose} />
