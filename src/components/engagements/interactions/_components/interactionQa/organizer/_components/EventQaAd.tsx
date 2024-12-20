@@ -31,8 +31,8 @@ export function EventQaAdvert({
     <div
       className={cn(
         "w-full flex-col  rounded-l-xl h-[100vh] md:flex  items-start justify-between hidden  col-span-2 ",
-        isLeftBox && !isRightBox &&  "col-span-full mx-auto max-w-xl flex",
-        !isLeftBox && "hidden"
+        isLeftBox && !isRightBox &&  "col-span-full mx-auto max-w-xl md:flex flex",
+        !isLeftBox && "hidden md:hidden"
       )}
     >
       {qa?.branding?.eventName ? (
