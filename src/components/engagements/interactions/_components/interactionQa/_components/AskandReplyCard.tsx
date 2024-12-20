@@ -237,7 +237,7 @@ export function AskandReplyCard({
         !isReply &&
         userDetail?.userId === eventQa?.userId &&
         (!eventQa?.isAnswered ||
-          eventQa?.questionStatus === "pending" ||
+          eventQa?.questionStatus !== "pending" ||
           eventQa?.Responses === null ||
           (Array.isArray(eventQa?.Responses) &&
             eventQa?.Responses?.length === 0))
@@ -252,7 +252,8 @@ export function AskandReplyCard({
       <div
         className={cn(
           "w-full flex h-fit flex-col items-start p-3 relative rounded-lg justify-start gap-y-3 sm:gap-y-4",
-          className
+          className,
+          eventQa?.isAnswered && 'bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end'
         )}
       >
         <div className={cn("flex w-full items-center justify-between")}>
@@ -367,13 +368,13 @@ export function AskandReplyCard({
                   <IoCheckmarkCircleOutline size={20} />
                 </>
               ) : (
-                <IoCheckmarkCircleOutline size={20} />
+               isAttendee ? <></> : <IoCheckmarkCircleOutline size={20} />
               )}
             </Button>
           )}
         </div>
 
-        {!isReply && userDetail?.userId === eventQa?.userId && (
+        {isEditable && (
           <div className="w-full flex items-end justify-end">
             <Button
               onClick={onShowQuestionModal}

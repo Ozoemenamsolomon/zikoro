@@ -22,6 +22,7 @@ import { useVerifyUserAccess } from "@/hooks";
 import useAccessStore from "@/store/globalAcessStore";
 import { InlineIcon } from "@iconify/react";
 import Link from "next/link";
+import { cn } from "@/lib";
 
 const supabase = createClientComponentClient();
 export default function EventQaAttendeeView({
@@ -266,7 +267,7 @@ export default function EventQaAttendeeView({
           {active === 1 && (
             <Button
               onClick={onShowQuestionModal}
-              className="h-14 w-14 fixed z-50 right-8 px-0 bottom-16 sm:right-10 sm:bottom-20 rounded-full bg-basePrimary"
+              className={cn("h-14 w-14 fixed z-50 right-8 px-0 bottom-16 sm:right-10 sm:bottom-20 rounded-full bg-basePrimary", qa?.accessibility?.cannotAskQuestion && "hidden")}
             >
               <Plus size={40} className="text-white" />
             </Button>

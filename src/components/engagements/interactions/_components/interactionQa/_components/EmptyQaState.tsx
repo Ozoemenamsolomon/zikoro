@@ -12,10 +12,10 @@ export function EmptyQaState({
       <div className="bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end w-[100px] h-[100px] rounded-full flex items-center justify-center">
         <InlineIcon icon="healthicons:alert" color="#001fcc" fontSize={50} />
       </div>
-      <h2 className="font-semibold capitalize gradient-text bg-basePrimary text-lg sm:text-2xl">
+      <h2 className="font-semibold text-center capitalize gradient-text bg-basePrimary text-lg sm:text-2xl">
         {title}
       </h2>
-      <p>{description}</p>
+      <p className="text-center">{description}</p>
     </div>
   );
 }
