@@ -7,24 +7,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useVerifyAttendeeCertificate } from "@/hooks";
 import { formatDateToHumanReadable } from "@/utils/date";
-import html2canvas from "html2canvas";
-import { jsPDF } from "jspdf";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 // import { exportComponentAsPNG } from "react-component-export-image";
-import QRCode from "react-qr-code";
-import { Container, SettingsPanel, Text } from "@/components/certificate";
-import CertificateQRCode from "@/components/certificate/QRCode";
-import { Image as ImageElement } from "@/components/certificate";
 import { replaceSpecialText, replaceURIVariable } from "@/utils/helpers";
-import { Editor, Frame } from "@craftjs/core";
 import { toast } from "@/components/ui/use-toast";
 import { fabric } from "fabric";
-import { useToPng, useToSvg } from "@hugocxl/react-to-image";
 import {
   FacebookIcon,
-  InstagramIcon,
   LinkedinIcon,
   TwitterIcon,
 } from "@/constants";
@@ -110,7 +100,7 @@ const CertificateView = ({
 
   return (
     <div className="flex-[60%] flex flex-col-reverse md:flex-col items-center gap-4 px-8">
-      <div className="hidden md:flex gap-2 w-3/4 flex-col md:flex-row items-center justify-between">
+      <div className="hidden md:flex gap-2 flex-col md:flex-row items-center justify-between">
         <Button
           onClick={() =>
             editor?.savePdf(
@@ -247,12 +237,12 @@ const CertificateView = ({
         <div className="absolute inset-0 bg-transparent z-50" />
         <canvas ref={canvasRef} />
       </div>
-      <div className="relative h-auto w-full">
+
+      <div className="relative h-full w-full flex justify-center items-center flex-1">
         <img
           alt="certificate"
           src={editor?.generateLink()}
-          className="h-auto"
-          style={{ width: initialData?.width }}
+          style={{ width: initialData?.width, height: initialData?.height }}
         />{" "}
       </div>
     </div>
@@ -309,7 +299,7 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
       {!isLoading && certificate ? (
         <>
           <CertificateView certificate={certificate} />
-          <div className="flex-[40%] flex flex-col gap-8 px-2">
+          <div className="flex flex-[40%] flex-col gap-8 px-2">
             <div className="flex flex-col gap-4">
               <div>
                 <svg

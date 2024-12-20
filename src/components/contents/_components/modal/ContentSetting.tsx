@@ -48,6 +48,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { ExclamationCircle } from "styled-icons/heroicons-outline";
+import Editor from "@/app/(mainApp)/(dashboard)/event/[eventId]/(home)/marketing/_components/_tabs/email/custom_editor/Editor";
 
 const eventWebsiteSettings = [
   { title: "Logo", status: false },
