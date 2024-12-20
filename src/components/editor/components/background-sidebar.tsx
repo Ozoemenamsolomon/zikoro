@@ -307,7 +307,7 @@ export const BackgroundSidebar = ({
                     />
                     <button
                       onClick={() => {
-                        editor?.addImage(image);
+                        editor?.addBackgroundImage(image);
                       }}
                       className="absolute bottom-0 left-0 w-full truncate bg-black/50 p-1 text-center text-[10px] text-white opacity-0 hover:underline group-hover:opacity-100"
                     >
