@@ -392,9 +392,9 @@ export function EventQaSetting({
 
             <div className="flex w-full text-mobile sm:text-sm items-center justify-between">
               <div className="flex flex-col items-start justify-start">
-                <p>Tags</p>
+                <p>Pin a Question</p>
                 <p className="text-xs text-gray-500">
-                  Admin can add tags to questions.
+                  Admin can pin question to make them appear at the top of the list.
                 </p>
               </div>
               <Switch

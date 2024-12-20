@@ -5,6 +5,7 @@ import { Minimize2 } from "styled-icons/feather";
 import { Button } from "@/components";
 import QRCode from "react-qr-code";
 import { cn } from "@/lib";
+import { useState } from "react";
 import copy from "copy-to-clipboard";
 import { TEventQa } from "@/types";
 export function EventQaAdvert({
@@ -25,6 +26,7 @@ export function EventQaAdvert({
 }) {
  // console.log("ileft", isLeftBox, isRightBox);
   const qaLink = `${window.location.origin}/engagements/${qa?.eventAlias}/qaa/${qa?.QandAAlias}`
+  const [isCopy, setCopy] = useState(false)
   return (
     <div
       className={cn(
@@ -58,10 +60,14 @@ export function EventQaAdvert({
           <Button
             onClick={() => {
               copy(qaLink);
+              setCopy(true)
+              setTimeout(() => {
+                setCopy(false)
+              },1000)
             }}
             className="w-[20%] rounded-r-lg rounded-l-none bg-basePrimary text-white text-mobile"
           >
-            <span className="text-white"> Copy</span>
+            <span className="text-white"> { isCopy ? "Copied" : "Copy"}</span>
           </Button>
         </div>
 
