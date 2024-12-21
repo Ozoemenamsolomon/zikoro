@@ -112,8 +112,9 @@ export interface TEventQa {
     mustReviewQuestion:boolean;
     cannotAskQuestion:boolean;
     canRespond:boolean;
-    canTag:boolean;
+    canPin:boolean;
     indicateAnsweredQuestions:boolean;
+    canTag:boolean;
   };
 }
 

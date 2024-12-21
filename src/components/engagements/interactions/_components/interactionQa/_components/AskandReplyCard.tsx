@@ -294,7 +294,7 @@ export function AskandReplyCard({
           {!isAttendee &&
             !isMyQuestion &&
             !isReply &&
-            qa?.accessibility?.canTag && (
+            qa?.accessibility?.canPin && (
               <button onClick={togglePinned} className="absolute top-2 right-3">
                 {eventQa?.isPinned ? (
                   <InlineIcon
@@ -374,7 +374,7 @@ export function AskandReplyCard({
           )}
         </div>
 
-        {isEditable && (
+        {isEditable && qa?.accessibility?.mustReviewQuestion && (
           <div className="w-full flex items-end justify-end">
             <Button
               onClick={onShowQuestionModal}

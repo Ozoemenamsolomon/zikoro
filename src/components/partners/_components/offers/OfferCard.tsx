@@ -58,8 +58,8 @@ export function OfferCard({
 
   const formatDiscount = useMemo(() => {
     return (
-      ((Number(offer?.productPrice) - Number(offer?.productPromo)) /
-        Number(offer?.productPrice)) *
+      ((Number(offer?.productPrice || 0) - Number(offer?.productPromo ||0)) /
+        Number(offer?.productPrice || 0)) *
       100
     );
   }, [offer?.productPrice, offer?.productPromo]);
@@ -98,9 +98,9 @@ export function OfferCard({
           ) : (
             <div className="w-full rounded-t-md h-[180px] sm:h-56 bg-gray-200 animate-pulse"></div>
           )}
-          <span className="absolute text-white text-xs bg-basePrimary px-2 py-1 rounded-bl-lg top-0 right-0">
+        {formatDiscount > 0 &&  <span className="absolute text-white text-xs bg-basePrimary px-2 py-1 rounded-bl-lg top-0 right-0">
             {`${formatDiscount?.toFixed(0)}%`}
-          </span>
+          </span>}
         </div>
         <div className="w-full px-3 flex items-start justify-between">
           <div className="flex flex-col items-start justify-start">

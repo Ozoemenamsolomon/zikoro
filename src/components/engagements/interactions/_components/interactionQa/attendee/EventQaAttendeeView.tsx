@@ -56,57 +56,7 @@ export default function EventQaAttendeeView({
     setIsOpen((p) => !p);
   }
 
-  const filteredEventQaQuestions = useMemo(() => {
-    if (Array.isArray(eventQAQuestions)) {
-      if (filterValue === "Recent") {
-        const filtered = eventQAQuestions
-          .sort(
-            (a, b) =>
-              new Date(b.created_at).getTime() -
-              new Date(a.created_at).getTime()
-          )
-          .filter((v) => v?.questionStatus !== "pending");
 
-        const pinnedQuestion = filtered.filter((q) => q?.isPinned);
-        const unpinnedQuestion = filtered?.filter((q) => !q?.isPinned);
-
-        return [...pinnedQuestion, ...unpinnedQuestion];
-      } else if (filterValue === "Top Liked") {
-        const filtered = eventQAQuestions
-          .sort((a, b) => b.vote - a.vote)
-          .filter((v) => v?.questionStatus !== "pending");
-
-        const pinnedQuestion = filtered.filter((q) => q?.isPinned);
-        const unpinnedQuestion = filtered?.filter((q) => !q?.isPinned);
-
-        return [...pinnedQuestion, ...unpinnedQuestion];
-      }
-    } else return [];
-  }, [eventQAQuestions, filterValue]);
-
-  const myQuestions = useMemo(() => {
-    if (Array.isArray(eventQAQuestions)) {
-      if (filterValue === "Recent") {
-        return eventQAQuestions
-          .sort(
-            (a, b) =>
-              new Date(b.created_at).getTime() -
-              new Date(a.created_at).getTime()
-          )
-          .filter(
-            (qa) =>
-              qa?.userId === (attendee?.attendeeAlias || userAccess?.userId)
-          );
-      } else if (filterValue === "Top Liked") {
-        return eventQAQuestions
-          .sort((a, b) => b.vote - a.vote)
-          .filter(
-            (qa) =>
-              qa?.userId === (attendee?.attendeeAlias || userAccess?.userId)
-          );
-      } else return [];
-    } else return [];
-  }, [eventQAQuestions, userAccess, attendee, filterValue]);
 
   useEffect(() => {
     if (!qa?.accessibility?.live) return;
@@ -155,7 +105,7 @@ export default function EventQaAttendeeView({
         filter: `QandAAlias=eq.${qaId}`,
       },
       (payload) => {
-        console.log("payload from live INSERT", payload);
+       // console.log("payload from live INSERT", payload);
         if (eventQAQuestions) {
           setEventQAQuestions([
             ...eventQAQuestions,
@@ -174,9 +124,61 @@ export default function EventQaAttendeeView({
       // Cleanup the channel on unmount
       supabase.removeChannel(channel);
     };
-  }, [supabase, eventQAQuestions, qa]);
+  }, [supabase, qa]);
 
-  console.log("qas ", eventQAQuestions);
+  ///console.log("qas ", eventQAQuestions);
+
+  const filteredEventQaQuestions = useMemo(() => {
+    if (Array.isArray(eventQAQuestions)) {
+      if (filterValue === "Recent") {
+        const filtered = eventQAQuestions
+          .sort(
+            (a, b) =>
+              new Date(b.created_at).getTime() -
+              new Date(a.created_at).getTime()
+          )
+          .filter((v) => v?.questionStatus !== "pending");
+
+        const pinnedQuestion = filtered.filter((q) => q?.isPinned);
+        const unpinnedQuestion = filtered?.filter((q) => !q?.isPinned);
+
+        return [...pinnedQuestion, ...unpinnedQuestion];
+      } else if (filterValue === "Top Liked") {
+        const filtered = eventQAQuestions
+          .sort((a, b) => b.vote - a.vote)
+          .filter((v) => v?.questionStatus !== "pending");
+
+        const pinnedQuestion = filtered.filter((q) => q?.isPinned);
+        const unpinnedQuestion = filtered?.filter((q) => !q?.isPinned);
+
+        return [...pinnedQuestion, ...unpinnedQuestion];
+      }
+    } else return [];
+  }, [eventQAQuestions, filterValue, qa]);
+
+  const myQuestions = useMemo(() => {
+    if (Array.isArray(eventQAQuestions)) {
+      if (filterValue === "Recent") {
+        return eventQAQuestions
+          .sort(
+            (a, b) =>
+              new Date(b.created_at).getTime() -
+              new Date(a.created_at).getTime()
+          )
+          .filter(
+            (qa) =>
+              qa?.userId === (attendee?.attendeeAlias || userAccess?.userId)
+          );
+      } else if (filterValue === "Top Liked") {
+        return eventQAQuestions
+          .sort((a, b) => b.vote - a.vote)
+          .filter(
+            (qa) =>
+              qa?.userId === (attendee?.attendeeAlias || userAccess?.userId)
+          );
+      } else return [];
+    } else return [];
+  }, [eventQAQuestions, userAccess, attendee, filterValue, qa]);
 
   function initiateReply(question: TEventQAQuestion | null) {
     setReplyQuestion(question);

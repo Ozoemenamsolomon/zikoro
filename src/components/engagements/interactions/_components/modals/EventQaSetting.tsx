@@ -48,8 +48,9 @@ export function EventQaSetting({
     mustReviewQuestion: true,
     cannotAskQuestion: false,
     canRespond: true,
-    canTag: false,
+    canPin: false,
     indicateAnsweredQuestions: false,
+    canTag:false
   });
   const form = useForm<z.infer<typeof eventQaSettingSchema>>({
     resolver: zodResolver(eventQaSettingSchema),
@@ -395,6 +396,26 @@ export function EventQaSetting({
                 <p>Pin a Question</p>
                 <p className="text-xs text-gray-500">
                   Admin can pin question to make them appear at the top of the list.
+                </p>
+              </div>
+              <Switch
+                disabled={loading}
+                checked={accessibility?.canPin}
+                onClick={() =>
+                  setAccessibility({
+                    ...accessibility,
+                    canPin: !accessibility.canPin,
+                  })
+                }
+                className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
+              />
+            </div>
+
+            <div className="flex w-full text-mobile sm:text-sm items-center justify-between">
+              <div className="flex flex-col items-start justify-start">
+                <p>Tag</p>
+                <p className="text-xs text-gray-500">
+                  Admin can add tag to a question.
                 </p>
               </div>
               <Switch

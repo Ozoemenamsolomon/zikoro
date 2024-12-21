@@ -110,7 +110,7 @@ export default function EventQaOrganizerView({
       // Cleanup the channel on unmount
       supabase.removeChannel(channel);
     };
-  }, [supabase, eventQAQuestions, qa]);
+  }, [supabase, qa]);
   
 
   function setActiveState(n: number) {
@@ -147,7 +147,7 @@ export default function EventQaOrganizerView({
         return [...pinnedQuestion, ...unpinnedQuestion];
       }
     } else return [];
-  }, [eventQAQuestions, filterValue]);
+  }, [eventQAQuestions, filterValue, qa]);
 
   const myQuestions = useMemo(() => {
     if (Array.isArray(filteredEventQaQuestions) && user) {
