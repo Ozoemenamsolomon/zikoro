@@ -42,22 +42,21 @@ const AttendeeCertificate = ({
     getEvent,
   } = useGetEvent({ eventId: 5 });
 
-  
-
   const [data, download] = useToPng<HTMLDivElement>({
     selector: "#certificate",
     onSuccess: (data) => {
-      
-      const link = document.createElement("a");
-      link.download =
-        certificate?.name +
-        "_certificate_for_" +
-        attendee.firstName +
-        "_" +
-        attendee.lastName +
-        ".jpeg";
-      link.href = data;
-      link.click();
+      if (typeof window !== "undefined") {
+        const link = document.createElement("a");
+        link.download =
+          certificate?.name +
+          "_certificate_for_" +
+          attendee.firstName +
+          "_" +
+          attendee.lastName +
+          ".jpeg";
+        link.href = data;
+        link.click();
+      }
     },
   });
 
@@ -120,11 +119,8 @@ const AttendeeCertificate = ({
           organization,
         })
       );
-      
     }
   }, [isLoading, organizationIsLoading, eventIsLoading]);
-
-  
 
   return (
     <Editor

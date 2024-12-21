@@ -522,10 +522,12 @@ const page = () => {
   const [data, download] = useToPng<HTMLDivElement>({
     selector: "#certificate",
     onSuccess: (data) => {
-      const link = document.createElement("a");
-      link.download = certificateName + ".jpeg";
-      link.href = data;
-      link.click();
+      if (typeof window !== "undefined") {
+        const link = document.createElement("a");
+        link.download = certificateName + ".jpeg";
+        link.href = data;
+        link.click();
+      }
     },
   });
   const [{ data: png }, convert, certificateRef] = useToPng<HTMLDivElement>({
@@ -853,7 +855,7 @@ const page = () => {
                   backgroundRepeat: "no-repeat",
                   backgroundSize: "100% 100%",
                   backgroundImage: !!details.background
-                  ? `url(${details.background})`
+                    ? `url(${details.background})`
                     : "",
                   backgroundColor: "#fff",
                   width: "90%",

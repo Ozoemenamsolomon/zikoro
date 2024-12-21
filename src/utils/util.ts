@@ -162,7 +162,9 @@ export const createICSContent = (
     (duration % (1000 * 60 * 60)) / (1000 * 60)
   );
 
-  return `BEGIN:VCALENDAR\nVERSION:2.0\nCALSCALE:GREGORIAN\nPRODID:adamgibbons/ics\nMETHOD:PUBLISH\nX-PUBLISHED-TTL:PT1H\nBEGIN:VEVENT\nUID:dR3_ekmfOhjKQu4yHG7j0\nSUMMARY:${description || 'this is an event'}\nDTSTAMP:${new Date()
+  return `BEGIN:VCALENDAR\nVERSION:2.0\nCALSCALE:GREGORIAN\nPRODID:adamgibbons/ics\nMETHOD:PUBLISH\nX-PUBLISHED-TTL:PT1H\nBEGIN:VEVENT\nUID:dR3_ekmfOhjKQu4yHG7j0\nSUMMARY:${
+    description || "this is an event"
+  }\nDTSTAMP:${new Date()
     .toISOString()
     .replace(
       /-|:|\.\d+/g,
@@ -255,16 +257,18 @@ export function verifyingAccess({
   textContent: string;
   isNotUpgrading?: boolean;
 }) {
-  const subModal = document.getElementById("subscription-modal");
-  const contentDiv = document.getElementById("content");
-  const upgradeButton = document.getElementById("upgrade-button");
+  if (typeof window !== "undefined") {
+    const subModal = document.getElementById("subscription-modal");
+    const contentDiv = document.getElementById("content");
+    const upgradeButton = document.getElementById("upgrade-button");
 
-  if (contentDiv && subModal) {
-    subModal.style.display = "block";
-    contentDiv.textContent = textContent;
-  }
-  if (isNotUpgrading && upgradeButton) {
-    upgradeButton.style.display = "none";
+    if (contentDiv && subModal) {
+      subModal.style.display = "block";
+      contentDiv.textContent = textContent;
+    }
+    if (isNotUpgrading && upgradeButton) {
+      upgradeButton.style.display = "none";
+    }
   }
 
   return;

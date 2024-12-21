@@ -93,14 +93,15 @@ const Page = ({ params }: { params: { badgeId: string } }) => {
   const [data, download] = useToPng<HTMLDivElement>({
     selector: "#badge",
     onSuccess: (data) => {
-      
       if (!badge) return;
-      const link = document.createElement("a");
-      link.download = `${
-        badge?.attendee.firstName + "_" + badge?.attendee.lastName
-      }_${badge?.badgeName}.png`;
-      link.href = data;
-      link.click();
+      if (typeof window !== "undefined") {
+        const link = document.createElement("a");
+        link.download = `${
+          badge?.attendee.firstName + "_" + badge?.attendee.lastName
+        }_${badge?.badgeName}.png`;
+        link.href = data;
+        link.click();
+      }
     },
   });
 
@@ -108,11 +109,9 @@ const Page = ({ params }: { params: { badgeId: string } }) => {
 
   useEffect(() => {
     if (isLoading) {
-      
       return;
     }
 
-    
     if (!badge) {
       toast({
         variant: "destructive",
@@ -148,13 +147,10 @@ const Page = ({ params }: { params: { badgeId: string } }) => {
     //   return; // Exit early after showing the toast
     // }
 
-    
-
     if (
       badge?.originalBadge.badgeDetails &&
       badge?.originalBadge.badgeDetails.craftHash
     ) {
-      
       const initData = lz.decompress(
         lz.decodeBase64(badge?.originalBadge.badgeDetails.craftHash)
       );
@@ -167,11 +163,8 @@ const Page = ({ params }: { params: { badgeId: string } }) => {
           organization: badge.originalBadge.event.organization,
         })
       );
-      
     }
   }, [isLoading]);
-
-  
 
   return (
     <section className="min-h-screen flex flex-col-reverse md:flex-row justify-center gap-6 pt-20 pb-8">

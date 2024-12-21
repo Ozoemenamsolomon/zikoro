@@ -22,25 +22,22 @@ const AttendeeBadge = ({
 }) => {
   const currentEvent = useEventStore((state) => state.event);
 
-  
-
   const [data, download] = useToPng<HTMLDivElement>({
     selector: "#badge",
     onSuccess: (data) => {
-      
-      const link = document.createElement("a");
-      link.download =
-        attendee.firstName + "-" + attendee.lastName + "-" + ".jpeg";
-      link.href = data;
-      link.click();
+      if (typeof window !== "undefined") {
+        const link = document.createElement("a");
+        link.download =
+          attendee.firstName + "-" + attendee.lastName + "-" + ".jpeg";
+        link.href = data;
+        link.click();
+      }
     },
   });
 
   const hashRef = useRef<string>(
     lz.decompress(lz.decodeBase64(badge.badgeDetails.craftHash))
   );
-
-  
 
   // useEffect(() => {
   //   if (!badge) return;
