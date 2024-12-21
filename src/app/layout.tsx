@@ -40,7 +40,7 @@ export default function RootLayout({
       <body className={`${montserrat.className}`}>
         {children}
         <Toaster {...TOASTER_PROPS} />
-        <SubscriptionModal />
+        {/* <SubscriptionModal /> */}
         {/* Google Tag Manager */}
         <script
           async

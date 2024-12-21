@@ -18,7 +18,7 @@ import { useFetchQuiz } from "@/hooks";
 import { useFetchData } from "@/hooks/services/request";
 import { TEventQa } from "@/types";
 export default function JoinQA() {
-  const { getData } = useFetchData<TEventQa>("/engagements/qa/");
+  const { getData } = useFetchData<TEventQa>("/engagements/qa");
   const form = useForm<z.infer<typeof joinLiveQuizSchema>>({
     resolver: zodResolver(joinLiveQuizSchema),
   });
