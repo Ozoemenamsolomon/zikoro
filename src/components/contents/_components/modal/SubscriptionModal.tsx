@@ -4,9 +4,12 @@ import { Button } from "@/components";
 export function SubscriptionModal() {
   
   function close() {
-    const subModal = document.getElementById("subscription-modal");
-    if (subModal) {
-      subModal.style.display = "none";
+    
+    if (typeof window !== "undefined") {
+      const subModal = document.getElementById("subscription-modal");
+      if (subModal) {
+        subModal.style.display = "none";
+      }
     }
   }
 
