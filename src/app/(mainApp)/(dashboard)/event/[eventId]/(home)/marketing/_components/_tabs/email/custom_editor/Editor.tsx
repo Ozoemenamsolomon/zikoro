@@ -3,7 +3,7 @@ import EditorToolbar, { modules, formats } from "./EditorToolbar";
 import "react-quill/dist/quill.snow.css";
 import dynamic from "next/dynamic";
 const ReactQuill = dynamic(() => import("react-quill"), {
-  ssr: false, // This ensures it only loads on the client side
+  ssr: false,
 });
 
 export const Editor = ({
